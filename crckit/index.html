@@ -1,0 +1,4710 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ── Colour-scheme hint: tells the browser which themes this page supports.
+       Prevents the browser's own UA-stylesheet flash before our CSS loads. ── -->
+  <meta name="color-scheme" content="light dark">
+
+  <!-- ── Anti-FOUC theme init — runs synchronously, before any CSS is parsed.
+       Priority: (1) explicit user choice in localStorage, (2) OS preference via
+       prefers-color-scheme, (3) time-of-day heuristic as a last resort.
+       The data-theme attribute is set here so the very first paint is correct.
+       A matchMedia listener is registered so the theme tracks OS changes live,
+       but only when the user has NOT made a manual choice. ── -->
+  <script>
+    (function () {
+      var STORAGE_KEY = 'crckit-theme';
+      var saved = localStorage.getItem(STORAGE_KEY);
+      var theme;
+      if (saved) {
+        theme = saved;
+      } else if (window.matchMedia) {
+        theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      } else {
+        var h = new Date().getHours();
+        theme = (h >= 6 && h < 21) ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+      // Live-sync with OS when no manual preference is stored.
+      if (!saved && window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (!localStorage.getItem(STORAGE_KEY)) {
+            document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+          }
+        });
+      }
+    })();
+  </script>
+
+  <!-- ── Favicons ── -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <!-- ── Primary SEO ── -->
+  <title>Online CRC-32 / CRC-64 Calculator | CRCKit</title>
+  <meta name="description" content="Calculate CRC-8 (1-Wire), CRC-16, CRC-24 (OpenPGP/BLE/Intlkn), CRC-32, CRC-32C, CRC-64 (ECMA), CRC-82, and more checksum variants online. No data leaves your device.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://www.crckit.com/">
+
+  <!-- ── Open Graph (Facebook / LinkedIn previews) ── -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://www.crckit.com/">
+  <meta property="og:title"       content="Online CRC-32 / CRC-64 Calculator | CRCKit">
+  <meta property="og:description" content="Calculate CRC-8 (1-Wire), CRC-16, CRC-24 (OpenPGP/BLE/Intlkn), CRC-32, CRC-32C, CRC-64 (ECMA), CRC-82, and more checksum variants online. No data leaves your device.">
+  <meta property="og:image"       content="https://www.crckit.com/og-image.png">
+  <meta property="og:site_name"   content="CRCKit">
+  <meta property="og:locale"      content="en_US">
+
+  <!-- ── Twitter / X Card ── -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:url"         content="https://www.crckit.com/">
+  <meta name="twitter:title"       content="Online CRC-32 / CRC-64 Calculator | CRCKit">
+  <meta name="twitter:description" content="Calculate CRC-8 (1-Wire), CRC-16, CRC-24 (OpenPGP/BLE/Intlkn), CRC-32, CRC-32C, CRC-64 (ECMA), CRC-82, and more checksum variants online. No data leaves your device.">
+  <meta name="twitter:image"       content="https://www.crckit.com/og-image.png">
+
+  <!-- ── Appearance ── -->
+  <meta name="theme-color" content="#4361EE" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#6B8AFF" media="(prefers-color-scheme: dark)">
+
+  <!-- ── Structured Data: WebApplication ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "CRCKit",
+    "url": "https://www.crckit.com/",
+    "description": "Browser-based CRC checksum calculator supporting CRC-8 (1-Wire), CRC-8 (DVB-S2), CRC-8 (SMBus), CRC-16, CRC-24 (OpenPGP), CRC-24 (BLE), CRC-24 (Intlkn), CRC-32, CRC-32C, CRC-32 (JamCRC), CRC-32 (BZIP2), CRC-64 (ECMA), CRC-82 (DARC), and more. All computation is local — no data is transmitted.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "author": { "@type": "Organization", "name": "CRCKit", "url": "https://www.crckit.com/" }
+  }
+  </script>
+
+  <!-- ── Structured Data: FAQPage ── -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a CRC checksum?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A Cyclic Redundancy Check (CRC) is an error-detection algorithm that maps an input of any size to a short fixed-length value called a checksum. It is deterministic and optimised for detecting accidental data corruption in storage and transmission."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Which CRC variant should I use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-32 is the right default for most applications — it is universally supported, well-studied, and used in Ethernet, ZIP, and PNG. CRC-32C (Castagnoli) is preferred for storage systems and databases: it has better error-detection properties and is hardware-accelerated on modern CPUs. Use CRC-16 variants for embedded or serial-communication protocols. CRC-8 (SMBus) variants are common in sensors and one-wire buses. CRC-24 variants serve niche protocols: OpenPGP ASCII Armor, Bluetooth Low Energy, and Interlaken chip-to-chip links. CRC-64 variants are suited to large-scale data integrity in storage and database systems."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Are CRC checksums secure for cryptographic use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. CRC is an error-detection algorithm, not a cryptographic hash. It is not collision resistant and can be reversed or forged by an attacker. For security purposes, use SHA-256 or another cryptographic hash function."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is CRC-8 used for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-8 produces an 8-bit (1-byte) checksum widely used in embedded systems, sensors, and low-bandwidth buses where minimal overhead matters. CRC-8 (SMBus) is used for Packet Error Code (PEC) on the SMBus and ATM HEC. CRC-8 (1-Wire) is standard for Dallas/Maxim 1-Wire devices such as DS18B20 sensors. CRC-8 (DVB-S2) protects baseband frame headers in the DVB-S2 satellite broadcast standard."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is CRC-8 (1-Wire)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-8 (1-Wire) uses the reflected polynomial 0x31 and was designed by Dallas Semiconductor for the 1-Wire single-wire bus protocol. It is the standard integrity check for devices such as DS18B20 temperature sensors and iButton tokens, where the entire ROM code and data scratchpad are verified with this 8-bit checksum."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is CRC-8 (DVB-S2)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-8 (DVB-S2) uses the polynomial 0xD5 and is defined in the DVB-S2 satellite broadcast standard (ETSI EN 302 307) for protecting the baseband frame header. Its non-reflected, zero-initialised form is optimised for hardware implementation in satellite receivers."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is CRC-32 (JamCRC)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-32 (JamCRC) uses the same polynomial and reflected processing as standard CRC-32 but omits the final XOR with 0xFFFFFFFF, so its output is the bitwise complement of a standard CRC-32. It is used in network equipment and some JAM file formats, and its unchained property makes it useful when concatenating partial checksums."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the difference between CRC-16 variants?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-16 variants share the same 16-bit output width but differ in their generator polynomial, initial value, and reflection settings. CCITT is used in X.25 and HDLC. Modbus uses a reflected polynomial for serial RTU framing. Kermit is used in the Kermit file-transfer protocol. XMODEM uses the CCITT polynomial with no reflection."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does CRCKit protect my data?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "All checksum computation runs entirely inside your browser using the js-crc JavaScript library by emn178. No text, file content, or checksum output is ever transmitted to any server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are CRC-24 variants used for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-24 produces a 24-bit (3-byte) checksum shown as a 6-character hex string. CRC-24 (OpenPGP) is defined in RFC 4880 as the ASCII Armor checksum for PGP data. CRC-24 (BLE) uses a reflected polynomial for Bluetooth Low Energy link-layer packet integrity. CRC-24 (Intlkn) is specified by the Interlaken Alliance for high-speed chip-to-chip serial links."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What are CRC-64 checksums used for?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-64 produces a 64-bit (8-byte) checksum with a collision probability of roughly one in 18 quintillion, making it well-suited for large-scale data integrity in storage systems, databases, and high-throughput pipelines. CRC-64 (ECMA) is defined in the ECMA-182 standard for DLT tape. CRC-64 (NVMe) is used in the NVMe storage protocol for command integrity. CRC-64 (Redis) is the variant used by the Redis in-memory database for cluster slot hashing. CRC-64 (XZ) is used in the XZ compressed archive format."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is CRC-82 (DARC)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "CRC-82 (DARC) uses an 82-bit polynomial defined in the DARC (Data Radio Channel) standard for data broadcast over FM subcarriers. Its unusual width provides strong error detection for the short data frames transmitted in FM multiplex data services."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <meta name="author" content="CRCKit">
+
+  <!-- ── Performance hints ── -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================================================
+       DESIGN TOKENS — Arctic Slate palette (from index1) + dark mode variant
+       ========================================================================= */
+    :root {
+      --bg:            #F4F5F7;
+      --bg-gradient:   linear-gradient(135deg, rgba(67, 97, 238, 0.065) 0%, transparent 55%, rgba(107, 138, 255, 0.045) 100%);
+      --surface:       #FFFFFF;
+      --surface-2:     #EBEDF0;
+      --border:        #D8DBE0;
+      --accent:        #4361EE;
+      --accent-dim:    #3651D4;
+      --accent-muted:  rgba(67, 97, 238, 0.07);
+      --accent-surface: #F2F4FE;
+      --accent-glow:   rgba(67, 97, 238, 0.14);
+      --accent-border: rgba(67, 97, 238, 0.30);
+      --text:          #1A1D23;
+      --text-muted:    #7A8494;
+      --shadow:        0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+      --shadow-lg:     0 6px 28px rgba(0, 0, 0, 0.09);
+      --radius:        8px;
+      --radius-sm:     5px;
+      --mono:          'Geist Mono', monospace;
+      --sans:          'Geist', sans-serif;
+
+      --result-alt-surface: #F7F8FE;
+
+      /* Algorithm badge palette — 23-hue spectral spread, light theme.
+         Hues spaced evenly ~13° apart from orange (~28°) to rose (~314°):
+           CRC-8 (1-Wire)   → orange        (~28°)
+           CRC-8 (DVB-S2)   → amber         (~41°)
+           CRC-8 (SMBus)    → yellow        (~54°)
+           CRC-16           → yellow-green  (~67°)
+           CRC-16 (CCITT)   → lime          (~80°)
+           CRC-16 (DNP)     → lime-green    (~93°)
+           CRC-16 (Kermit)  → green         (~106°)
+           CRC-16 (Modbus)  → teal-green    (~119°)
+           CRC-16 (USB)     → teal          (~132°)
+           CRC-16 (XMODEM)  → cyan-teal     (~145°)
+           CRC-24 (BLE)     → cyan          (~158°)
+           CRC-24 (Intlkn)  → sky           (~171°)
+           CRC-24 (OpenPGP) → sky-blue      (~184°)
+           CRC-32           → blue          (~197°)
+           CRC-32C          → blue-indigo   (~210°)  ← pinned after CRC-32
+           CRC-32 (BZIP2)   → indigo        (~223°)
+           CRC-32 (JamCRC)  → indigo-violet (~236°)
+           CRC-32 (MPEG-2)  → violet        (~249°)
+           CRC-64 (ECMA)    → purple        (~262°)
+           CRC-64 (NVMe)    → magenta-blue  (~275°)
+           CRC-64 (Redis)   → magenta       (~288°)
+           CRC-64 (XZ)      → pink-magenta  (~301°)
+           CRC-82 (DARC)    → rose          (~314°) */
+      --badge-crc81wire-bg:       #F9EFE5;  --badge-crc81wire-text:       #A95C18;
+      --badge-crc8dvbs2-bg:       #F9F3E5;  --badge-crc8dvbs2-text:       #9A7010;
+      --badge-crc8smbus-bg:       #F9F7E5;  --badge-crc8smbus-text:       #7A7810;
+      --badge-crc16-bg:           #F2F9E5;  --badge-crc16-text:           #5A8010;
+      --badge-crc16ccitt-bg:      #EAF9E5;  --badge-crc16ccitt-text:      #307A10;
+      --badge-crc16dnp-bg:        #E5F9E6;  --badge-crc16dnp-text:        #107A20;
+      --badge-crc16kermit-bg:     #E5F9EC;  --badge-crc16kermit-text:     #0A7A48;
+      --badge-crc16modbus-bg:     #E5F9F3;  --badge-crc16modbus-text:     #0A7065;
+      --badge-crc16usb-bg:        #E5F7F9;  --badge-crc16usb-text:        #0A6475;
+      --badge-crc16xmodem-bg:     #E5F1F9;  --badge-crc16xmodem-text:     #0A5482;
+      --badge-crc24ble-bg:        #E5EBF9;  --badge-crc24ble-text:        #0A4490;
+      --badge-crc24intlkn-bg:     #E5E6F9;  --badge-crc24intlkn-text:     #0E319E;
+      --badge-crc24openpgp-bg:    #E6E5F9;  --badge-crc24openpgp-text:    #1C20A0;
+      --badge-crc32-bg:           #E9E5F9;  --badge-crc32-text:           #2E15A0;
+      --badge-crc32c-bg:          #EDE5F9;  --badge-crc32c-text:          #430EA0;
+      --badge-crc32bzip2-bg:      #F1E5F9;  --badge-crc32bzip2-text:      #5808A0;
+      --badge-crc32jamcrc-bg:     #F5E5F9;  --badge-crc32jamcrc-text:     #6C0898;
+      --badge-crc32mpeg2-bg:      #F8E5F9;  --badge-crc32mpeg2-text:      #800890;
+      --badge-crc64ecma-bg:       #F9E5F6;  --badge-crc64ecma-text:       #900880;
+      --badge-crc64nvme-bg:       #F9E5F2;  --badge-crc64nvme-text:       #98086A;
+      --badge-crc64redis-bg:      #F9E5EE;  --badge-crc64redis-text:      #980850;
+      --badge-crc64xz-bg:         #F9E5EB;  --badge-crc64xz-text:         #980838;
+      --badge-crc82darc-bg:       #F9E5E8;  --badge-crc82darc-text:       #981028;
+    }
+
+    [data-theme="dark"] {
+      --bg:            #12151C;
+      --bg-gradient:   linear-gradient(135deg, rgba(107, 138, 255, 0.09) 0%, transparent 55%, rgba(67, 97, 238, 0.06) 100%);
+      --surface:       #1C2030;
+      --surface-2:     #252A3A;
+      --border:        #2E3448;
+      --accent:        #6B8AFF;
+      --accent-dim:    #5572E8;
+      --accent-muted:  rgba(107, 138, 255, 0.08);
+      --accent-surface: rgba(107, 138, 255, 0.08);
+      --accent-glow:   rgba(107, 138, 255, 0.16);
+      --accent-border: rgba(107, 138, 255, 0.32);
+      --text:          #E2E6EF;
+      --text-muted:    #7A85A0;
+      --shadow:        0 2px 12px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.16);
+      --shadow-lg:     0 6px 28px rgba(0, 0, 0, 0.32);
+
+      --result-alt-surface: rgba(107, 138, 255, 0.03);
+
+      /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+      --badge-crc81wire-bg:       rgba(220, 140, 40, 0.14);  --badge-crc81wire-text:       #F0B870;
+      --badge-crc8dvbs2-bg:       rgba(215, 190, 40, 0.13);  --badge-crc8dvbs2-text:       #EDE068;
+      --badge-crc8smbus-bg:       rgba(190, 205, 40, 0.13);  --badge-crc8smbus-text:       #D8E868;
+      --badge-crc16-bg:           rgba(135, 215, 40, 0.13);  --badge-crc16-text:           #AAEC68;
+      --badge-crc16ccitt-bg:      rgba(70, 220, 40, 0.13);   --badge-crc16ccitt-text:      #82EE68;
+      --badge-crc16dnp-bg:        rgba(40, 218, 58, 0.13);   --badge-crc16dnp-text:        #68EE7A;
+      --badge-crc16kermit-bg:     rgba(40, 218, 135, 0.13);  --badge-crc16kermit-text:     #68EEB8;
+      --badge-crc16modbus-bg:     rgba(40, 205, 200, 0.13);  --badge-crc16modbus-text:     #68E4E0;
+      --badge-crc16usb-bg:        rgba(40, 185, 218, 0.13);  --badge-crc16usb-text:        #68D4EE;
+      --badge-crc16xmodem-bg:     rgba(40, 148, 218, 0.13);  --badge-crc16xmodem-text:     #68B8EE;
+      --badge-crc24ble-bg:        rgba(40, 108, 218, 0.14);  --badge-crc24ble-text:        #7898F0;
+      --badge-crc24intlkn-bg:     rgba(40, 68, 220, 0.14);   --badge-crc24intlkn-text:     #7878F0;
+      --badge-crc24openpgp-bg:    rgba(52, 40, 220, 0.14);   --badge-crc24openpgp-text:    #8080F0;
+      --badge-crc32-bg:           rgba(74, 40, 220, 0.14);   --badge-crc32-text:           #8A78F0;
+      --badge-crc32c-bg:          rgba(100, 40, 220, 0.14);  --badge-crc32c-text:          #A070F0;
+      --badge-crc32bzip2-bg:      rgba(128, 40, 220, 0.14);  --badge-crc32bzip2-text:      #B870F0;
+      --badge-crc32jamcrc-bg:     rgba(160, 40, 215, 0.14);  --badge-crc32jamcrc-text:     #D070E8;
+      --badge-crc32mpeg2-bg:      rgba(190, 40, 200, 0.14);  --badge-crc32mpeg2-text:      #E070D8;
+      --badge-crc64ecma-bg:       rgba(205, 40, 175, 0.14);  --badge-crc64ecma-text:       #E870C0;
+      --badge-crc64nvme-bg:       rgba(210, 40, 148, 0.14);  --badge-crc64nvme-text:       #F070A8;
+      --badge-crc64redis-bg:      rgba(210, 40, 115, 0.14);  --badge-crc64redis-text:      #F07090;
+      --badge-crc64xz-bg:         rgba(210, 40, 82, 0.14);   --badge-crc64xz-text:         #F07078;
+      --badge-crc82darc-bg:       rgba(210, 45, 55, 0.14);   --badge-crc82darc-text:       #F07070;
+    }
+
+    /* =========================================================================
+       RESET & BASE
+       ========================================================================= */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+      font-size: 15px;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: var(--bg-gradient);
+      z-index: -1;
+      pointer-events: none;
+      transition: background 0.3s;
+    }
+
+    /* Skip navigation link (accessibility + SEO) */
+    .skip-link {
+      position: absolute;
+      top: -999px;
+      left: 0;
+      background: var(--accent);
+      color: #fff;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-family: var(--sans);
+      z-index: 9999;
+      text-decoration: none;
+      border-radius: 0 0 var(--radius) 0;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    /* =========================================================================
+       HEADER
+       ========================================================================= */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    [data-theme="dark"] .header {
+      background: rgba(28, 32, 48, 0.78);
+    }
+
+    .header__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header__brand {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      color: inherit;
+      margin: -5px;
+      padding: 5px;
+      border-radius: var(--radius-sm);
+    }
+
+    .header__logo-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .header__title {
+      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--text);
+      letter-spacing: -0.75px;
+      line-height: 1;
+    }
+
+    .header__title span {
+      color: var(--accent);
+    }
+
+    .header__nav {
+      display: flex;
+      gap: 2px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .header__nav-link {
+      font-family: var(--sans);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 6px 16px;
+      border-radius: var(--radius-sm);
+      transition: color 0.2s, background 0.2s;
+    }
+
+    .header__nav-link:hover {
+      color: var(--text);
+      background: var(--accent-muted);
+    }
+
+    .header__nav-link + .header__nav-link {
+      position: relative;
+    }
+
+    .header__nav-link + .header__nav-link::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+    }
+
+    /* Theme toggle */
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 7px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      display: none;
+    }
+
+    [data-theme="dark"]  .theme-toggle__sun  { display: block; }
+    [data-theme="light"] .theme-toggle__moon { display: block; }
+
+    /* =========================================================================
+       MAIN LAYOUT
+       ========================================================================= */
+    main {
+      flex: 1;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .page-heading {
+      margin-bottom: -8px;
+    }
+
+    .page-heading h1 {
+      font-family: var(--mono);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 6px;
+    }
+
+    .page-heading h1 span {
+      color: var(--accent);
+    }
+
+    .page-heading__subtitle {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .page-heading__algos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .page-heading__algos .algo-badge {
+      opacity: 0.72;
+      cursor: pointer;
+      line-height: 1.6;
+      -webkit-appearance: none;
+      appearance: none;
+      margin: 0;
+      border: none;
+      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
+    }
+
+    .page-heading__algos .algo-badge:hover {
+      opacity: 1;
+      transform: translateY(-1px);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-heading__algos .algo-badge:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .page-heading__algos .algo-badge:focus-visible {
+      opacity: 1;
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* =========================================================================
+       SECTION
+       ========================================================================= */
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .section__label {
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section__label-icon {
+      width: 15px;
+      height: 15px;
+      fill: var(--accent-dim);
+      flex-shrink: 0;
+    }
+
+    .section__label-arrow {
+      width: 16px;
+      height: 10px;
+      fill: none;
+      stroke: var(--accent-dim);
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .section__label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* =========================================================================
+       CARD (shared wrapper)
+       ========================================================================= */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .card:focus-within,
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Text drag-and-drop affordance — mirrors file-drop--page-drag.
+       Border and background are scoped to the textarea wrapper so only
+       the input area is highlighted, not the full card. The base wrap
+       carries a transparent 2px border to prevent layout shift on drag. */
+    .card--text-drag .text-input__wrap {
+      border: 2px dashed var(--accent);
+      background: var(--accent-muted);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .card__body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* =========================================================================
+       RESULT BAR (checksum output attached to input card)
+       ========================================================================= */
+    .result {
+      border-top: 1px solid var(--border);
+      background: var(--accent-surface);
+      padding: 9px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--mono);
+    }
+
+    .result__hash {
+      flex: 1;
+      font-size: 13.5px;
+      color: var(--text);
+      word-break: break-all;
+      user-select: none;
+      letter-spacing: 0.45px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .result__hash--empty {
+      color: var(--text-muted);
+      font-style: italic;
+      font-size: 13px;
+      letter-spacing: 0;
+      user-select: none;
+      cursor: default;
+    }
+
+    /* ── Computing / progress state ───────────────────────────────────────────
+       The hash cell doubles as a progress bar while file hashing is in progress.
+       A CSS custom property --progress (0–100) drives a two-stop linear-gradient
+       that fills left-to-right, turning the entire cell into a track.
+       The percentage text is rendered inside the cell — no extra pill element.
+
+       Design rationale: the hash cell already has flex:1 and occupies all
+       available row width. Repurposing it avoids adding a separate pill that
+       would crowd the row, and grounds the progress indicator exactly where
+       the result will appear — a natural spatial metaphor.
+    ──────────────────────────────────────────────────────────────────────── */
+    .result__hash--computing {
+      background: linear-gradient(
+        to right,
+        var(--accent-glow) calc(var(--progress, 0) * 1%),
+        transparent        calc(var(--progress, 0) * 1%)
+      );
+      border-radius: 3px;
+      color: var(--accent-dim);
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      cursor: default;
+      user-select: none;
+      /* Smooth the fill sweep between chunk callbacks */
+      transition: background 0.15s linear;
+      padding: 3px 6px;
+      line-height: 1.8;
+    }
+
+    .result__actions {
+      display: flex;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .result:nth-child(odd) {
+      background: var(--accent-surface);
+    }
+
+    .result:nth-child(even) {
+      background: var(--result-alt-surface);
+    }
+
+    .result + .result {
+      border-top: 1px solid var(--border);
+    }
+
+    /* =========================================================================
+       TEXT INPUT
+       ========================================================================= */
+    .text-input__wrap {
+      position: relative;
+      border: 2px solid transparent;
+      border-radius: var(--radius-sm);
+    }
+
+    .text-input__textarea {
+      width: 100%;
+      min-height: 110px;
+      max-height: 400px;
+      padding: 14px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      line-height: 1.65;
+      resize: vertical;
+      outline: none;
+    }
+
+    .text-input__textarea::placeholder {
+      color: var(--text-muted);
+    }
+    .text-input__counter {
+      position: absolute;
+      bottom: 3px;
+      right: 15px;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.3px;
+      pointer-events: none;
+      user-select: none;
+      opacity: 1;
+    }
+
+    .text-input__counter-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.4;
+      flex-shrink: 0;
+    }
+
+    .text-input__clear {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 1;
+      display: none;
+    }
+
+    .text-input__clear--visible {
+      display: flex;
+    }
+
+    /* =========================================================================
+       BUTTONS
+       ========================================================================= */
+    .btn {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      position: relative;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    .btn:disabled {
+      opacity: 0.38;
+      pointer-events: none;
+    }
+
+    .btn svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .btn--primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .btn--primary:hover {
+      opacity: 0.88;
+      color: #fff;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+
+    /* =========================================================================
+       TOOLTIP
+       ========================================================================= */
+    .tooltip {
+      display: none;
+    }
+
+    .tooltip-singleton {
+      position: fixed;
+      transform: translateX(-50%) translateY(calc(-100% + 4px));
+      background: var(--text);
+      color: var(--bg);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s, transform 0.15s;
+      font-family: var(--sans);
+      z-index: 9999;
+    }
+
+    .tooltip-singleton--visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(calc(-100% - 6px));
+    }
+
+    /* =========================================================================
+       OPTIONS — segmented format picker
+       ========================================================================= */
+    .options {
+      display: flex;
+      align-items: center;
+    }
+
+    .options__segment {
+      display: inline-flex;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    [data-theme="dark"] .options__segment {
+      background: rgba(28, 32, 48, 0.78);
+    }
+
+    .options__segment-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 11px;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      border-right: 1px solid var(--border);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .options__segment-label:last-child {
+      border-right: none;
+    }
+
+    .options__segment-label:hover {
+      color: var(--text);
+      background: var(--accent-muted);
+    }
+
+    .options__radio {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    .options__radio:checked + .options__segment-label {
+      color: var(--accent);
+      background: var(--accent-muted);
+      font-weight: 600;
+    }
+
+
+    /* =========================================================================
+       OPTIONS ROW — wraps input + output format pickers side by side
+       ========================================================================= */
+    .options-row {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* Single-side (output-only) row used in File section */
+    .options-row--end {
+      justify-content: flex-end;
+    }
+
+
+    /* Label cell — sits inside the segment pill as its first cell, separated
+       from the options by the standard inter-cell border. Smaller (10px vs 11px)
+       and lighter (weight 400, opacity 0.65) than the option labels, so it reads
+       as a caption for the group rather than a peer choice. No background fill,
+       no hover state, cursor default — unambiguously non-interactive. */
+    .options__prefix {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      font-family: var(--mono);
+      font-size: 9.5px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      user-select: none;
+      white-space: nowrap;
+      min-width: 57px;
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    /* Wrapper — no gap needed; label is inside the pill */
+    .options__group {
+      display: flex;
+      align-items: center;
+    }
+
+    /* ── Hover tooltips for icon-only buttons ─────────────────────────────────
+       history-btn, random__item-btn, history-table__action-btn
+       Tooltip.show() / hide() are wired in JS; these declarations are no-ops
+       at rest (the singleton does all rendering) but serve as a reminder that
+       these elements participate in the tooltip system. */
+    .history-btn,
+    .random__item-btn,
+    .history-table__action-btn {
+      position: relative; /* already set elsewhere; harmless repeat */
+    }
+    /* =========================================================================
+       FILE DROP
+       ========================================================================= */
+    .file-drop {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      background: var(--surface);
+    }
+
+    .file-drop:hover,
+    .file-drop--active {
+      border-color: var(--accent-border);
+      background: var(--accent-muted);
+    }
+
+    .file-drop--page-drag {
+      border-color: var(--accent);
+      background: var(--accent-muted);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .file-drop:has(.file-drop__clear:hover) {
+      border-color: var(--border);
+      background: var(--surface);
+    }
+
+    .file-drop__input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .file-drop__icon {
+      width: 28px;
+      height: 28px;
+      fill: var(--text-muted);
+      margin-bottom: 8px;
+      opacity: 0.5;
+    }
+
+    .file-drop__text {
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .file-drop__text strong {
+      color: var(--accent);
+      text-decoration: underline;
+    }
+
+    .file-drop__filename {
+      margin-top: 6px;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--accent);
+      display: none;
+      max-width: calc(100% - 48px);
+    }
+
+    .file-drop__filename--visible {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 0;
+      vertical-align: top;
+    }
+
+    .file-drop__filename-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
+
+    .file-drop__filesize {
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.75;
+      white-space: nowrap;
+    }
+
+    .file-drop__clear {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 1;
+      display: none;
+    }
+
+    .file-drop__clear--visible {
+      display: flex;
+    }
+
+    /* =========================================================================
+       RANDOM CHECKSUMS
+       ========================================================================= */
+    .random__controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .random__controls-sep {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .random__select {
+      font-family: var(--mono);
+      font-size: 12px;
+      padding: 5px 8px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .random__select:focus {
+      border-color: var(--accent-border);
+    }
+
+    .random__list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .random__list:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .random__item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      font-family: var(--mono);
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .random__item:last-child {
+      border-bottom: none;
+    }
+
+    .random__item:hover {
+      background: var(--accent-muted);
+    }
+
+    .random__item-index {
+      color: var(--text-muted);
+      font-size: 11px;
+      min-width: 26px;
+    }
+
+    .random__item-hash {
+      flex: 1;
+      min-width: 0;
+      color: var(--text);
+      user-select: none;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .random__item-actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .random__item:hover .random__item-actions {
+      opacity: 1;
+    }
+
+    .random__item-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 3px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .random__item-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+
+    .random__item-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+
+    /* =========================================================================
+       ABOUT / INFO — tabbed FAQ
+       ========================================================================= */
+    .info {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 1.8;
+      transition: box-shadow 0.25s, border-color 0.25s;
+    }
+
+    .info:hover {
+      box-shadow: var(--shadow-lg);
+    }
+
+    .info__tabs-wrap {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .info__tabs {
+      display: flex;
+      background: var(--accent-surface);
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      border-bottom: none;
+    }
+
+    .info__tabs::-webkit-scrollbar { display: none; }
+
+    .info__tabs-wrap::before,
+    .info__tabs-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 1px;
+      width: 32px;
+      pointer-events: none;
+      z-index: 2;
+      transition: opacity 0.2s ease;
+    }
+
+    .info__tabs-wrap::before {
+      left: 0;
+      background: linear-gradient(to right, var(--accent-surface), transparent);
+      opacity: var(--tabs-fade-left, 0);
+    }
+
+    .info__tabs-wrap::after {
+      right: 0;
+      background: linear-gradient(to left, var(--accent-surface), transparent);
+      opacity: var(--tabs-fade-right, 0);
+    }
+
+    .info__tab {
+      flex-shrink: 0;
+      font-family: var(--mono);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      padding: 10px 18px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+    }
+
+    .info__tab + .info__tab::before {
+      content: '';
+      position: absolute;
+      left: -1px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 14px;
+      background: var(--border);
+      transition: opacity 0.15s;
+    }
+
+    .info__tab:hover::before,
+    .info__tab + .info__tab:hover::before {
+      opacity: 0;
+    }
+
+    .info__tab:hover {
+      color: var(--text);
+      background: var(--accent-muted);
+    }
+
+    .info__tab[aria-selected="true"] {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Badge on CRC-16 tab showing the variant count */
+    .info__tab-badge {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      color: var(--accent-dim);
+      background: var(--accent-muted);
+      border-radius: 3px;
+      padding: 0 4px;
+      line-height: 14px;
+      opacity: 0.75;
+    }
+
+    .info__tab[aria-selected="true"] .info__tab-badge {
+      opacity: 1;
+    }
+
+    /* ── Tab panels ───────────────────────────────────────────────────────────*/
+    .info__panel {
+      display: none;
+      padding: 24px;
+    }
+
+    .info__panel[data-active] {
+      display: block;
+      animation: panelIn 0.2s ease both;
+    }
+
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .info__panel[data-active] { animation: none; }
+    }
+
+    .info h3 {
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-dim);
+      margin-bottom: 8px;
+      margin-top: 20px;
+    }
+
+    .info h3:first-child {
+      margin-top: 0;
+    }
+
+    .info p {
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .info strong {
+      color: var(--text);
+    }
+
+    .info code {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+
+    .info a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid var(--accent-border);
+      transition: border-color 0.15s;
+    }
+
+    .info a:hover {
+      border-color: var(--accent);
+    }
+
+    /* ── Algorithm comparison table ───────────────────────────────────────────*/
+    .info-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12px;
+      margin-top: 16px;
+      margin-bottom: 4px;
+    }
+
+    .info-table th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 6px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      white-space: nowrap;
+    }
+
+    [data-theme="dark"] .info-table th {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .info-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+      vertical-align: middle;
+    }
+
+    .info-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .info-table tr:hover td {
+      background: var(--accent-muted);
+    }
+
+    .info-table__algo {
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .info-table__status--common {
+      color: #0E7A6A;
+    }
+
+    .info-table__status--legacy {
+      color: #B05800;
+    }
+
+    .info-table__status--niche {
+      color: #5A6082;
+    }
+
+    [data-theme="dark"] .info-table__status--common { color: #3DD6C0; }
+    [data-theme="dark"] .info-table__status--legacy  { color: #FFAC5F; }
+    [data-theme="dark"] .info-table__status--niche   { color: #9AA0CC; }
+
+    /* =========================================================================
+       FOOTER
+       ========================================================================= */
+    .footer {
+      padding: 24px 40px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
+    }
+
+    [data-theme="dark"] .footer {
+      background: rgba(28, 32, 48, 0.78);
+    }
+
+    .footer__copy {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0.7;
+      letter-spacing: 0.3px;
+    }
+
+    .footer__links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    .footer__link {
+      color: var(--text-muted);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--border);
+      transition: color 0.2s, text-decoration-color 0.2s;
+    }
+
+    .footer__link:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
+
+    .footer__link--silent {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .footer__link--silent:hover {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .footer__link--brand {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      text-decoration-color: var(--border);
+    }
+
+    .footer__github {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 14px;
+      color: var(--text-muted);
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      text-decoration: none;
+    }
+
+    .footer__github:hover {
+      opacity: 0.75;
+    }
+
+    .footer__github svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .section__label-row {
+      gap: 6px;
+    }
+
+    .toggle-all-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .toggle-all-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .toggle-all-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* =========================================================================
+       SECTION LABEL ROW (label + history toggle)
+       ========================================================================= */
+    .section__label-row {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .section__label-row .section__label {
+      flex: 1;
+      margin: 0;
+    }
+
+    .history-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .history-btn:hover,
+    .history-btn[aria-expanded="true"] {
+      color: var(--accent);
+      border-color: var(--accent-border);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .history-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* =========================================================================
+       HISTORY POPOVER
+       ========================================================================= */
+    .history-popover {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(20px) saturate(1.8);
+      -webkit-backdrop-filter: blur(20px) saturate(1.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      z-index: 120;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    [data-theme="dark"] .history-popover {
+      background: rgba(28, 32, 48, 0.78);
+    }
+
+    .history-popover--visible {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .history-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--accent-surface);
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
+    .history-popover__title {
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-dim);
+    }
+
+    .history-popover__close,
+    .file-drop__clear,
+    .text-input__clear {
+      background: none;
+      border: none;
+      padding: 2px;
+      color: var(--text-muted);
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      transition: color 0.15s, background 0.15s;
+      flex-shrink: 0;
+    }
+
+    .history-popover__close {
+      display: flex;
+      margin: -2px;
+    }
+
+    .history-popover__close:hover,
+    .file-drop__clear:hover,
+    .text-input__clear:hover {
+      color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .history-popover__close:active,
+    .file-drop__clear:active,
+    .text-input__clear:active {
+      transform: scale(0.9);
+    }
+
+    .history-popover__close svg,
+    .file-drop__clear svg,
+    .text-input__clear svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    .history-popover__clear {
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .history-popover__clear svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .history-popover__clear:hover {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .history-popover__clear:active {
+      transform: scale(0.96);
+    }
+
+    .history-popover__empty {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-muted);
+      font-style: italic;
+      text-align: center;
+      padding: 20px 14px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--mono);
+      font-size: 12px;
+      table-layout: fixed;
+    }
+
+    .history-table thead th {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      padding: 7px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+
+    [data-theme="dark"] .history-table thead th {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .history-table tbody td {
+      padding: 7px 12px;
+      vertical-align: middle;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    [data-theme="dark"] .history-table tbody td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .history-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .history-table tbody tr:hover td {
+      background: var(--accent-muted);
+    }
+
+    .history-table__num {
+      color: var(--text-muted);
+      width: 35px;
+    }
+
+    .history-table__hash {
+      color: var(--text);
+      letter-spacing: 0.3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+    }
+
+    .history-table__time {
+      color: var(--text-muted);
+      white-space: nowrap;
+      width: 150px;
+    }
+
+    .history-table__algo {
+      width: 128px;
+    }
+
+    .history-table__actions {
+      width: 52px;
+      padding-left: 4px !important;
+      padding-right: 8px !important;
+      text-align: right;
+      white-space: nowrap;
+      overflow: visible;
+    }
+
+    .history-table__action-btns {
+      display: inline-flex;
+      gap: 1px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .history-table tbody tr:hover .history-table__action-btns {
+      opacity: 1;
+    }
+
+    .history-table__action-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 3px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.15s;
+      position: relative;
+    }
+
+    .history-table__action-btn:hover {
+      color: var(--accent);
+      border-color: var(--accent-border);
+    }
+
+    .history-table__action-btn svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+
+    /* =========================================================================
+       ALGORITHM BADGE
+       ========================================================================= */
+    .algo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 114px;
+      font-family: var(--mono);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      border-radius: 4px;
+      padding: 1px 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      user-select: none;
+      opacity: 0.82;
+      transition: opacity 0.15s;
+      color:      var(--accent-dim);
+      background: var(--accent-muted);
+    }
+
+    .algo-badge[data-algo="CRC-8 (1-Wire)"]      { color: var(--badge-crc81wire-text);      background: var(--badge-crc81wire-bg); }
+    .algo-badge[data-algo="CRC-8 (DVB-S2)"]      { color: var(--badge-crc8dvbs2-text);      background: var(--badge-crc8dvbs2-bg); }
+    .algo-badge[data-algo="CRC-8 (SMBus)"]       { color: var(--badge-crc8smbus-text);      background: var(--badge-crc8smbus-bg); }
+    .algo-badge[data-algo="CRC-16"]               { color: var(--badge-crc16-text);          background: var(--badge-crc16-bg); }
+    .algo-badge[data-algo="CRC-16 (CCITT)"]      { color: var(--badge-crc16ccitt-text);     background: var(--badge-crc16ccitt-bg); }
+    .algo-badge[data-algo="CRC-16 (DNP)"]        { color: var(--badge-crc16dnp-text);       background: var(--badge-crc16dnp-bg); }
+    .algo-badge[data-algo="CRC-16 (Kermit)"]     { color: var(--badge-crc16kermit-text);    background: var(--badge-crc16kermit-bg); }
+    .algo-badge[data-algo="CRC-16 (Modbus)"]     { color: var(--badge-crc16modbus-text);    background: var(--badge-crc16modbus-bg); }
+    .algo-badge[data-algo="CRC-16 (USB)"]        { color: var(--badge-crc16usb-text);       background: var(--badge-crc16usb-bg); }
+    .algo-badge[data-algo="CRC-16 (XMODEM)"]     { color: var(--badge-crc16xmodem-text);    background: var(--badge-crc16xmodem-bg); }
+    .algo-badge[data-algo="CRC-24 (BLE)"]        { color: var(--badge-crc24ble-text);       background: var(--badge-crc24ble-bg); }
+    .algo-badge[data-algo="CRC-24 (Intlkn)"]     { color: var(--badge-crc24intlkn-text);    background: var(--badge-crc24intlkn-bg); }
+    .algo-badge[data-algo="CRC-24 (OpenPGP)"]    { color: var(--badge-crc24openpgp-text);   background: var(--badge-crc24openpgp-bg); }
+    .algo-badge[data-algo="CRC-32"]               { color: var(--badge-crc32-text);          background: var(--badge-crc32-bg); }
+    .algo-badge[data-algo="CRC-32C"]              { color: var(--badge-crc32c-text);         background: var(--badge-crc32c-bg); }
+    .algo-badge[data-algo="CRC-32 (BZIP2)"]      { color: var(--badge-crc32bzip2-text);     background: var(--badge-crc32bzip2-bg); }
+    .algo-badge[data-algo="CRC-32 (JamCRC)"]     { color: var(--badge-crc32jamcrc-text);    background: var(--badge-crc32jamcrc-bg); }
+    .algo-badge[data-algo="CRC-32 (MPEG-2)"]     { color: var(--badge-crc32mpeg2-text);     background: var(--badge-crc32mpeg2-bg); }
+    .algo-badge[data-algo="CRC-64 (ECMA)"]       { color: var(--badge-crc64ecma-text);      background: var(--badge-crc64ecma-bg); }
+    .algo-badge[data-algo="CRC-64 (NVMe)"]       { color: var(--badge-crc64nvme-text);      background: var(--badge-crc64nvme-bg); }
+    .algo-badge[data-algo="CRC-64 (Redis)"]      { color: var(--badge-crc64redis-text);     background: var(--badge-crc64redis-bg); }
+    .algo-badge[data-algo="CRC-64 (XZ)"]         { color: var(--badge-crc64xz-text);        background: var(--badge-crc64xz-bg); }
+    .algo-badge[data-algo="CRC-82 (DARC)"]       { color: var(--badge-crc82darc-text);      background: var(--badge-crc82darc-bg); }
+
+    .random__item:hover     .algo-badge,
+    .history-table tr:hover .algo-badge { opacity: 1; }
+
+    .result .algo-badge {
+      opacity: 1;
+      cursor: pointer;
+      transition: opacity 0.15s, filter 0.15s;
+    }
+
+    .result--disabled .algo-badge,
+    .result--disabled .result__hash {
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+
+    .result:not(.result--disabled) .algo-badge,
+    .result:not(.result--disabled) .result__hash {
+      transition: opacity 0.2s;
+    }
+
+    .result--disabled .result__hash {
+      cursor: default;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .result--disabled .result__actions {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .result:not(.result--disabled) .result__actions {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .random__item-badge {
+      cursor: default;
+    }
+
+    /* =========================================================================
+       HISTORY PAGINATION
+       ========================================================================= */
+    .history-popover__footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--accent-surface);
+      gap: 8px;
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .history-pagination {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .history-pagination__btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      width: 26px;
+      height: 26px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .history-pagination__btn:hover:not(:disabled) {
+      border-color: var(--accent-border);
+      color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-muted);
+    }
+
+    .history-pagination__btn:active:not(:disabled) {
+      transform: scale(0.96);
+    }
+
+    .history-pagination__btn:disabled {
+      opacity: 0.38;
+      cursor: default;
+    }
+
+    .history-pagination__btn svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .history-pagination__info {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      padding: 0 2px;
+    }
+
+    /* =========================================================================
+       HISTORY BACKDROP
+       ========================================================================= */
+    .history-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(3px) brightness(0.85);
+      -webkit-backdrop-filter: blur(3px) brightness(0.85);
+      z-index: 110;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s ease, visibility 0.2s ease;
+      pointer-events: none;
+    }
+
+    .history-backdrop--visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    [data-theme="dark"] .history-backdrop {
+      background: rgba(0, 0, 0, 0.45);
+    }
+
+    /* =========================================================================
+       SCROLLBAR
+       ========================================================================= */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* =========================================================================
+       RESPONSIVE
+       ========================================================================= */
+    @media (max-width: 600px) {
+      .header {
+        padding: 10px 16px;
+      }
+
+      .header__nav {
+        display: none;
+      }
+
+      main {
+        padding: 32px 16px 48px;
+      }
+
+      .page-heading h1 {
+        font-size: 22px;
+      }
+
+      .result {
+        flex-wrap: wrap;
+        gap: 8px 12px;
+      }
+
+      .result__actions {
+        flex-basis: 100%;
+        justify-content: flex-end;
+        padding-top: 4px;
+      }
+
+      /* Random list: always show action buttons (no hover on touch) —
+         moved to @media (hover: none) below for semantic correctness. */
+      /* Footer: reduce side padding */
+      .footer {
+        padding: 20px 16px;
+      }
+
+      /* Format pickers: chips share space equally at narrow widths */
+      .options__group,
+      .options,
+      .options__segment {
+        width: 100%;
+      }
+
+      .options__segment-label {
+        flex: 1;
+      }
+    }
+
+    /* Closes the blindspot: fires before the groups naturally wrap (~686px),
+       ensuring full-width expansion kicks in at the same time as the wrap. */
+    @media (max-width: 620px) {
+      .options__group,
+      .options,
+      .options__segment {
+        width: 100%;
+      }
+
+      .options__segment-label {
+        flex: 1;
+      }
+    }
+    /* Touch devices have no hover — always show action buttons and history
+       table actions so they remain reachable regardless of viewport width.
+       @media (hover: none) targets the input mechanism, not the screen size,
+       which is the correct semantic here. */
+    @media (hover: none) {
+      .random__item-actions {
+        opacity: 1;
+      }
+
+      .history-table__action-btns {
+        opacity: 1;
+      }
+    }
+
+  </style>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+
+  <!--
+    js-crc by emn178 — minified UMD bundles providing all CRC variants.
+    Loaded from the jsDelivr npm CDN (same domain already referenced for fonts).
+    crc.min.js    exposes globals: crc32, crc16, createModel
+    models.min.js extends window with all catalogue models, e.g.:
+      crc_8_maxim_dow, crc_8_dvb_s2, crc_8_smbus,
+      crc_16_ibm_3740, crc_16_modbus, crc_16_kermit, crc_16_xmodem,
+      crc_24_openpgp, crc_32_mpeg_2, crc_32_jamcrc,
+      crc_64_ecma_182, crc_64_nvme, crc_64_redis, crc_64_xz, crc_82_darc
+    Usage:
+      crc32('text string')                              // -> hex string
+      crc32.create().update(uint8Array).hex()           // -> hex string (streaming)
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/js-crc@0.3.1/build/crc.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-crc@0.3.1/build/models.min.js"></script>
+</head>
+<body>
+
+  <!-- Backdrop overlay for history popovers (UX focus effect) -->
+  <div class="history-backdrop" id="historyBackdrop" aria-hidden="true"></div>
+
+  <!-- Skip navigation for accessibility (also crawlable anchor text) -->
+  <a class="skip-link" href="#text">Skip to CRC-32 checksum calculator</a>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <a class="header__brand" href="https://www.crckit.com" aria-label="CRCKit — go to homepage">
+      <div class="header__logo-icon" aria-hidden="true">
+        <img src="logo.svg" alt="CRCKit logo" width="40" height="40">
+      </div>
+      <span class="header__title"><span>CRC</span>Kit</span>
+    </a>
+    <div class="header__right">
+      <nav class="header__nav" aria-label="Page sections">
+        <a class="header__nav-link" href="#text">Text</a>
+        <a class="header__nav-link" href="#file">File</a>
+        <a class="header__nav-link" href="#random">Random</a>
+        <a class="header__nav-link" href="#about">FAQ</a>
+      </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
+        <!-- Sun icon — shown in dark mode -->
+        <svg class="theme-toggle__sun" viewBox="0 0 24 24">
+          <path d="M12 7a5 5 0 100 10A5 5 0 0012 7zm0-3a1 1 0 01-1-1V1a1 1 0 112 0v2a1 1 0 01-1 1zm0 18a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1zm9-9a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM6 12a1 1 0 01-1 1H3a1 1 0 110-2h2a1 1 0 011 1zm12.36-5.64a1 1 0 01-.7-.3l-1.42-1.42a1 1 0 111.41-1.41l1.42 1.41a1 1 0 01-.71 1.72zM7.05 18.36a1 1 0 01-.7-.3l-1.42-1.41a1 1 0 111.41-1.42l1.42 1.42a1 1 0 01-.71 1.71zm11.31 0a1 1 0 01-.71-1.71l1.42-1.42a1 1 0 111.41 1.42l-1.41 1.41a1 1 0 01-.71.3zM7.05 5.64a1 1 0 01-.71-1.72L7.76 2.5a1 1 0 011.41 1.41L7.76 5.34a1 1 0 01-.71.3z"/>
+        </svg>
+        <!-- Moon icon — shown in light mode -->
+        <svg class="theme-toggle__moon" viewBox="0 0 24 24">
+          <path d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8C13.06 3.04 12.54 3 12 3z"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== MAIN ========== -->
+  <main aria-label="CRC-32 checksum calculator">
+
+    <!-- Page heading -->
+    <div class="page-heading">
+      <h1><span>CRC-32</span> Checksum Calculator</h1>
+      <p class="page-heading__subtitle">// instant checksums — no data leaves your browser</p>
+      <div class="page-heading__algos" aria-label="Supported algorithms">
+        <button class="algo-badge" data-algo="CRC-8 (1-Wire)"   aria-label="CRC-8 (1-Wire) — click to start calculating">CRC-8 (1-Wire)</button>
+        <button class="algo-badge" data-algo="CRC-8 (DVB-S2)"   aria-label="CRC-8 (DVB-S2) — click to start calculating">CRC-8 (DVB-S2)</button>
+        <button class="algo-badge" data-algo="CRC-8 (SMBus)"    aria-label="CRC-8 (SMBus) — click to start calculating">CRC-8 (SMBus)</button>
+        <button class="algo-badge" data-algo="CRC-16"            aria-label="CRC-16 — click to start calculating">CRC-16</button>
+        <button class="algo-badge" data-algo="CRC-16 (CCITT)"   aria-label="CRC-16 (CCITT) — click to start calculating">CRC-16 (CCITT)</button>
+        <button class="algo-badge" data-algo="CRC-16 (DNP)"     aria-label="CRC-16 (DNP) — click to start calculating">CRC-16 (DNP)</button>
+        <button class="algo-badge" data-algo="CRC-16 (Kermit)"  aria-label="CRC-16 (Kermit) — click to start calculating">CRC-16 (Kermit)</button>
+        <button class="algo-badge" data-algo="CRC-16 (Modbus)"  aria-label="CRC-16 (Modbus) — click to start calculating">CRC-16 (Modbus)</button>
+        <button class="algo-badge" data-algo="CRC-16 (USB)"     aria-label="CRC-16 (USB) — click to start calculating">CRC-16 (USB)</button>
+        <button class="algo-badge" data-algo="CRC-16 (XMODEM)"  aria-label="CRC-16 (XMODEM) — click to start calculating">CRC-16 (XMODEM)</button>
+        <button class="algo-badge" data-algo="CRC-24 (BLE)"     aria-label="CRC-24 (BLE) — click to start calculating">CRC-24 (BLE)</button>
+        <button class="algo-badge" data-algo="CRC-24 (Intlkn)"  aria-label="CRC-24 (Intlkn) — click to start calculating">CRC-24 (Intlkn)</button>
+        <button class="algo-badge" data-algo="CRC-24 (OpenPGP)" aria-label="CRC-24 (OpenPGP) — click to start calculating">CRC-24 (OpenPGP)</button>
+        <button class="algo-badge" data-algo="CRC-32"            aria-label="CRC-32 — click to start calculating">CRC-32</button>
+        <button class="algo-badge" data-algo="CRC-32C"           aria-label="CRC-32C — click to start calculating">CRC-32C</button>
+        <button class="algo-badge" data-algo="CRC-32 (BZIP2)"   aria-label="CRC-32 (BZIP2) — click to start calculating">CRC-32 (BZIP2)</button>
+        <button class="algo-badge" data-algo="CRC-32 (JamCRC)"  aria-label="CRC-32 (JamCRC) — click to start calculating">CRC-32 (JamCRC)</button>
+        <button class="algo-badge" data-algo="CRC-32 (MPEG-2)"  aria-label="CRC-32 (MPEG-2) — click to start calculating">CRC-32 (MPEG-2)</button>
+        <button class="algo-badge" data-algo="CRC-64 (ECMA)"    aria-label="CRC-64 (ECMA) — click to start calculating">CRC-64 (ECMA)</button>
+        <button class="algo-badge" data-algo="CRC-64 (NVMe)"    aria-label="CRC-64 (NVMe) — click to start calculating">CRC-64 (NVMe)</button>
+        <button class="algo-badge" data-algo="CRC-64 (Redis)"   aria-label="CRC-64 (Redis) — click to start calculating">CRC-64 (Redis)</button>
+        <button class="algo-badge" data-algo="CRC-64 (XZ)"      aria-label="CRC-64 (XZ) — click to start calculating">CRC-64 (XZ)</button>
+        <button class="algo-badge" data-algo="CRC-82 (DARC)"    aria-label="CRC-82 (DARC) — click to start calculating">CRC-82 (DARC)</button>
+      </div>
+    </div>
+
+    <!-- ── TEXT CHECKSUM ── -->
+    <section class="section" id="text" aria-labelledby="section-text-heading">
+      <div class="section__label-row">
+        <h2 class="section__label" id="section-text-heading">
+          <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm20.71-12.67a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
+          </svg>
+          Text
+          <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
+            <path d="M0 5H11M8 1L13 5L8 9"/>
+          </svg>
+          Checksum
+        </h2>
+        <button
+          class="toggle-all-btn"
+          id="textToggleAllBtn"
+          aria-label="Deselect all text algorithms"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </button>
+        <button
+          class="history-btn"
+          id="textHistoryBtn"
+          aria-label="Show text checksum history"
+          aria-expanded="false"
+          aria-controls="textHistoryPopover"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+          </svg>
+        </button>
+        <div class="history-popover" id="textHistoryPopover">
+          <div class="history-popover__header">
+            <span class="history-popover__title">History – Text Checksums</span>
+            <button class="history-popover__close" data-popover-close aria-label="Close history">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </div>
+          <div class="history-popover__body" id="textHistoryBody"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="text-input__wrap">
+          <textarea
+            class="text-input__textarea"
+            id="textInput"
+            placeholder="Start typing or paste text…"
+            spellcheck="false"
+            aria-label="Text input for checksum calculation"
+          ></textarea>
+          <button
+            class="text-input__clear"
+            id="textInputClear"
+            aria-label="Clear text input"
+            type="button"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+          </button>
+          <div class="text-input__counter" id="textCounter" aria-live="polite" aria-atomic="true">
+            <span id="textCounterChars">0 chars</span>
+            <span class="text-input__counter-sep" aria-hidden="true"></span>
+            <span id="textCounterBytes">0 bytes</span>
+          </div>
+        </div>
+
+        <!-- Result rows — one per algorithm, rendered by TextSection.init() -->
+        <div id="textResults"></div>
+      </div>
+
+      <!-- Format options — input (left) + output (right) -->
+      <div class="options-row" role="group" aria-label="Input and output format">
+        <!-- Input format -->
+        <div class="options__group">
+          <div class="options options--input">
+            <div class="options__segment">
+              <span class="options__prefix">Input</span>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-utf8"   value="utf-8"   checked>
+              <label class="options__segment-label" for="textInFmt-utf8">UTF-8</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-hex"    value="hex">
+              <label class="options__segment-label" for="textInFmt-hex">Hex</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-base64" value="base64">
+              <label class="options__segment-label" for="textInFmt-base64">Base64</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-binary" value="binary">
+              <label class="options__segment-label" for="textInFmt-binary">Binary</label>
+            </div>
+          </div>
+        </div>
+        <!-- Output format -->
+        <div class="options__group">
+          <div class="options">
+            <div class="options__segment">
+              <span class="options__prefix">Output</span>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex"       value="hex"       checked>
+              <label class="options__segment-label" for="textFmt-hex">Hex</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex-upper" value="hex-upper">
+              <label class="options__segment-label" for="textFmt-hex-upper">HEX</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-base64"    value="base64">
+              <label class="options__segment-label" for="textFmt-base64">Base64</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-binary"    value="binary">
+              <label class="options__segment-label" for="textFmt-binary">Binary</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FILE CHECKSUM ── -->
+    <section class="section" id="file" aria-labelledby="section-file-heading">
+      <div class="section__label-row">
+        <h2 class="section__label" id="section-file-heading">
+          <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
+          </svg>
+          File
+          <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
+            <path d="M0 5H11M8 1L13 5L8 9"/>
+          </svg>
+          Checksum
+        </h2>
+        <button
+          class="toggle-all-btn"
+          id="fileToggleAllBtn"
+          aria-label="Deselect all file algorithms"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </button>
+        <button
+          class="history-btn"
+          id="fileHistoryBtn"
+          aria-label="Show file checksum history"
+          aria-expanded="false"
+          aria-controls="fileHistoryPopover"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>
+          </svg>
+        </button>
+        <div class="history-popover" id="fileHistoryPopover">
+          <div class="history-popover__header">
+            <span class="history-popover__title">History – File Checksums</span>
+            <button class="history-popover__close" data-popover-close aria-label="Close history">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </div>
+          <div class="history-popover__body" id="fileHistoryBody"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__body">
+          <div class="file-drop" id="fileDrop">
+            <input class="file-drop__input" type="file" id="fileInput" aria-label="Upload file for checksum calculation">
+            <button
+              class="file-drop__clear"
+              id="fileDropClear"
+              aria-label="Remove selected file"
+              type="button"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+            <svg class="file-drop__icon" viewBox="0 0 24 24">
+              <path d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+            </svg>
+            <div class="file-drop__text">Drop a file here or <strong>browse</strong></div>
+            <div class="file-drop__filename" id="fileName">
+              <span id="fileNameText" class="file-drop__filename-name"></span>
+              <span class="file-drop__filesize" id="fileSize"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result rows — one per algorithm, rendered by FileSection.init() -->
+        <div id="fileResults"></div>
+      </div>
+
+      <!-- Format options — output only, right-aligned -->
+      <div class="options-row options-row--end" role="group" aria-label="Output format">
+        <div class="options__group">
+          <div class="options">
+            <div class="options__segment">
+              <span class="options__prefix">Output</span>
+              <input class="options__radio" type="radio" name="fileFormat" id="fileFmt-hex"       value="hex"       checked>
+              <label class="options__segment-label" for="fileFmt-hex">Hex</label>
+              <input class="options__radio" type="radio" name="fileFormat" id="fileFmt-hex-upper" value="hex-upper">
+              <label class="options__segment-label" for="fileFmt-hex-upper">HEX</label>
+              <input class="options__radio" type="radio" name="fileFormat" id="fileFmt-base64"    value="base64">
+              <label class="options__segment-label" for="fileFmt-base64">Base64</label>
+              <input class="options__radio" type="radio" name="fileFormat" id="fileFmt-binary"    value="binary">
+              <label class="options__segment-label" for="fileFmt-binary">Binary</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── RANDOM CHECKSUMS ── -->
+    <section class="section" id="random" aria-labelledby="section-random-heading">
+      <h2 class="section__label" id="section-random-heading">
+        <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"/>
+        </svg>
+        Random Checksums
+      </h2>
+
+      <div class="random__controls">
+        <button class="btn btn--primary" id="randomRegenerate">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          Regenerate
+        </button>
+        <select class="random__select" id="randomAlgo" aria-label="Algorithm for random checksum generation">
+          <option value="CRC-8 (1-Wire)">CRC-8 (1-Wire)</option>
+          <option value="CRC-8 (DVB-S2)">CRC-8 (DVB-S2)</option>
+          <option value="CRC-8 (SMBus)">CRC-8 (SMBus)</option>
+          <option value="CRC-16">CRC-16</option>
+          <option value="CRC-16 (CCITT)">CRC-16 (CCITT)</option>
+          <option value="CRC-16 (DNP)">CRC-16 (DNP)</option>
+          <option value="CRC-16 (Kermit)">CRC-16 (Kermit)</option>
+          <option value="CRC-16 (Modbus)">CRC-16 (Modbus)</option>
+          <option value="CRC-16 (USB)">CRC-16 (USB)</option>
+          <option value="CRC-16 (XMODEM)">CRC-16 (XMODEM)</option>
+          <option value="CRC-24 (BLE)">CRC-24 (BLE)</option>
+          <option value="CRC-24 (Intlkn)">CRC-24 (Intlkn)</option>
+          <option value="CRC-24 (OpenPGP)">CRC-24 (OpenPGP)</option>
+          <option value="CRC-32" selected>CRC-32</option>
+          <option value="CRC-32C">CRC-32C</option>
+          <option value="CRC-32 (BZIP2)">CRC-32 (BZIP2)</option>
+          <option value="CRC-32 (JamCRC)">CRC-32 (JamCRC)</option>
+          <option value="CRC-32 (MPEG-2)">CRC-32 (MPEG-2)</option>
+          <option value="CRC-64 (ECMA)">CRC-64 (ECMA)</option>
+          <option value="CRC-64 (NVMe)">CRC-64 (NVMe)</option>
+          <option value="CRC-64 (Redis)">CRC-64 (Redis)</option>
+          <option value="CRC-64 (XZ)">CRC-64 (XZ)</option>
+          <option value="CRC-82 (DARC)">CRC-82 (DARC)</option>
+        </select>
+        <select class="random__select" id="randomCount" aria-label="Number of checksums to generate">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="500">500</option>
+        </select>
+        <div class="random__controls-sep" aria-hidden="true"></div>
+        <button class="btn" id="randomCopyAll" aria-label="Copy all hashes to clipboard">
+          <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Copy All<span class="tooltip">Copied!</span>
+        </button>
+        <button class="btn" id="randomDownloadAll">
+          <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Download CSV<span class="tooltip">Exported</span>
+        </button>
+      </div>
+
+      <div class="random__list" id="randomList"></div>
+    </section>
+
+    <!-- ── ABOUT & FAQ ── -->
+    <section class="section" id="about" aria-labelledby="section-about-heading">
+      <h2 class="section__label" id="section-about-heading">
+        <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+        Frequently Asked Questions
+      </h2>
+
+      <div class="info" role="region" aria-label="FAQ">
+
+        <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+        <div class="info__tabs-wrap" id="faqTabsWrap">
+          <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-general"
+              aria-controls="faq-panel-general"
+              aria-selected="true"
+              data-tab="general"
+            >General</button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc8"
+              aria-controls="faq-panel-crc8"
+              aria-selected="false"
+              data-tab="crc8"
+            >CRC-8 <span class="info__tab-badge">×3</span></button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc16"
+              aria-controls="faq-panel-crc16"
+              aria-selected="false"
+              data-tab="crc16"
+            >CRC-16 <span class="info__tab-badge">×7</span></button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc24"
+              aria-controls="faq-panel-crc24"
+              aria-selected="false"
+              data-tab="crc24"
+            >CRC-24 <span class="info__tab-badge">×3</span></button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc32"
+              aria-controls="faq-panel-crc32"
+              aria-selected="false"
+              data-tab="crc32"
+            >CRC-32 <span class="info__tab-badge">×5</span></button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc64"
+              aria-controls="faq-panel-crc64"
+              aria-selected="false"
+              data-tab="crc64"
+            >CRC-64 <span class="info__tab-badge">×4</span></button>
+            <button
+              class="info__tab"
+              role="tab"
+              id="faq-tab-crc82"
+              aria-controls="faq-panel-crc82"
+              aria-selected="false"
+              data-tab="crc82"
+            >CRC-82</button>
+          </div>
+        </div>
+
+        <!-- General panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-general"
+          aria-labelledby="faq-tab-general"
+          data-active
+        >
+          <h3>What is a CRC checksum?</h3>
+          <p>A Cyclic Redundancy Check (CRC) is an error-detection algorithm that maps an input of any size to a short, fixed-length value called a checksum or digest. It is deterministic — the same input always produces the same output — and highly sensitive to accidental bit errors, making it ideal for verifying data integrity in storage and network transmission.</p>
+
+          <h3>Are CRC checksums safe for cryptographic use?</h3>
+          <p>No. CRC is an error-detection algorithm, not a cryptographic hash. It is not collision resistant and can be deliberately forged by an attacker — finding a second input that produces a given CRC is computationally trivial. For security-sensitive applications such as digital signatures or message authentication, use a purpose-built cryptographic hash like <a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank" rel="noopener noreferrer">SHA-256</a> or <a href="https://en.wikipedia.org/wiki/BLAKE_(hash_function)" target="_blank" rel="noopener noreferrer">BLAKE2</a>.</p>
+
+          <h3>How does CRCKit protect my data?</h3>
+          <p>All checksum computation runs entirely inside your browser using the <a href="https://github.com/emn178/js-crc" target="_blank" rel="noopener noreferrer">js-crc</a> library by emn178. No text, no file content, and no checksum output is ever transmitted to any server. You can verify this by running the tool while offline — it works identically once the page has loaded.</p>
+
+          <h3>What output formats are available?</h3>
+          <p>Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in uppercase. Base64 encodes the raw bytes as a shorter string often used in HTTP headers and data URIs. Binary shows the individual bits, useful for educational purposes or low-level protocol work.</p>
+        </div>
+
+        <!-- CRC-8 panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc8"
+          aria-labelledby="faq-tab-crc8"
+        >
+          <h3>What is CRC-8?</h3>
+          <p>CRC-8 produces an 8-bit (1-byte) checksum, shown as a 2-character hex string. Its compact output makes it the preferred choice for embedded systems, low-bandwidth sensors, and peripheral buses where even a single extra byte of overhead matters. Several CRC-8 variants exist, each standardised for a specific protocol, differing in polynomial, initial value, and whether input bits are reflected before processing.</p>
+
+          <h3>What does CRC-8 detect?</h3>
+          <p>An 8-bit CRC is guaranteed to detect all single and double-bit errors in messages up to 119 bits, all odd numbers of bit errors, and all burst errors of length 8 or fewer. For typical short sensor payloads of a few bytes this covers the overwhelming majority of realistic corruption scenarios. For longer messages or adversarial environments, a wider CRC or a cryptographic MAC is more appropriate.</p>
+
+          <h3>Variant comparison</h3>
+          <table class="info-table" aria-label="CRC-8 variant comparison">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Polynomial</th>
+                <th>Init</th>
+                <th>Reflected</th>
+                <th>Common use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="info-table__algo">CRC-8 (1-Wire)</td>
+                <td>0x31</td>
+                <td>0x00</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Dallas/Maxim 1-Wire bus, DS18B20, iButton</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-8 (DVB-S2)</td>
+                <td>0xD5</td>
+                <td>0x00</td>
+                <td class="info-table__status--niche">No</td>
+                <td>DVB-S2 baseband frame header (ETSI EN 302 307)</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-8 (SMBus)</td>
+                <td>0x07</td>
+                <td>0x00</td>
+                <td class="info-table__status--niche">No</td>
+                <td>SMBus PEC, ATM HEC, general purpose</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Which CRC-8 variant should I use?</h3>
+          <p>Follow your hardware or protocol specification. If you are working with a Dallas/Maxim 1-Wire device, CRC-8 (1-Wire) is mandatory — its reflected polynomial is baked into the silicon. If you are implementing a DVB-S2 receiver or modulator, CRC-8 (DVB-S2) is required by the standard. For SMBus or general-purpose use, CRC-8 (SMBus) (<code>0x07</code>) is the most broadly supported choice.</p>
+        </div>
+
+        <!-- CRC-16 variants panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc16"
+          aria-labelledby="faq-tab-crc16"
+        >
+          <h3>Why are there so many CRC-16 variants?</h3>
+          <p>All CRC-16 variants produce a 16-bit (2-byte) checksum but differ in four parameters: the generator polynomial, the initial register value, whether input and output bits are reflected, and a final XOR value. Each combination was standardised by a different industry body for a specific protocol, which is why a single bit-width has accumulated so many named forms over the decades.</p>
+
+          <h3>Variant comparison</h3>
+          <table class="info-table" aria-label="CRC-16 variant comparison">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Polynomial</th>
+                <th>Init</th>
+                <th>Reflected</th>
+                <th>Common use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="info-table__algo">CRC-16</td>
+                <td>0x8005</td>
+                <td>0x0000</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>USB, floppy disk, general purpose</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (CCITT)</td>
+                <td>0x1021</td>
+                <td>0xFFFF</td>
+                <td class="info-table__status--niche">No</td>
+                <td>X.25, HDLC, Bluetooth</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (Modbus)</td>
+                <td>0x8005</td>
+                <td>0xFFFF</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Modbus RTU serial framing</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (Kermit)</td>
+                <td>0x1021</td>
+                <td>0x0000</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Kermit file-transfer protocol</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (XMODEM)</td>
+                <td>0x1021</td>
+                <td>0x0000</td>
+                <td class="info-table__status--niche">No</td>
+                <td>XMODEM and YMODEM transfer protocols</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (USB)</td>
+                <td>0x8005</td>
+                <td>0xFFFF</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>USB full-speed and low-speed data packets</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-16 (DNP)</td>
+                <td>0x3D65</td>
+                <td>0x0000</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>DNP3 / SCADA / industrial automation (IEC 60870)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Which CRC-16 variant should I use?</h3>
+          <p>Follow your protocol specification exactly — mixing variants produces incompatible checksums even though they share the same bit width. If you are choosing freely (e.g. for a custom framing layer), CRC-16 (Modbus) is a solid default: its non-zero initial value catches leading-zero errors that the plain CRC-16 misses. Use CRC-16 (USB) when implementing USB device firmware, and CRC-16 (DNP) for any DNP3 or IEC 60870-compatible SCADA integration.</p>
+        </div>
+
+        <!-- CRC-24 variants panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc24"
+          aria-labelledby="faq-tab-crc24"
+        >
+          <h3>What is CRC-24?</h3>
+          <p>CRC-24 produces a 24-bit (3-byte) checksum, shown as a 6-character hex string. Its 24-bit width offers a collision probability of roughly one in 16 million — a substantial improvement over 16-bit CRCs while remaining smaller than CRC-32. Several incompatible CRC-24 variants exist, each standardised by a different body for a specific protocol, differing in polynomial, initial value, input reflection, and final XOR.</p>
+
+          <h3>Variant comparison</h3>
+          <table class="info-table" aria-label="CRC-24 variant comparison">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Polynomial</th>
+                <th>Init</th>
+                <th>Reflected</th>
+                <th>Common use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="info-table__algo">CRC-24 (BLE)</td>
+                <td>0x00065B</td>
+                <td>0x555555</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Bluetooth Low Energy link-layer packets</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-24 (Intlkn)</td>
+                <td>0x328B63</td>
+                <td>0xFFFFFF</td>
+                <td class="info-table__status--niche">No</td>
+                <td>Interlaken high-speed chip-to-chip serial links</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-24 (OpenPGP)</td>
+                <td>0x864CFB</td>
+                <td>0xB704CE</td>
+                <td class="info-table__status--niche">No</td>
+                <td>OpenPGP ASCII Armor checksum (RFC 4880)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Which CRC-24 variant should I use?</h3>
+          <p>Follow your protocol specification exactly — the three variants use entirely different polynomials and are mutually incompatible. CRC-24 (BLE) is mandatory for Bluetooth Low Energy link-layer implementations; note that the init value is fixed for advertising packets but negotiated per-connection on data channels. CRC-24 (Intlkn) is required for Interlaken-compliant chip-to-chip serial hardware. CRC-24 (OpenPGP) is the correct choice for any PGP or GPG ASCII Armor interoperability. If you are choosing freely and need a 24-bit checksum, CRC-24 (OpenPGP) is the most widely implemented variant in existing software libraries.</p>
+        </div>
+
+        <!-- CRC-32 panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc32"
+          aria-labelledby="faq-tab-crc32"
+        >
+          <h3>What is CRC-32?</h3>
+          <p>CRC-32 uses the polynomial <code>0x04C11DB7</code> in reflected form and produces a 32-bit (4-byte) checksum, typically shown as an 8-character hex string. It was standardised in IEEE 802.3 (Ethernet) and is embedded in Ethernet frames, ZIP archives, PNG images, and gzip streams. Its 32-bit width makes accidental collision probability roughly one in four billion, which is sufficient for most integrity-checking workloads.</p>
+
+          <h3>Variant comparison</h3>
+          <table class="info-table" aria-label="CRC-32 variant comparison">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Polynomial</th>
+                <th>Init</th>
+                <th>Reflected</th>
+                <th>Common use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="info-table__algo">CRC-32</td>
+                <td>0x04C11DB7</td>
+                <td>0xFFFFFFFF</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Ethernet, ZIP, PNG, gzip, zlib</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-32C</td>
+                <td>0x1EDC6F41</td>
+                <td>0xFFFFFFFF</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>iSCSI, SCTP, Btrfs, ext4, ZFS, RocksDB, SSE4.2</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-32 (BZIP2)</td>
+                <td>0x04C11DB7</td>
+                <td>0xFFFFFFFF</td>
+                <td class="info-table__status--niche">No</td>
+                <td>bzip2 compression, ATM AAL5, DECT-B</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-32 (JamCRC)</td>
+                <td>0x04C11DB7</td>
+                <td>0xFFFFFFFF</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>JAM file format, network equipment</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-32 (MPEG-2)</td>
+                <td>0x04C11DB7</td>
+                <td>0xFFFFFFFF</td>
+                <td class="info-table__status--niche">No</td>
+                <td>MPEG-2 transport streams, DVB</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Which CRC-32 variant should I use?</h3>
+          <p>CRC-32 is the right default for most new applications — it is universally supported and used in Ethernet, ZIP, PNG, and gzip. If you are working on storage systems, databases, or any context where hardware acceleration matters, prefer CRC-32C (Castagnoli): it uses a superior polynomial with better error-detection properties and is directly accelerated by the <code>crc32</code> SSE4.2 instruction on x86 and equivalent instructions on ARM. CRC-32 (MPEG-2) and CRC-32 (BZIP2) are non-reflected variants required by their respective standards — only use them when the spec mandates it. CRC-32 (JamCRC) is a niche variant that omits the final XOR, making it useful for chaining partial checksums; it is otherwise interchangeable with standard CRC-32 in terms of error detection.</p>
+        </div>
+
+        <!-- CRC-64 variants panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc64"
+          aria-labelledby="faq-tab-crc64"
+        >
+          <h3>What is CRC-64?</h3>
+          <p>CRC-64 produces a 64-bit (8-byte) checksum, shown as a 16-character hex string. Its much wider output space — roughly 18 quintillion possible values — makes accidental collisions vanishingly unlikely, so it is preferred for large-scale storage systems, databases, and high-throughput data pipelines where even a one-in-four-billion CRC-32 collision rate is unacceptable. Several incompatible CRC-64 variants exist because different standards bodies chose different polynomials for different contexts.</p>
+
+          <h3>Variant comparison</h3>
+          <table class="info-table" aria-label="CRC-64 variant comparison">
+            <thead>
+              <tr>
+                <th>Variant</th>
+                <th>Polynomial</th>
+                <th>Reflected</th>
+                <th>Common use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="info-table__algo">CRC-64 (ECMA)</td>
+                <td>0x42F0E1EBA9EA3693</td>
+                <td class="info-table__status--niche">No</td>
+                <td>ECMA-182 standard, DLT tape drives</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-64 (NVMe)</td>
+                <td>0xAD93D23594C935A9</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>NVMe storage protocol, command integrity</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-64 (Redis)</td>
+                <td>0xAD93D23594C935A9</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>Redis cluster slot hashing, key routing</td>
+              </tr>
+              <tr>
+                <td class="info-table__algo">CRC-64 (XZ)</td>
+                <td>0x42F0E1EBA9EA3693</td>
+                <td class="info-table__status--common">Yes</td>
+                <td>XZ compressed archive format</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Which CRC-64 variant should I use?</h3>
+          <p>Use the variant your protocol or storage system mandates — mixing them produces silently wrong checksums. CRC-64 (ECMA) and CRC-64 (XZ) both use the ECMA polynomial but differ in bit reflection: ECMA processes data without reflection while XZ uses the reflected form, so they produce different outputs from the same input. CRC-64 (NVMe) and CRC-64 (Redis) share the Jones polynomial in reflected form; Redis sets its initial value and final XOR to zero for hash-table consistency. Reach for CRC-64 in place of CRC-32 when protecting large datasets — multi-gigabyte files, database tables, tape archives — where the one-in-four-billion collision probability of CRC-32 becomes a real operational risk over millions of objects. For individual files or network framing, CRC-32 is almost always sufficient.</p>
+        </div>
+
+        <!-- CRC-82 panel -->
+        <div
+          class="info__panel"
+          role="tabpanel"
+          id="faq-panel-crc82"
+          aria-labelledby="faq-tab-crc82"
+        >
+          <h3>What is CRC-82 (DARC)?</h3>
+          <p>CRC-82 (DARC) uses an 82-bit polynomial defined in the DARC (Data Radio Channel) standard for broadcasting data over FM subcarriers — the multiplex data layer embedded in FM radio signals. It produces an 82-bit (rounded to 11 bytes, shown as a 21-character hex string) checksum. The unusual bit width was chosen specifically to match the frame structure of DARC data packets rather than any binary boundary, making it one of the few production CRCs with a non-power-of-two output width.</p>
+
+          <h3>What is DARC used for?</h3>
+          <p>DARC is a Japanese standard for FM multiplex broadcasting, used to deliver text data such as traffic information, news headlines, and programme guides over the 76 kHz subcarrier of FM radio. It is deployed in Japan's VICS traffic information system and similar FM data services. The 82-bit CRC protects short data frames where any undetected corruption could cause incorrect navigation instructions or garbled display text.</p>
+
+          <h3>How does CRC-82 compare to other wide CRCs?</h3>
+          <p>Its 82-bit width sits between the common 64-bit and 128-bit extremes, giving it a theoretical undetected-error probability of about one in 4.8 sextillion — stronger than CRC-64 but achieved at the cost of a non-standard output size that requires BigInt arithmetic in software implementations. Outside of DARC and its direct derivatives, you are unlikely to encounter CRC-82 in practice; CRC-64 covers most use cases that outgrow CRC-32.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer__line"><a class="footer__link footer__link--brand" href="https://www.crckit.com">crckit.com</a> — built for developers · client-side only · zero tracking</div>
+    <nav class="footer__links" aria-label="Footer navigation">
+      <a class="footer__link" href="#text">Text</a>
+      <a class="footer__link" href="#file">File</a>
+      <a class="footer__link" href="#random">Random</a>
+      <a class="footer__link" href="#about">FAQ</a>
+    </nav>
+    <div class="footer__copy"><a class="footer__link footer__link--silent" href="https://www.github.com/voidfly-labs" target="_blank" rel="noopener noreferrer">Voidfly Labs</a> · <span id="footerYear"></span></div>
+    <a class="footer__github" href="https://github.com/voidfly-labs/crckit" target="_blank" rel="noopener noreferrer" aria-label="View source on GitHub">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+      </svg>
+    </a>
+  </footer>
+
+  <!-- ========== JAVASCRIPT ========== -->
+  <script>
+    'use strict';
+
+    // -------------------------------------------------------------------------
+    // CRC library globals — provided by the js-crc UMD bundles loaded above.
+    // crc.min.js    → crc32, crc16, createModel
+    // models.min.js → crc_8_maxim_dow, crc_8_dvb_s2, crc_8_smbus,
+    //                  crc_16_ibm_3740, crc_16_modbus, crc_16_kermit,
+    //                  crc_16_xmodem, crc_16_usb, crc_16_dnp,
+    //                  crc_24_ble, crc_24_interlaken, crc_24_openpgp,
+    //                  crc_32_mpeg_2, crc_32_jamcrc, crc_32c, crc_32_bzip2,
+    //                  crc_64_ecma_182, crc_64_nvme,
+    //                  crc_64_redis, crc_64_xz, crc_82_darc
+    // -------------------------------------------------------------------------
+
+    // -------------------------------------------------------------------------
+    // Format utilities
+    // -------------------------------------------------------------------------
+    const Format = {
+      // Normalise a hex string to even length by left-padding with '0'.
+      // CRC-82 (DARC) produces a 21-character hex string (odd length).
+      // Without this guard .match(/.{2}/g) returns null and binary/base64
+      // conversions crash.
+      _normaliseHex(hex) {
+        return hex.length % 2 === 0 ? hex : hex.padStart(hex.length + 1, '0');
+      },
+
+
+      base64ToBytes(b64) {
+        // Normalise padding so partially-typed input never throws.
+        // Strip existing padding, re-pad to the next multiple of 4.
+        // A try/catch covers the length % 4 === 1 residue, which is
+        // structurally invalid and cannot be salvaged by padding alone.
+        const stripped = b64.replace(/=+$/, '');
+        const padded   = stripped + '==='.slice((stripped.length + 3) % 4);
+        try {
+          const bin = atob(padded);
+          return new Uint8Array(bin.length).map((_, i) => bin.charCodeAt(i));
+        } catch {
+          return new Uint8Array(0);
+        }
+      },
+
+      hexToBytes(hex) {
+        const clean = hex.replace(/\s+/g, '');
+        const arr   = new Uint8Array(clean.length / 2);
+        for (let i = 0; i < arr.length; i++) arr[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+        return arr;
+      },
+
+      binaryToBytes(bin) {
+        // Accept groups of 8 bits, optionally space-separated
+        const groups = bin.trim().split(/\s+/);
+        return new Uint8Array(groups.map(g => parseInt(g, 2)));
+      },
+
+      /** Convert user text to bytes according to the selected input format. */
+      textToBytes(text, inputFmt) {
+        switch (inputFmt) {
+          case 'hex':    return this.hexToBytes(text);
+          case 'base64': return this.base64ToBytes(text);
+          case 'binary': return this.binaryToBytes(text);
+          default:       return new TextEncoder().encode(text);  // utf-8
+        }
+      },
+
+      hexToBase64(hex) {
+        const normalised = this._normaliseHex(hex);
+        const bytes = normalised.match(/.{2}/g).map(byte => parseInt(byte, 16));
+        return btoa(String.fromCharCode(...bytes));
+      },
+
+      hexToBinary(hex) {
+        return this._normaliseHex(hex)
+          .match(/.{2}/g)
+          .map(byte => parseInt(byte, 16).toString(2).padStart(8, '0'))
+          .join(' ');
+      },
+
+      applyFormat(hex, format) {
+        switch (format) {
+          case 'hex-upper': return hex.toUpperCase();
+          case 'base64':    return this.hexToBase64(hex);
+          case 'binary':    return this.hexToBinary(hex);
+          default:          return hex;
+        }
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Download utilities
+    // -------------------------------------------------------------------------
+    const Download = {
+      filenameSafeTimestamp() {
+        const d   = new Date();
+        const pad = v => String(v).padStart(2, '0');
+        const date = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
+        const time = `${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+        return `${date}-${time}`;
+      },
+
+      // mimeType defaults to application/octet-stream so the browser treats the
+      // file as arbitrary data and uses the filename's extension as-is, rather
+      // than mapping text/plain → .txt and overriding the intended extension.
+      trigger(content, filename, mimeType = 'application/octet-stream') {
+        const blob = new Blob([content], { type: mimeType });
+        const url  = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+        anchor.href     = url;
+        anchor.download = filename;
+        anchor.click();
+        URL.revokeObjectURL(url);
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Clipboard utility
+    // -------------------------------------------------------------------------
+    const Clipboard = {
+      async copy(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch {
+          return false;
+        }
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Tooltip utility — singleton <div> appended to <body> so it escapes all
+    // stacking contexts (including transformed ancestors like the history popover).
+    // All .tooltip spans in markup are kept for semantic grouping but are hidden;
+    // only the singleton is ever visible.
+    // -------------------------------------------------------------------------
+    const Tooltip = (() => {
+      let el        = null;   // singleton DOM node
+      let hideTimer = null;
+
+      function _ensureEl() {
+        if (el) return;
+        el = document.createElement('div');
+        el.className = 'tooltip-singleton';
+        document.body.appendChild(el);
+      }
+
+      function _position(anchorElement) {
+        const rect = anchorElement.getBoundingClientRect();
+        el.style.left = `${rect.left + rect.width / 2}px`;
+        el.style.top  = `${rect.top}px`;
+      }
+
+      return {
+        flash(anchorElement, text) {
+          _ensureEl();
+
+          // Derive label: passed explicitly, or from the child .tooltip span's text
+          const label = text ?? anchorElement.querySelector('.tooltip')?.textContent ?? 'Copied!';
+
+          el.textContent = label;
+          el.classList.remove('tooltip-singleton--visible');
+
+          // Force a reflow so the transition fires even if already visible
+          void el.offsetWidth;
+
+          _position(anchorElement);
+          el.classList.add('tooltip-singleton--visible');
+
+          clearTimeout(hideTimer);
+          hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), 1400);
+        },
+
+        /** Show a persistent tooltip above anchorElement until hide() is called.
+         *  Used for hover-triggered informational tooltips (e.g. digest length
+         *  on algo badges). Cancels any pending flash() auto-dismiss timer so
+         *  the two modes don't fight each other. */
+        show(anchorElement, text) {
+          _ensureEl();
+          clearTimeout(hideTimer);
+          el.textContent = text;
+          el.classList.remove('tooltip-singleton--visible');
+          void el.offsetWidth;
+          _position(anchorElement);
+          el.classList.add('tooltip-singleton--visible');
+        },
+
+        hide() {
+          if (el) el.classList.remove('tooltip-singleton--visible');
+        },
+      };
+    })();
+
+    // -------------------------------------------------------------------------
+    // Algorithm registry — single source of truth, ordered by bit count (least to most complex),
+    // then alphabetically within groups of the same bit count.
+    // Exception: CRC-32C is pinned directly after CRC-32 as a special case,
+    // reflecting its role as the de-facto modern successor to CRC-32.
+    //
+    // `jscrcFn` is the name of the corresponding global function from js-crc.
+    // crc.min.js provides 'crc32' and 'crc16' directly on window.
+    // models.min.js provides all other globals by converting the canonical
+    // model name: replace [-/] with _ and lowercase (e.g. 'CRC-8/SMBUS' → 'crc_8_smbus').
+    //
+    //   CRC-8 variants     →  8 bit  ( 2 hex chars)
+    //   CRC-16 variants    → 16 bit  ( 4 hex chars)
+    //   CRC-24 variants    → 24 bit  ( 6 hex chars)
+    //   CRC-32 variants    → 32 bit  ( 8 hex chars)
+    //   CRC-64 variants    → 64 bit  (16 hex chars)
+    //   CRC-82 (DARC)      → 82 bit  (21 hex chars — odd, normalised by Format)
+    // -------------------------------------------------------------------------
+    const ALGORITHMS = [
+      // CRC-8 — ordered alphabetically within the group
+      { id: 'CRC-8 (1-Wire)',   jscrcFn: 'crc_8_maxim_dow',  hexWidth: 2,  bits: 8,  hexLen: 2  },
+      { id: 'CRC-8 (DVB-S2)',   jscrcFn: 'crc_8_dvb_s2',     hexWidth: 2,  bits: 8,  hexLen: 2  },
+      { id: 'CRC-8 (SMBus)',    jscrcFn: 'crc_8_smbus',      hexWidth: 2,  bits: 8,  hexLen: 2  },
+      // CRC-16 — ordered alphabetically within the group
+      { id: 'CRC-16',           jscrcFn: 'crc16',             hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (CCITT)',   jscrcFn: 'crc_16_ibm_3740',  hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (DNP)',     jscrcFn: 'crc_16_dnp',        hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (Kermit)',  jscrcFn: 'crc_16_kermit',    hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (Modbus)',  jscrcFn: 'crc_16_modbus',    hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (USB)',     jscrcFn: 'crc_16_usb',        hexWidth: 4,  bits: 16, hexLen: 4  },
+      { id: 'CRC-16 (XMODEM)', jscrcFn: 'crc_16_xmodem',    hexWidth: 4,  bits: 16, hexLen: 4  },
+      // CRC-24 — ordered alphabetically within the group
+      { id: 'CRC-24 (BLE)',     jscrcFn: 'crc_24_ble',        hexWidth: 6,  bits: 24, hexLen: 6  },
+      { id: 'CRC-24 (Intlkn)', jscrcFn: 'crc_24_interlaken', hexWidth: 6,  bits: 24, hexLen: 6  },
+      { id: 'CRC-24 (OpenPGP)',jscrcFn: 'crc_24_openpgp',    hexWidth: 6,  bits: 24, hexLen: 6  },
+      // CRC-32 — CRC-32C pinned directly after CRC-32; remainder alphabetical
+      { id: 'CRC-32',           jscrcFn: 'crc32',             hexWidth: 8,  bits: 32, hexLen: 8  },
+      { id: 'CRC-32C',          jscrcFn: 'crc_32c',           hexWidth: 8,  bits: 32, hexLen: 8  },
+      { id: 'CRC-32 (BZIP2)',   jscrcFn: 'crc_32_bzip2',     hexWidth: 8,  bits: 32, hexLen: 8  },
+      { id: 'CRC-32 (JamCRC)', jscrcFn: 'crc_32_jamcrc',    hexWidth: 8,  bits: 32, hexLen: 8  },
+      { id: 'CRC-32 (MPEG-2)', jscrcFn: 'crc_32_mpeg_2',    hexWidth: 8,  bits: 32, hexLen: 8  },
+      // CRC-64 — ordered alphabetically within the group
+      { id: 'CRC-64 (ECMA)',   jscrcFn: 'crc_64_ecma_182',  hexWidth: 16, bits: 64, hexLen: 16 },
+      { id: 'CRC-64 (NVMe)',   jscrcFn: 'crc_64_nvme',       hexWidth: 16, bits: 64, hexLen: 16 },
+      { id: 'CRC-64 (Redis)',  jscrcFn: 'crc_64_redis',      hexWidth: 16, bits: 64, hexLen: 16 },
+      { id: 'CRC-64 (XZ)',     jscrcFn: 'crc_64_xz',         hexWidth: 16, bits: 64, hexLen: 16 },
+      // CRC-82
+      { id: 'CRC-82 (DARC)',   jscrcFn: 'crc_82_darc',       hexWidth: 21, bits: 82, hexLen: 21 },
+    ];
+
+    // -------------------------------------------------------------------------
+    // Checksum utilities — backed by js-crc by emn178 (pure JS, via jsDelivr).
+    // The library exposes one global per variant via the UMD bundles loaded
+    // in the <head>. All functions accept a string or Uint8Array and return a
+    // hex string. The streaming API — fn.create() / .update(buf) / .hex() —
+    // enables chunked file hashing with progress callbacks, matching the
+    // Keccalc / js-sha3 pattern exactly.
+    // All public methods return Map<algoId, hex> (raw lowercase hex strings).
+    // -------------------------------------------------------------------------
+    const Hasher = {
+      /** Compute all CRCs from text in the specified input encoding.
+       *  Returns Map<algoId, hex>. */
+      fromTextAll(text, inputFmt = 'utf-8', algos = ALGORITHMS) {
+        const data = Format.textToBytes(text, inputFmt);
+        return new Map(algos.map(({ id, jscrcFn, hexWidth }) => {
+          const fn = window[jscrcFn];
+          if (!fn) throw new Error(`js-crc global '${jscrcFn}' not available. Ensure both bundles have loaded.`);
+          return [id, fn(data).padStart(hexWidth, '0')];
+        }));
+      },
+
+      /** Hash a File with all registered algorithms, reading in 150 kB chunks
+       *  so the browser can repaint between chunks and progress is granular.
+       *
+       *  The initial rAF+setTimeout double-yield guarantees the computing DOM
+       *  state is painted before any CPU-bound work begins — critical on hosted
+       *  environments where microtask continuations don't force a repaint.
+       *
+       *  @param {File}                  file
+       *  @param {function(number):void} [onProgress]  called with ratio in [0,1]
+       *  @returns {Promise<Map<string,string>>}        Map<algoId, hex>
+       */
+      async fromFileAll(file, onProgress, algos = ALGORITHMS) {
+        const totalSize  = file.size;
+        // Adaptive chunk size: target ~100 progress updates regardless of file
+        // size, while staying within a sensible memory footprint.
+        //   floor: 150 KiB  — avoids tiny chunks on small files
+        //   ceil:   32 MiB  — caps allocation on very large files (>3.2 GB)
+        const CHUNK_SIZE = Math.min(
+          32 * 1024 * 1024,
+          Math.max(150 * 1024, Math.floor(totalSize / 100)),
+        );
+
+        // Create one streaming instance per algorithm.
+        const instances = algos.map(({ id, jscrcFn, hexWidth }) => {
+          const fn = window[jscrcFn];
+          if (!fn) throw new Error(`js-crc global '${jscrcFn}' not available.`);
+          return { id, hexWidth, instance: fn.create() };
+        });
+
+        // Yield to the render engine before starting CPU work so the
+        // "computing" DOM state is guaranteed to paint first.
+        await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+
+        let offset = 0;
+        let lastPaint = performance.now();
+        while (offset < totalSize) {
+          const slice  = file.slice(offset, offset + CHUNK_SIZE);
+          const buffer = await slice.arrayBuffer();
+
+          for (const { instance } of instances) instance.update(buffer);
+
+          offset += buffer.byteLength;
+          onProgress?.(Math.min(offset / totalSize, 1));
+
+          // Yield to the render engine so progress updates can paint, but
+          // throttled to ~100 ms intervals (~10 fps) — yielding every chunk
+          // on small chunk sizes wastes ~16 ms per rAF with no visible benefit.
+          // Always skip the final chunk: no further UI update is needed.
+          const now = performance.now();
+          if (offset < totalSize && now - lastPaint >= 100) {
+            await new Promise(resolve => requestAnimationFrame(() => setTimeout(resolve, 0)));
+            lastPaint = performance.now();
+          }
+        }
+
+        return new Map(instances.map(({ id, hexWidth, instance }) => [
+          id,
+          instance.hex().padStart(hexWidth, '0'),
+        ]));
+      },
+
+      /** Generate a random hex string visually matching the real digest width.
+       *    CRC-8 variants     →  2 hex chars
+       *    CRC-16 variants    →  4 hex chars
+       *    CRC-24 variants    →  6 hex chars  (BLE, Intlkn, OpenPGP)
+       *    CRC-32 variants    →  8 hex chars  (CRC-32, BZIP2, JamCRC, MPEG-2, 32C)
+       *    CRC-64 variants    → 16 hex chars
+       *    CRC-82 (DARC)      → 21 hex chars */
+      generateRandom(algoId) {
+        const algo     = ALGORITHMS.find(a => a.id === algoId);
+        const hexWidth = algo?.hexWidth ?? 8;
+        const byteLen  = Math.ceil(hexWidth / 2);
+        const bytes    = new Uint8Array(byteLen);
+        crypto.getRandomValues(bytes);
+        return Array.from(bytes, b => b.toString(16).padStart(2, '0'))
+          .join('')
+          .slice(0, hexWidth);
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Theme (light / dark)
+    // -------------------------------------------------------------------------
+    const Theme = {
+      STORAGE_KEY: 'crckit-theme',
+
+      defaultByTime() {
+        const hour = new Date().getHours();
+        return (hour >= 6 && hour < 21) ? 'light' : 'dark';
+      },
+
+      init() {
+        const saved = localStorage.getItem(this.STORAGE_KEY);
+        const theme = saved || this.defaultByTime();
+
+        document.documentElement.setAttribute('data-theme', theme);
+
+        document.getElementById('themeToggle').addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const next    = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', next);
+          localStorage.setItem(this.STORAGE_KEY, next);
+        });
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Text section
+    // -------------------------------------------------------------------------
+    const TextSection = {
+      rawHexMap: new Map(),
+      rowEls:   new Map(),
+      disabledAlgos:   new Set(),
+      _currentBatchId: null,
+      _debounceTimer: null,
+
+      init() {
+        this._input        = document.getElementById('textInput');
+        this._inputClear   = document.getElementById('textInputClear');
+        this._resultsEl    = document.getElementById('textResults');
+        this._counter      = document.getElementById('textCounter');
+        this._counterChars       = document.getElementById('textCounterChars');
+        this._counterBytes       = document.getElementById('textCounterBytes');
+
+        ALGORITHMS.forEach(({ id }) => this._buildRow(id));
+        // Sync button icon with initial disabledAlgos state.
+        this._updateToggleAllBtn();
+
+        this._updateCounter('');
+
+        this._input.addEventListener('input', () => {
+          clearTimeout(this._debounceTimer);
+          this._debounceTimer = setTimeout(() => this.onInput(), 20);
+        });
+
+        // Input-format validation — discard keystrokes that are illegal for
+        // the selected input encoding (Hex / Base64 / Binary).
+        // UTF-8 accepts everything so only the other three need filtering.
+        this._input.addEventListener('keydown', e => {
+          // Esc clears the textarea regardless of input format.
+          if (e.key === 'Escape') { e.preventDefault(); this.onClear(); return; }
+
+          const fmt = this.getSelectedInputFormat();
+          if (fmt === 'utf-8') return; // no restriction
+          // Allow: control keys, arrows, backspace, delete, tab, Ctrl/Cmd combos
+          if (e.key.length > 1 || e.ctrlKey || e.metaKey) return;
+          const ch = e.key;
+          let valid = false;
+          switch (fmt) {
+            case 'hex':
+              valid = /^[0-9a-fA-F]$/.test(ch);
+              break;
+            case 'base64':
+              // Standard Base64 alphabet + padding
+              valid = /^[A-Za-z0-9+/=]$/.test(ch);
+              break;
+            case 'binary':
+              valid = ch === '0' || ch === '1' || ch === ' ';
+              break;
+          }
+          if (!valid) e.preventDefault();
+        });
+
+        // Switching input format clears the textarea (stale content in the old
+        // encoding would produce a meaningless hash in the new one).
+        document
+          .querySelectorAll('input[name="textInputFormat"]')
+          .forEach(radio => radio.addEventListener('change', () => {
+            this.onClear();
+            const fmt = this.getSelectedInputFormat();
+            // Placeholder stays constant; format is communicated by the Input label chip
+          }));
+
+        this._inputClear.addEventListener('click', () => this.onClear());
+        // ── Text drag-and-drop ─────────────────────────────────────────────
+        // Accept text/plain snippets dragged from other windows/documents.
+        // The card (not just the textarea) is the drop target for a larger
+        // hit area, mirroring the file-drop zone pattern. Only text drags are
+        // handled; file drags are intentionally ignored so they still route to
+        // the File section's drop zone.
+        this._card = this._input.closest('.card');
+
+        // ── Page-wide text drag highlight ──────────────────────────────────
+        // Mirrors FileSection's _dragDepth pattern exactly: document-level
+        // dragenter/dragleave light up the text card whenever ANY text/plain
+        // drag enters the browser window, regardless of where it lands.
+        // Only text drags are handled; Files drags route to the File section.
+        let _textDragDepth = 0;
+
+        const _hasTextOnly = dt =>
+          dt?.types?.includes('text/plain') && !dt?.types?.includes('Files');
+
+        document.addEventListener('dragenter', e => {
+          if (!_hasTextOnly(e.dataTransfer)) return;
+          _textDragDepth++;
+          if (_textDragDepth === 1) {
+            this._card.classList.add('card--text-drag');
+            // Scroll the text card into view so users can see where to drop,
+            // mirroring FileSection's drop-zone scroll-into-view behaviour.
+            this._card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+
+        document.addEventListener('dragleave', e => {
+          if (!_hasTextOnly(e.dataTransfer)) return;
+          _textDragDepth--;
+          if (_textDragDepth === 0) this._card.classList.remove('card--text-drag');
+        });
+
+        document.addEventListener('dragover', e => {
+          // Required to allow drops anywhere on the page for text drags
+          if (_hasTextOnly(e.dataTransfer)) e.preventDefault();
+        });
+
+        document.addEventListener('drop', e => {
+          if (!_hasTextOnly(e.dataTransfer)) return;
+          // Reset page-drag state unconditionally (mirrors FileSection)
+          _textDragDepth = 0;
+          this._card.classList.remove('card--text-drag');
+          // If the drop landed inside the card, the card's own handler already
+          // processed it (and called stopPropagation) — nothing left to do.
+          if (this._card.contains(e.target)) return;
+          // Drop landed outside the card: extract text and append to textarea.
+          e.preventDefault();
+          const raw = e.dataTransfer.getData('text/plain');
+          if (!raw) return;
+          const inputFmt = this.getSelectedInputFormat();
+          const filtered = this._filterTextForFormat(raw, inputFmt);
+          this._input.value += filtered;
+          this._input.focus();
+          clearTimeout(this._debounceTimer);
+          this.onInput();
+        });
+
+        // ── Card-level drop: cursor-position-aware insertion ────────────────
+        // dragover on the card keeps the dropEffect visible while over the textarea.
+        this._card.addEventListener('dragover', e => {
+          if (!_hasTextOnly(e.dataTransfer)) return;
+          e.preventDefault();
+          e.stopPropagation(); // don't let document dragover fire redundantly
+          e.dataTransfer.dropEffect = 'copy';
+        });
+
+        this._card.addEventListener('drop', e => {
+          if (!_hasTextOnly(e.dataTransfer)) return;
+          e.preventDefault();
+          // Stop propagation so the document drop handler skips this drop.
+          e.stopPropagation();
+          _textDragDepth = 0;
+          this._card.classList.remove('card--text-drag');
+
+          const raw = e.dataTransfer.getData('text/plain');
+          if (!raw) return;
+
+          const inputFmt = this.getSelectedInputFormat();
+          const filtered = this._filterTextForFormat(raw, inputFmt);
+
+          // Insert at caret position if the textarea has a selection/cursor,
+          // otherwise append to end.
+          const ta    = this._input;
+          const start = ta.selectionStart ?? ta.value.length;
+          const end   = ta.selectionEnd   ?? ta.value.length;
+          ta.value = ta.value.slice(0, start) + filtered + ta.value.slice(end);
+          const newPos = start + filtered.length;
+          ta.setSelectionRange(newPos, newPos);
+          ta.focus();
+
+          clearTimeout(this._debounceTimer);
+          this.onInput();
+        });
+
+        document
+          .querySelectorAll('input[name="textFormat"]')
+          .forEach(radio => radio.addEventListener('change', () => this._reformatAll()));
+      },
+
+      _buildRow(algoId) {
+        const safeId  = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const algo    = ALGORITHMS.find(a => a.id === algoId);
+        const tipText = () => this.disabledAlgos.has(algoId) ? 'Select' : 'Deselect';
+
+        const row = document.createElement('div');
+        row.className = 'result';
+        row.dataset.algo = algoId;
+        row.innerHTML = `
+          <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
+          <span class="result__hash result__hash--empty" id="textHash-${safeId}">awaiting input…<span class="tooltip">Copied!</span></span>
+          <div class="result__actions">
+            <button class="btn" id="textDownload-${safeId}" disabled aria-label="Download ${algoId} checksum as text file">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Download<span class="tooltip">Exported</span>
+            </button>
+            <button class="btn" id="textCopy-${safeId}" disabled aria-label="Copy ${algoId} checksum to clipboard">
+              <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Copy<span class="tooltip">Copied!</span>
+            </button>
+          </div>`;
+
+        this._resultsEl.appendChild(row);
+
+        const els = {
+          hash:     row.querySelector(`#textHash-${safeId}`),
+          download: row.querySelector(`#textDownload-${safeId}`),
+          copy:     row.querySelector(`#textCopy-${safeId}`),
+        };
+
+        this.rowEls.set(algoId, els);
+
+        const badge = row.querySelector('.algo-badge');
+        badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText()));
+        badge.addEventListener('mouseleave', () => Tooltip.hide());
+        badge.addEventListener('focus',      () => Tooltip.show(badge, tipText()));
+        badge.addEventListener('blur',       () => Tooltip.hide());
+        badge.addEventListener('click', () => this._toggleAlgo(algoId));
+        badge.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._toggleAlgo(algoId); } });
+
+        // Apply initial disabled state if set before _buildRow is called.
+        if (this.disabledAlgos.has(algoId)) {
+          badge.classList.add('algo-badge--disabled');
+          row.classList.add('result--disabled');
+          badge.setAttribute('aria-checked', 'false');
+          this._setHashText(els, 'disabled');
+        }
+
+        els.download.addEventListener('click', () => this._onDownload(algoId));
+        els.copy.addEventListener('click',     () => this._onCopy(algoId));
+        els.hash.addEventListener('click', () => {
+          const hash = this._formattedHash(algoId);
+          if (!hash) return;
+          Clipboard.copy(hash);
+          Tooltip.flash(els.hash);
+        });
+      },
+
+      _toggleAll() {
+        const allSelected = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+
+        ALGORITHMS.forEach(({ id }) => {
+          const row   = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
+          const badge = row?.querySelector('.algo-badge');
+          const els   = this.rowEls.get(id);
+          if (!row || !badge || !els) return;
+
+          if (allSelected) {
+            // Deselect all — update DOM state without triggering onInput per algo
+            this.disabledAlgos.add(id);
+            badge.classList.add('algo-badge--disabled');
+            row.classList.add('result--disabled');
+            badge.setAttribute('aria-checked', 'false');
+            this._setHashText(els, 'disabled');
+            els.hash.classList.add('result__hash--empty');
+            [els.download, els.copy].forEach(btn => { btn.disabled = true; });
+          } else if (this.disabledAlgos.has(id)) {
+            // Select — restore from rawHexMap if available, otherwise let onInput() fill it
+            this.disabledAlgos.delete(id);
+            badge.classList.remove('algo-badge--disabled');
+            row.classList.remove('result--disabled');
+            badge.setAttribute('aria-checked', 'true');
+          }
+        });
+
+        // Single onInput() call covers all newly selected algorithms at once.
+        if (!allSelected) {
+          clearTimeout(this._debounceTimer);
+          this.onInput();
+        }
+
+        this._updateToggleAllBtn();
+        const textBtn = document.getElementById('textToggleAllBtn');
+        if (textBtn) {
+          const nowAllSelected = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+          Tooltip.show(textBtn, nowAllSelected ? 'Deselect all' : 'Select all');
+        }
+      },
+
+      _updateToggleAllBtn() {
+        const btn = document.getElementById('textToggleAllBtn');
+        if (!btn) return;
+        const allSelected   = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+        const allDeselected = ALGORITHMS.every(a =>  this.disabledAlgos.has(a.id));
+        const iconChecked       = '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+        const iconIndeterminate = '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>';
+        const iconUnchecked     = '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
+        const icon = allSelected ? iconChecked : allDeselected ? iconUnchecked : iconIndeterminate;
+        btn.querySelector('svg').innerHTML = icon;
+        btn.setAttribute('aria-label', allSelected ? 'Deselect all text algorithms' : 'Select all text algorithms');
+      },
+
+      _toggleAlgo(algoId) {
+        const row   = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
+        const badge = row.querySelector('.algo-badge');
+        if (this.disabledAlgos.has(algoId)) {
+          this.disabledAlgos.delete(algoId);
+          badge.classList.remove('algo-badge--disabled');
+          row.classList.remove('result--disabled');
+          badge.setAttribute('aria-checked', 'true');
+          // Re-hash with current input if any
+          clearTimeout(this._debounceTimer);
+          this.onInput();
+        } else {
+          this.disabledAlgos.add(algoId);
+          badge.classList.add('algo-badge--disabled');
+          row.classList.add('result--disabled');
+          badge.setAttribute('aria-checked', 'false');
+          const els = this.rowEls.get(algoId);
+          this._setHashText(els, 'disabled');
+          els.hash.classList.add('result__hash--empty');
+          [els.download, els.copy].forEach(btn => { btn.disabled = true; });
+        }
+        // Refresh the tooltip to reflect the new state while it may still be visible.
+        const nowDisabled = this.disabledAlgos.has(algoId);
+        Tooltip.show(badge, nowDisabled ? 'Select' : 'Deselect');
+        this._updateToggleAllBtn();
+      },
+
+      _setHashText(els, text) {
+        const tip = els.hash.querySelector('.tooltip');
+        els.hash.textContent = text;
+        if (tip) els.hash.appendChild(tip);
+      },
+
+      getSelectedInputFormat() {
+        return document.querySelector('input[name="textInputFormat"]:checked')?.value ?? 'utf-8';
+      },
+
+      getSelectedFormat() {
+        return document.querySelector('input[name="textFormat"]:checked').value;
+      },
+
+      _formattedHash(algoId) {
+        const hex = this.rawHexMap.get(algoId);
+        return hex ? Format.applyFormat(hex, this.getSelectedFormat()) : '';
+      },
+
+      _reformatAll() {
+        for (const { id } of ALGORITHMS) {
+          if (this.disabledAlgos.has(id)) continue;
+          const hex = this.rawHexMap.get(id);
+          if (!hex) continue;
+          const els  = this.rowEls.get(id);
+          const hash = Format.applyFormat(hex, this.getSelectedFormat());
+          this._setHashText(els, hash);
+          History.record('text', hash, id, this._currentBatchId);
+        }
+      },
+
+      _setAllActionsEnabled(enabled) {
+        this._inputClear.classList.toggle('text-input__clear--visible', enabled);
+        for (const els of this.rowEls.values()) {
+          [els.download, els.copy].forEach(btn => { btn.disabled = !enabled; });
+        }
+      },
+
+      // ── Counter helpers ────────────────────────────────────────────────────────────────────────────
+
+      _updateCounter(text) {
+        const chars = text.length;
+        const fmt   = this.getSelectedInputFormat();
+
+        // Primary label: raw char count (always shown)
+        this._counterChars.textContent = chars === 1 ? '1 char' : `${chars.toLocaleString()} chars`;
+
+        // Secondary label: decoded bytes for structured formats, UTF-8 bytes otherwise
+        let bytes;
+        if (!text) {
+          bytes = 0;
+        } else {
+          switch (fmt) {
+            case 'hex':
+              bytes = Math.ceil(text.replace(/\s+/g, '').length / 2);
+              break;
+            case 'base64': {
+              const stripped = text.replace(/[^A-Za-z0-9+/=]/g, '').replace(/=+$/, '');
+              bytes = Math.ceil(stripped.length * 3 / 4);
+              break;
+            }
+            case 'binary':
+              bytes = text.trim().split(/\s+/).filter(g => g.length > 0).length;
+              break;
+            default:
+              bytes = new TextEncoder().encode(text).byteLength;
+          }
+        }
+        this._counterBytes.textContent = bytes === 1 ? '1 byte' : `${bytes.toLocaleString()} bytes`;
+      },
+
+      /** Strip characters from `text` that are illegal for the given input format.
+       *  Used by the drag-and-drop handler to sanitise dropped content.
+       *  UTF-8 mode passes everything through unchanged. */
+      _filterTextForFormat(text, inputFmt) {
+        switch (inputFmt) {
+          case 'hex':    return text.replace(/[^0-9a-fA-F]/g, '');
+          case 'base64': return text.replace(/[^A-Za-z0-9+/=]/g, '');
+          case 'binary': return text.replace(/[^01 ]/g, '');
+          default:       return text; // utf-8: no filtering
+        }
+      },
+
+      onInput() {
+        const raw = this._input.value;
+        this._updateCounter(raw);
+
+        if (!raw) {
+          this.rawHexMap.clear();
+          for (const { id } of ALGORITHMS) {
+            if (this.disabledAlgos.has(id)) continue;
+            const els = this.rowEls.get(id);
+            this._setHashText(els, 'awaiting input…');
+            els.hash.classList.add('result__hash--empty');
+          }
+          this._setAllActionsEnabled(false);
+          return;
+        }
+
+        // CRC is synchronous — no await needed
+        const inputFmt = this.getSelectedInputFormat();
+        const activeAlgos = ALGORITHMS.filter(a => !this.disabledAlgos.has(a.id));
+        this.rawHexMap = Hasher.fromTextAll(raw, inputFmt, activeAlgos);
+
+        const fmt = this.getSelectedFormat();
+        this._currentBatchId = History.nextBatch();
+        for (const { id } of ALGORITHMS) {
+          if (this.disabledAlgos.has(id)) continue;
+          const hex  = this.rawHexMap.get(id);
+          const hash = Format.applyFormat(hex, fmt);
+          const els  = this.rowEls.get(id);
+          this._setHashText(els, hash);
+          els.hash.classList.remove('result__hash--empty');
+          History.record('text', hash, id, this._currentBatchId);
+        }
+        this._setAllActionsEnabled(true);
+      },
+
+      onClear() {
+        clearTimeout(this._debounceTimer);
+        this._input.value = '';
+        this.onInput();
+        this._input.focus();
+      },
+
+      _onDownload(algoId) {
+        const hash = this._formattedHash(algoId);
+        if (!hash) return;
+        // Filename extension: e.g. "crc32", "crc16modbus", "crc16-ccitt" → normalise
+        const ext      = algoId.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const filename = `crckit-checksum_${Download.filenameSafeTimestamp()}.${ext}`;
+        Download.trigger(hash, filename);
+        Tooltip.flash(this.rowEls.get(algoId).download);
+      },
+
+      async _onCopy(algoId) {
+        const hash = this._formattedHash(algoId);
+        if (!hash) return;
+        await Clipboard.copy(hash);
+        Tooltip.flash(this.rowEls.get(algoId).copy);
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // File section
+    // -------------------------------------------------------------------------
+    const FileSection = {
+      rawHexMap:       new Map(),
+      rowEls:          new Map(),
+      disabledAlgos:   new Set(),
+      currentFileName: '',
+      _currentBatchId: null,
+
+      init() {
+        this._drop         = document.getElementById('fileDrop');
+        this._input        = document.getElementById('fileInput');
+        this._dropClear    = document.getElementById('fileDropClear');
+        this._fileName     = document.getElementById('fileName');
+        this._fileNameText = document.getElementById('fileNameText');
+        this._fileSize     = document.getElementById('fileSize');
+        this._resultsEl    = document.getElementById('fileResults');
+
+        ALGORITHMS.forEach(({ id }) => this._buildRow(id));
+        // Sync button icon with initial disabledAlgos state.
+        this._updateToggleAllBtn();
+
+        this._input.addEventListener('change', e => {
+          if (e.target.files.length) {
+            const file = e.target.files[0];
+            e.target.value = '';
+            this.processFile(file);
+          }
+        });
+
+        this._drop.addEventListener('dragover', e => {
+          e.preventDefault();
+          this._drop.classList.add('file-drop--active');
+        });
+
+        this._drop.addEventListener('dragleave', () => {
+          this._drop.classList.remove('file-drop--active');
+        });
+
+        this._drop.addEventListener('drop', e => {
+          e.preventDefault();
+          this._drop.classList.remove('file-drop--active');
+          const file = e.dataTransfer.files[0];
+          if (file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            this._input.files = dt.files;
+            this.processFile(file);
+          }
+        });
+
+        let _dragDepth = 0;
+
+        document.addEventListener('dragenter', e => {
+          if (!e.dataTransfer?.types?.includes('Files')) return;
+          _dragDepth++;
+          if (_dragDepth === 1) {
+            this._drop.classList.add('file-drop--page-drag');
+            this._drop.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        });
+
+        document.addEventListener('dragleave', e => {
+          if (!e.dataTransfer?.types?.includes('Files')) return;
+          _dragDepth--;
+          if (_dragDepth === 0) {
+            this._drop.classList.remove('file-drop--page-drag');
+          }
+        });
+
+        document.addEventListener('dragover', e => {
+          if (e.dataTransfer?.types?.includes('Files')) e.preventDefault();
+        });
+
+        document.addEventListener('drop', e => {
+          e.preventDefault();
+          _dragDepth = 0;
+          this._drop.classList.remove('file-drop--page-drag');
+          if (this._drop.contains(e.target)) return;
+          const file = e.dataTransfer?.files?.[0];
+          if (file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            this._input.files = dt.files;
+            this.processFile(file);
+          }
+        });
+
+        this._dropClear.addEventListener('click', e => {
+          e.stopPropagation();
+          this.onClear();
+        });
+
+        // Esc clears the file input when a file is loaded and the drop
+        // zone (file input) is focused — mirrors TextSection's Esc behaviour.
+        this._input.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && this.currentFileName) {
+            e.preventDefault();
+            this.onClear();
+          }
+        });
+
+        document
+          .querySelectorAll('input[name="fileFormat"]')
+          .forEach(radio => radio.addEventListener('change', () => this._reformatAll(true)));
+      },
+
+      _buildRow(algoId) {
+        const safeId  = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
+        const algo    = ALGORITHMS.find(a => a.id === algoId);
+        const tipText = () => this.disabledAlgos.has(algoId) ? 'Select' : 'Deselect';
+
+        const row = document.createElement('div');
+        row.className = 'result';
+        row.dataset.algo = algoId;
+        row.innerHTML = `
+          <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
+          <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
+          <div class="result__actions">
+            <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} checksum as text file">
+              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+              Download<span class="tooltip">Exported</span>
+            </button>
+            <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} checksum to clipboard">
+              <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Copy<span class="tooltip">Copied!</span>
+            </button>
+          </div>`;
+
+        this._resultsEl.appendChild(row);
+
+        const els = {
+          hash:     row.querySelector(`#fileHash-${safeId}`),
+          download: row.querySelector(`#fileDownload-${safeId}`),
+          copy:     row.querySelector(`#fileCopy-${safeId}`),
+        };
+
+        this.rowEls.set(algoId, els);
+
+        // Badge hover tooltip — same pattern as TextSection._buildRow.
+        const badge = row.querySelector('.algo-badge');
+        badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText()));
+        badge.addEventListener('mouseleave', () => Tooltip.hide());
+        badge.addEventListener('focus',      () => Tooltip.show(badge, tipText()));
+        badge.addEventListener('blur',       () => Tooltip.hide());
+        badge.addEventListener('click', () => this._toggleAlgo(algoId));
+        badge.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); this._toggleAlgo(algoId); } });
+
+        // Apply initial disabled state if set before _buildRow is called.
+        if (this.disabledAlgos.has(algoId)) {
+          badge.classList.add('algo-badge--disabled');
+          row.classList.add('result--disabled');
+          badge.setAttribute('aria-checked', 'false');
+          this._setHashText(els, 'disabled');
+        }
+
+        els.download.addEventListener('click', () => this._onDownload(algoId));
+        els.copy.addEventListener('click',     () => this._onCopy(algoId));
+        els.hash.addEventListener('click', () => {
+          const hash = this._formattedHash(algoId);
+          if (!hash) return;
+          Clipboard.copy(hash);
+          Tooltip.flash(els.hash);
+        });
+      },
+
+      _toggleAll() {
+        const allSelected = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+
+        ALGORITHMS.forEach(({ id }) => {
+          const row   = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
+          const badge = row?.querySelector('.algo-badge');
+          const els   = this.rowEls.get(id);
+          if (!row || !badge || !els) return;
+
+          if (allSelected) {
+            // Deselect all
+            this.disabledAlgos.add(id);
+            badge.classList.add('algo-badge--disabled');
+            row.classList.add('result--disabled');
+            badge.setAttribute('aria-checked', 'false');
+            this._clearComputingState(els);
+            this._setHashText(els, 'disabled');
+            els.hash.classList.add('result__hash--empty');
+            [els.download, els.copy].forEach(btn => { btn.disabled = true; });
+          } else if (this.disabledAlgos.has(id)) {
+            // Select — restore existing hash from rawHexMap if available
+            this.disabledAlgos.delete(id);
+            badge.classList.remove('algo-badge--disabled');
+            row.classList.remove('result--disabled');
+            badge.setAttribute('aria-checked', 'true');
+            const existingHash = this._formattedHash(id);
+            if (existingHash) {
+              this._setHashText(els, existingHash);
+              els.hash.classList.remove('result__hash--empty');
+              els.download.disabled = false;
+              els.copy.disabled     = false;
+            } else {
+              this._setHashText(els, 'no file selected');
+              els.hash.classList.add('result__hash--empty');
+            }
+          }
+        });
+
+        this._updateToggleAllBtn();
+        const fileBtn = document.getElementById('fileToggleAllBtn');
+        if (fileBtn) {
+          const nowAllSelected = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+          Tooltip.show(fileBtn, nowAllSelected ? 'Deselect all' : 'Select all');
+        }
+      },
+
+      _updateToggleAllBtn() {
+        const btn = document.getElementById('fileToggleAllBtn');
+        if (!btn) return;
+        const allSelected   = ALGORITHMS.every(a => !this.disabledAlgos.has(a.id));
+        const allDeselected = ALGORITHMS.every(a =>  this.disabledAlgos.has(a.id));
+        const iconChecked       = '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
+        const iconIndeterminate = '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>';
+        const iconUnchecked     = '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
+        const icon = allSelected ? iconChecked : allDeselected ? iconUnchecked : iconIndeterminate;
+        btn.querySelector('svg').innerHTML = icon;
+        btn.setAttribute('aria-label', allSelected ? 'Deselect all file algorithms' : 'Select all file algorithms');
+      },
+
+      _toggleAlgo(algoId) {
+        const row   = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
+        const badge = row.querySelector('.algo-badge');
+        const els   = this.rowEls.get(algoId);
+        if (this.disabledAlgos.has(algoId)) {
+          this.disabledAlgos.delete(algoId);
+          badge.classList.remove('algo-badge--disabled');
+          row.classList.remove('result--disabled');
+          badge.setAttribute('aria-checked', 'true');
+          // Restore previously computed hash if available, otherwise show empty state.
+          const existingHash = this._formattedHash(algoId);
+          if (existingHash) {
+            this._setHashText(els, existingHash);
+            els.hash.classList.remove('result__hash--empty');
+            els.download.disabled = false;
+            els.copy.disabled     = false;
+          } else {
+            this._setHashText(els, 'no file selected');
+            els.hash.classList.add('result__hash--empty');
+          }
+        } else {
+          this.disabledAlgos.add(algoId);
+          badge.classList.add('algo-badge--disabled');
+          row.classList.add('result--disabled');
+          badge.setAttribute('aria-checked', 'false');
+          this._clearComputingState(els);
+          this._setHashText(els, 'disabled');
+          els.hash.classList.add('result__hash--empty');
+          [els.download, els.copy].forEach(btn => { btn.disabled = true; });
+        }
+        // Refresh the tooltip to reflect the new state while it may still be visible.
+        const nowDisabled = this.disabledAlgos.has(algoId);
+        Tooltip.show(badge, nowDisabled ? 'Select' : 'Deselect');
+        this._updateToggleAllBtn();
+      },
+
+      _setHashText(els, text) {
+        const tip = els.hash.querySelector('.tooltip');
+        els.hash.textContent = text;
+        if (tip) els.hash.appendChild(tip);
+      },
+
+      /** Enter computing state: apply progress bar fill via CSS custom property.
+       *  ratio is in [0, 1]. The hash cell itself becomes the progress track —
+       *  no separate pill element, no awkward placeholder text. */
+      _setComputingState(els, ratio) {
+        const pct = (ratio * 100).toFixed(1); // one decimal: "73.4%" not "73%"
+        els.hash.style.setProperty('--progress', pct);
+        els.hash.textContent = `${pct}%`;
+        els.hash.classList.add('result__hash--computing');
+        els.hash.classList.remove('result__hash--empty');
+      },
+
+      /** Exit computing state: remove progress bar and restore normal display. */
+      _clearComputingState(els) {
+        els.hash.classList.remove('result__hash--computing');
+        els.hash.style.removeProperty('--progress');
+      },
+
+      getSelectedFormat() {
+        return document.querySelector('input[name="fileFormat"]:checked').value;
+      },
+
+      _formattedHash(algoId) {
+        const hex = this.rawHexMap.get(algoId);
+        return hex ? Format.applyFormat(hex, this.getSelectedFormat()) : '';
+      },
+
+      _reformatAll(record = false) {
+        for (const { id } of ALGORITHMS) {
+          if (this.disabledAlgos.has(id)) continue;
+          const hex = this.rawHexMap.get(id);
+          if (!hex) continue;
+          const els  = this.rowEls.get(id);
+          const hash = Format.applyFormat(hex, this.getSelectedFormat());
+          this._setHashText(els, hash);
+          if (record) History.record('file', hash, id, this._currentBatchId, this.currentFileName);
+        }
+      },
+
+      _setAllActionsEnabled(enabled) {
+        for (const [id, els] of this.rowEls.entries()) {
+          if (this.disabledAlgos.has(id)) continue;
+          [els.download, els.copy].forEach(btn => { btn.disabled = !enabled; });
+        }
+      },
+
+      // ── File size helper ────────────────────────────────────────────────────────────────────────────
+
+      _formatFileSize(bytes) {
+        if (bytes < 1024)               return `${bytes} B`;
+        if (bytes < 1024 * 1024)        return `${(bytes / 1024).toFixed(1)} KiB`;
+        if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
+        return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GiB`;
+      },
+
+      async processFile(file) {
+        this.currentFileName = file.name;
+        this._fileNameText.textContent = file.name;
+        this._fileSize.textContent     = ` · ${this._formatFileSize(file.size)}`;
+        this._fileName.classList.add('file-drop__filename--visible');
+        this._dropClear.classList.add('file-drop__clear--visible');
+
+        // Enter computing state across all rows: hash cell becomes the progress bar at 0%.
+        for (const { id } of ALGORITHMS) {
+          if (this.disabledAlgos.has(id)) continue;
+          this._setComputingState(this.rowEls.get(id), 0);
+        }
+        this._setAllActionsEnabled(false);
+
+        // Progress callback — all algorithms share the same read position.
+        // Guard: only update rows still in computing state to protect against
+        // stale rAF callbacks firing after a rapid file re-selection.
+        const onProgress = (ratio) => {
+          for (const { id } of ALGORITHMS) {
+            if (this.disabledAlgos.has(id)) continue;
+            const els = this.rowEls.get(id);
+            if (els.hash.classList.contains('result__hash--computing')) {
+              this._setComputingState(els, ratio);
+            }
+          }
+        };
+
+        try {
+          const activeAlgos = ALGORITHMS.filter(a => !this.disabledAlgos.has(a.id));
+          this.rawHexMap = await Hasher.fromFileAll(file, onProgress, activeAlgos);
+          const fmt = this.getSelectedFormat();
+          this._currentBatchId = History.nextBatch();
+          for (const { id } of ALGORITHMS) {
+            if (this.disabledAlgos.has(id)) continue;
+            const hex  = this.rawHexMap.get(id);
+            const hash = Format.applyFormat(hex, fmt);
+            const els  = this.rowEls.get(id);
+            this._clearComputingState(els);
+            this._setHashText(els, hash);
+            els.hash.classList.remove('result__hash--empty');
+            History.record('file', hash, id, this._currentBatchId, this.currentFileName);
+          }
+          this._setAllActionsEnabled(true);
+        } catch {
+          for (const { id } of ALGORITHMS) {
+            if (this.disabledAlgos.has(id)) continue;
+            const els = this.rowEls.get(id);
+            this._clearComputingState(els);
+            this._setHashText(els, 'error reading file');
+            els.hash.classList.add('result__hash--empty');
+          }
+        }
+      },
+
+      onClear() {
+        this.rawHexMap.clear();
+        this.currentFileName = '';
+        this._input.value    = '';
+        this._fileNameText.textContent = '';
+        this._fileSize.textContent     = '';
+        this._fileName.classList.remove('file-drop__filename--visible');
+        this._dropClear.classList.remove('file-drop__clear--visible');
+        for (const { id } of ALGORITHMS) {
+          const els = this.rowEls.get(id);
+          this._clearComputingState(els);
+          this._setHashText(els, this.disabledAlgos.has(id) ? 'disabled' : 'no file selected');
+          els.hash.classList.add('result__hash--empty');
+        }
+        this._setAllActionsEnabled(false);
+      },
+
+      _onDownload(algoId) {
+        const hash = this._formattedHash(algoId);
+        if (!hash) return;
+        const ext  = algoId.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const base = this.currentFileName
+          ? this.currentFileName.replace(/\.[^.]+$/, '')
+          : `crckit-checksum_${Download.filenameSafeTimestamp()}`;
+        const filename = `${base}.${ext}`;
+        Download.trigger(hash, filename);
+        Tooltip.flash(this.rowEls.get(algoId).download);
+      },
+
+      async _onCopy(algoId) {
+        const hash = this._formattedHash(algoId);
+        if (!hash) return;
+        await Clipboard.copy(hash);
+        Tooltip.flash(this.rowEls.get(algoId).copy);
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Random checksums section
+    // -------------------------------------------------------------------------
+    const RandomSection = {
+      elements: {},
+      hashes:   [],
+
+      init() {
+        this.elements = {
+          list:        document.getElementById('randomList'),
+          regenerate:  document.getElementById('randomRegenerate'),
+          count:       document.getElementById('randomCount'),
+          algo:        document.getElementById('randomAlgo'),
+          copyAll:     document.getElementById('randomCopyAll'),
+          downloadAll: document.getElementById('randomDownloadAll'),
+        };
+
+        this.elements.regenerate.addEventListener('click',  () => this.generate());
+        this.elements.count.addEventListener('change',      () => this.generate());
+        this.elements.algo.addEventListener('change',       () => this.generate());
+        this.elements.copyAll.addEventListener('click',     () => this.onCopyAll());
+        this.elements.downloadAll.addEventListener('click', () => this.onDownloadAll());
+
+        this.elements.list.addEventListener('click', e => {
+          const btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          this.handleItemAction(btn);
+        });
+
+        this.generate();
+      },
+
+      generate() {
+        const count = parseInt(this.elements.count.value, 10);
+        const algo  = this.elements.algo.value;
+        this.hashes = Array.from({ length: count }, () => ({
+          hash: Hasher.generateRandom(algo),
+          algo,
+        }));
+        this.render();
+      },
+
+      render() {
+        const fragment = document.createDocumentFragment();
+        const padWidth = this.hashes.length > 100 ? 3 : 2;
+
+        this.hashes.forEach(({ hash, algo }, index) => {
+          const item = document.createElement('div');
+          item.className = 'random__item';
+          item.innerHTML = `
+            <span class="random__item-index">${String(index + 1).padStart(padWidth, '0')}</span>
+            <span class="random__item-hash" data-action="copy" data-hash="${hash}">${hash}<span class="tooltip">Copied!</span></span>
+            <span class="algo-badge random__item-badge" data-algo="${algo}">${algo}</span>
+            <div class="random__item-actions">
+              <button
+                class="random__item-btn"
+                data-action="copy"
+                data-hash="${hash}"
+                aria-label="Copy checksum"
+              >
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <span class="tooltip">Copied!</span>
+              </button>
+              <button
+                class="random__item-btn"
+                data-action="download"
+                data-hash="${hash}"
+                data-algo="${algo}"
+                data-index="${index + 1}"
+                aria-label="Download checksum"
+              >
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span class="tooltip">Exported</span>
+              </button>
+            </div>`;
+
+          // Badge tooltip — same pattern as result row badges.
+          // tipText is looked up from ALGORITHMS (single source of truth) so
+          // bits/hexLen stay in sync automatically when ALGORITHMS changes.
+          const randomAlgoMeta = ALGORITHMS.find(a => a.id === algo);
+          const randomTipText  = randomAlgoMeta ? `${randomAlgoMeta.bits}-bit · ${randomAlgoMeta.hexLen} hex chars` : algo;
+          const randomBadge    = item.querySelector('.algo-badge');
+          randomBadge.setAttribute('aria-label', `${algo} — ${randomTipText}`);
+          randomBadge.addEventListener('mouseenter', () => Tooltip.show(randomBadge, randomTipText));
+          randomBadge.addEventListener('mouseleave', () => Tooltip.hide());
+          randomBadge.addEventListener('focus',      () => Tooltip.show(randomBadge, randomTipText));
+          randomBadge.addEventListener('blur',       () => Tooltip.hide());
+
+          // Hover tooltips for icon-only Copy / Download buttons in random list
+          item.querySelectorAll('.random__item-btn[data-action]').forEach(btn => {
+            const label = btn.getAttribute('data-action') === 'copy' ? 'Copy' : 'Download';
+            btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
+            btn.addEventListener('mouseleave', () => Tooltip.hide());
+          });
+
+          fragment.appendChild(item);
+        });
+
+        this.elements.list.innerHTML = '';
+        this.elements.list.appendChild(fragment);
+      },
+
+      handleItemAction(button) {
+        const action = button.getAttribute('data-action');
+        const hash   = button.getAttribute('data-hash');
+
+        if (action === 'copy') {
+          Clipboard.copy(hash);
+          Tooltip.flash(button);
+        } else if (action === 'download') {
+          const index    = button.getAttribute('data-index');
+          const algo     = button.getAttribute('data-algo') ?? 'CRC-32';
+          const algoSlug = algo.toLowerCase().replace(/[^a-z0-9]/g, '');
+          const csvData  = `id,algorithm,checksum\n${index},${algo},${hash}`;
+          const filename = `${algoSlug}-random_${Download.filenameSafeTimestamp()}.csv`;
+          Download.trigger(csvData, filename, 'text/csv');
+          Tooltip.flash(button);
+        }
+      },
+
+      async onCopyAll() {
+        const text = this.hashes.map(({ hash }) => hash).join('\n');
+        await Clipboard.copy(text);
+        Tooltip.flash(this.elements.copyAll);
+      },
+
+      onDownloadAll() {
+        const rows     = this.hashes.map(({ hash, algo }, i) => `${i + 1},${algo},${hash}`);
+        const csvData  = `id,algorithm,checksum\n${rows.join('\n')}`;
+        const algo     = this.hashes[0]?.algo ?? 'CRC-32';
+        const algoSlug = algo.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const filename = `${algoSlug}-random_${Download.filenameSafeTimestamp()}.csv`;
+        Download.trigger(csvData, filename, 'text/csv');
+        Tooltip.flash(this.elements.downloadAll);
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // History — persisted per section, max 1000 entries, newest first
+    // -------------------------------------------------------------------------
+    const History = {
+      MAX:       1000,
+      PAGE_SIZE: 10,
+      _stores:   { text: [], file: [] },
+      _pages:    { text: 0,  file: 0  },
+      _batchCounter: 0,
+
+      _key(ns)  { return `crckit-history-${ns}`; },
+
+      nextBatch() {
+        return ++this._batchCounter;
+      },
+
+      load(ns) {
+        try {
+          const raw = localStorage.getItem(this._key(ns));
+          this._stores[ns] = raw ? JSON.parse(raw) : [];
+        } catch {
+          this._stores[ns] = [];
+        }
+        this._pages[ns] = 0;
+      },
+
+      save(ns) {
+        try { localStorage.setItem(this._key(ns), JSON.stringify(this._stores[ns])); }
+        catch { /* storage full — silently skip */ }
+      },
+
+      push(ns, hash, algo, batchId, filename) {
+        const entries = this._stores[ns];
+        const idx = entries.findIndex(e => e.hash === hash && e.algo === algo);
+        if (idx !== -1) entries.splice(idx, 1);
+        entries.unshift({ hash, algo, batchId, ts: Date.now(), filename: filename || '' });
+        if (entries.length > this.MAX) entries.length = this.MAX;
+        this._pages[ns] = 0;
+        this.save(ns);
+      },
+
+      clear(ns) {
+        this._stores[ns] = [];
+        this._pages[ns]  = 0;
+        this.save(ns);
+      },
+
+      entries(ns) { return this._stores[ns]; },
+
+      _formatTs(ts) {
+        const d   = new Date(ts);
+        const pad = v => String(v).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+               `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+      },
+
+      _algoOrder() {
+        const order = new Map();
+        ALGORITHMS.forEach(({ id }, i) => order.set(id, i));
+        return order;
+      },
+
+      renderBody(ns, bodyEl) {
+        const entries  = this.entries(ns);
+        const total    = entries.length;
+        const pages    = Math.max(1, Math.ceil(total / this.PAGE_SIZE));
+        this._pages[ns] = Math.min(this._pages[ns], pages - 1);
+        const page  = this._pages[ns];
+        const start = page * this.PAGE_SIZE;
+
+        const algoOrder = this._algoOrder();
+        const sorted = entries.slice().sort((a, b) => {
+          const bA = a.batchId ?? -a.ts;
+          const bB = b.batchId ?? -b.ts;
+          if (bB !== bA) return bB - bA;
+          return (algoOrder.get(a.algo) ?? 999) - (algoOrder.get(b.algo) ?? 999);
+        });
+
+        const slice = sorted.slice(start, start + this.PAGE_SIZE);
+
+        if (!slice.length) {
+          bodyEl.innerHTML = `
+            <table class="history-table" aria-label="Checksum history">
+              <thead>
+                <tr>
+                  <th class="history-table__num">#</th>
+                  <th class="history-table__algo">Algo</th>
+                  <th>Checksum</th>
+                  <th class="history-table__time">Time</th>
+                  <th class="history-table__actions"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="5" class="history-popover__empty">No checksums yet.</td>
+                </tr>
+              </tbody>
+            </table>`;
+          return;
+        }
+
+        const tbody = slice.map((e, i) => `
+          <tr>
+            <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
+            <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? 'CRC-32'}">${e.algo ?? 'CRC-32'}</span></td>
+            <td class="history-table__hash" title="${e.hash}"
+                data-action="copy-history" data-hash="${e.hash}">${e.hash}<span class="tooltip">Copied!</span></td>
+            <td class="history-table__time">${this._formatTs(e.ts)}</td>
+            <td class="history-table__actions">
+              <div class="history-table__action-btns">
+                <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy checksum">
+                  <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <span class="tooltip">Copied!</span>
+                </button>
+                <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? 'CRC-32'}" data-filename="${e.filename ?? ''}" aria-label="Download checksum">
+                  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  <span class="tooltip">Exported</span>
+                </button>
+              </div>
+            </td>
+          </tr>`).join('');
+
+        bodyEl.innerHTML = `
+          <table class="history-table" aria-label="Checksum history">
+            <thead>
+              <tr>
+                <th class="history-table__num">#</th>
+                <th class="history-table__algo">Algo</th>
+                <th>Checksum</th>
+                <th class="history-table__time">Time</th>
+                <th class="history-table__actions"></th>
+              </tr>
+            </thead>
+            <tbody>${tbody}</tbody>
+          </table>`;
+      },
+
+      _renderFooter(ns, popover) {
+        const existing = popover.querySelector('.history-popover__footer');
+        if (existing) existing.remove();
+
+        const entries = this.entries(ns);
+        const total   = entries.length;
+        const pages   = Math.max(1, Math.ceil(total / this.PAGE_SIZE));
+        const page    = this._pages[ns];
+
+        const footer = document.createElement('div');
+        footer.className = 'history-popover__footer';
+        footer.innerHTML = `
+          <div class="history-pagination" aria-label="History pagination">
+            <button
+              class="history-pagination__btn"
+              data-dir="-1"
+              aria-label="Previous page"
+              ${page === 0 ? 'disabled' : ''}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <span class="history-pagination__info">${total ? `${page + 1} / ${pages}` : '—'}</span>
+            <button
+              class="history-pagination__btn"
+              data-dir="1"
+              aria-label="Next page"
+              ${page >= pages - 1 ? 'disabled' : ''}
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+            </button>
+          </div>
+          <button class="history-popover__clear" data-history-clear="${ns}">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            Clear
+          </button>`;
+        popover.appendChild(footer);
+      },
+
+      _refreshFns: {},
+
+      initPopover(ns, btnId, popoverId, bodyId) {
+        this.load(ns);
+
+        const btn     = document.getElementById(btnId);
+        const popover = document.getElementById(popoverId);
+        const body    = document.getElementById(bodyId);
+
+        const refresh = () => {
+          this.renderBody(ns, body);
+          this._renderFooter(ns, popover);
+          // Re-wire hover tooltips on the newly-rendered action buttons
+          body.querySelectorAll('.history-table__action-btn[data-action]').forEach(btn => {
+            const label = btn.getAttribute('data-action') === 'copy-history' ? 'Copy' : 'Download';
+            btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
+            btn.addEventListener('mouseleave', () => Tooltip.hide());
+          });
+
+          popover.querySelectorAll('.history-pagination__btn').forEach(pbtn => {
+            pbtn.addEventListener('click', e => {
+              e.stopPropagation();
+              const pages = Math.max(1, Math.ceil(this.entries(ns).length / this.PAGE_SIZE));
+              this._pages[ns] = Math.max(0, Math.min(
+                this._pages[ns] + parseInt(pbtn.dataset.dir, 10),
+                pages - 1
+              ));
+              refresh();
+            });
+          });
+
+          const clearBtn = popover.querySelector('[data-history-clear]');
+          if (clearBtn) {
+            clearBtn.addEventListener('click', e => {
+              e.stopPropagation();
+              this.clear(ns);
+              refresh();
+            });
+          }
+        };
+
+        this._refreshFns[ns] = () => {
+          if (popover.classList.contains('history-popover--visible')) refresh();
+        };
+
+        // Hover tooltip on the history clock button
+        btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'History'));
+        btn.addEventListener('mouseleave', () => Tooltip.hide());
+
+        const open  = () => {
+          refresh();
+          popover.classList.add('history-popover--visible');
+          btn.setAttribute('aria-expanded', 'true');
+          document.getElementById('historyBackdrop').classList.add('history-backdrop--visible');
+        };
+        const close = () => {
+          popover.classList.remove('history-popover--visible');
+          btn.setAttribute('aria-expanded', 'false');
+          const anyOpen = document.querySelector('.history-popover--visible');
+          if (!anyOpen) document.getElementById('historyBackdrop').classList.remove('history-backdrop--visible');
+        };
+
+        popover.addEventListener('click', e => {
+          if (e.target.closest('[data-popover-close]')) { e.stopPropagation(); close(); btn.focus(); }
+        });
+
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          popover.classList.contains('history-popover--visible') ? close() : open();
+        });
+
+        document.addEventListener('click', e => {
+          if (popover.classList.contains('history-popover--visible') &&
+              !popover.contains(e.target) && e.target !== btn) close();
+        });
+
+        document.getElementById('historyBackdrop').addEventListener('click', () => {
+          if (popover.classList.contains('history-popover--visible')) close();
+        });
+
+        document.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && popover.classList.contains('history-popover--visible')) {
+            close(); btn.focus();
+          }
+        });
+
+        body.addEventListener('click', async e => {
+          const target = e.target.closest('[data-action]');
+          if (!target) return;
+
+          const { action, hash } = target.dataset;
+
+          if (action === 'copy-history') {
+            e.stopPropagation();
+            await Clipboard.copy(hash);
+            Tooltip.flash(target);
+          } else if (action === 'download-history') {
+            e.stopPropagation();
+            const algo           = target.dataset.algo ?? 'CRC-32';
+            const ext            = algo.toLowerCase().replace(/[^a-z0-9]/g, '');
+            const storedFilename = target.dataset.filename ?? '';
+            const base = storedFilename
+              ? storedFilename.replace(/\.[^.]+$/, '')
+              : `crckit-checksum_${Download.filenameSafeTimestamp()}`;
+            Download.trigger(hash, `${base}.${ext}`);
+            Tooltip.flash(target);
+          }
+        });
+      },
+
+      record(ns, hash, algo, batchId, filename) {
+        this.push(ns, hash, algo, batchId, filename);
+        this._refreshFns[ns]?.();
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // FAQ tabs
+    // -------------------------------------------------------------------------
+    const FaqTabs = {
+      init() {
+        const tablist = document.getElementById('faqTablist');
+        const wrap    = document.getElementById('faqTabsWrap');
+        if (!tablist) return;
+
+        const updateFade = () => {
+          const { scrollLeft, scrollWidth, clientWidth } = tablist;
+          wrap.style.setProperty('--tabs-fade-left',  scrollLeft > 1 ? '1' : '0');
+          wrap.style.setProperty('--tabs-fade-right', scrollLeft + clientWidth < scrollWidth - 1 ? '1' : '0');
+        };
+        tablist.addEventListener('scroll', updateFade, { passive: true });
+        if (typeof ResizeObserver !== 'undefined') {
+          new ResizeObserver(updateFade).observe(tablist);
+        } else {
+          window.addEventListener('resize', updateFade, { passive: true });
+        }
+        updateFade();
+
+        tablist.addEventListener('click', e => {
+          const tab = e.target.closest('[data-tab]');
+          if (!tab) return;
+          this.activate(tab.dataset.tab);
+        });
+
+        tablist.addEventListener('keydown', e => {
+          const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+          const idx  = tabs.indexOf(document.activeElement);
+          if (idx === -1) return;
+          let next = -1;
+          if (e.key === 'ArrowRight') next = (idx + 1) % tabs.length;
+          if (e.key === 'ArrowLeft')  next = (idx - 1 + tabs.length) % tabs.length;
+          if (next !== -1) { e.preventDefault(); tabs[next].focus(); this.activate(tabs[next].dataset.tab); }
+        });
+      },
+
+      activate(tabId) {
+        document.querySelectorAll('.info__tab').forEach(t => t.setAttribute('aria-selected', 'false'));
+        document.querySelectorAll('.info__panel').forEach(p => p.removeAttribute('data-active'));
+        const tab   = document.querySelector(`[data-tab="${tabId}"]`);
+        const panel = document.getElementById(`faq-panel-${tabId}`);
+        if (tab) {
+          tab.setAttribute('aria-selected', 'true');
+          tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+        }
+        if (panel) panel.setAttribute('data-active', '');
+      },
+    };
+
+    // -------------------------------------------------------------------------
+    // Bootstrap
+    // -------------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('footerYear').textContent = new Date().getFullYear();
+      Theme.init();
+      FaqTabs.init();
+      History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
+      History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
+      TextSection.init();
+      FileSection.init();
+
+      // Toggle-all button — Text section
+      (() => {
+        const btn = document.getElementById('textToggleAllBtn');
+        if (!btn) return;
+        btn.addEventListener('click', () => TextSection._toggleAll());
+        btn.addEventListener('mouseenter', () => {
+          const allSelected = ALGORITHMS.every(a => !TextSection.disabledAlgos.has(a.id));
+          Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+        });
+        btn.addEventListener('mouseleave', () => Tooltip.hide());
+        btn.addEventListener('focus', () => {
+          const allSelected = ALGORITHMS.every(a => !TextSection.disabledAlgos.has(a.id));
+          Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+        });
+        btn.addEventListener('blur', () => Tooltip.hide());
+      })();
+
+      // Toggle-all button — File section
+      (() => {
+        const btn = document.getElementById('fileToggleAllBtn');
+        if (!btn) return;
+        btn.addEventListener('click', () => FileSection._toggleAll());
+        btn.addEventListener('mouseenter', () => {
+          const allSelected = ALGORITHMS.every(a => !FileSection.disabledAlgos.has(a.id));
+          Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+        });
+        btn.addEventListener('mouseleave', () => Tooltip.hide());
+        btn.addEventListener('focus', () => {
+          const allSelected = ALGORITHMS.every(a => !FileSection.disabledAlgos.has(a.id));
+          Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+        });
+        btn.addEventListener('blur', () => Tooltip.hide());
+      })();
+      RandomSection.init();
+
+      // Heading algo badges — click scrolls to the Text section and focuses the input.
+      // Hover/focus shows the same informational tooltip used in result rows and the
+      // Random section, sourced from ALGORITHMS (single source of truth).
+      document.querySelectorAll('.page-heading__algos .algo-badge').forEach(badge => {
+        const algoId  = badge.dataset.algo;
+        const algo    = ALGORITHMS.find(a => a.id === algoId);
+        const tipText = `${algo.bits}-bit · ${algo.hexLen} hex chars`;
+
+        // Bring aria-label in line with result-row badge pattern
+        badge.setAttribute('aria-label', `${algoId} — ${tipText} — click to start hashing`);
+
+        badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText));
+        badge.addEventListener('mouseleave', () => Tooltip.hide());
+        badge.addEventListener('focus',      () => Tooltip.show(badge, tipText));
+        badge.addEventListener('blur',       () => Tooltip.hide());
+
+        badge.addEventListener('click', () => {
+          const input = document.getElementById('textInput');
+          document.getElementById('text').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          setTimeout(() => input.focus(), 200);
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

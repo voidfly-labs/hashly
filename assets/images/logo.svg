@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="220" viewBox="0 0 200 220">
+  <defs>
+    <!-- Layer glow filter -->
+    <filter id="glow-blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" result="tint"
+                     values="0 0 0 0 0.26
+                0 0 0 0 0.38
+                0 0 0 0 0.93
+                0 0 0 0.75 0"/>
+      <feMerge>
+        <feMergeNode in="tint"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Shimmer gradient -->
+    <linearGradient id="shimmer-face" x1="-200" y1="-115" x2="0" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="40%" stop-color="white" stop-opacity="0"/>
+      <stop offset="50%" stop-color="white" stop-opacity="0.35"/>
+      <stop offset="60%" stop-color="white" stop-opacity="0"/>
+      <animateTransform attributeName="gradientTransform" type="translate"
+                        values="0 0; 400 230; 400 230"
+                        keyTimes="0; 0.4; 1"
+                        dur="3s" repeatCount="indefinite"/>
+    </linearGradient>
+  </defs>
+
+  <style>
+    /* Layer breathing animation */
+    @keyframes decompose {
+      0%, 30% {
+        transform: translateY(0);
+      }
+      50%, 70% {
+        transform: translateY(var(--delta-y));
+      }
+      90%, 100% {
+        transform: translateY(0);
+      }
+    }
+
+    .layer {
+      animation: decompose 4s ease-in-out infinite;
+      will-change: transform;
+    }
+
+    .layer-top {
+      --delta-y: -25px
+    }
+
+    .layer-bottom {
+      --delta-y: 25px;
+    }
+  </style>
+
+  <!-- Isometric layer stack -->
+  <g id="layers">
+    <!-- Bottom layer -->
+    <g class="layer layer-bottom">
+      <g filter="url(#glow-blur)">
+        <polygon points="18.75,126.25 100,170 181.25,126.25 100,82.5" fill="#6B8AFF" opacity=".3"/>
+        <polygon points="18.75,126.25 100,170 100,182.5 18.75,138.75" fill="#4361EE" opacity=".4"/>
+        <polygon points="100,170 181.25,126.25 181.25,138.75 100,182.5" fill="#3651D4" opacity=".35"/>
+        <polygon points="18.75,126.25 100,170 181.25,126.25 100,82.5" fill="url(#shimmer-face)" opacity=".3"/>
+      </g>
+    </g>
+    <!-- Middle layer -->
+    <g class="layer">
+      <g filter="url(#glow-blur)">
+        <polygon points="18.75,107.5 100,151.25 181.25,107.5 100,63.75" fill="#6B8AFF" opacity=".6"/>
+        <polygon points="18.75,107.5 100,151.25 100,163.75 18.75,120" fill="#4361EE" opacity=".7"/>
+        <polygon points="100,151.25 181.25,107.5 181.25,120 100,163.75" fill="#3651D4" opacity=".65"/>
+        <polygon points="18.75,107.5 100,151.25 181.25,107.5 100,63.75" fill="url(#shimmer-face)" opacity=".6"/>
+      </g>
+    </g>
+    <!-- Top layer -->
+    <g class="layer layer-top">
+      <g filter="url(#glow-blur)">
+        <polygon points="18.75,88.75 100,132.5 181.25,88.75 100,45" fill="#6B8AFF"/>
+        <polygon points="18.75,88.75 100,132.5 100,145 18.75,101.25" fill="#4361EE"/>
+        <polygon points="100,132.5 181.25,88.75 181.25,101.25 100,145" fill="#3651D4"/>
+        <polygon points="18.75,88.75 100,132.5 181.25,88.75 100,45" fill="url(#shimmer-face)"/>
+      </g>
+    </g>
+  </g>
+</svg>
