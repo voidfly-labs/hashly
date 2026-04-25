@@ -2610,6 +2610,8 @@
     // -------------------------------------------------------------------------
     // Format utilities
     // -------------------------------------------------------------------------
+    const _encoder = new TextEncoder();
+
     const Format = {
 
       base64ToBytes(b64) {
@@ -2646,7 +2648,7 @@
           case 'hex':    return this.hexToBytes(text);
           case 'base64': return this.base64ToBytes(text);
           case 'binary': return this.binaryToBytes(text);
-          default:       return new TextEncoder().encode(text);  // utf-8
+          default:       return _encoder.encode(text);  // utf-8
         }
       },
 
@@ -2796,6 +2798,9 @@
     //   hasher.digest('hex')                 — finalise and return a hex string
     // All methods return Promises. One IHasher per algorithm is created once and
     // reused across calls via init() to avoid repeated WASM instantiation overhead.
+    const DEFAULT_ALGO = 'SHA3-256';
+    const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
+
     // -------------------------------------------------------------------------
     const Hasher = (() => {
       // Lazily initialised pool: Map<bits, IHasher>
@@ -3331,7 +3336,7 @@
               bytes = text.trim().split(/\s+/).filter(g => g.length > 0).length;
               break;
             default:
-              bytes = new TextEncoder().encode(text).byteLength;
+              bytes = _encoder.encode(text).byteLength;
           }
         }
         this._counterBytes.textContent = bytes === 1 ? '1 byte' : `${bytes.toLocaleString()} bytes`;
@@ -3885,6 +3890,12 @@
         const fragment = document.createDocumentFragment();
         const padWidth = this.hashes.length > 100 ? 3 : 2;
 
+        const _curAlgo  = this.hashes[0]?.algo ?? DEFAULT_ALGO;
+        const _algoMeta = ALGORITHMS.find(a => a.id === _curAlgo);
+        const _tipText  = _algoMeta
+          ? `${_algoMeta.bits}-bit · ${_algoMeta.hexLen} hex chars`
+          : _curAlgo;
+
         this.hashes.forEach(({ hash, algo }, index) => {
           const item = document.createElement('div');
           item.className = 'random__item';
@@ -3915,16 +3926,11 @@
               </button>
             </div>`;
 
-          // Badge tooltip — same pattern as result row badges.
-          // tipText is looked up from ALGORITHMS (single source of truth) so
-          // bits/hexLen stay in sync automatically when ALGORITHMS changes.
-          const randomAlgoMeta = ALGORITHMS.find(a => a.id === algo);
-          const randomTipText  = randomAlgoMeta ? `${randomAlgoMeta.bits}-bit · ${randomAlgoMeta.hexLen} hex chars` : algo;
           const randomBadge    = item.querySelector('.algo-badge');
-          randomBadge.setAttribute('aria-label', `${algo} — ${randomTipText}`);
-          randomBadge.addEventListener('mouseenter', () => Tooltip.show(randomBadge, randomTipText));
+          randomBadge.setAttribute('aria-label', `${algo} — ${_tipText}`);
+          randomBadge.addEventListener('mouseenter', () => Tooltip.show(randomBadge, _tipText));
           randomBadge.addEventListener('mouseleave', () => Tooltip.hide());
-          randomBadge.addEventListener('focus',      () => Tooltip.show(randomBadge, randomTipText));
+          randomBadge.addEventListener('focus',      () => Tooltip.show(randomBadge, _tipText));
           randomBadge.addEventListener('blur',       () => Tooltip.hide());
 
           // Hover tooltips for icon-only Copy / Download buttons in random list
@@ -3950,7 +3956,7 @@
           Tooltip.flash(button);
         } else if (action === 'download') {
           const index    = button.getAttribute('data-index');
-          const algo     = button.getAttribute('data-algo') ?? 'SHA3-256';
+          const algo     = button.getAttribute('data-algo') ?? DEFAULT_ALGO;
           const algoSlug = algo.toLowerCase().replaceAll('-', '');
           const csvData  = `id,algorithm,hash\n${index},${algo},${hash}`;
           const filename = `sha3kit-random_${Download.filenameSafeTimestamp()}.csv`;
@@ -3968,7 +3974,7 @@
       onDownloadAll() {
         const rows     = this.hashes.map(({ hash, algo }, i) => `${i + 1},${algo},${hash}`);
         const csvData  = `id,algorithm,hash\n${rows.join('\n')}`;
-        const algo     = this.hashes[0]?.algo ?? 'SHA3-256';
+        const algo     = this.hashes[0]?.algo ?? DEFAULT_ALGO;
         const algoSlug = algo.toLowerCase().replaceAll('-', '');
         const filename = `sha3kit-random_${Download.filenameSafeTimestamp()}.csv`;
         Download.trigger(csvData, filename, 'text/csv');
@@ -4042,13 +4048,6 @@
                `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
       },
 
-      // Build a lookup map from algo id → its index in ALGORITHMS for sorting.
-      _algoOrder() {
-        const order = new Map();
-        ALGORITHMS.forEach(({ id }, i) => order.set(id, i));
-        return order;
-      },
-
       renderBody(ns, bodyEl) {
         const entries  = this.entries(ns);
         const total    = entries.length;
@@ -4061,7 +4060,7 @@
         // Sort: primary = batchId descending (newest calculation first),
         // secondary = algo index ascending (SHA-1 → SHA-256 → … within a batch).
         // Entries without a batchId (legacy localStorage data) fall back to ts.
-        const algoOrder = this._algoOrder();
+        const algoOrder = ALGO_ORDER;
         const sorted = entries.slice().sort((a, b) => {
           const bA = a.batchId ?? -a.ts;
           const bB = b.batchId ?? -b.ts;
@@ -4096,7 +4095,7 @@
         const tbody = slice.map((e, i) => `
           <tr>
             <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
-            <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? 'SHA3-256'}">${e.algo ?? 'SHA3-256'}</span></td>
+            <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? DEFAULT_ALGO}">${e.algo ?? DEFAULT_ALGO}</span></td>
             <td class="history-table__hash" title="${e.hash}"
                 data-action="copy-history" data-hash="${e.hash}">${e.hash}<span class="tooltip">Copied!</span></td>
             <td class="history-table__time">${this._formatTs(e.ts)}</td>
@@ -4106,7 +4105,7 @@
                   <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                   <span class="tooltip">Copied!</span>
                 </button>
-                <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? 'SHA-256'}" data-filename="${e.filename ?? ''}" aria-label="Download hash">
+                <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? DEFAULT_ALGO}" data-filename="${e.filename ?? ''}" aria-label="Download hash">
                   <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                   <span class="tooltip">Exported</span>
                 </button>
@@ -4273,7 +4272,7 @@
             Tooltip.flash(target);
           } else if (action === 'download-history') {
             e.stopPropagation();
-            const algo             = target.dataset.algo ?? 'SHA3-256';
+            const algo             = target.dataset.algo ?? DEFAULT_ALGO;
             const ext              = algo.toLowerCase().replaceAll('-', '');
             const storedFilename   = target.dataset.filename ?? '';
             // Mirror FileSection._onDownload: if a source filename was recorded,
@@ -4303,6 +4302,9 @@
         const tablist = document.getElementById('faqTablist');
         const wrap    = document.getElementById('faqTabsWrap');
         if (!tablist) return;
+
+        this._tabs   = [...document.querySelectorAll('.info__tab')];
+        this._panels = [...document.querySelectorAll('.info__panel')];
 
         const updateFade = () => {
           const { scrollLeft, scrollWidth, clientWidth } = tablist;
@@ -4335,9 +4337,9 @@
       },
 
       activate(tabId) {
-        document.querySelectorAll('.info__tab').forEach(t => t.setAttribute('aria-selected', 'false'));
-        document.querySelectorAll('.info__panel').forEach(p => p.removeAttribute('data-active'));
-        const tab   = document.querySelector(`[data-tab="${tabId}"]`);
+        this._tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        this._panels.forEach(p => p.removeAttribute('data-active'));
+        const tab   = this._tabs.find(t => t.dataset.tab === tabId);
         const panel = document.getElementById(`faq-panel-${tabId}`);
         if (tab) {
           tab.setAttribute('aria-selected', 'true');
