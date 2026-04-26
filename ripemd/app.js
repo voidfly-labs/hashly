@@ -115,22 +115,9 @@ const Hasher = {
     return new Map(hashers.map(({ id, instance }) => [id, CryptoApi.encoder.toHex(instance.finalize())]));
   },
 
-  /** Generate a random hex string sized to match the real digest for a
-   *  given algorithm. The result is visually indistinguishable from a
-   *  real hash output.
-   *    RIPEMD-128 → 16 bytes  ( 32 hex chars)
-   *    RIPEMD-160 → 20 bytes  ( 40 hex chars)
-   *    RIPEMD-256 → 32 bytes  ( 64 hex chars)
-   *    RIPEMD-320 → 40 bytes  ( 80 hex chars) */
   generateRandom(algoId) {
-    const byteLengths = {
-      'RIPEMD-128': 16,
-      'RIPEMD-160': 20,
-      'RIPEMD-256': 32,
-      'RIPEMD-320': 40,
-    };
-    const byteLength = byteLengths[algoId] ?? 20;
-    const bytes = new Uint8Array(byteLength);
+    const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 40;
+    const bytes = new Uint8Array(hexLen / 2);
     crypto.getRandomValues(bytes);
     return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   },

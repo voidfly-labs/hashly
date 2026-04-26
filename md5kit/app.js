@@ -156,13 +156,9 @@ const Hasher = {
     );
   },
 
-  /** Generate a random hex string sized to match the real digest for the
-   *  given algorithm. All three variants produce 128-bit (16-byte) digests,
-   *  displayed as 32 hex characters. */
   generateRandom(algoId) {
-    const byteLengths = { MD2: 16, MD4: 16, MD5: 16 };
-    const byteLength = byteLengths[algoId] ?? 16;
-    const bytes = new Uint8Array(byteLength);
+    const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 32;
+    const bytes = new Uint8Array(hexLen / 2);
     crypto.getRandomValues(bytes);
     return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
   },

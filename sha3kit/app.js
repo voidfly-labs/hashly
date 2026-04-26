@@ -126,22 +126,9 @@ const Hasher = (() => {
       return new Map(hashers.map(({ id, instance }) => [id, instance.digest('hex')]));
     },
 
-    /** Generate a random hex string sized to match the real digest for a
-     *  given algorithm. The result is visually indistinguishable from a
-     *  real hash output.
-     *    SHA3-224 → 28 bytes  ( 56 hex chars)
-     *    SHA3-256 → 32 bytes  ( 64 hex chars)
-     *    SHA3-384 → 48 bytes  ( 96 hex chars)
-     *    SHA3-512 → 64 bytes  (128 hex chars) */
     generateRandom(algoId) {
-      const byteLengths = {
-        'SHA3-224': 28,
-        'SHA3-256': 32,
-        'SHA3-384': 48,
-        'SHA3-512': 64,
-      };
-      const byteLength = byteLengths[algoId] ?? 32;
-      const bytes = new Uint8Array(byteLength);
+      const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 64;
+      const bytes = new Uint8Array(hexLen / 2);
       crypto.getRandomValues(bytes);
       return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
     },
