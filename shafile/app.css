@@ -1,0 +1,65 @@
+    :root {
+      /* Algorithm badge palette — 5-hue spectral spread, light theme.
+         Hues evenly spaced ~30° apart on the colour wheel:
+           SHA-1   → green-teal  (~155°)  — warmest / most legacy
+           SHA-224 → cyan        (~190°)
+           SHA-256 → blue        (~225°)  — inherits existing accent
+           SHA-384 → indigo      (~250°)
+           SHA-512 → violet      (~280°)  — strongest / most modern */
+      --badge-sha1-bg:    #E2F5EE;  --badge-sha1-text:    #0C7055;
+      --badge-sha224-bg:  #E0F3F9;  --badge-sha224-text:  #0A6882;
+      --badge-sha256-bg:  #DDEAFC;   /* slightly more saturated than --accent-surface (#F2F4FE) so the badge reads distinctly against the odd result row */
+      --badge-sha256-text: var(--accent-dim);
+      --badge-sha384-bg:  #E6E8FB;  --badge-sha384-text:  #3040C0;
+      --badge-sha512-bg:  #EEE8FA;  --badge-sha512-text:  #6428B4;
+    }
+
+    [data-theme="dark"] {
+      /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+      --badge-sha1-bg:    rgba(14, 200, 140, 0.13);  --badge-sha1-text:    #34D9A8;
+      --badge-sha224-bg:  rgba(10, 190, 230, 0.13);  --badge-sha224-text:  #40CCEE;
+      --badge-sha256-bg:  var(--accent-surface);
+      --badge-sha256-text: var(--accent);
+      --badge-sha384-bg:  rgba(80, 100, 255, 0.14);  --badge-sha384-text:  #8898FF;
+      --badge-sha512-bg:  rgba(160, 90, 255, 0.14);  --badge-sha512-text:  #C090FF;
+    }
+
+    .algo-badge {
+      min-width: 58px;
+    }
+
+    .algo-badge[data-algo="SHA-1"] {
+      color:      var(--badge-sha1-text);
+      background: var(--badge-sha1-bg);
+    }
+
+    .algo-badge[data-algo="SHA-224"] {
+      color:      var(--badge-sha224-text);
+      background: var(--badge-sha224-bg);
+    }
+
+    .algo-badge[data-algo="SHA-256"] {
+      color:      var(--badge-sha256-text);
+      background: var(--badge-sha256-bg);
+    }
+
+    .algo-badge[data-algo="SHA-384"] {
+      color:      var(--badge-sha384-text);
+      background: var(--badge-sha384-bg);
+    }
+
+    .algo-badge[data-algo="SHA-512"] {
+      color:      var(--badge-sha512-text);
+      background: var(--badge-sha512-bg);
+    }
+
+
+    @media (max-width: 341px) {
+      .history-table__hash { display: none; }
+      .history-table__time {
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+      }
+    }

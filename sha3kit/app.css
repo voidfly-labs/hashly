@@ -1,0 +1,57 @@
+    :root {
+      /* Algorithm badge palette — 4-hue spectral spread, light theme.
+         Full rainbow coverage:
+           SHA3-224 → amber-orange (~35°)  — smallest digest
+           SHA3-256 → blue         (~220°) — most popular, inherits accent family
+           SHA3-384 → violet       (~270°)
+           SHA3-512 → rose-pink    (~320°) — widest digest */
+      --badge-sha3224-bg:  #FEF3E2;  --badge-sha3224-text:  #995500;
+      --badge-sha3256-bg:  #DDEAFC;
+      --badge-sha3256-text: var(--accent-dim);
+      --badge-sha3384-bg:  #EEE8FA;  --badge-sha3384-text:  #6428B4;
+      --badge-sha3512-bg:  #FCE8F3;  --badge-sha3512-text:  #9C1B6A;
+    }
+
+    [data-theme="dark"] {
+      /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+      --badge-sha3224-bg:  rgba(255, 180, 60, 0.13);  --badge-sha3224-text:  #FFB84D;
+      --badge-sha3256-bg:  var(--accent-surface);
+      --badge-sha3256-text: var(--accent);
+      --badge-sha3384-bg:  rgba(160, 90, 255, 0.14);  --badge-sha3384-text:  #C090FF;
+      --badge-sha3512-bg:  rgba(255, 80, 180, 0.13);  --badge-sha3512-text:  #FF80D0;
+    }
+
+    .algo-badge {
+      min-width: 64px;
+    }
+
+    .algo-badge[data-algo="SHA3-224"] {
+      color:      var(--badge-sha3224-text);
+      background: var(--badge-sha3224-bg);
+    }
+
+    .algo-badge[data-algo="SHA3-256"] {
+      color:      var(--badge-sha3256-text);
+      background: var(--badge-sha3256-bg);
+    }
+
+    .algo-badge[data-algo="SHA3-384"] {
+      color:      var(--badge-sha3384-text);
+      background: var(--badge-sha3384-bg);
+    }
+
+    .algo-badge[data-algo="SHA3-512"] {
+      color:      var(--badge-sha3512-text);
+      background: var(--badge-sha3512-bg);
+    }
+
+    @media (max-width: 348px) {
+      .history-table__hash { display: none; }
+      .history-table__time {
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+      }
+    }
+

@@ -1,0 +1,116 @@
+    :root {
+      /* Algorithm badge palette — 23-hue spectral spread, light theme.
+         Hues spaced evenly ~13° apart from orange (~28°) to rose (~314°):
+           CRC-8 (1-Wire)   → orange        (~28°)
+           CRC-8 (DVB-S2)   → amber         (~41°)
+           CRC-8 (SMBus)    → yellow        (~54°)
+           CRC-16           → yellow-green  (~67°)
+           CRC-16 (CCITT)   → lime          (~80°)
+           CRC-16 (DNP)     → lime-green    (~93°)
+           CRC-16 (Kermit)  → green         (~106°)
+           CRC-16 (Modbus)  → teal-green    (~119°)
+           CRC-16 (USB)     → teal          (~132°)
+           CRC-16 (XMODEM)  → cyan-teal     (~145°)
+           CRC-24 (BLE)     → cyan          (~158°)
+           CRC-24 (Intlkn)  → sky           (~171°)
+           CRC-24 (OpenPGP) → sky-blue      (~184°)
+           CRC-32           → blue          (~197°)
+           CRC-32C          → blue-indigo   (~210°)  ← pinned after CRC-32
+           CRC-32 (BZIP2)   → indigo        (~223°)
+           CRC-32 (JamCRC)  → indigo-violet (~236°)
+           CRC-32 (MPEG-2)  → violet        (~249°)
+           CRC-64 (ECMA)    → purple        (~262°)
+           CRC-64 (NVMe)    → magenta-blue  (~275°)
+           CRC-64 (Redis)   → magenta       (~288°)
+           CRC-64 (XZ)      → pink-magenta  (~301°)
+           CRC-82 (DARC)    → rose          (~314°) */
+      --badge-crc81wire-bg:       #F9EFE5;  --badge-crc81wire-text:       #A95C18;
+      --badge-crc8dvbs2-bg:       #F9F3E5;  --badge-crc8dvbs2-text:       #9A7010;
+      --badge-crc8smbus-bg:       #F9F7E5;  --badge-crc8smbus-text:       #7A7810;
+      --badge-crc16-bg:           #F2F9E5;  --badge-crc16-text:           #5A8010;
+      --badge-crc16ccitt-bg:      #EAF9E5;  --badge-crc16ccitt-text:      #307A10;
+      --badge-crc16dnp-bg:        #E5F9E6;  --badge-crc16dnp-text:        #107A20;
+      --badge-crc16kermit-bg:     #E5F9EC;  --badge-crc16kermit-text:     #0A7A48;
+      --badge-crc16modbus-bg:     #E5F9F3;  --badge-crc16modbus-text:     #0A7065;
+      --badge-crc16usb-bg:        #E5F7F9;  --badge-crc16usb-text:        #0A6475;
+      --badge-crc16xmodem-bg:     #E5F1F9;  --badge-crc16xmodem-text:     #0A5482;
+      --badge-crc24ble-bg:        #E5EBF9;  --badge-crc24ble-text:        #0A4490;
+      --badge-crc24intlkn-bg:     #E5E6F9;  --badge-crc24intlkn-text:     #0E319E;
+      --badge-crc24openpgp-bg:    #E6E5F9;  --badge-crc24openpgp-text:    #1C20A0;
+      --badge-crc32-bg:           #E9E5F9;  --badge-crc32-text:           #2E15A0;
+      --badge-crc32c-bg:          #EDE5F9;  --badge-crc32c-text:          #430EA0;
+      --badge-crc32bzip2-bg:      #F1E5F9;  --badge-crc32bzip2-text:      #5808A0;
+      --badge-crc32jamcrc-bg:     #F5E5F9;  --badge-crc32jamcrc-text:     #6C0898;
+      --badge-crc32mpeg2-bg:      #F8E5F9;  --badge-crc32mpeg2-text:      #800890;
+      --badge-crc64ecma-bg:       #F9E5F6;  --badge-crc64ecma-text:       #900880;
+      --badge-crc64nvme-bg:       #F9E5F2;  --badge-crc64nvme-text:       #98086A;
+      --badge-crc64redis-bg:      #F9E5EE;  --badge-crc64redis-text:      #980850;
+      --badge-crc64xz-bg:         #F9E5EB;  --badge-crc64xz-text:         #980838;
+      --badge-crc82darc-bg:       #F9E5E8;  --badge-crc82darc-text:       #981028;
+    }
+
+    [data-theme="dark"] {
+      /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+      --badge-crc81wire-bg:       rgba(220, 140, 40, 0.14);  --badge-crc81wire-text:       #F0B870;
+      --badge-crc8dvbs2-bg:       rgba(215, 190, 40, 0.13);  --badge-crc8dvbs2-text:       #EDE068;
+      --badge-crc8smbus-bg:       rgba(190, 205, 40, 0.13);  --badge-crc8smbus-text:       #D8E868;
+      --badge-crc16-bg:           rgba(135, 215, 40, 0.13);  --badge-crc16-text:           #AAEC68;
+      --badge-crc16ccitt-bg:      rgba(70, 220, 40, 0.13);   --badge-crc16ccitt-text:      #82EE68;
+      --badge-crc16dnp-bg:        rgba(40, 218, 58, 0.13);   --badge-crc16dnp-text:        #68EE7A;
+      --badge-crc16kermit-bg:     rgba(40, 218, 135, 0.13);  --badge-crc16kermit-text:     #68EEB8;
+      --badge-crc16modbus-bg:     rgba(40, 205, 200, 0.13);  --badge-crc16modbus-text:     #68E4E0;
+      --badge-crc16usb-bg:        rgba(40, 185, 218, 0.13);  --badge-crc16usb-text:        #68D4EE;
+      --badge-crc16xmodem-bg:     rgba(40, 148, 218, 0.13);  --badge-crc16xmodem-text:     #68B8EE;
+      --badge-crc24ble-bg:        rgba(40, 108, 218, 0.14);  --badge-crc24ble-text:        #7898F0;
+      --badge-crc24intlkn-bg:     rgba(40, 68, 220, 0.14);   --badge-crc24intlkn-text:     #7878F0;
+      --badge-crc24openpgp-bg:    rgba(52, 40, 220, 0.14);   --badge-crc24openpgp-text:    #8080F0;
+      --badge-crc32-bg:           rgba(74, 40, 220, 0.14);   --badge-crc32-text:           #8A78F0;
+      --badge-crc32c-bg:          rgba(100, 40, 220, 0.14);  --badge-crc32c-text:          #A070F0;
+      --badge-crc32bzip2-bg:      rgba(128, 40, 220, 0.14);  --badge-crc32bzip2-text:      #B870F0;
+      --badge-crc32jamcrc-bg:     rgba(160, 40, 215, 0.14);  --badge-crc32jamcrc-text:     #D070E8;
+      --badge-crc32mpeg2-bg:      rgba(190, 40, 200, 0.14);  --badge-crc32mpeg2-text:      #E070D8;
+      --badge-crc64ecma-bg:       rgba(205, 40, 175, 0.14);  --badge-crc64ecma-text:       #E870C0;
+      --badge-crc64nvme-bg:       rgba(210, 40, 148, 0.14);  --badge-crc64nvme-text:       #F070A8;
+      --badge-crc64redis-bg:      rgba(210, 40, 115, 0.14);  --badge-crc64redis-text:      #F07090;
+      --badge-crc64xz-bg:         rgba(210, 40, 82, 0.14);   --badge-crc64xz-text:         #F07078;
+      --badge-crc82darc-bg:       rgba(210, 45, 55, 0.14);   --badge-crc82darc-text:       #F07070;
+    }
+
+    .algo-badge {
+      min-width: 114px;
+    }
+
+    .algo-badge[data-algo="CRC-8 (1-Wire)"]      { color: var(--badge-crc81wire-text);      background: var(--badge-crc81wire-bg); }
+    .algo-badge[data-algo="CRC-8 (DVB-S2)"]      { color: var(--badge-crc8dvbs2-text);      background: var(--badge-crc8dvbs2-bg); }
+    .algo-badge[data-algo="CRC-8 (SMBus)"]       { color: var(--badge-crc8smbus-text);      background: var(--badge-crc8smbus-bg); }
+    .algo-badge[data-algo="CRC-16"]               { color: var(--badge-crc16-text);          background: var(--badge-crc16-bg); }
+    .algo-badge[data-algo="CRC-16 (CCITT)"]      { color: var(--badge-crc16ccitt-text);     background: var(--badge-crc16ccitt-bg); }
+    .algo-badge[data-algo="CRC-16 (DNP)"]        { color: var(--badge-crc16dnp-text);       background: var(--badge-crc16dnp-bg); }
+    .algo-badge[data-algo="CRC-16 (Kermit)"]     { color: var(--badge-crc16kermit-text);    background: var(--badge-crc16kermit-bg); }
+    .algo-badge[data-algo="CRC-16 (Modbus)"]     { color: var(--badge-crc16modbus-text);    background: var(--badge-crc16modbus-bg); }
+    .algo-badge[data-algo="CRC-16 (USB)"]        { color: var(--badge-crc16usb-text);       background: var(--badge-crc16usb-bg); }
+    .algo-badge[data-algo="CRC-16 (XMODEM)"]     { color: var(--badge-crc16xmodem-text);    background: var(--badge-crc16xmodem-bg); }
+    .algo-badge[data-algo="CRC-24 (BLE)"]        { color: var(--badge-crc24ble-text);       background: var(--badge-crc24ble-bg); }
+    .algo-badge[data-algo="CRC-24 (Intlkn)"]     { color: var(--badge-crc24intlkn-text);    background: var(--badge-crc24intlkn-bg); }
+    .algo-badge[data-algo="CRC-24 (OpenPGP)"]    { color: var(--badge-crc24openpgp-text);   background: var(--badge-crc24openpgp-bg); }
+    .algo-badge[data-algo="CRC-32"]               { color: var(--badge-crc32-text);          background: var(--badge-crc32-bg); }
+    .algo-badge[data-algo="CRC-32C"]              { color: var(--badge-crc32c-text);         background: var(--badge-crc32c-bg); }
+    .algo-badge[data-algo="CRC-32 (BZIP2)"]      { color: var(--badge-crc32bzip2-text);     background: var(--badge-crc32bzip2-bg); }
+    .algo-badge[data-algo="CRC-32 (JamCRC)"]     { color: var(--badge-crc32jamcrc-text);    background: var(--badge-crc32jamcrc-bg); }
+    .algo-badge[data-algo="CRC-32 (MPEG-2)"]     { color: var(--badge-crc32mpeg2-text);     background: var(--badge-crc32mpeg2-bg); }
+    .algo-badge[data-algo="CRC-64 (ECMA)"]       { color: var(--badge-crc64ecma-text);      background: var(--badge-crc64ecma-bg); }
+    .algo-badge[data-algo="CRC-64 (NVMe)"]       { color: var(--badge-crc64nvme-text);      background: var(--badge-crc64nvme-bg); }
+    .algo-badge[data-algo="CRC-64 (Redis)"]      { color: var(--badge-crc64redis-text);     background: var(--badge-crc64redis-bg); }
+    .algo-badge[data-algo="CRC-64 (XZ)"]         { color: var(--badge-crc64xz-text);        background: var(--badge-crc64xz-bg); }
+    .algo-badge[data-algo="CRC-82 (DARC)"]       { color: var(--badge-crc82darc-text);      background: var(--badge-crc82darc-bg); }
+
+    @media (max-width: 397px) {
+      .history-table__hash { display: none; }
+      .history-table__time {
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+      }
+    }
+
