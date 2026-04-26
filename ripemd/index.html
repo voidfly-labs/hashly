@@ -241,6 +241,7 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      min-width: 330px;
       display: flex;
       flex-direction: column;
       line-height: 1.6;
@@ -1412,21 +1413,49 @@
       white-space: nowrap;
     }
 
-    .info-table__status--secure {
+    .info-table .info-table__status--secure {
       color: #0E7A6A;
     }
 
-    .info-table__status--legacy {
+    .info-table .info-table__status--legacy {
       color: #B05800;
     }
 
-    .info-table__status--broken {
+    .info-table .info-table__status--broken {
       color: #C0392B;
     }
 
     [data-theme="dark"] .info-table__status--secure { color: #3DD6C0; }
     [data-theme="dark"] .info-table__status--legacy  { color: #FFAC5F; }
     [data-theme="dark"] .info-table__status--broken  { color: #FF6B6B; }
+
+    @media (max-width: 540px) {
+      .info-table thead { display: none; }
+      .info-table,
+      .info-table tbody,
+      .info-table tr,
+      .info-table td   { display: block; width: 100%; box-sizing: border-box; }
+      .info-table tr {
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      .info-table tr:last-child { border-bottom: none; }
+      .info-table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 3px 0;
+        border-bottom: none;
+      }
+      .info-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .info-table tr:hover td { background: none; }
+    }
 
     /* =========================================================================
        FOOTER
@@ -1596,6 +1625,7 @@
     .history-popover {
       position: absolute;
       right: 0;
+      max-width: max(calc(100vw - 32px), 268px);
       top: calc(100% + 6px);
       background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(20px) saturate(1.8);
@@ -2112,6 +2142,16 @@
         flex: 1;
       }
     }
+
+    @media (max-width: 359px) {
+      .history-table__hash { display: none; }
+      .history-table__time {
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+      }
+    }
     /* Touch devices have no hover — always show action buttons and history
        table actions so they remain reachable regardless of viewport width.
        @media (hover: none) targets the input mechanism, not the screen size,
@@ -2165,7 +2205,15 @@
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
         <!-- Sun icon — shown in dark mode -->
         <svg class="theme-toggle__sun" viewBox="0 0 24 24">
-          <path d="M12 7a5 5 0 100 10A5 5 0 0012 7zm0-3a1 1 0 01-1-1V1a1 1 0 112 0v2a1 1 0 01-1 1zm0 18a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1zm9-9a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM6 12a1 1 0 01-1 1H3a1 1 0 110-2h2a1 1 0 011 1zm12.36-5.64a1 1 0 01-.7-.3l-1.42-1.42a1 1 0 111.41-1.41l1.42 1.41a1 1 0 01-.71 1.72zM7.05 18.36a1 1 0 01-.7-.3l-1.42-1.41a1 1 0 111.41-1.42l1.42 1.42a1 1 0 01-.71 1.71zm11.31 0a1 1 0 01-.71-1.71l1.42-1.42a1 1 0 111.41 1.42l-1.41 1.41a1 1 0 01-.71.3zM7.05 5.64a1 1 0 01-.71-1.72L7.76 2.5a1 1 0 011.41 1.41L7.76 5.34a1 1 0 01-.71.3z"/>
+          <circle cx="12" cy="12" r="4.5"/>
+          <rect x="11" y="2" width="2" height="4" rx="1"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(45 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(90 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(135 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(180 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(225 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(270 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(315 12 12)"/>
         </svg>
         <!-- Moon icon — shown in light mode -->
         <svg class="theme-toggle__moon" viewBox="0 0 24 24">
@@ -2541,36 +2589,36 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">RIPEMD-128</td>
-                <td>128 bit · 32 hex</td>
-                <td>512 bit</td>
-                <td>4×16</td>
-                <td class="info-table__status--legacy">Use with care</td>
-                <td>Drop-in MD5 replacement, constrained environments</td>
+                <td class="info-table__algo" data-label="Algorithm">RIPEMD-128</td>
+                <td data-label="Digest">128 bit · 32 hex</td>
+                <td data-label="Block size">512 bit</td>
+                <td data-label="Rounds">4×16</td>
+                <td class="info-table__status--legacy" data-label="Status">Use with care</td>
+                <td data-label="Common use">Drop-in MD5 replacement, constrained environments</td>
               </tr>
               <tr>
-                <td class="info-table__algo">RIPEMD-160</td>
-                <td>160 bit · 40 hex</td>
-                <td>512 bit</td>
-                <td>5×16</td>
-                <td class="info-table__status--secure">Secure</td>
-                <td>Bitcoin addresses, OpenPGP key fingerprints</td>
+                <td class="info-table__algo" data-label="Algorithm">RIPEMD-160</td>
+                <td data-label="Digest">160 bit · 40 hex</td>
+                <td data-label="Block size">512 bit</td>
+                <td data-label="Rounds">5×16</td>
+                <td class="info-table__status--secure" data-label="Status">Secure</td>
+                <td data-label="Common use">Bitcoin addresses, OpenPGP key fingerprints</td>
               </tr>
               <tr>
-                <td class="info-table__algo">RIPEMD-256</td>
-                <td>256 bit · 64 hex</td>
-                <td>512 bit</td>
-                <td>4×16</td>
-                <td class="info-table__status--secure">Secure</td>
-                <td>Wider digest without SHA-2, same security as RIPEMD-128</td>
+                <td class="info-table__algo" data-label="Algorithm">RIPEMD-256</td>
+                <td data-label="Digest">256 bit · 64 hex</td>
+                <td data-label="Block size">512 bit</td>
+                <td data-label="Rounds">4×16</td>
+                <td class="info-table__status--secure" data-label="Status">Secure</td>
+                <td data-label="Common use">Wider digest without SHA-2, same security as RIPEMD-128</td>
               </tr>
               <tr>
-                <td class="info-table__algo">RIPEMD-320</td>
-                <td>320 bit · 80 hex</td>
-                <td>512 bit</td>
-                <td>5×16</td>
-                <td class="info-table__status--secure">Secure</td>
-                <td>Wider digest without SHA-2, same security as RIPEMD-160</td>
+                <td class="info-table__algo" data-label="Algorithm">RIPEMD-320</td>
+                <td data-label="Digest">320 bit · 80 hex</td>
+                <td data-label="Block size">512 bit</td>
+                <td data-label="Rounds">5×16</td>
+                <td class="info-table__status--secure" data-label="Status">Secure</td>
+                <td data-label="Common use">Wider digest without SHA-2, same security as RIPEMD-160</td>
               </tr>
             </tbody>
           </table>
@@ -2719,8 +2767,11 @@
     // only the singleton is ever visible.
     // -------------------------------------------------------------------------
     const Tooltip = (() => {
-      let el        = null;   // singleton DOM node
-      let hideTimer = null;
+      let el              = null;   // singleton DOM node
+      let hideTimer       = null;
+      let lastPointerType = 'mouse';
+
+      document.addEventListener('pointerdown', e => { lastPointerType = e.pointerType; });
 
       function _ensureEl() {
         if (el) return;
@@ -2756,9 +2807,8 @@
         },
 
         /** Show a persistent tooltip above anchorElement until hide() is called.
-         *  Used for hover-triggered informational tooltips (e.g. digest length
-         *  on algo badges). Cancels any pending flash() auto-dismiss timer so
-         *  the two modes don't fight each other. */
+         *  On touch/pen input the tooltip auto-dismisses after 1400 ms so it
+         *  doesn't linger with no hover-leave to clear it. */
         show(anchorElement, text) {
           _ensureEl();
           clearTimeout(hideTimer);
@@ -2767,6 +2817,9 @@
           void el.offsetWidth;
           _position(anchorElement);
           el.classList.add('tooltip-singleton--visible');
+          if (lastPointerType !== 'mouse') {
+            hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), 1400);
+          }
         },
 
         hide() {
@@ -4069,7 +4122,7 @@
                 <tr>
                   <th class="history-table__num">#</th>
                   <th class="history-table__algo">Algo</th>
-                  <th>Hash</th>
+                  <th class="history-table__hash">Hash</th>
                   <th class="history-table__time">Time</th>
                   <th class="history-table__actions"></th>
                 </tr>
@@ -4089,7 +4142,7 @@
             <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? DEFAULT_ALGO}">${e.algo ?? DEFAULT_ALGO}</span></td>
             <td class="history-table__hash" title="${e.hash}"
                 data-action="copy-history" data-hash="${e.hash}">${e.hash}<span class="tooltip">Copied!</span></td>
-            <td class="history-table__time">${this._formatTs(e.ts)}</td>
+            <td class="history-table__time"><span dir="ltr">${this._formatTs(e.ts)}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">
                 <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy hash">
@@ -4110,7 +4163,7 @@
               <tr>
                 <th class="history-table__num">#</th>
                 <th class="history-table__algo">Algo</th>
-                <th>Hash</th>
+                <th class="history-table__hash">Hash</th>
                 <th class="history-table__time">Time</th>
                 <th class="history-table__actions"></th>
               </tr>

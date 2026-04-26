@@ -338,6 +338,7 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
+      min-width: 330px;
       display: flex;
       flex-direction: column;
       line-height: 1.6;
@@ -1460,21 +1461,49 @@
       white-space: nowrap;
     }
 
-    .info-table__status--common {
+    .info-table .info-table__status--common {
       color: #0E7A6A;
     }
 
-    .info-table__status--legacy {
+    .info-table .info-table__status--legacy {
       color: #B05800;
     }
 
-    .info-table__status--niche {
+    .info-table .info-table__status--niche {
       color: #5A6082;
     }
 
     [data-theme="dark"] .info-table__status--common { color: #3DD6C0; }
     [data-theme="dark"] .info-table__status--legacy  { color: #FFAC5F; }
     [data-theme="dark"] .info-table__status--niche   { color: #9AA0CC; }
+
+    @media (max-width: 540px) {
+      .info-table thead { display: none; }
+      .info-table,
+      .info-table tbody,
+      .info-table tr,
+      .info-table td   { display: block; width: 100%; box-sizing: border-box; }
+      .info-table tr {
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      .info-table tr:last-child { border-bottom: none; }
+      .info-table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 3px 0;
+        border-bottom: none;
+      }
+      .info-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--text);
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .info-table tr:hover td { background: none; }
+    }
 
     /* =========================================================================
        FOOTER
@@ -1635,6 +1664,7 @@
     .history-popover {
       position: absolute;
       right: 0;
+      max-width: max(calc(100vw - 32px), 268px);
       top: calc(100% + 6px);
       background: rgba(255, 255, 255, 0.72);
       backdrop-filter: blur(20px) saturate(1.8);
@@ -2124,6 +2154,16 @@
         flex: 1;
       }
     }
+
+    @media (max-width: 397px) {
+      .history-table__hash { display: none; }
+      .history-table__time {
+        width: auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        direction: rtl;
+      }
+    }
     /* Touch devices have no hover — always show action buttons and history
        table actions so they remain reachable regardless of viewport width.
        @media (hover: none) targets the input mechanism, not the screen size,
@@ -2184,7 +2224,15 @@
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
         <!-- Sun icon — shown in dark mode -->
         <svg class="theme-toggle__sun" viewBox="0 0 24 24">
-          <path d="M12 7a5 5 0 100 10A5 5 0 0012 7zm0-3a1 1 0 01-1-1V1a1 1 0 112 0v2a1 1 0 01-1 1zm0 18a1 1 0 01-1-1v-2a1 1 0 112 0v2a1 1 0 01-1 1zm9-9a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM6 12a1 1 0 01-1 1H3a1 1 0 110-2h2a1 1 0 011 1zm12.36-5.64a1 1 0 01-.7-.3l-1.42-1.42a1 1 0 111.41-1.41l1.42 1.41a1 1 0 01-.71 1.72zM7.05 18.36a1 1 0 01-.7-.3l-1.42-1.41a1 1 0 111.41-1.42l1.42 1.42a1 1 0 01-.71 1.71zm11.31 0a1 1 0 01-.71-1.71l1.42-1.42a1 1 0 111.41 1.42l-1.41 1.41a1 1 0 01-.71.3zM7.05 5.64a1 1 0 01-.71-1.72L7.76 2.5a1 1 0 011.41 1.41L7.76 5.34a1 1 0 01-.71.3z"/>
+          <circle cx="12" cy="12" r="4.5"/>
+          <rect x="11" y="2" width="2" height="4" rx="1"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(45 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(90 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(135 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(180 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(225 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(270 12 12)"/>
+          <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(315 12 12)"/>
         </svg>
         <!-- Moon icon — shown in light mode -->
         <svg class="theme-toggle__moon" viewBox="0 0 24 24">
@@ -2609,25 +2657,25 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">CRC-8 (1-Wire)</td>
-                <td>0x31</td>
-                <td>0x00</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Dallas/Maxim 1-Wire bus, DS18B20, iButton</td>
+                <td class="info-table__algo" data-label="Variant">CRC-8 (1-Wire)</td>
+                <td data-label="Polynomial">0x31</td>
+                <td data-label="Init">0x00</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Dallas/Maxim 1-Wire bus, DS18B20, iButton</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-8 (DVB-S2)</td>
-                <td>0xD5</td>
-                <td>0x00</td>
-                <td class="info-table__status--niche">No</td>
-                <td>DVB-S2 baseband frame header (ETSI EN 302 307)</td>
+                <td class="info-table__algo" data-label="Variant">CRC-8 (DVB-S2)</td>
+                <td data-label="Polynomial">0xD5</td>
+                <td data-label="Init">0x00</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">DVB-S2 baseband frame header (ETSI EN 302 307)</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-8 (SMBus)</td>
-                <td>0x07</td>
-                <td>0x00</td>
-                <td class="info-table__status--niche">No</td>
-                <td>SMBus PEC, ATM HEC, general purpose</td>
+                <td class="info-table__algo" data-label="Variant">CRC-8 (SMBus)</td>
+                <td data-label="Polynomial">0x07</td>
+                <td data-label="Init">0x00</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">SMBus PEC, ATM HEC, general purpose</td>
               </tr>
             </tbody>
           </table>
@@ -2659,53 +2707,53 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">CRC-16</td>
-                <td>0x8005</td>
-                <td>0x0000</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>USB, floppy disk, general purpose</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16</td>
+                <td data-label="Polynomial">0x8005</td>
+                <td data-label="Init">0x0000</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">USB, floppy disk, general purpose</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (CCITT)</td>
-                <td>0x1021</td>
-                <td>0xFFFF</td>
-                <td class="info-table__status--niche">No</td>
-                <td>X.25, HDLC, Bluetooth</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (CCITT)</td>
+                <td data-label="Polynomial">0x1021</td>
+                <td data-label="Init">0xFFFF</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">X.25, HDLC, Bluetooth</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (Modbus)</td>
-                <td>0x8005</td>
-                <td>0xFFFF</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Modbus RTU serial framing</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (Modbus)</td>
+                <td data-label="Polynomial">0x8005</td>
+                <td data-label="Init">0xFFFF</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Modbus RTU serial framing</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (Kermit)</td>
-                <td>0x1021</td>
-                <td>0x0000</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Kermit file-transfer protocol</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (Kermit)</td>
+                <td data-label="Polynomial">0x1021</td>
+                <td data-label="Init">0x0000</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Kermit file-transfer protocol</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (XMODEM)</td>
-                <td>0x1021</td>
-                <td>0x0000</td>
-                <td class="info-table__status--niche">No</td>
-                <td>XMODEM and YMODEM transfer protocols</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (XMODEM)</td>
+                <td data-label="Polynomial">0x1021</td>
+                <td data-label="Init">0x0000</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">XMODEM and YMODEM transfer protocols</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (USB)</td>
-                <td>0x8005</td>
-                <td>0xFFFF</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>USB full-speed and low-speed data packets</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (USB)</td>
+                <td data-label="Polynomial">0x8005</td>
+                <td data-label="Init">0xFFFF</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">USB full-speed and low-speed data packets</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-16 (DNP)</td>
-                <td>0x3D65</td>
-                <td>0x0000</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>DNP3 / SCADA / industrial automation (IEC 60870)</td>
+                <td class="info-table__algo" data-label="Variant">CRC-16 (DNP)</td>
+                <td data-label="Polynomial">0x3D65</td>
+                <td data-label="Init">0x0000</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">DNP3 / SCADA / industrial automation (IEC 60870)</td>
               </tr>
             </tbody>
           </table>
@@ -2737,25 +2785,25 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">CRC-24 (BLE)</td>
-                <td>0x00065B</td>
-                <td>0x555555</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Bluetooth Low Energy link-layer packets</td>
+                <td class="info-table__algo" data-label="Variant">CRC-24 (BLE)</td>
+                <td data-label="Polynomial">0x00065B</td>
+                <td data-label="Init">0x555555</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Bluetooth Low Energy link-layer packets</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-24 (Intlkn)</td>
-                <td>0x328B63</td>
-                <td>0xFFFFFF</td>
-                <td class="info-table__status--niche">No</td>
-                <td>Interlaken high-speed chip-to-chip serial links</td>
+                <td class="info-table__algo" data-label="Variant">CRC-24 (Intlkn)</td>
+                <td data-label="Polynomial">0x328B63</td>
+                <td data-label="Init">0xFFFFFF</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">Interlaken high-speed chip-to-chip serial links</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-24 (OpenPGP)</td>
-                <td>0x864CFB</td>
-                <td>0xB704CE</td>
-                <td class="info-table__status--niche">No</td>
-                <td>OpenPGP ASCII Armor checksum (RFC 4880)</td>
+                <td class="info-table__algo" data-label="Variant">CRC-24 (OpenPGP)</td>
+                <td data-label="Polynomial">0x864CFB</td>
+                <td data-label="Init">0xB704CE</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">OpenPGP ASCII Armor checksum (RFC 4880)</td>
               </tr>
             </tbody>
           </table>
@@ -2787,39 +2835,39 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">CRC-32</td>
-                <td>0x04C11DB7</td>
-                <td>0xFFFFFFFF</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Ethernet, ZIP, PNG, gzip, zlib</td>
+                <td class="info-table__algo" data-label="Variant">CRC-32</td>
+                <td data-label="Polynomial">0x04C11DB7</td>
+                <td data-label="Init">0xFFFFFFFF</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Ethernet, ZIP, PNG, gzip, zlib</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-32C</td>
-                <td>0x1EDC6F41</td>
-                <td>0xFFFFFFFF</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>iSCSI, SCTP, Btrfs, ext4, ZFS, RocksDB, SSE4.2</td>
+                <td class="info-table__algo" data-label="Variant">CRC-32C</td>
+                <td data-label="Polynomial">0x1EDC6F41</td>
+                <td data-label="Init">0xFFFFFFFF</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">iSCSI, SCTP, Btrfs, ext4, ZFS, RocksDB, SSE4.2</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-32 (BZIP2)</td>
-                <td>0x04C11DB7</td>
-                <td>0xFFFFFFFF</td>
-                <td class="info-table__status--niche">No</td>
-                <td>bzip2 compression, ATM AAL5, DECT-B</td>
+                <td class="info-table__algo" data-label="Variant">CRC-32 (BZIP2)</td>
+                <td data-label="Polynomial">0x04C11DB7</td>
+                <td data-label="Init">0xFFFFFFFF</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">bzip2 compression, ATM AAL5, DECT-B</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-32 (JamCRC)</td>
-                <td>0x04C11DB7</td>
-                <td>0xFFFFFFFF</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>JAM file format, network equipment</td>
+                <td class="info-table__algo" data-label="Variant">CRC-32 (JamCRC)</td>
+                <td data-label="Polynomial">0x04C11DB7</td>
+                <td data-label="Init">0xFFFFFFFF</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">JAM file format, network equipment</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-32 (MPEG-2)</td>
-                <td>0x04C11DB7</td>
-                <td>0xFFFFFFFF</td>
-                <td class="info-table__status--niche">No</td>
-                <td>MPEG-2 transport streams, DVB</td>
+                <td class="info-table__algo" data-label="Variant">CRC-32 (MPEG-2)</td>
+                <td data-label="Polynomial">0x04C11DB7</td>
+                <td data-label="Init">0xFFFFFFFF</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">MPEG-2 transport streams, DVB</td>
               </tr>
             </tbody>
           </table>
@@ -2850,28 +2898,28 @@
             </thead>
             <tbody>
               <tr>
-                <td class="info-table__algo">CRC-64 (ECMA)</td>
-                <td>0x42F0E1EBA9EA3693</td>
-                <td class="info-table__status--niche">No</td>
-                <td>ECMA-182 standard, DLT tape drives</td>
+                <td class="info-table__algo" data-label="Variant">CRC-64 (ECMA)</td>
+                <td data-label="Polynomial">0x42F0E1EBA9EA3693</td>
+                <td class="info-table__status--niche" data-label="Reflected">No</td>
+                <td data-label="Common use">ECMA-182 standard, DLT tape drives</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-64 (NVMe)</td>
-                <td>0xAD93D23594C935A9</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>NVMe storage protocol, command integrity</td>
+                <td class="info-table__algo" data-label="Variant">CRC-64 (NVMe)</td>
+                <td data-label="Polynomial">0xAD93D23594C935A9</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">NVMe storage protocol, command integrity</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-64 (Redis)</td>
-                <td>0xAD93D23594C935A9</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>Redis cluster slot hashing, key routing</td>
+                <td class="info-table__algo" data-label="Variant">CRC-64 (Redis)</td>
+                <td data-label="Polynomial">0xAD93D23594C935A9</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">Redis cluster slot hashing, key routing</td>
               </tr>
               <tr>
-                <td class="info-table__algo">CRC-64 (XZ)</td>
-                <td>0x42F0E1EBA9EA3693</td>
-                <td class="info-table__status--common">Yes</td>
-                <td>XZ compressed archive format</td>
+                <td class="info-table__algo" data-label="Variant">CRC-64 (XZ)</td>
+                <td data-label="Polynomial">0x42F0E1EBA9EA3693</td>
+                <td class="info-table__status--common" data-label="Reflected">Yes</td>
+                <td data-label="Common use">XZ compressed archive format</td>
               </tr>
             </tbody>
           </table>
@@ -3058,8 +3106,11 @@
     // only the singleton is ever visible.
     // -------------------------------------------------------------------------
     const Tooltip = (() => {
-      let el        = null;   // singleton DOM node
-      let hideTimer = null;
+      let el              = null;   // singleton DOM node
+      let hideTimer       = null;
+      let lastPointerType = 'mouse';
+
+      document.addEventListener('pointerdown', e => { lastPointerType = e.pointerType; });
 
       function _ensureEl() {
         if (el) return;
@@ -3095,9 +3146,8 @@
         },
 
         /** Show a persistent tooltip above anchorElement until hide() is called.
-         *  Used for hover-triggered informational tooltips (e.g. digest length
-         *  on algo badges). Cancels any pending flash() auto-dismiss timer so
-         *  the two modes don't fight each other. */
+         *  On touch/pen input the tooltip auto-dismisses after 1400 ms so it
+         *  doesn't linger with no hover-leave to clear it. */
         show(anchorElement, text) {
           _ensureEl();
           clearTimeout(hideTimer);
@@ -3106,6 +3156,9 @@
           void el.offsetWidth;
           _position(anchorElement);
           el.classList.add('tooltip-singleton--visible');
+          if (lastPointerType !== 'mouse') {
+            hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), 1400);
+          }
         },
 
         hide() {
@@ -4378,7 +4431,7 @@
                 <tr>
                   <th class="history-table__num">#</th>
                   <th class="history-table__algo">Algo</th>
-                  <th>Checksum</th>
+                  <th class="history-table__hash">Checksum</th>
                   <th class="history-table__time">Time</th>
                   <th class="history-table__actions"></th>
                 </tr>
@@ -4398,7 +4451,7 @@
             <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? DEFAULT_ALGO}">${e.algo ?? DEFAULT_ALGO}</span></td>
             <td class="history-table__hash" title="${e.hash}"
                 data-action="copy-history" data-hash="${e.hash}">${e.hash}<span class="tooltip">Copied!</span></td>
-            <td class="history-table__time">${this._formatTs(e.ts)}</td>
+            <td class="history-table__time"><span dir="ltr">${this._formatTs(e.ts)}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">
                 <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy checksum">
@@ -4419,7 +4472,7 @@
               <tr>
                 <th class="history-table__num">#</th>
                 <th class="history-table__algo">Algo</th>
-                <th>Checksum</th>
+                <th class="history-table__hash">Checksum</th>
                 <th class="history-table__time">Time</th>
                 <th class="history-table__actions"></th>
               </tr>
