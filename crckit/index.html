@@ -40,8 +40,8 @@
   </script>
 
   <!-- ── Favicons ── -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
 
   <!-- ── Primary SEO ── -->
   <title>Online CRC-32 / CRC-64 Calculator | CRCKit</title>
@@ -193,15 +193,9 @@
   <meta name="author" content="CRCKit">
 
   <!-- ── Performance hints ── -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="/vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="app.css">
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
   <!--
     js-crc by emn178 — minified UMD bundles providing all CRC variants.
@@ -216,8 +210,8 @@
       crc32('text string')                              // -> hex string
       crc32.create().update(uint8Array).hex()           // -> hex string (streaming)
   -->
-  <script src="https://cdn.jsdelivr.net/npm/js-crc@0.3.1/build/crc.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/js-crc@0.3.1/build/models.min.js"></script>
+  <script src="/vendor/js/js-crc-0.3.1.min.js"></script>
+  <script src="/vendor/js/js-crc-models-0.3.1.min.js"></script>
 </head>
 <body>
 
@@ -231,7 +225,7 @@
   <header class="header">
     <a class="header__brand" href="https://www.crckit.com" aria-label="CRCKit — go to homepage">
       <div class="header__logo-icon" aria-hidden="true">
-        <img src="logo.svg" alt="CRCKit logo" width="40" height="40">
+        <img src="/assets/images/logo.svg" alt="CRCKit logo" width="40" height="40">
       </div>
       <span class="header__title"><span>CRC</span>Kit</span>
     </a>
@@ -1002,7 +996,7 @@
 
   <!-- ========== JAVASCRIPT ========== -->
   <script src="app.js"></script>
-  <script src="assets/js/shared.js"></script>
+  <script src="/assets/js/shared.js"></script>
   <script>
     // crckit: CRC-82 (DARC) outputs 21 hex chars (odd length) — patch Format
     // so base64 and binary conversions normalise to even length first.

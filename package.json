@@ -1,0 +1,12 @@
+{
+  "name": "hashly",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build":     "node scripts/build.js",
+    "build:all": "node scripts/build.js all",
+    "dev":       "npx serve .",
+    "download":  "node scripts/build.js download"
+  },
+  "engines": { "node": ">=18" }
+}

@@ -2,5 +2,9 @@
 .claude/
 CLAUDE.md
 
+# Build outputs
+dist/
+vendor/
+
 # JetBrains IDEs
 .idea/

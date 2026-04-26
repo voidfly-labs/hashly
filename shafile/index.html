@@ -40,8 +40,8 @@
   </script>
 
   <!-- ── Favicons ── -->
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg">
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
 
   <!-- ── Primary SEO ── -->
   <title>Online SHA-256 Calculator | SHAFile</title>
@@ -137,15 +137,9 @@
   <meta name="author" content="SHAFile">
 
   <!-- ── Performance hints ── -->
-  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap">
-  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="/vendor/fonts/fonts.css">
+  <link rel="stylesheet" href="/assets/css/main.css">
   <link rel="stylesheet" href="app.css">
-  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
 
   <!--
     hash-wasm v4.12.0 — individual minified UMD bundles, one per SHA algorithm.
@@ -153,11 +147,11 @@
     the used algorithms are fetched; the global `hashwasm` namespace is populated
     by each bundle automatically.
   -->
-  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/sha1.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/sha224.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/sha256.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/sha384.umd.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.12.0/dist/sha512.umd.min.js"></script>
+  <script src="/vendor/js/hash-wasm-4.12.0-sha1.umd.min.js"></script>
+  <script src="/vendor/js/hash-wasm-4.12.0-sha224.umd.min.js"></script>
+  <script src="/vendor/js/hash-wasm-4.12.0-sha256.umd.min.js"></script>
+  <script src="/vendor/js/hash-wasm-4.12.0-sha384.umd.min.js"></script>
+  <script src="/vendor/js/hash-wasm-4.12.0-sha512.umd.min.js"></script>
 </head>
 <body>
 
@@ -171,7 +165,7 @@
   <header class="header">
     <a class="header__brand" href="https://www.shafile.com" aria-label="SHAFile — go to homepage">
       <div class="header__logo-icon" aria-hidden="true">
-        <img src="logo.svg" alt="SHAFile logo" width="40" height="40">
+        <img src="/assets/images/logo.svg" alt="SHAFile logo" width="40" height="40">
       </div>
       <span class="header__title"><span>SHA</span>File</span>
     </a>
@@ -642,7 +636,7 @@
 
   <!-- ========== JAVASCRIPT ========== -->
   <script src="app.js"></script>
-  <script src="assets/js/shared.js"></script>
+  <script src="/assets/js/shared.js"></script>
 
 
 </body>
