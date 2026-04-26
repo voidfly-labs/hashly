@@ -126,7 +126,7 @@ const HTML_MINIFY_OPTIONS = {
 
 async function buildApp(app) {
   console.log(`\n[${app}]`);
-  const appDir = path.join(ROOT, app);
+  const appDir = path.join(ROOT, 'apps', app);
   const distDir = path.join(DIST_DIR, app);
   const scripts = VENDOR_SCRIPTS[app] ?? [];
 

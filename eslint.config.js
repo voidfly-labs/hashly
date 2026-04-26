@@ -42,7 +42,7 @@ module.exports = [
 
   // Browser: per-app modules (reference Format defined in shared.js)
   {
-    files: ['*/app.js'],
+    files: ['apps/*/app.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'script',
@@ -56,7 +56,7 @@ module.exports = [
 
   // ripemd app additionally uses CryptoApi from its CDN bundle
   {
-    files: ['ripemd/app.js'],
+    files: ['apps/ripemd/app.js'],
     languageOptions: {
       globals: { CryptoApi: 'readonly' },
     },

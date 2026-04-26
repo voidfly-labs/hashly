@@ -8,14 +8,14 @@
 </p>
 <hr>
 
-| App | Domain | Algorithms |
-|-----|--------|------------|
-| `crckit/` | crckit.com | 23 CRC variants (CRC-8 through CRC-82) |
-| `keccalc/` | keccalc.com | Keccak-224/256/384/512 |
-| `md5kit/` | md5kit.com | MD2, MD4, MD5 |
-| `ripemd/` | ripemd.com | RIPEMD, RIPEMD-128/160/256/320 |
-| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512 |
-| `shafile/` | shafile.com | SHA-1, SHA-224/256/384/512 |
+| App        | Domain      | Algorithms                             |
+|------------|-------------|----------------------------------------|
+| `crckit/`  | crckit.com  | 23 CRC variants (CRC-8 through CRC-82) |
+| `keccalc/` | keccalc.com | Keccak-224/256/384/512                 |
+| `md5kit/`  | md5kit.com  | MD2, MD4, MD5                          |
+| `ripemd/`  | ripemd.com  | RIPEMD, RIPEMD-128/160/256/320         |
+| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                   |
+| `shafile/` | shafile.com | SHA-1, SHA-224/256/384/512             |
 
 ## Running Locally
 
