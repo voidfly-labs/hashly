@@ -197,22 +197,10 @@
         </nav>
         <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
           <!-- Sun icon — shown in dark mode -->
-          <svg class="theme-toggle__sun" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="4.5" />
-            <rect x="11" y="2" width="2" height="4" rx="1" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(45 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(90 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(135 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(180 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(225 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(270 12 12)" />
-            <rect x="11" y="2" width="2" height="4" rx="1" transform="rotate(315 12 12)" />
-          </svg>
+          <svg class="theme-toggle__sun" viewBox="0 0 24 24"><use href="/assets/images/icons.svg#icon-sun"></use></svg>
           <!-- Moon icon — shown in light mode -->
           <svg class="theme-toggle__moon" viewBox="0 0 24 24">
-            <path
-              d="M12 3a9 9 0 109 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 01-4.4 2.26 5.403 5.403 0 01-3.14-9.8C13.06 3.04 12.54 3 12 3z"
-            />
+            <use href="/assets/images/icons.svg#icon-moon"></use>
           </svg>
         </button>
       </div>
@@ -245,21 +233,17 @@
         <div class="section__label-row">
           <h2 class="section__label" id="section-text-heading">
             <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm20.71-12.67a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"
-              />
+              <use href="/assets/images/icons.svg#icon-edit"></use>
             </svg>
             Text
             <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
-              <path d="M0 5H11M8 1L13 5L8 9" />
+              <use href="/assets/images/icons.svg#icon-arrow-right"></use>
             </svg>
             Hash
           </h2>
           <button class="toggle-all-btn" id="textToggleAllBtn" aria-label="Deselect all text algorithms">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
+              <use href="/assets/images/icons.svg#icon-checkbox-checked"></use>
             </svg>
           </button>
           <button
@@ -268,12 +252,11 @@
             aria-label="Copy permalink to current text hash"
             type="button"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                class="permalink-btn__icon-link"
-                d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"
-              />
-              <path class="permalink-btn__icon-check" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+            <svg class="permalink-btn__icon-link" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/assets/images/icons.svg#icon-link"></use>
+            </svg>
+            <svg class="permalink-btn__icon-check" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/assets/images/icons.svg#icon-check"></use>
             </svg>
             <span class="tooltip">Copied!</span>
           </button>
@@ -284,21 +267,13 @@
             aria-expanded="false"
             aria-controls="textHistoryPopover"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-history"></use></svg>
           </button>
           <div class="history-popover" id="textHistoryPopover">
             <div class="history-popover__header">
               <span class="history-popover__title">History – Text Hashes</span>
               <button class="history-popover__close" data-popover-close aria-label="Close history">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                  />
-                </svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-close"></use></svg>
               </button>
             </div>
             <div class="history-popover__body" id="textHistoryBody"></div>
@@ -315,11 +290,7 @@
               aria-label="Text input for hashing"
             ></textarea>
             <button class="text-input__clear" id="textInputClear" aria-label="Clear text input" type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                />
-              </svg>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-close"></use></svg>
             </button>
             <div class="text-input__counter" id="textCounter" aria-live="polite" aria-atomic="true">
               <span id="textCounterChars">0 chars</span>
@@ -393,19 +364,17 @@
         <div class="section__label-row">
           <h2 class="section__label" id="section-file-heading">
             <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z" />
+              <use href="/assets/images/icons.svg#icon-file"></use>
             </svg>
             File
             <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
-              <path d="M0 5H11M8 1L13 5L8 9" />
+              <use href="/assets/images/icons.svg#icon-arrow-right"></use>
             </svg>
             Hash
           </h2>
           <button class="toggle-all-btn" id="fileToggleAllBtn" aria-label="Deselect all file algorithms">
             <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"
-              />
+              <use href="/assets/images/icons.svg#icon-checkbox-checked"></use>
             </svg>
           </button>
           <button
@@ -415,21 +384,13 @@
             aria-expanded="false"
             aria-controls="fileHistoryPopover"
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                d="M13 3a9 9 0 00-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42A8.954 8.954 0 0013 21a9 9 0 000-18zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-history"></use></svg>
           </button>
           <div class="history-popover" id="fileHistoryPopover">
             <div class="history-popover__header">
               <span class="history-popover__title">History – File Hashes</span>
               <button class="history-popover__close" data-popover-close aria-label="Close history">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                  />
-                </svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-close"></use></svg>
               </button>
             </div>
             <div class="history-popover__body" id="fileHistoryBody"></div>
@@ -441,16 +402,10 @@
             <div class="file-drop" id="fileDrop">
               <input class="file-drop__input" type="file" id="fileInput" aria-label="Upload file for hashing" />
               <button class="file-drop__clear" id="fileDropClear" aria-label="Remove selected file" type="button">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
-                  />
-                </svg>
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/assets/images/icons.svg#icon-close"></use></svg>
               </button>
               <svg class="file-drop__icon" viewBox="0 0 24 24">
-                <path
-                  d="M19.35 10.04A7.49 7.49 0 0012 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 000 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"
-                />
+                <use href="/assets/images/icons.svg#icon-upload"></use>
               </svg>
               <div class="file-drop__text">Drop a file here or <strong>browse</strong></div>
               <div class="file-drop__filename" id="fileName">
@@ -488,20 +443,14 @@
       <section class="section" id="random" aria-labelledby="section-random-heading">
         <h2 class="section__label" id="section-random-heading">
           <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM7.5 18c-.83 0-1.5-.67-1.5-1.5S6.67 15 7.5 15s1.5.67 1.5 1.5S8.33 18 7.5 18zm0-9C6.67 9 6 8.33 6 7.5S6.67 6 7.5 6 9 6.67 9 7.5 8.33 9 7.5 9zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4.5 4.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm0-9c-.83 0-1.5-.67-1.5-1.5S15.67 6 16.5 6s1.5.67 1.5 1.5S17.33 9 16.5 9z"
-            />
+            <use href="/assets/images/icons.svg#icon-dice"></use>
           </svg>
           Random Hashes
         </h2>
 
         <div class="random__controls">
           <button class="btn btn--primary" id="randomRegenerate">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><use href="/assets/images/icons.svg#icon-refresh"></use></svg>
             Regenerate
           </button>
           <select class="random__select" id="randomAlgo" aria-label="Algorithm for random hash generation">
@@ -520,17 +469,11 @@
           </select>
           <div class="random__controls-sep" aria-hidden="true"></div>
           <button class="btn" id="randomCopyAll" aria-label="Copy all hashes to clipboard">
-            <svg viewBox="0 0 24 24">
-              <path
-                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"
-              />
-            </svg>
+            <svg viewBox="0 0 24 24"><use href="/assets/images/icons.svg#icon-copy"></use></svg>
             Copy All<span class="tooltip">Copied!</span>
           </button>
           <button class="btn" id="randomDownloadAll">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
-            </svg>
+            <svg viewBox="0 0 24 24"><use href="/assets/images/icons.svg#icon-download"></use></svg>
             Download CSV<span class="tooltip">Exported</span>
           </button>
         </div>
@@ -542,9 +485,7 @@
       <section class="section" id="about" aria-labelledby="section-about-heading">
         <h2 class="section__label" id="section-about-heading">
           <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"
-            />
+            <use href="/assets/images/icons.svg#icon-info"></use>
           </svg>
           Frequently Asked Questions
         </h2>
@@ -777,9 +718,7 @@
         aria-label="View source on GitHub"
       >
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path
-            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-          />
+          <use href="/assets/images/icons.svg#icon-github"></use>
         </svg>
       </a>
     </footer>

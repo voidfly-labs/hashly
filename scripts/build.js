@@ -3,6 +3,9 @@
 
 const fs = require('fs');
 const path = require('path');
+const { minify: htmlMinify } = require('html-minifier-terser');
+const { minify: terserMinify } = require('terser');
+const { transform: lightningTransform } = require('lightningcss');
 const { APPS, VENDOR_SCRIPTS, LOCAL_SCRIPTS, FONTS } = require('./build.config.js');
 
 const ROOT = path.resolve(__dirname, '..');
@@ -28,6 +31,20 @@ async function download(url, dest) {
 function copy(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   fs.copyFileSync(src, dest);
+}
+
+async function copyJs(src, dest) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  const code = fs.readFileSync(src, 'utf8');
+  const result = await terserMinify(code, { ecma: 2015, compress: true, mangle: true });
+  fs.writeFileSync(dest, result.code);
+}
+
+function copyCss(src, dest) {
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  const css = fs.readFileSync(src);
+  const { code } = lightningTransform({ filename: src, code: css, minify: true });
+  fs.writeFileSync(dest, code);
 }
 
 // ---------------------------------------------------------------------------
@@ -89,28 +106,19 @@ async function ensureVendors(apps) {
 }
 
 // ---------------------------------------------------------------------------
-// HTML processor — source already uses local /vendor/... paths; stub only
+// HTML minification options
 // ---------------------------------------------------------------------------
 
-function processHtml(html) {
-  // Minification stubs — replace bodies with real implementations when ready:
-  //   html: html-minifier-terser
-  //   css:  lightningcss or csso   (applied when copying *.css files)
-  //   js:   terser                 (applied when copying *.js files)
-  return minifyHtml(html);
-}
-
-function minifyHtml(s) {
-  return s;
-}
-// eslint-disable-next-line no-unused-vars
-function minifyCss(s) {
-  return s;
-}
-// eslint-disable-next-line no-unused-vars
-function minifyJs(s) {
-  return s;
-}
+const HTML_MINIFY_OPTIONS = {
+  collapseWhitespace: true,
+  removeComments: true,
+  removeRedundantAttributes: true,
+  removeScriptTypeAttributes: true,
+  removeStyleLinkTypeAttributes: true,
+  useShortDoctype: true,
+  minifyCSS: true,
+  minifyJS: true,
+};
 
 // ---------------------------------------------------------------------------
 // Per-app build
@@ -126,22 +134,23 @@ async function buildApp(app) {
   await ensureVendors([app]);
 
   // App-specific files
-  copy(path.join(appDir, 'app.css'), path.join(distDir, 'app.css'));
-  copy(path.join(appDir, 'app.js'), path.join(distDir, 'app.js'));
+  await copyJs(path.join(appDir, 'app.js'), path.join(distDir, 'app.js'));
+  copyCss(path.join(appDir, 'app.css'), path.join(distDir, 'app.css'));
 
   // Shared assets
-  copy(path.join(ROOT, 'assets/css/main.css'), path.join(distDir, 'assets/css/main.css'));
+  copyCss(path.join(ROOT, 'assets/css/main.css'), path.join(distDir, 'assets/css/main.css'));
   copy(path.join(ROOT, 'assets/images/favicon.svg'), path.join(distDir, 'assets/images/favicon.svg'));
   copy(path.join(ROOT, 'assets/images/favicon.ico'), path.join(distDir, 'assets/images/favicon.ico'));
   copy(path.join(ROOT, 'assets/images/logo.svg'), path.join(distDir, 'assets/images/logo.svg'));
-  copy(path.join(ROOT, 'assets/js/shared.js'), path.join(distDir, 'assets/js/shared.js'));
+  copy(path.join(ROOT, 'assets/images/icons.svg'), path.join(distDir, 'assets/images/icons.svg'));
+  await copyJs(path.join(ROOT, 'assets/js/shared.js'), path.join(distDir, 'assets/js/shared.js'));
 
   // App-specific local scripts
   for (const rel of LOCAL_SCRIPTS[app] ?? []) {
-    copy(path.join(ROOT, rel), path.join(distDir, rel));
+    await copyJs(path.join(ROOT, rel), path.join(distDir, rel));
   }
 
-  // Vendor JS (only this app's subset)
+  // Vendor JS — already minified, copy as-is
   for (const s of scripts) {
     copy(path.join(VENDOR_DIR, 'js', s.name), path.join(distDir, 'vendor/js', s.name));
   }
@@ -153,11 +162,11 @@ async function buildApp(app) {
       copy(path.join(VENDOR_DIR, 'fonts', file), path.join(distDir, 'vendor/fonts', file));
     }
   }
-  copy(path.join(VENDOR_DIR, 'fonts', 'fonts.css'), path.join(distDir, 'vendor/fonts/fonts.css'));
+  copyCss(path.join(VENDOR_DIR, 'fonts', 'fonts.css'), path.join(distDir, 'vendor/fonts/fonts.css'));
 
   // index.html
   const html = fs.readFileSync(path.join(appDir, 'index.html'), 'utf8');
-  fs.writeFileSync(path.join(distDir, 'index.html'), processHtml(html));
+  fs.writeFileSync(path.join(distDir, 'index.html'), await htmlMinify(html, HTML_MINIFY_OPTIONS));
 
   console.log(`  ✓  dist/${app}/`);
 }

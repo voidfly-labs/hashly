@@ -27,8 +27,11 @@
     "@eslint/js": "^10.0.1",
     "eslint": "^10.2.1",
     "globals": "^17.5.0",
+    "html-minifier-terser": "^7.2.0",
     "husky": "^9.1.7",
+    "lightningcss": "^1.32.0",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.8.3"
+    "prettier": "^3.8.3",
+    "terser": "^5.46.2"
   }
 }
