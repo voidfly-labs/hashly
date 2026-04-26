@@ -1,462 +1,488 @@
-    /* =========================================================================
+/* =========================================================================
        DESIGN TOKENS — Arctic Slate palette (from index1) + dark mode variant
        ========================================================================= */
-    :root {
-      --bg:            #F4F5F7;
-      --bg-gradient:   linear-gradient(135deg, rgba(67, 97, 238, 0.065) 0%, transparent 55%, rgba(107, 138, 255, 0.045) 100%);
-      --surface:       #FFFFFF;
-      --surface-2:     #EBEDF0;
-      --border:        #D8DBE0;
-      --accent:        #4361EE;
-      --accent-dim:    #3651D4;
-      --accent-muted:  rgba(67, 97, 238, 0.07);
-      --accent-surface: #F2F4FE; /* --accent-muted composited over --surface (#FFF); used
+:root {
+  --bg: #f4f5f7;
+  --bg-gradient: linear-gradient(135deg, rgba(67, 97, 238, 0.065) 0%, transparent 55%, rgba(107, 138, 255, 0.045) 100%);
+  --surface: #ffffff;
+  --surface-2: #ebedf0;
+  --border: #d8dbe0;
+  --accent: #4361ee;
+  --accent-dim: #3651d4;
+  --accent-muted: rgba(67, 97, 238, 0.07);
+  --accent-surface: #f2f4fe; /* --accent-muted composited over --surface (#FFF); used
                                      wherever the tinted bg must be opaque (result bar,
                                      popover header/footer). */
-      --accent-glow:   rgba(67, 97, 238, 0.14);
-      --accent-border: rgba(67, 97, 238, 0.30);
-      --text:          #1A1D23;
-      --text-muted:    #7A8494;
-      --shadow:        0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
-      --shadow-lg:     0 6px 28px rgba(0, 0, 0, 0.09);
-      --radius:        8px;
-      --radius-sm:     5px;
-      --mono:          'Geist Mono', monospace;
-      --sans:          'Geist', sans-serif;
+  --accent-glow: rgba(67, 97, 238, 0.14);
+  --accent-border: rgba(67, 97, 238, 0.3);
+  --text: #1a1d23;
+  --text-muted: #7a8494;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 6px 28px rgba(0, 0, 0, 0.09);
+  --radius: 8px;
+  --radius-sm: 5px;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Geist', sans-serif;
 
-      /* Result row zebra: odd rows use --accent-surface (blue tint, defined above).
+  /* Result row zebra: odd rows use --accent-surface (blue tint, defined above).
          Even rows use --result-alt-surface — a lighter, barely-there step of the
          same hue family so the stripe is gentle and the card reads as one block. */
-      --result-alt-surface: #F7F8FE;
-    }
+  --result-alt-surface: #f7f8fe;
+}
 
-    [data-theme="dark"] {
-      --bg:            #12151C;
-      --bg-gradient:   linear-gradient(135deg, rgba(107, 138, 255, 0.09) 0%, transparent 55%, rgba(67, 97, 238, 0.06) 100%);
-      --surface:       #1C2030;
-      --surface-2:     #252A3A;
-      --border:        #2E3448;
-      --accent:        #6B8AFF;
-      --accent-dim:    #5572E8;
-      --accent-muted:  rgba(107, 138, 255, 0.08);
-      --accent-surface: rgba(107, 138, 255, 0.08); /* dark mode: semi-transparent is fine
+[data-theme='dark'] {
+  --bg: #12151c;
+  --bg-gradient: linear-gradient(135deg, rgba(107, 138, 255, 0.09) 0%, transparent 55%, rgba(67, 97, 238, 0.06) 100%);
+  --surface: #1c2030;
+  --surface-2: #252a3a;
+  --border: #2e3448;
+  --accent: #6b8aff;
+  --accent-dim: #5572e8;
+  --accent-muted: rgba(107, 138, 255, 0.08);
+  --accent-surface: rgba(
+    107,
+    138,
+    255,
+    0.08
+  ); /* dark mode: semi-transparent is fine
                                                        as the popover surface is opaque */
-      --accent-glow:   rgba(107, 138, 255, 0.16);
-      --accent-border: rgba(107, 138, 255, 0.32);
-      --text:          #E2E6EF;
-      --text-muted:    #7A85A0;
-      --shadow:        0 2px 12px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.16);
-      --shadow-lg:     0 6px 28px rgba(0, 0, 0, 0.32);
+  --accent-glow: rgba(107, 138, 255, 0.16);
+  --accent-border: rgba(107, 138, 255, 0.32);
+  --text: #e2e6ef;
+  --text-muted: #7a85a0;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 6px 28px rgba(0, 0, 0, 0.32);
 
-      --result-alt-surface: rgba(107, 138, 255, 0.03);
-    }
+  --result-alt-surface: rgba(107, 138, 255, 0.03);
+}
 
-    /* =========================================================================
+/* =========================================================================
        RESET & BASE
        ========================================================================= */
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    html {
-      scroll-behavior: smooth;
-    }
+html {
+  scroll-behavior: smooth;
+}
 
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      min-width: 330px;
-      display: flex;
-      flex-direction: column;
-      line-height: 1.6;
-      transition: background 0.3s, color 0.3s;
-      font-size: 15px;
-    }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-width: 330px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+  transition:
+    background 0.3s,
+    color 0.3s;
+  font-size: 15px;
+}
 
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: var(--bg-gradient);
-      z-index: -1;
-      pointer-events: none;
-      transition: background 0.3s;
-    }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-gradient);
+  z-index: -1;
+  pointer-events: none;
+  transition: background 0.3s;
+}
 
-    /* Skip navigation link (accessibility + SEO) */
-    .skip-link {
-      position: absolute;
-      top: -999px;
-      left: 0;
-      background: var(--accent);
-      color: #fff;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-family: var(--sans);
-      z-index: 9999;
-      text-decoration: none;
-      border-radius: 0 0 var(--radius) 0;
-    }
+/* Skip navigation link (accessibility + SEO) */
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 0;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: var(--sans);
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius) 0;
+}
 
-    .skip-link:focus {
-      top: 0;
-    }
+.skip-link:focus {
+  top: 0;
+}
 
-    /* =========================================================================
+/* =========================================================================
        HEADER
        ========================================================================= */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(20px) saturate(1.8);
-      -webkit-backdrop-filter: blur(20px) saturate(1.8);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: var(--shadow);
-      transition: background 0.3s, border-color 0.3s;
-    }
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+}
 
-    [data-theme="dark"] .header {
-      background: rgba(28, 32, 48, 0.78);
-    }
+[data-theme='dark'] .header {
+  background: rgba(28, 32, 48, 0.78);
+}
 
-    .header__right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .header__brand {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      text-decoration: none;
-      color: inherit;
-      /* No visible hover effects — link is invisible by design — but cursor
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: inherit;
+  /* No visible hover effects — link is invisible by design — but cursor
          remains as pointer so the browser still signals interactivity.
          The negative margin + compensating padding pattern expands the hit
          target by 5 px on every side without affecting the layout of the
          surrounding flex container or the visual appearance of the brand area. */
-      margin: -5px;
-      padding: 5px;
-      border-radius: var(--radius-sm);
-    }
+  margin: -5px;
+  padding: 5px;
+  border-radius: var(--radius-sm);
+}
 
-    .header__logo-icon {
-      display: flex;
-      align-items: center;
-    }
+.header__logo-icon {
+  display: flex;
+  align-items: center;
+}
 
-    .header__title {
-      font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
-      font-weight: 800;
-      font-size: 17px;
-      color: var(--text);
-      letter-spacing: -0.75px;
-      line-height: 1;
-    }
+.header__title {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--text);
+  letter-spacing: -0.75px;
+  line-height: 1;
+}
 
-    .header__title span {
-      color: var(--accent);
-    }
+.header__title span {
+  color: var(--accent);
+}
 
-    .header__nav {
-      display: flex;
-      gap: 2px;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
+.header__nav {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
 
-    .header__nav-link {
-      font-family: var(--sans);
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-decoration: none;
-      padding: 6px 16px;
-      border-radius: var(--radius-sm);
-      transition: color 0.2s, background 0.2s;
-    }
+.header__nav-link {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
 
-    .header__nav-link:hover {
-      color: var(--text);
-      background: var(--accent-muted);
-    }
+.header__nav-link:hover {
+  color: var(--text);
+  background: var(--accent-muted);
+}
 
-    .header__nav-link + .header__nav-link {
-      position: relative;
-    }
+.header__nav-link + .header__nav-link {
+  position: relative;
+}
 
-    .header__nav-link + .header__nav-link::before {
-      content: '';
-      position: absolute;
-      left: -1px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1px;
-      height: 18px;
-      background: var(--border);
-    }
+.header__nav-link + .header__nav-link::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
 
-    /* Theme toggle */
-    .theme-toggle {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 7px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      transition: all 0.2s;
-    }
+/* Theme toggle */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 7px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
 
-    .theme-toggle:hover {
-      color: var(--accent);
-      border-color: var(--accent-border);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .theme-toggle svg {
-      width: 16px;
-      height: 16px;
-      fill: currentColor;
-      display: none;
-    }
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: none;
+}
 
-    [data-theme="dark"]  .theme-toggle__sun  { display: block; }
-    [data-theme="light"] .theme-toggle__moon { display: block; }
+[data-theme='dark'] .theme-toggle__sun {
+  display: block;
+}
+[data-theme='light'] .theme-toggle__moon {
+  display: block;
+}
 
-    /* =========================================================================
+/* =========================================================================
        MAIN LAYOUT
        ========================================================================= */
-    main {
-      flex: 1;
-      max-width: 960px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 48px 24px 64px;
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-    }
+main {
+  flex: 1;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
 
-    .page-heading {
-      margin-bottom: -8px;
-    }
+.page-heading {
+  margin-bottom: -8px;
+}
 
-    .page-heading h1 {
-      font-family: var(--mono);
-      font-size: 28px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 6px;
-    }
+.page-heading h1 {
+  font-family: var(--mono);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  margin-bottom: 6px;
+}
 
-    .page-heading h1 span {
-      color: var(--accent);
-    }
+.page-heading h1 span {
+  color: var(--accent);
+}
 
-    .page-heading__subtitle {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+.page-heading__subtitle {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-    /* Algorithm badge row — lists all supported variants beneath the subtitle.
+/* Algorithm badge row — lists all supported variants beneath the subtitle.
        Reuses the existing .algo-badge vocabulary for visual consistency with
        the result rows. opacity slightly reduced so the row reads as supporting
        metadata rather than competing with the h1. */
-    .page-heading__algos {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 12px;
-    }
+.page-heading__algos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
 
-    .page-heading__algos .algo-badge {
-      opacity: 0.72;
-      cursor: pointer;
-      line-height: 1.6;
-      -webkit-appearance: none;
-      appearance: none;
-      margin: 0;
-      border: none;
-      transition: opacity 0.15s, transform 0.15s, box-shadow 0.15s;
-    }
+.page-heading__algos .algo-badge {
+  opacity: 0.72;
+  cursor: pointer;
+  line-height: 1.6;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  border: none;
+  transition:
+    opacity 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+}
 
-    .page-heading__algos .algo-badge:hover {
-      opacity: 1;
-      transform: translateY(-1px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+.page-heading__algos .algo-badge:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
-    .page-heading__algos .algo-badge:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
+.page-heading__algos .algo-badge:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
 
-    .page-heading__algos .algo-badge:focus-visible {
-      opacity: 1;
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
+.page-heading__algos .algo-badge:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
-    /* =========================================================================
+/* =========================================================================
        SECTION
        ========================================================================= */
-    .section {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
 
-    .section__label {
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--accent-dim);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+.section__label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--accent-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    .section__label-icon {
-      width: 15px;
-      height: 15px;
-      fill: var(--accent-dim);
-      flex-shrink: 0;
-    }
+.section__label-icon {
+  width: 15px;
+  height: 15px;
+  fill: var(--accent-dim);
+  flex-shrink: 0;
+}
 
-    .section__label-arrow {
-      width: 16px;
-      height: 10px;
-      fill: none;
-      stroke: var(--accent-dim);
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-      flex-shrink: 0;
-    }
+.section__label-arrow {
+  width: 16px;
+  height: 10px;
+  fill: none;
+  stroke: var(--accent-dim);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
 
-    .section__label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
+.section__label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
 
-    /* =========================================================================
+/* =========================================================================
        CARD (shared wrapper)
        ========================================================================= */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: box-shadow 0.25s, border-color 0.25s;
-    }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
 
-    .card:focus-within,
-    .card:hover {
-      box-shadow: var(--shadow-lg);
-    }
+.card:focus-within,
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
 
-    /* Text drag-and-drop affordance — mirrors file-drop--page-drag.
+/* Text drag-and-drop affordance — mirrors file-drop--page-drag.
        Border and background are scoped to the textarea wrapper so only
        the input area is highlighted, not the full card. The base wrap
        carries a transparent 2px border to prevent layout shift on drag. */
-    .card--text-drag .text-input__wrap {
-      border: 2px dashed var(--accent);
-      background: var(--accent-muted);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
+.card--text-drag .text-input__wrap {
+  border: 2px dashed var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
 
-    .card__body {
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+.card__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
 
-    /* =========================================================================
+/* =========================================================================
        RESULT BAR (hash output attached to input card)
        ========================================================================= */
-    .result {
-      border-top: 1px solid var(--border);
-      background: var(--accent-surface);
-      padding: 9px 14px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: var(--mono);
-    }
+.result {
+  border-top: 1px solid var(--border);
+  background: var(--accent-surface);
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+}
 
-    .result__hash {
-      flex: 1;
-      font-size: 13.5px;
-      color: var(--text);
-      word-break: break-all;
-      user-select: none;
-      letter-spacing: 0.45px;
-      cursor: pointer;
-      position: relative; /* anchor for inline .tooltip */
-    }
+.result__hash {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--text);
+  word-break: break-all;
+  user-select: none;
+  letter-spacing: 0.45px;
+  cursor: pointer;
+  position: relative; /* anchor for inline .tooltip */
+}
 
-    .result__hash--empty {
-      color: var(--text-muted);
-      font-style: italic;
-      font-size: 13px;
-      letter-spacing: 0;
-      user-select: none;
-      cursor: default;
-    }
+.result__hash--empty {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0;
+  user-select: none;
+  cursor: default;
+}
 
-    /* ── Computing / progress state ───────────────────────────────────────────
+/* ── Computing / progress state ───────────────────────────────────────────
        The hash cell doubles as a progress bar while file hashing is in progress.
        A CSS custom property --progress (0–100) drives a two-stop linear-gradient
        that fills left-to-right, turning the entire cell into a track.
        The percentage text is rendered inside the cell — no extra pill element.
     ──────────────────────────────────────────────────────────────────────── */
-    .result__hash--computing {
-      background: linear-gradient(
-        to right,
-        var(--accent-glow) calc(var(--progress, 0) * 1%),
-        transparent        calc(var(--progress, 0) * 1%)
-      );
-      border-radius: 3px;
-      color: var(--accent-dim);
-      font-style: normal;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.3px;
-      cursor: default;
-      user-select: none;
-      transition: background 0.15s linear;
-      padding: 3px 6px;
-      line-height: 1.8;
-    }
+.result__hash--computing {
+  background: linear-gradient(
+    to right,
+    var(--accent-glow) calc(var(--progress, 0) * 1%),
+    transparent calc(var(--progress, 0) * 1%)
+  );
+  border-radius: 3px;
+  color: var(--accent-dim);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: default;
+  user-select: none;
+  transition: background 0.15s linear;
+  padding: 3px 6px;
+  line-height: 1.8;
+}
 
-    .result__actions {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
+.result__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
 
-    /* ── Multi-algorithm stacked results ──────────────────────────────────────
+/* ── Multi-algorithm stacked results ──────────────────────────────────────
        Each algorithm gets its own .result row inside the card.
        Odd rows (1st, 3rd…) use --accent-surface (the existing blue tint used
        everywhere else as the "active" background).
@@ -464,146 +490,146 @@
        the same hue — so the stripe is a gentle, same-family step rather than
        the jarring jump to plain white. Both are intentionally close so the
        card reads as a unified block, not a striped table. */
-    .result:nth-child(odd) {
-      background: var(--accent-surface);
-    }
+.result:nth-child(odd) {
+  background: var(--accent-surface);
+}
 
-    .result:nth-child(even) {
-      background: var(--result-alt-surface);
-    }
+.result:nth-child(even) {
+  background: var(--result-alt-surface);
+}
 
-    .result + .result {
-      border-top: 1px solid var(--border);
-    }
+.result + .result {
+  border-top: 1px solid var(--border);
+}
 
-    /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
+/* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
 
-    /* =========================================================================
+/* =========================================================================
        TEXT INPUT
        ========================================================================= */
-    /* Wrapper gives us a positioning context for the dismiss button,
+/* Wrapper gives us a positioning context for the dismiss button,
        mirroring the .file-drop pattern exactly. */
-    .text-input__wrap {
-      position: relative;
-      border: 2px solid transparent;
-      border-radius: var(--radius-sm);
-    }
+.text-input__wrap {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+}
 
-    .text-input__textarea {
-      width: 100%;
-      min-height: 110px;
-      max-height: 400px;
-      padding: 14px;
-      background: transparent;
-      border: none;
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 13px;
-      line-height: 1.65;
-      resize: vertical;
-      outline: none;
-    }
+.text-input__textarea {
+  width: 100%;
+  min-height: 110px;
+  max-height: 400px;
+  padding: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.65;
+  resize: vertical;
+  outline: none;
+}
 
-    .text-input__textarea::placeholder {
-      color: var(--text-muted);
-    }
-    .text-input__counter {
-      position: absolute;
-      bottom: 3px;
-      right: 15px;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: var(--mono);
-      font-size: 10.5px;
-      color: var(--text-muted);
-      letter-spacing: 0.3px;
-      pointer-events: none;
-      user-select: none;
-      opacity: 1;
-    }
+.text-input__textarea::placeholder {
+  color: var(--text-muted);
+}
+.text-input__counter {
+  position: absolute;
+  bottom: 3px;
+  right: 15px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 1;
+}
 
-    .text-input__counter-sep {
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: currentColor;
-      opacity: 0.4;
-      flex-shrink: 0;
-    }
+.text-input__counter-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  flex-shrink: 0;
+}
 
-    /* Dismiss button — top-right corner of the textarea wrapper.
+/* Dismiss button — top-right corner of the textarea wrapper.
        Identical position/behaviour to .file-drop__clear; shares visual
        styles via the grouped selector with .history-popover__close and
        .file-drop__clear defined further below. */
-    .text-input__clear {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      z-index: 1;
-      display: none; /* hidden until input has content */
-    }
+.text-input__clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: none; /* hidden until input has content */
+}
 
-    .text-input__clear--visible {
-      display: flex;
-    }
+.text-input__clear--visible {
+  display: flex;
+}
 
-    /* =========================================================================
+/* =========================================================================
        BUTTONS
        ========================================================================= */
-    .btn {
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 5px 11px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      position: relative;
-      white-space: nowrap;
-    }
+.btn {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  position: relative;
+  white-space: nowrap;
+}
 
-    .btn:hover {
-      border-color: var(--accent-border);
-      color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.btn:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .btn:active {
-      transform: scale(0.96);
-    }
+.btn:active {
+  transform: scale(0.96);
+}
 
-    .btn:disabled {
-      opacity: 0.38;
-      pointer-events: none;
-    }
+.btn:disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
 
-    .btn svg {
-      width: 12px;
-      height: 12px;
-      fill: currentColor;
-    }
+.btn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
 
-    .btn--primary {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
+.btn--primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
 
-    .btn--primary:hover {
-      opacity: 0.88;
-      color: #fff;
-      box-shadow: 0 4px 16px var(--accent-glow);
-    }
+.btn--primary:hover {
+  opacity: 0.88;
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
 
-    /* =========================================================================
+/* =========================================================================
        TOOLTIP
        — Singleton <div class="tooltip-singleton"> appended to <body> by Tooltip.flash().
          Inline <span class="tooltip"> in markup are hidden and only used to carry
@@ -612,1383 +638,1457 @@
          of any transformed ancestor (e.g. the history popover).
        ========================================================================= */
 
-    /* Hide all inline tooltip spans — only the singleton is ever shown */
-    .tooltip {
-      display: none;
-    }
+/* Hide all inline tooltip spans — only the singleton is ever shown */
+.tooltip {
+  display: none;
+}
 
-    .tooltip-singleton {
-      position: fixed;
-      transform: translateX(-50%) translateY(calc(-100% + 4px));
-      background: var(--text);
-      color: var(--bg);
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 5px;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.15s, transform 0.15s;
-      font-family: var(--sans);
-      z-index: 9999;
-    }
+.tooltip-singleton {
+  position: fixed;
+  transform: translateX(-50%) translateY(calc(-100% + 4px));
+  background: var(--text);
+  color: var(--bg);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  font-family: var(--sans);
+  z-index: 9999;
+}
 
-    .tooltip-singleton--visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(calc(-100% - 6px));
-    }
+.tooltip-singleton--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(calc(-100% - 6px));
+}
 
-    /* =========================================================================
+/* =========================================================================
        OPTIONS — segmented format picker
        ========================================================================= */
-    .options {
-      display: flex;
-      align-items: center;
-    }
+.options {
+  display: flex;
+  align-items: center;
+}
 
-    .options__segment {
-      display: inline-flex;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(20px) saturate(1.8);
-      -webkit-backdrop-filter: blur(20px) saturate(1.8);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-    }
+.options__segment {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
 
-    [data-theme="dark"] .options__segment {
-      background: rgba(28, 32, 48, 0.78);
-    }
+[data-theme='dark'] .options__segment {
+  background: rgba(28, 32, 48, 0.78);
+}
 
-    .options__segment-label {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 5px 11px;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: color 0.15s, background 0.15s;
-      border-right: 1px solid var(--border);
-      white-space: nowrap;
-      user-select: none;
-    }
+.options__segment-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 11px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+}
 
-    .options__segment-label:last-child {
-      border-right: none;
-    }
+.options__segment-label:last-child {
+  border-right: none;
+}
 
-    .options__segment-label:hover {
-      color: var(--text);
-      background: var(--accent-muted);
-    }
+.options__segment-label:hover {
+  color: var(--text);
+  background: var(--accent-muted);
+}
 
-    /* Hidden radio — selection state driven purely by CSS :checked sibling */
-    .options__radio {
-      position: absolute;
-      opacity: 0;
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
+/* Hidden radio — selection state driven purely by CSS :checked sibling */
+.options__radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
 
-    .options__radio:checked + .options__segment-label {
-      color: var(--accent);
-      background: var(--accent-muted);
-      font-weight: 600;
-    }
+.options__radio:checked + .options__segment-label {
+  color: var(--accent);
+  background: var(--accent-muted);
+  font-weight: 600;
+}
 
-
-    /* =========================================================================
+/* =========================================================================
        OPTIONS ROW — wraps input + output format pickers side by side
        ========================================================================= */
-    .options-row {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+.options-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
 
-    /* Single-side (output-only) row used in File section */
-    .options-row--end {
-      justify-content: flex-end;
-    }
+/* Single-side (output-only) row used in File section */
+.options-row--end {
+  justify-content: flex-end;
+}
 
-
-    /* Label cell — sits inside the segment pill as its first cell, separated
+/* Label cell — sits inside the segment pill as its first cell, separated
        from the options by the standard inter-cell border. Smaller (10px vs 11px)
        and lighter (weight 400, opacity 0.65) than the option labels, so it reads
        as a caption for the group rather than a peer choice. No background fill,
        no hover state, cursor default — unambiguously non-interactive. */
-    .options__prefix {
-      display: inline-flex;
-      align-items: center;
-      padding: 5px 9px;
-      font-family: var(--mono);
-      font-size: 9.5px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: var(--text-muted);
-      justify-content: center;
-      border-right: 1px solid var(--border);
-      user-select: none;
-      white-space: nowrap;
-      min-width: 57px;
-      opacity: 0.6;
-      cursor: default;
-    }
+.options__prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  user-select: none;
+  white-space: nowrap;
+  min-width: 57px;
+  opacity: 0.6;
+  cursor: default;
+}
 
-    /* Wrapper — no gap needed; label is inside the pill */
-    .options__group {
-      display: flex;
-      align-items: center;
-    }
+/* Wrapper — no gap needed; label is inside the pill */
+.options__group {
+  display: flex;
+  align-items: center;
+}
 
-    /* ── Hover tooltips for icon-only buttons ─────────────────────────────────
+/* ── Hover tooltips for icon-only buttons ─────────────────────────────────
        history-btn, random__item-btn, history-table__action-btn
        Tooltip.show() / hide() are wired in JS; these declarations are no-ops
        at rest (the singleton does all rendering) but serve as a reminder that
        these elements participate in the tooltip system. */
-    .history-btn,
-    .random__item-btn,
-    .history-table__action-btn {
-      position: relative; /* already set elsewhere; harmless repeat */
-    }
-    /* =========================================================================
+.history-btn,
+.random__item-btn,
+.history-table__action-btn {
+  position: relative; /* already set elsewhere; harmless repeat */
+}
+/* =========================================================================
        FILE DROP
        ========================================================================= */
-    .file-drop {
-      border: 2px dashed var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      position: relative;
-      background: var(--surface);
-    }
+.file-drop {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background: var(--surface);
+}
 
-    .file-drop:hover,
-    .file-drop--active {
-      border-color: var(--accent-border);
-      background: var(--accent-muted);
-    }
+.file-drop:hover,
+.file-drop--active {
+  border-color: var(--accent-border);
+  background: var(--accent-muted);
+}
 
-    /* Whole-page drag: file is being dragged anywhere over the browser window.
+/* Whole-page drag: file is being dragged anywhere over the browser window.
        Uses a stronger border colour than the hover/active state to signal
        "drop anywhere near here" rather than "drop exactly here". */
-    .file-drop--page-drag {
-      border-color: var(--accent);
-      background: var(--accent-muted);
-      box-shadow: 0 0 0 3px var(--accent-glow);
-    }
+.file-drop--page-drag {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
 
-    /* When the cursor is over the clear button, suppress the drop-zone hover
+/* When the cursor is over the clear button, suppress the drop-zone hover
        state so only the button's own :hover styles apply. :has() is supported
        in all modern browsers and is the correct CSS-only solution — it avoids
        pointer-event hacks or additional wrapper elements. */
-    .file-drop:has(.file-drop__clear:hover) {
-      border-color: var(--border);
-      background: var(--surface);
-    }
+.file-drop:has(.file-drop__clear:hover) {
+  border-color: var(--border);
+  background: var(--surface);
+}
 
-    .file-drop__input {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-      width: 100%;
-      height: 100%;
-    }
+.file-drop__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
 
-    .file-drop__icon {
-      width: 28px;
-      height: 28px;
-      fill: var(--text-muted);
-      margin-bottom: 8px;
-      opacity: 0.5;
-    }
+.file-drop__icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--text-muted);
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
 
-    .file-drop__text {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+.file-drop__text {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-    .file-drop__text strong {
-      color: var(--accent);
-      text-decoration: underline;
-    }
+.file-drop__text strong {
+  color: var(--accent);
+  text-decoration: underline;
+}
 
-    .file-drop__filename {
-      margin-top: 6px;
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--accent);
-      display: none;
-      max-width: calc(100% - 48px);
-    }
+.file-drop__filename {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  display: none;
+  max-width: calc(100% - 48px);
+}
 
-    .file-drop__filename--visible {
-      display: inline-flex;
-      align-items: baseline;
-      gap: 0;
-      vertical-align: top;
-    }
+.file-drop__filename--visible {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  vertical-align: top;
+}
 
-    .file-drop__filename-name {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      min-width: 0;
-    }
+.file-drop__filename-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
 
-    .file-drop__filesize {
-      flex-shrink: 0;
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--text-muted);
-      opacity: 0.75;
-      white-space: nowrap;
-    }
+.file-drop__filesize {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  opacity: 0.75;
+  white-space: nowrap;
+}
 
-    /* Dismiss button — top-right corner of the drop zone.
+/* Dismiss button — top-right corner of the drop zone.
        Shares all visual styles with .history-popover__close (see grouped ruleset above).
        Hidden by default; revealed once a file is loaded.
        z-index must exceed the invisible file input overlay (no explicit z-index,
        so any positive value suffices) so click events reach this button first. */
-    .file-drop__clear {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      z-index: 1;
-      display: none; /* hidden until a file is loaded */
-    }
+.file-drop__clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: none; /* hidden until a file is loaded */
+}
 
-    .file-drop__clear--visible {
-      display: flex;
-    }
+.file-drop__clear--visible {
+  display: flex;
+}
 
-    /* =========================================================================
+/* =========================================================================
        RANDOM HASHES
        ========================================================================= */
-    .random__controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+.random__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
 
-    /* Thin muted separator between the count/algo selects and the action buttons */
-    .random__controls-sep {
-      width: 1px;
-      height: 20px;
-      background: var(--border);
-      flex-shrink: 0;
-    }
+/* Thin muted separator between the count/algo selects and the action buttons */
+.random__controls-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+}
 
-    .random__select {
-      font-family: var(--mono);
-      font-size: 12px;
-      padding: 5px 8px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--text);
-      cursor: pointer;
-      outline: none;
-      transition: border-color 0.2s;
-    }
+.random__select {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
 
-    .random__select:focus {
-      border-color: var(--accent-border);
-    }
+.random__select:focus {
+  border-color: var(--accent-border);
+}
 
-    .random__list {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      transition: box-shadow 0.25s, border-color 0.25s;
-    }
+.random__list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
 
-    .random__list:hover {
-      box-shadow: var(--shadow-lg);
-    }
+.random__list:hover {
+  box-shadow: var(--shadow-lg);
+}
 
-    .random__item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 9px 14px;
-      font-family: var(--mono);
-      font-size: 13px;
-      border-bottom: 1px solid var(--border);
-      transition: background 0.15s;
-    }
+.random__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
 
-    .random__item:last-child {
-      border-bottom: none;
-    }
+.random__item:last-child {
+  border-bottom: none;
+}
 
-    .random__item:hover {
-      background: var(--accent-muted);
-    }
+.random__item:hover {
+  background: var(--accent-muted);
+}
 
-    .random__item-index {
-      color: var(--text-muted);
-      font-size: 11px;
-      min-width: 26px;
-    }
+.random__item-index {
+  color: var(--text-muted);
+  font-size: 11px;
+  min-width: 26px;
+}
 
-    .random__item-hash {
-      flex: 1;
-      min-width: 0; /* needed for ellipsis to work inside flex */
-      color: var(--text);
-      user-select: none;
-      letter-spacing: 0.3px;
-      cursor: pointer;
-      position: relative; /* anchor for inline .tooltip */
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+.random__item-hash {
+  flex: 1;
+  min-width: 0; /* needed for ellipsis to work inside flex */
+  color: var(--text);
+  user-select: none;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  position: relative; /* anchor for inline .tooltip */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-    .random__item-actions {
-      display: flex;
-      gap: 4px;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
+.random__item-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
 
-    .random__item:hover .random__item-actions {
-      opacity: 1;
-    }
+.random__item:hover .random__item-actions {
+  opacity: 1;
+}
 
-    .random__item-btn {
-      background: none;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 3px;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      transition: all 0.15s;
-      position: relative;
-    }
+.random__item-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s;
+  position: relative;
+}
 
-    .random__item-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent-border);
-    }
+.random__item-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
 
-    .random__item-btn svg {
-      width: 13px;
-      height: 13px;
-      fill: currentColor;
-    }
+.random__item-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
 
-    /* =========================================================================
+/* =========================================================================
        ABOUT / INFO — tabbed FAQ
        ========================================================================= */
-    .info {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-      font-size: 14px;
-      line-height: 1.8;
-      transition: box-shadow 0.25s, border-color 0.25s;
-    }
+.info {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.8;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
 
-    .info:hover {
-      box-shadow: var(--shadow-lg);
-    }
+.info:hover {
+  box-shadow: var(--shadow-lg);
+}
 
-    /* ── Tab strip ────────────────────────────────────────────────────────────
+/* ── Tab strip ────────────────────────────────────────────────────────────
        Reuses the same visual language as .options__segment (the format picker)
        but rendered as a full-width border-bottom strip rather than a pill. */
-    .info__tabs-wrap {
-      position: relative;
-      overflow: hidden;
-      border-bottom: 1px solid var(--border);
-    }
+.info__tabs-wrap {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border);
+}
 
-    .info__tabs {
-      display: flex;
-      background: var(--accent-surface);
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-      border-bottom: none;
-    }
+.info__tabs {
+  display: flex;
+  background: var(--accent-surface);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  border-bottom: none;
+}
 
-    .info__tabs::-webkit-scrollbar { display: none; }
+.info__tabs::-webkit-scrollbar {
+  display: none;
+}
 
-    .info__tabs-wrap::before,
-    .info__tabs-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 1px;
-      width: 32px;
-      pointer-events: none;
-      z-index: 2;
-      transition: opacity 0.2s ease;
-    }
+.info__tabs-wrap::before,
+.info__tabs-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 1px;
+  width: 32px;
+  pointer-events: none;
+  z-index: 2;
+  transition: opacity 0.2s ease;
+}
 
-    .info__tabs-wrap::before {
-      left: 0;
-      background: linear-gradient(to right, var(--accent-surface), transparent);
-      opacity: var(--tabs-fade-left, 0);
-    }
+.info__tabs-wrap::before {
+  left: 0;
+  background: linear-gradient(to right, var(--accent-surface), transparent);
+  opacity: var(--tabs-fade-left, 0);
+}
 
-    .info__tabs-wrap::after {
-      right: 0;
-      background: linear-gradient(to left, var(--accent-surface), transparent);
-      opacity: var(--tabs-fade-right, 0);
-    }
+.info__tabs-wrap::after {
+  right: 0;
+  background: linear-gradient(to left, var(--accent-surface), transparent);
+  opacity: var(--tabs-fade-right, 0);
+}
 
-    .info__tab {
-      flex-shrink: 0;
-      font-family: var(--mono);
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--text-muted);
-      background: none;
-      border: none;
-      border-bottom: 2px solid transparent;
-      /* Offset the panel border-bottom so the active indicator sits flush */
-      margin-bottom: -1px;
-      padding: 10px 18px;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s, background 0.15s;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      position: relative; /* anchor for the ::before separator */
-    }
+.info__tab {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  /* Offset the panel border-bottom so the active indicator sits flush */
+  margin-bottom: -1px;
+  padding: 10px 18px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    background 0.15s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative; /* anchor for the ::before separator */
+}
 
-    /* Vertical separator between tabs — mirrors .header__nav-link + .header__nav-link::before
+/* Vertical separator between tabs — mirrors .header__nav-link + .header__nav-link::before
        exactly: 1px wide, var(--border) colour, vertically centred. Slightly shorter (14px)
        than the header version (18px) to sit clear of the active underline zone.
        Fades only on hover (to avoid a double-edge with the hover background fill)
        but stays visible when an adjacent tab is active. */
-    .info__tab + .info__tab::before {
-      content: '';
-      position: absolute;
-      left: -1px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 1px;
-      height: 14px;
-      background: var(--border);
-      transition: opacity 0.15s;
-    }
+.info__tab + .info__tab::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 14px;
+  background: var(--border);
+  transition: opacity 0.15s;
+}
 
-    .info__tab:hover::before,
-    .info__tab + .info__tab:hover::before {
-      opacity: 0;
-    }
+.info__tab:hover::before,
+.info__tab + .info__tab:hover::before {
+  opacity: 0;
+}
 
-    .info__tab:hover {
-      color: var(--text);
-      background: var(--accent-muted);
-    }
+.info__tab:hover {
+  color: var(--text);
+  background: var(--accent-muted);
+}
 
-    .info__tab[aria-selected="true"] {
-      color: var(--accent);
-      border-bottom-color: var(--accent);
-    }
+.info__tab[aria-selected='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
 
-    /* Badge on variants tab showing the variant count */
-    .info__tab-badge {
-      display: inline-flex;
-      align-items: center;
-      font-family: var(--mono);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      color: var(--accent-dim);
-      background: var(--accent-muted);
-      border-radius: 3px;
-      padding: 0 4px;
-      line-height: 14px;
-      opacity: 0.75;
-    }
+/* Badge on variants tab showing the variant count */
+.info__tab-badge {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: var(--accent-dim);
+  background: var(--accent-muted);
+  border-radius: 3px;
+  padding: 0 4px;
+  line-height: 14px;
+  opacity: 0.75;
+}
 
-    .info__tab[aria-selected="true"] .info__tab-badge {
-      opacity: 1;
-    }
+.info__tab[aria-selected='true'] .info__tab-badge {
+  opacity: 1;
+}
 
-    /* ── Tab panels ───────────────────────────────────────────────────────────*/
-    .info__panel {
-      display: none;
-      padding: 24px;
-    }
+/* ── Tab panels ───────────────────────────────────────────────────────────*/
+.info__panel {
+  display: none;
+  padding: 24px;
+}
 
-    .info__panel[data-active] {
-      display: block;
-      animation: panelIn 0.2s ease both;
-    }
+.info__panel[data-active] {
+  display: block;
+  animation: panelIn 0.2s ease both;
+}
 
-    @keyframes panelIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0);   }
-    }
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-    @media (prefers-reduced-motion: reduce) {
-      .info__panel[data-active] { animation: none; }
-    }
+@media (prefers-reduced-motion: reduce) {
+  .info__panel[data-active] {
+    animation: none;
+  }
+}
 
-    .info h3 {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--accent-dim);
-      margin-bottom: 8px;
-      margin-top: 20px;
-    }
+.info h3 {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent-dim);
+  margin-bottom: 8px;
+  margin-top: 20px;
+}
 
-    .info h3:first-child {
-      margin-top: 0;
-    }
+.info h3:first-child {
+  margin-top: 0;
+}
 
-    .info p {
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
+.info p {
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
 
-    .info strong {
-      color: var(--text);
-    }
+.info strong {
+  color: var(--text);
+}
 
-    .info code {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 1px 6px;
-      border-radius: 4px;
-      font-family: var(--mono);
-      font-size: 12px;
-    }
+.info code {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-family: var(--mono);
+  font-size: 12px;
+}
 
-    .info a {
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid var(--accent-border);
-      transition: border-color 0.15s;
-    }
+.info a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-border);
+  transition: border-color 0.15s;
+}
 
-    .info a:hover {
-      border-color: var(--accent);
-    }
+.info a:hover {
+  border-color: var(--accent);
+}
 
-    /* ── Algorithm comparison table ───────────────────────────────────────────*/
-    .info-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--mono);
-      font-size: 12px;
-      margin-top: 16px;
-      margin-bottom: 4px;
-    }
+/* ── Algorithm comparison table ───────────────────────────────────────────*/
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12px;
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
 
-    .info-table th {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      padding: 6px 10px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      white-space: nowrap;
-    }
+.info-table th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  padding: 6px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  white-space: nowrap;
+}
 
-    [data-theme="dark"] .info-table th {
-      background: rgba(255, 255, 255, 0.02);
-    }
+[data-theme='dark'] .info-table th {
+  background: rgba(255, 255, 255, 0.02);
+}
 
-    .info-table td {
-      padding: 6px 10px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text-muted);
-      vertical-align: middle;
-    }
+.info-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  vertical-align: middle;
+}
 
-    .info-table tr:last-child td {
-      border-bottom: none;
-    }
+.info-table tr:last-child td {
+  border-bottom: none;
+}
 
-    .info-table tr:hover td {
-      background: var(--accent-muted);
-    }
+.info-table tr:hover td {
+  background: var(--accent-muted);
+}
 
-    .info-table__algo {
-      font-weight: 600;
-      color: var(--text);
-      white-space: nowrap;
-    }
+.info-table__algo {
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
 
-    .info-table .info-table__status--secure {
-      color: #0E7A6A;
-    }
+.info-table .info-table__status--secure {
+  color: #0e7a6a;
+}
 
-    .info-table .info-table__status--legacy {
-      color: #B05800;
-    }
+.info-table .info-table__status--legacy {
+  color: #b05800;
+}
 
-    .info-table .info-table__status--broken {
-      color: #C0392B;
-    }
+.info-table .info-table__status--broken {
+  color: #c0392b;
+}
 
-    [data-theme="dark"] .info-table__status--secure { color: #3DD6C0; }
-    [data-theme="dark"] .info-table__status--legacy  { color: #FFAC5F; }
-    [data-theme="dark"] .info-table__status--broken  { color: #FF6B6B; }
+[data-theme='dark'] .info-table__status--secure {
+  color: #3dd6c0;
+}
+[data-theme='dark'] .info-table__status--legacy {
+  color: #ffac5f;
+}
+[data-theme='dark'] .info-table__status--broken {
+  color: #ff6b6b;
+}
 
-    @media (max-width: 540px) {
-      .info-table thead { display: none; }
-      .info-table,
-      .info-table tbody,
-      .info-table tr,
-      .info-table td   { display: block; width: 100%; box-sizing: border-box; }
-      .info-table tr {
-        border-bottom: 1px solid var(--border);
-        padding: 8px 0;
-      }
-      .info-table tr:last-child { border-bottom: none; }
-      .info-table td {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 3px 0;
-        border-bottom: none;
-      }
-      .info-table td::before {
-        content: attr(data-label);
-        font-weight: 600;
-        color: var(--text);
-        white-space: nowrap;
-        flex-shrink: 0;
-      }
-      .info-table tr:hover td { background: none; }
-    }
+@media (max-width: 540px) {
+  .info-table thead {
+    display: none;
+  }
+  .info-table,
+  .info-table tbody,
+  .info-table tr,
+  .info-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .info-table tr {
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+  }
+  .info-table tr:last-child {
+    border-bottom: none;
+  }
+  .info-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 3px 0;
+    border-bottom: none;
+  }
+  .info-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .info-table tr:hover td {
+    background: none;
+  }
+}
 
-    /* =========================================================================
+/* =========================================================================
        FOOTER
        ========================================================================= */
-    .footer {
-      padding: 24px 40px;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(20px) saturate(1.8);
-      -webkit-backdrop-filter: blur(20px) saturate(1.8);
-      border-top: 1px solid var(--border);
-      text-align: center;
-      font-family: var(--mono);
-      font-size: 11.5px;
-      color: var(--text-muted);
-      letter-spacing: 0.4px;
-    }
+.footer {
+  padding: 24px 40px;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.4px;
+}
 
-    [data-theme="dark"] .footer {
-      background: rgba(28, 32, 48, 0.78);
-    }
+[data-theme='dark'] .footer {
+  background: rgba(28, 32, 48, 0.78);
+}
 
-    .footer__copy {
-      margin-top: 8px;
-      font-size: 11px;
-      color: var(--text-muted);
-      opacity: 0.7;
-      letter-spacing: 0.3px;
-    }
+.footer__copy {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  opacity: 0.7;
+  letter-spacing: 0.3px;
+}
 
-    .footer__links {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-top: 8px;
-    }
+.footer__links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+}
 
-    .footer__link {
-      color: var(--text-muted);
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: var(--border);
-      transition: color 0.2s, text-decoration-color 0.2s;
-    }
+.footer__link {
+  color: var(--text-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+  transition:
+    color 0.2s,
+    text-decoration-color 0.2s;
+}
 
-    .footer__link:hover {
-      color: var(--accent);
-      text-decoration-color: var(--accent);
-    }
+.footer__link:hover {
+  color: var(--accent);
+  text-decoration-color: var(--accent);
+}
 
-    /* Silent variant — visually indistinguishable from surrounding text.
+/* Silent variant — visually indistinguishable from surrounding text.
        Used for brand / attribution links that must be anchors but should not
        look like links (Voidfly Labs in the byline).
        The pointer cursor is intentionally preserved so the browser still
        signals interactivity on hover. */
-    .footer__link--silent {
-      text-decoration: none;
-      color: inherit;
-    }
+.footer__link--silent {
+  text-decoration: none;
+  color: inherit;
+}
 
-    .footer__link--silent:hover {
-      color: inherit;
-      text-decoration: none;
-    }
+.footer__link--silent:hover {
+  color: inherit;
+  text-decoration: none;
+}
 
-    /* Brand variant — carries the same underline decoration as the nav footer
+/* Brand variant — carries the same underline decoration as the nav footer
        links (text-decoration + offset + muted color) but with no hover styles
        or transitions. Font size and color are left entirely to the cascade so
        the surrounding context controls them. */
-    .footer__link--brand {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-      text-decoration-color: var(--border);
-    }
+.footer__link--brand {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border);
+}
 
-    .footer__github {
-      display: inline-flex;
-      align-items: center;
-      margin-top: 14px;
-      color: var(--text-muted);
-      opacity: 0.5;
-      transition: opacity 0.2s;
-      text-decoration: none;
-    }
+.footer__github {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 14px;
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  text-decoration: none;
+}
 
-    .footer__github:hover {
-      opacity: 0.75;
-    }
+.footer__github:hover {
+  opacity: 0.75;
+}
 
-    .footer__github svg {
-      width: 18px;
-      height: 18px;
-      fill: currentColor;
-    }
+.footer__github svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
 
-    .section__label-row {
-      gap: 6px;
-    }
+.section__label-row {
+  gap: 6px;
+}
 
-    .toggle-all-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
-    }
+.toggle-all-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
 
-    .toggle-all-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent-border);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.toggle-all-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .toggle-all-btn svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
+.toggle-all-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
 
-    /* =========================================================================
+/* =========================================================================
        SECTION LABEL ROW (label + history toggle)
        ========================================================================= */
-    .section__label-row {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
+.section__label-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
-    .section__label-row .section__label {
-      flex: 1;
-      margin: 0;
-    }
+.section__label-row .section__label {
+  flex: 1;
+  margin: 0;
+}
 
-    .history-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
-    }
+.history-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
 
-    .history-btn:hover,
-    .history-btn[aria-expanded="true"] {
-      color: var(--accent);
-      border-color: var(--accent-border);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.history-btn:hover,
+.history-btn[aria-expanded='true'] {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .history-btn svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
+.history-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
 
-    .permalink-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 8px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      transition: color 0.15s, border-color 0.15s, box-shadow 0.15s;
-    }
+.permalink-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
 
-    .permalink-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent-border);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.permalink-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .permalink-btn svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
+.permalink-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
 
-    .permalink-btn__icon-check { display: none; }
-    .permalink-btn--copied .permalink-btn__icon-link { display: none; }
-    .permalink-btn--copied .permalink-btn__icon-check { display: block; }
+.permalink-btn__icon-check {
+  display: none;
+}
+.permalink-btn--copied .permalink-btn__icon-link {
+  display: none;
+}
+.permalink-btn--copied .permalink-btn__icon-check {
+  display: block;
+}
 
-    /* =========================================================================
+/* =========================================================================
        HISTORY POPOVER
        ========================================================================= */
-    .history-popover {
-      position: absolute;
-      right: 0;
-      max-width: max(calc(max(100vw, 330px) - 32px), 268px);
-      top: calc(100% + 6px);
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(20px) saturate(1.8);
-      -webkit-backdrop-filter: blur(20px) saturate(1.8);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-      z-index: 120;
-      /* No overflow:hidden — tooltips on hash cells must escape the container */
-      /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
-      opacity: 0;
-      transform: translateY(-4px);
-      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
-      visibility: hidden;
-      pointer-events: none;
-    }
+.history-popover {
+  position: absolute;
+  right: 0;
+  max-width: max(calc(max(100vw, 330px) - 32px), 268px);
+  top: calc(100% + 6px);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 120;
+  /* No overflow:hidden — tooltips on hash cells must escape the container */
+  /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s;
+  visibility: hidden;
+  pointer-events: none;
+}
 
-    [data-theme="dark"] .history-popover {
-      background: rgba(28, 32, 48, 0.78);
-    }
+[data-theme='dark'] .history-popover {
+  background: rgba(28, 32, 48, 0.78);
+}
 
-    .history-popover--visible {
-      opacity: 1;
-      transform: translateY(0);
-      visibility: visible;
-      pointer-events: auto;
-    }
+.history-popover--visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
 
-    .history-popover__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      background: var(--accent-surface);
-      border-radius: var(--radius) var(--radius) 0 0;
-    }
+.history-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--accent-surface);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
 
-    .history-popover__title {
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--accent-dim);
-    }
+.history-popover__title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-dim);
+}
 
-    /* Borderless dismiss button in the popover header top-right corner.
+/* Borderless dismiss button in the popover header top-right corner.
        Sized and coloured to harmonise with the muted icon buttons elsewhere.
        Shares all visual styles with .file-drop__clear — the grouped selector
        makes that parity structural rather than coincidental.
        display is intentionally omitted: each element manages its own
        (history-popover__close is always visible; file-drop__clear defaults to
        none and is revealed by the --visible modifier). */
-    .history-popover__close,
-    .file-drop__clear,
-    .text-input__clear {
-      background: none;
-      border: none;
-      padding: 2px;
-      color: var(--text-muted);
-      cursor: pointer;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-sm);
-      transition: color 0.15s, background 0.15s;
-      flex-shrink: 0;
-    }
+.history-popover__close,
+.file-drop__clear,
+.text-input__clear {
+  background: none;
+  border: none;
+  padding: 2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
+}
 
-    .history-popover__close {
-      display: flex;
-      margin: -2px; /* optical alignment against the edge of the header padding */
-    }
+.history-popover__close {
+  display: flex;
+  margin: -2px; /* optical alignment against the edge of the header padding */
+}
 
-    .history-popover__close:hover,
-    .file-drop__clear:hover,
-    .text-input__clear:hover {
-      color: var(--text);
-      background: var(--surface-2);
-    }
+.history-popover__close:hover,
+.file-drop__clear:hover,
+.text-input__clear:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
 
-    .history-popover__close:active,
-    .file-drop__clear:active,
-    .text-input__clear:active {
-      transform: scale(0.9);
-    }
+.history-popover__close:active,
+.file-drop__clear:active,
+.text-input__clear:active {
+  transform: scale(0.9);
+}
 
-    .history-popover__close svg,
-    .file-drop__clear svg,
-    .text-input__clear svg {
-      width: 14px;
-      height: 14px;
-      fill: currentColor;
-    }
+.history-popover__close svg,
+.file-drop__clear svg,
+.text-input__clear svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
 
-    /* Matches .btn exactly — same surface, border, sizing, transitions */
-    .history-popover__clear {
-      font-family: var(--sans);
-      font-size: 13px;
-      font-weight: 500;
-      padding: 5px 11px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--text-muted);
-      cursor: pointer;
-      transition: all 0.15s;
-      display: inline-flex;
-      align-items: center;
-      white-space: nowrap;
-    }
+/* Matches .btn exactly — same surface, border, sizing, transitions */
+.history-popover__clear {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
 
-    .history-popover__clear svg {
-      width: 12px;
-      height: 12px;
-      fill: currentColor;
-    }
+.history-popover__clear svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
 
-    .history-popover__clear:hover {
-      border-color: var(--accent-border);
-      color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.history-popover__clear:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .history-popover__clear:active {
-      transform: scale(0.96);
-    }
+.history-popover__clear:active {
+  transform: scale(0.96);
+}
 
-    .history-popover__empty {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--text-muted);
-      font-style: italic;
-      text-align: center;
-      padding: 20px 14px;
-    }
+.history-popover__empty {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 20px 14px;
+}
 
-    .history-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--mono);
-      font-size: 12px;
-      table-layout: fixed;
-    }
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12px;
+  table-layout: fixed;
+}
 
-    .history-table thead th {
-      font-size: 10px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-muted);
-      padding: 7px 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-    }
+.history-table thead th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
 
-    [data-theme="dark"] .history-table thead th {
-      background: rgba(255, 255, 255, 0.02);
-    }
+[data-theme='dark'] .history-table thead th {
+  background: rgba(255, 255, 255, 0.02);
+}
 
-    .history-table tbody td {
-      padding: 7px 12px;
-      vertical-align: middle;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
+.history-table tbody td {
+  padding: 7px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
 
-    [data-theme="dark"] .history-table tbody td {
-      background: rgba(255, 255, 255, 0.03);
-    }
+[data-theme='dark'] .history-table tbody td {
+  background: rgba(255, 255, 255, 0.03);
+}
 
-    .history-table tbody tr:last-child td {
-      border-bottom: none;
-    }
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
 
-    .history-table tbody tr:hover td {
-      background: var(--accent-muted);
-    }
+.history-table tbody tr:hover td {
+  background: var(--accent-muted);
+}
 
-    .history-table__num {
-      color: var(--text-muted);
-      width: 35px;
-    }
+.history-table__num {
+  color: var(--text-muted);
+  width: 35px;
+}
 
-    .history-table__hash {
-      color: var(--text);
-      letter-spacing: 0.3px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      position: relative; /* anchor for inline .tooltip */
-    }
+.history-table__hash {
+  color: var(--text);
+  letter-spacing: 0.3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  position: relative; /* anchor for inline .tooltip */
+}
 
-    .history-table__time {
-      color: var(--text-muted);
-      white-space: nowrap;
-      /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
-      width: 150px;
-    }
+.history-table__time {
+  color: var(--text-muted);
+  white-space: nowrap;
+  /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
+  width: 150px;
+}
 
-    .history-table__algo {
-      width: 79px;
-    }
+.history-table__algo {
+  width: 79px;
+}
 
-    /* Action buttons column — mirrors .random__item-actions pattern */
-    .history-table__actions {
-      width: 52px;
-      padding-left: 4px !important;
-      padding-right: 8px !important;
-      text-align: right;
-      white-space: nowrap;
-      overflow: visible;
-    }
+/* Action buttons column — mirrors .random__item-actions pattern */
+.history-table__actions {
+  width: 52px;
+  padding-left: 4px !important;
+  padding-right: 8px !important;
+  text-align: right;
+  white-space: nowrap;
+  overflow: visible;
+}
 
-    .history-table__action-btns {
-      display: inline-flex;
-      gap: 1px;
-      opacity: 0;
-      transition: opacity 0.15s;
-    }
+.history-table__action-btns {
+  display: inline-flex;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
 
-    .history-table tbody tr:hover .history-table__action-btns {
-      opacity: 1;
-    }
+.history-table tbody tr:hover .history-table__action-btns {
+  opacity: 1;
+}
 
-    /* Unified with .random__item-btn — identical padding, icon size, hover ring */
-    .history-table__action-btn {
-      background: none;
-      border: 1px solid transparent;
-      color: var(--text-muted);
-      cursor: pointer;
-      padding: 3px;
-      border-radius: 4px;
-      display: inline-flex;
-      align-items: center;
-      transition: all 0.15s;
-      position: relative;
-    }
+/* Unified with .random__item-btn — identical padding, icon size, hover ring */
+.history-table__action-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s;
+  position: relative;
+}
 
-    .history-table__action-btn:hover {
-      color: var(--accent);
-      border-color: var(--accent-border);
-    }
+.history-table__action-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
 
-    .history-table__action-btn svg {
-      width: 13px;
-      height: 13px;
-      fill: currentColor;
-    }
+.history-table__action-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
 
-    /* =========================================================================
+/* =========================================================================
        ALGORITHM BADGE
        — Single vocabulary for "which algorithm" across result bars,
          random lists, and history popovers.
          Per-algorithm colours are set via data-algo on the badge element,
          keeping the palette in one place (design tokens above).
        ========================================================================= */
-    .algo-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      border-radius: 4px;
-      padding: 1px 5px;
-      white-space: nowrap;
-      flex-shrink: 0;
-      user-select: none;
-      opacity: 0.82;
-      transition: opacity 0.15s;
-      /* Fallback to accent colours for any unrecognised algo */
-      color:      var(--accent-dim);
-      background: var(--accent-muted);
-    }
+.algo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  opacity: 0.82;
+  transition: opacity 0.15s;
+  /* Fallback to accent colours for any unrecognised algo */
+  color: var(--accent-dim);
+  background: var(--accent-muted);
+}
 
-    /* Brighten badge when its containing row is hovered */
-    .random__item:hover     .algo-badge,
-    .history-table tr:hover .algo-badge { opacity: 1; }
+/* Brighten badge when its containing row is hovered */
+.random__item:hover .algo-badge,
+.history-table tr:hover .algo-badge {
+  opacity: 1;
+}
 
-    .result .algo-badge {
-      opacity: 1;
-      cursor: pointer;
-      transition: opacity 0.15s, filter 0.15s;
-    }
+.result .algo-badge {
+  opacity: 1;
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    filter 0.15s;
+}
 
-    .result--disabled .algo-badge,
-    .result--disabled .result__hash {
-      opacity: 0.4;
-      transition: opacity 0.2s;
-    }
+.result--disabled .algo-badge,
+.result--disabled .result__hash {
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
 
-    .result:not(.result--disabled) .algo-badge,
-    .result:not(.result--disabled) .result__hash {
-      transition: opacity 0.2s;
-    }
+.result:not(.result--disabled) .algo-badge,
+.result:not(.result--disabled) .result__hash {
+  transition: opacity 0.2s;
+}
 
-    .result--disabled .result__hash {
-      cursor: default;
-      color: var(--text-muted);
-      font-style: italic;
-    }
+.result--disabled .result__hash {
+  cursor: default;
+  color: var(--text-muted);
+  font-style: italic;
+}
 
-    .result--disabled .result__actions {
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s, visibility 0.2s;
-    }
+.result--disabled .result__actions {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
 
-    .result:not(.result--disabled) .result__actions {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.2s, visibility 0.2s;
-    }
+.result:not(.result--disabled) .result__actions {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
 
-    /* In random items the badge sits at the trailing end; flex: 1 on the hash
+/* In random items the badge sits at the trailing end; flex: 1 on the hash
        span pushes everything after it to the right naturally. */
-    .random__item-badge {
-      cursor: default;
-    }
+.random__item-badge {
+  cursor: default;
+}
 
-    /* =========================================================================
+/* =========================================================================
        HISTORY PAGINATION
        ========================================================================= */
-    .history-popover__footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 7px 14px;
-      border-top: 1px solid var(--border);
-      background: var(--accent-surface);
-      gap: 8px;
-      border-radius: 0 0 var(--radius) var(--radius);
-    }
+.history-popover__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--accent-surface);
+  gap: 8px;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
 
-    .history-pagination {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+.history-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 
-    /* Pagination buttons adopt the same visual language as .btn (result section
+/* Pagination buttons adopt the same visual language as .btn (result section
        buttons): surface background, border, hover ring, disabled opacity.
        The fixed 26×26 square replaces the standard .btn padding for icon-only use. */
-    .history-pagination__btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      cursor: pointer;
-      width: 26px;
-      height: 26px;
-      border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s;
-      flex-shrink: 0;
-    }
+.history-pagination__btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
 
-    .history-pagination__btn:hover:not(:disabled) {
-      border-color: var(--accent-border);
-      color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-muted);
-    }
+.history-pagination__btn:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
 
-    .history-pagination__btn:active:not(:disabled) {
-      transform: scale(0.96);
-    }
+.history-pagination__btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
 
-    .history-pagination__btn:disabled {
-      opacity: 0.38;
-      cursor: default;
-    }
+.history-pagination__btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
 
-    .history-pagination__btn svg {
-      width: 12px;
-      height: 12px;
-      fill: currentColor;
-    }
+.history-pagination__btn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
 
-    .history-pagination__info {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--text-muted);
-      white-space: nowrap;
-      padding: 0 2px;
-    }
+.history-pagination__info {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 0 2px;
+}
 
-    /* =========================================================================
+/* =========================================================================
        HISTORY BACKDROP
        — Fullscreen overlay rendered behind all popovers but above page content.
          Provides the visual "focus" effect (blur + darken) when a popover is open.
        ========================================================================= */
-    .history-backdrop {
-      position: fixed;
-      inset: 0;
-      /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
-      background: rgba(0, 0, 0, 0.28);
-      backdrop-filter: blur(3px) brightness(0.85);
-      -webkit-backdrop-filter: blur(3px) brightness(0.85);
-      /* z-index above the sticky header (100) so the header is also dimmed/blurred,
+.history-backdrop {
+  position: fixed;
+  inset: 0;
+  /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(3px) brightness(0.85);
+  -webkit-backdrop-filter: blur(3px) brightness(0.85);
+  /* z-index above the sticky header (100) so the header is also dimmed/blurred,
          but below the popover (z-index: 120) so the popover stays fully visible. */
-      z-index: 110;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.2s ease, visibility 0.2s ease;
-      pointer-events: none;
-    }
+  z-index: 110;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+  pointer-events: none;
+}
 
-    .history-backdrop--visible {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-    }
+.history-backdrop--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
 
-    [data-theme="dark"] .history-backdrop {
-      background: rgba(0, 0, 0, 0.45);
-    }
+[data-theme='dark'] .history-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
 
-    /* =========================================================================
+/* =========================================================================
        SCROLLBAR
        ========================================================================= */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
 
-    /* =========================================================================
+/* =========================================================================
        RESPONSIVE
        ========================================================================= */
-    @media (max-width: 600px) {
-      .header {
-        padding: 10px 16px;
-      }
+@media (max-width: 600px) {
+  .header {
+    padding: 10px 16px;
+  }
 
-      .header__nav {
-        display: none;
-      }
+  .header__nav {
+    display: none;
+  }
 
-      main {
-        padding: 32px 16px 48px;
-      }
+  main {
+    padding: 32px 16px 48px;
+  }
 
-      .page-heading h1 {
-        font-size: 22px;
-      }
+  .page-heading h1 {
+    font-size: 22px;
+  }
 
-      /* Result bar: buttons wrap onto their own row */
-      .result {
-        flex-wrap: wrap;
-        gap: 8px 12px;
-      }
+  /* Result bar: buttons wrap onto their own row */
+  .result {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
 
-      .result__actions {
-        flex-basis: 100%;
-        justify-content: flex-end;
-        padding-top: 4px;
-      }
+  .result__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
 
-      /* Random list: always show action buttons (no hover on touch) —
+  /* Random list: always show action buttons (no hover on touch) —
          moved to @media (hover: none) below for semantic correctness. */
 
-      /* Footer: reduce side padding */
-      .footer {
-        padding: 20px 16px;
-      }
+  /* Footer: reduce side padding */
+  .footer {
+    padding: 20px 16px;
+  }
 
-      /* Format pickers: chips share space equally at narrow widths */
-      .options__group,
-      .options,
-      .options__segment {
-        width: 100%;
-      }
+  /* Format pickers: chips share space equally at narrow widths */
+  .options__group,
+  .options,
+  .options__segment {
+    width: 100%;
+  }
 
-      .options__segment-label {
-        flex: 1;
-      }
-    }
+  .options__segment-label {
+    flex: 1;
+  }
+}
 
-    /* Closes the blindspot: fires before the groups naturally wrap (~686px),
+/* Closes the blindspot: fires before the groups naturally wrap (~686px),
        ensuring full-width expansion kicks in at the same time as the wrap. */
-    @media (max-width: 620px) {
-      .options__group,
-      .options,
-      .options__segment {
-        width: 100%;
-      }
+@media (max-width: 620px) {
+  .options__group,
+  .options,
+  .options__segment {
+    width: 100%;
+  }
 
-      .options__segment-label {
-        flex: 1;
-      }
-    }
+  .options__segment-label {
+    flex: 1;
+  }
+}
 
-    /* Touch devices have no hover — always show action buttons and history
+/* Touch devices have no hover — always show action buttons and history
        table actions so they remain reachable regardless of viewport width.
        @media (hover: none) targets the input mechanism, not the screen size,
        which is the correct semantic here. */
-    @media (hover: none) {
-      .random__item-actions {
-        opacity: 1;
-      }
+@media (hover: none) {
+  .random__item-actions {
+    opacity: 1;
+  }
 
-      .history-table__action-btns {
-        opacity: 1;
-      }
-    }
+  .history-table__action-btns {
+    opacity: 1;
+  }
+}

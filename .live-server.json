@@ -1,0 +1,5 @@
+{
+  "port": 8080,
+  "ignore": "dist,node_modules,.git",
+  "wait": 100
+}

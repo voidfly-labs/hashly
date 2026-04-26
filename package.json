@@ -3,10 +3,32 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build":     "node scripts/build.js",
+    "build": "node scripts/build.js",
     "build:all": "node scripts/build.js all",
-    "dev":       "npx serve .",
-    "download":  "node scripts/build.js download"
+    "dev": "npx live-server .",
+    "download": "node scripts/build.js download",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "prepare": "husky"
   },
-  "engines": { "node": ">=18" }
+  "engines": {
+    "node": ">=18"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,html}": "prettier --write"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.2",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "prettier": "^3.8.3"
+  }
 }

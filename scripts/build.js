@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 'use strict';
 
-const fs   = require('fs');
+const fs = require('fs');
 const path = require('path');
 const { APPS, VENDOR_SCRIPTS, LOCAL_SCRIPTS, FONTS } = require('./build.config.js');
 
-const ROOT       = path.resolve(__dirname, '..');
-const VENDOR_DIR = path.join(ROOT, 'vendor');   // dev source; gitignored
-const DIST_DIR   = path.join(ROOT, 'dist');
+const ROOT = path.resolve(__dirname, '..');
+const VENDOR_DIR = path.join(ROOT, 'vendor'); // dev source; gitignored
+const DIST_DIR = path.join(ROOT, 'dist');
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -35,20 +35,24 @@ function copy(src, dest) {
 // ---------------------------------------------------------------------------
 
 function buildFontsCss() {
-  return FONTS.families.flatMap(family =>
-    FONTS.weights.map(weight => {
-      const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
-      return (
-        `@font-face {\n` +
-        `  font-family: '${family.cssName}';\n` +
-        `  font-style: normal;\n` +
-        `  font-weight: ${weight};\n` +
-        `  font-display: swap;\n` +
-        `  src: url('./${file}') format('woff2');\n` +
-        `}`
-      );
-    })
-  ).join('\n\n') + '\n';
+  return (
+    FONTS.families
+      .flatMap((family) =>
+        FONTS.weights.map((weight) => {
+          const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
+          return (
+            `@font-face {\n` +
+            `  font-family: '${family.cssName}';\n` +
+            `  font-style: normal;\n` +
+            `  font-weight: ${weight};\n` +
+            `  font-display: swap;\n` +
+            `  src: url('./${file}') format('woff2');\n` +
+            `}`
+          );
+        }),
+      )
+      .join('\n\n') + '\n'
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -67,7 +71,7 @@ async function ensureVendors(apps) {
   for (const family of FONTS.families) {
     for (const weight of FONTS.weights) {
       const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
-      const url  = [
+      const url = [
         `https://cdn.jsdelivr.net/npm/@fontsource/${family.pkg}@${FONTS.version}`,
         `files/${family.prefix}-latin-${weight}-normal.woff2`,
       ].join('/');
@@ -96,9 +100,17 @@ function processHtml(html) {
   return minifyHtml(html);
 }
 
-function minifyHtml(s) { return s; }
-function minifyCss(s)  { return s; } // eslint-disable-line no-unused-vars
-function minifyJs(s)   { return s; } // eslint-disable-line no-unused-vars
+function minifyHtml(s) {
+  return s;
+}
+// eslint-disable-next-line no-unused-vars
+function minifyCss(s) {
+  return s;
+}
+// eslint-disable-next-line no-unused-vars
+function minifyJs(s) {
+  return s;
+}
 
 // ---------------------------------------------------------------------------
 // Per-app build
@@ -106,7 +118,7 @@ function minifyJs(s)   { return s; } // eslint-disable-line no-unused-vars
 
 async function buildApp(app) {
   console.log(`\n[${app}]`);
-  const appDir  = path.join(ROOT, app);
+  const appDir = path.join(ROOT, app);
   const distDir = path.join(DIST_DIR, app);
   const scripts = VENDOR_SCRIPTS[app] ?? [];
 
@@ -115,14 +127,14 @@ async function buildApp(app) {
 
   // App-specific files
   copy(path.join(appDir, 'app.css'), path.join(distDir, 'app.css'));
-  copy(path.join(appDir, 'app.js'),  path.join(distDir, 'app.js'));
+  copy(path.join(appDir, 'app.js'), path.join(distDir, 'app.js'));
 
   // Shared assets
-  copy(path.join(ROOT, 'assets/css/main.css'),        path.join(distDir, 'assets/css/main.css'));
-  copy(path.join(ROOT, 'assets/images/favicon.svg'),   path.join(distDir, 'assets/images/favicon.svg'));
-  copy(path.join(ROOT, 'assets/images/favicon.ico'),   path.join(distDir, 'assets/images/favicon.ico'));
-  copy(path.join(ROOT, 'assets/images/logo.svg'),      path.join(distDir, 'assets/images/logo.svg'));
-  copy(path.join(ROOT, 'assets/js/shared.js'),         path.join(distDir, 'assets/js/shared.js'));
+  copy(path.join(ROOT, 'assets/css/main.css'), path.join(distDir, 'assets/css/main.css'));
+  copy(path.join(ROOT, 'assets/images/favicon.svg'), path.join(distDir, 'assets/images/favicon.svg'));
+  copy(path.join(ROOT, 'assets/images/favicon.ico'), path.join(distDir, 'assets/images/favicon.ico'));
+  copy(path.join(ROOT, 'assets/images/logo.svg'), path.join(distDir, 'assets/images/logo.svg'));
+  copy(path.join(ROOT, 'assets/js/shared.js'), path.join(distDir, 'assets/js/shared.js'));
 
   // App-specific local scripts
   for (const rel of LOCAL_SCRIPTS[app] ?? []) {
@@ -182,4 +194,7 @@ async function main() {
   console.log('\nDone.');
 }
 
-main().catch(err => { console.error(err.message); process.exit(1); });
+main().catch((err) => {
+  console.error(err.message);
+  process.exit(1);
+});

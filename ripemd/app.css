@@ -1,57 +1,64 @@
-    :root {
-      /* Algorithm badge palette — 4-hue spectral spread, light theme.
+:root {
+  /* Algorithm badge palette — 4-hue spectral spread, light theme.
          Full rainbow coverage including green:
            RIPEMD-128 → green-teal  (~150°)  — compact / legacy
            RIPEMD-160 → blue        (~220°)  — most popular, inherits accent family
            RIPEMD-256 → indigo      (~250°)
            RIPEMD-320 → violet      (~280°)  — widest digest */
-      --badge-ripemd128-bg:  #E1F5EE;  --badge-ripemd128-text:  #0B7055;
-      --badge-ripemd160-bg:  #DDEAFC;
-      --badge-ripemd160-text: var(--accent-dim);
-      --badge-ripemd256-bg:  #E6E8FB;  --badge-ripemd256-text:  #3040C0;
-      --badge-ripemd320-bg:  #EEE8FA;  --badge-ripemd320-text:  #6428B4;
-    }
+  --badge-ripemd128-bg: #e1f5ee;
+  --badge-ripemd128-text: #0b7055;
+  --badge-ripemd160-bg: #ddeafc;
+  --badge-ripemd160-text: var(--accent-dim);
+  --badge-ripemd256-bg: #e6e8fb;
+  --badge-ripemd256-text: #3040c0;
+  --badge-ripemd320-bg: #eee8fa;
+  --badge-ripemd320-text: #6428b4;
+}
 
-    [data-theme="dark"] {
-      /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-      --badge-ripemd128-bg:  rgba(14, 200, 140, 0.13); --badge-ripemd128-text:  #34D9A8;
-      --badge-ripemd160-bg:  var(--accent-surface);
-      --badge-ripemd160-text: var(--accent);
-      --badge-ripemd256-bg:  rgba(80, 100, 255, 0.14);  --badge-ripemd256-text:  #8898FF;
-      --badge-ripemd320-bg:  rgba(160, 90, 255, 0.14);  --badge-ripemd320-text:  #C090FF;
-    }
+[data-theme='dark'] {
+  /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+  --badge-ripemd128-bg: rgba(14, 200, 140, 0.13);
+  --badge-ripemd128-text: #34d9a8;
+  --badge-ripemd160-bg: var(--accent-surface);
+  --badge-ripemd160-text: var(--accent);
+  --badge-ripemd256-bg: rgba(80, 100, 255, 0.14);
+  --badge-ripemd256-text: #8898ff;
+  --badge-ripemd320-bg: rgba(160, 90, 255, 0.14);
+  --badge-ripemd320-text: #c090ff;
+}
 
-    .algo-badge {
-      min-width: 75px;
-    }
+.algo-badge {
+  min-width: 75px;
+}
 
-    .algo-badge[data-algo="RIPEMD-128"] {
-      color:      var(--badge-ripemd128-text);
-      background: var(--badge-ripemd128-bg);
-    }
+.algo-badge[data-algo='RIPEMD-128'] {
+  color: var(--badge-ripemd128-text);
+  background: var(--badge-ripemd128-bg);
+}
 
-    .algo-badge[data-algo="RIPEMD-160"] {
-      color:      var(--badge-ripemd160-text);
-      background: var(--badge-ripemd160-bg);
-    }
+.algo-badge[data-algo='RIPEMD-160'] {
+  color: var(--badge-ripemd160-text);
+  background: var(--badge-ripemd160-bg);
+}
 
-    .algo-badge[data-algo="RIPEMD-256"] {
-      color:      var(--badge-ripemd256-text);
-      background: var(--badge-ripemd256-bg);
-    }
+.algo-badge[data-algo='RIPEMD-256'] {
+  color: var(--badge-ripemd256-text);
+  background: var(--badge-ripemd256-bg);
+}
 
-    .algo-badge[data-algo="RIPEMD-320"] {
-      color:      var(--badge-ripemd320-text);
-      background: var(--badge-ripemd320-bg);
-    }
+.algo-badge[data-algo='RIPEMD-320'] {
+  color: var(--badge-ripemd320-text);
+  background: var(--badge-ripemd320-bg);
+}
 
-
-    @media (max-width: 359px) {
-      .history-table__hash { display: none; }
-      .history-table__time {
-        width: auto;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        direction: rtl;
-      }
-    }
+@media (max-width: 359px) {
+  .history-table__hash {
+    display: none;
+  }
+  .history-table__time {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+}

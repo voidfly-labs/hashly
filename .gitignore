@@ -8,3 +8,6 @@ vendor/
 
 # JetBrains IDEs
 .idea/
+
+# Node artifacts
+node_modules/

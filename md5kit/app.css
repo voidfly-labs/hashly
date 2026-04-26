@@ -1,47 +1,53 @@
-    :root {
-      /* Algorithm badge palette — 3-hue spectral spread, light theme.
+:root {
+  /* Algorithm badge palette — 3-hue spectral spread, light theme.
          MD2 → green-teal  (~155°)  — oldest / most legacy
          MD4 → cyan-blue   (~200°)
          MD5 → blue        (~225°)  — inherits accent; most popular */
-      --badge-md2-bg:    #E2F5EE;  --badge-md2-text:    #0C7055;
-      --badge-md4-bg:    #E0F3F9;  --badge-md4-text:    #0A6882;
-      --badge-md5-bg:    #DDEAFC;
-      --badge-md5-text:  var(--accent-dim);
-    }
+  --badge-md2-bg: #e2f5ee;
+  --badge-md2-text: #0c7055;
+  --badge-md4-bg: #e0f3f9;
+  --badge-md4-text: #0a6882;
+  --badge-md5-bg: #ddeafc;
+  --badge-md5-text: var(--accent-dim);
+}
 
-    [data-theme="dark"] {
-      /* Dark-mode badge palette */
-      --badge-md2-bg:    rgba(14, 200, 140, 0.13);  --badge-md2-text:    #34D9A8;
-      --badge-md4-bg:    rgba(10, 190, 230, 0.13);  --badge-md4-text:    #40CCEE;
-      --badge-md5-bg:    var(--accent-surface);
-      --badge-md5-text:  var(--accent);
-    }
+[data-theme='dark'] {
+  /* Dark-mode badge palette */
+  --badge-md2-bg: rgba(14, 200, 140, 0.13);
+  --badge-md2-text: #34d9a8;
+  --badge-md4-bg: rgba(10, 190, 230, 0.13);
+  --badge-md4-text: #40ccee;
+  --badge-md5-bg: var(--accent-surface);
+  --badge-md5-text: var(--accent);
+}
 
-    .algo-badge {
-      min-width: 40px;
-    }
+.algo-badge {
+  min-width: 40px;
+}
 
-    .algo-badge[data-algo="MD2"] {
-      color:      var(--badge-md2-text);
-      background: var(--badge-md2-bg);
-    }
+.algo-badge[data-algo='MD2'] {
+  color: var(--badge-md2-text);
+  background: var(--badge-md2-bg);
+}
 
-    .algo-badge[data-algo="MD4"] {
-      color:      var(--badge-md4-text);
-      background: var(--badge-md4-bg);
-    }
+.algo-badge[data-algo='MD4'] {
+  color: var(--badge-md4-text);
+  background: var(--badge-md4-bg);
+}
 
-    .algo-badge[data-algo="MD5"] {
-      color:      var(--badge-md5-text);
-      background: var(--badge-md5-bg);
-    }
+.algo-badge[data-algo='MD5'] {
+  color: var(--badge-md5-text);
+  background: var(--badge-md5-bg);
+}
 
-    @media (max-width: 323px) {
-      .history-table__hash { display: none; }
-      .history-table__time {
-        width: auto;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        direction: rtl;
-      }
-    }
+@media (max-width: 323px) {
+  .history-table__hash {
+    display: none;
+  }
+  .history-table__time {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+}
