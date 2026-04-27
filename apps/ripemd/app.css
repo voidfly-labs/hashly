@@ -31,6 +31,10 @@
   min-width: 75px;
 }
 
+.history-table__algo {
+  width: 89px;
+}
+
 .algo-badge[data-algo='RIPEMD-128'] {
   color: var(--badge-ripemd128-text);
   background: var(--badge-ripemd128-bg);

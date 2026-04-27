@@ -25,6 +25,10 @@
   min-width: 40px;
 }
 
+.history-table__algo {
+  width: 54px;
+}
+
 .algo-badge[data-algo='MD2'] {
   color: var(--badge-md2-text);
   background: var(--badge-md2-bg);

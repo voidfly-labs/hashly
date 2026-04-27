@@ -31,6 +31,10 @@
   min-width: 75px;
 }
 
+.history-table__algo {
+  width: 89px;
+}
+
 .algo-badge[data-algo='Keccak-224'] {
   color: var(--badge-keccak224-text);
   background: var(--badge-keccak224-bg);

@@ -3,6 +3,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const { minify: htmlMinify } = require('html-minifier-terser');
 const { minify: terserMinify } = require('terser');
 const { transform: lightningTransform } = require('lightningcss');
@@ -43,7 +44,12 @@ async function copyJs(src, dest) {
 function copyCss(src, dest) {
   fs.mkdirSync(path.dirname(dest), { recursive: true });
   const css = fs.readFileSync(src);
-  const { code } = lightningTransform({ filename: src, code: css, minify: true });
+  const { code } = lightningTransform({
+    filename: src,
+    code: css,
+    minify: true,
+    targets: { chrome: 80 << 16, firefox: 103 << 16, safari: 14 << 16 },
+  });
   fs.writeFileSync(dest, code);
 }
 
@@ -54,20 +60,18 @@ function copyCss(src, dest) {
 function buildFontsCss() {
   return (
     FONTS.families
-      .flatMap((family) =>
-        FONTS.weights.map((weight) => {
-          const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
-          return (
-            `@font-face {\n` +
-            `  font-family: '${family.cssName}';\n` +
-            `  font-style: normal;\n` +
-            `  font-weight: ${weight};\n` +
-            `  font-display: swap;\n` +
-            `  src: url('./${file}') format('woff2');\n` +
-            `}`
-          );
-        }),
-      )
+      .map((family) => {
+        const file = `${family.prefix}-variable-${FONTS.version}-latin.woff2`;
+        return (
+          `@font-face {\n` +
+          `  font-family: '${family.cssName}';\n` +
+          `  font-style: normal;\n` +
+          `  font-weight: 100 900;\n` +
+          `  font-display: swap;\n` +
+          `  src: url('./${file}') format('woff2');\n` +
+          `}`
+        );
+      })
       .join('\n\n') + '\n'
   );
 }
@@ -86,14 +90,12 @@ async function ensureVendors(apps) {
   }
 
   for (const family of FONTS.families) {
-    for (const weight of FONTS.weights) {
-      const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
-      const url = [
-        `https://cdn.jsdelivr.net/npm/@fontsource/${family.pkg}@${FONTS.version}`,
-        `files/${family.prefix}-latin-${weight}-normal.woff2`,
-      ].join('/');
-      await download(url, path.join(VENDOR_DIR, 'fonts', file));
-    }
+    const file = `${family.prefix}-variable-${FONTS.version}-latin.woff2`;
+    const url = [
+      `https://cdn.jsdelivr.net/npm/@fontsource-variable/${family.pkg}@${FONTS.version}`,
+      `files/${family.prefix}-latin-wght-normal.woff2`,
+    ].join('/');
+    await download(url, path.join(VENDOR_DIR, 'fonts', file));
   }
 
   const fontsCssPath = path.join(VENDOR_DIR, 'fonts', 'fonts.css');
@@ -143,6 +145,7 @@ async function buildApp(app) {
   copy(path.join(ROOT, 'assets/images/favicon.ico'), path.join(distDir, 'assets/images/favicon.ico'));
   copy(path.join(ROOT, 'assets/images/logo.svg'), path.join(distDir, 'assets/images/logo.svg'));
   copy(path.join(ROOT, 'assets/images/icons.svg'), path.join(distDir, 'assets/images/icons.svg'));
+  copy(path.join(ROOT, 'assets/images/apple-touch-icon.png'), path.join(distDir, 'assets/images/apple-touch-icon.png'));
   await copyJs(path.join(ROOT, 'assets/js/shared.js'), path.join(distDir, 'assets/js/shared.js'));
 
   // App-specific local scripts
@@ -157,10 +160,8 @@ async function buildApp(app) {
 
   // Vendor fonts
   for (const family of FONTS.families) {
-    for (const weight of FONTS.weights) {
-      const file = `${family.prefix}-${FONTS.version}-latin-${weight}.woff2`;
-      copy(path.join(VENDOR_DIR, 'fonts', file), path.join(distDir, 'vendor/fonts', file));
-    }
+    const file = `${family.prefix}-variable-${FONTS.version}-latin.woff2`;
+    copy(path.join(VENDOR_DIR, 'fonts', file), path.join(distDir, 'vendor/fonts', file));
   }
   copyCss(path.join(VENDOR_DIR, 'fonts', 'fonts.css'), path.join(distDir, 'vendor/fonts/fonts.css'));
 
@@ -169,6 +170,11 @@ async function buildApp(app) {
   fs.writeFileSync(path.join(distDir, 'index.html'), await htmlMinify(html, HTML_MINIFY_OPTIONS));
 
   console.log(`  ✓  dist/${app}/`);
+
+  const zipPath = path.join(distDir, `${app}.zip`);
+  if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
+  execSync(`zip -r "${zipPath}" .`, { cwd: distDir });
+  console.log(`  ✓  dist/${app}.zip`);
 }
 
 // ---------------------------------------------------------------------------

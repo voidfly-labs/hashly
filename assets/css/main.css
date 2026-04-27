@@ -124,7 +124,6 @@ body::before {
   z-index: 100;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-bottom: 1px solid var(--border);
   padding: 10px 40px;
   display: flex;
@@ -343,6 +342,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 14px;
+  scroll-margin-top: 72px;
 }
 
 .section__label {
@@ -678,7 +678,6 @@ main {
   display: inline-flex;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   overflow: hidden;
@@ -1353,7 +1352,6 @@ main {
   padding: 24px 40px;
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border-top: 1px solid var(--border);
   text-align: center;
   font-family: var(--mono);
@@ -1438,6 +1436,26 @@ main {
 .footer__github svg {
   width: 18px;
   height: 18px;
+  fill: currentColor;
+}
+
+.footer__x {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 8px;
+  color: var(--text-muted);
+  opacity: 0.5;
+  transition: opacity 0.2s;
+  text-decoration: none;
+}
+
+.footer__x:hover {
+  opacity: 0.75;
+}
+
+.footer__x svg {
+  width: 16px;
+  height: 16px;
   fill: currentColor;
 }
 
@@ -1564,7 +1582,6 @@ main {
   top: calc(100% + 6px);
   background: rgba(255, 255, 255, 0.72);
   backdrop-filter: blur(20px) saturate(1.8);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
@@ -1977,7 +1994,6 @@ main {
   /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
   background: rgba(0, 0, 0, 0.28);
   backdrop-filter: blur(3px) brightness(0.85);
-  -webkit-backdrop-filter: blur(3px) brightness(0.85);
   /* z-index above the sticky header (100) so the header is also dimmed/blurred,
          but below the popover (z-index: 120) so the popover stays fully visible. */
   z-index: 110;

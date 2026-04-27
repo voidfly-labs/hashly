@@ -71,11 +71,10 @@ const LOCAL_SCRIPTS = {
   md5kit: ['assets/js/md2.js'],
 };
 
-// Shared fonts via @fontsource packages on jsDelivr.
-// URL template: cdn.jsdelivr.net/npm/@fontsource/<pkg>@<version>/files/<prefix>-latin-<weight>-normal.woff2
+// Shared fonts via @fontsource-variable packages on jsDelivr.
+// URL template: cdn.jsdelivr.net/npm/@fontsource-variable/<pkg>@<version>/files/<prefix>-latin-wght-normal.woff2
 const FONTS = {
-  version: '5.1.1',
-  weights: [400, 500, 600, 700],
+  version: '5.1.0',
   families: [
     { pkg: 'geist', prefix: 'geist', cssName: 'Geist' },
     { pkg: 'geist-mono', prefix: 'geist-mono', cssName: 'Geist Mono' },

@@ -126,6 +126,10 @@
   min-width: 114px;
 }
 
+.history-table__algo {
+  width: 128px;
+}
+
 .algo-badge[data-algo='CRC-8 (1-Wire)'] {
   color: var(--badge-crc81wire-text);
   background: var(--badge-crc81wire-bg);

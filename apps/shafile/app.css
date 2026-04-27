@@ -36,6 +36,10 @@
   min-width: 58px;
 }
 
+.history-table__algo {
+  width: 72px;
+}
+
 .algo-badge[data-algo='SHA-1'] {
   color: var(--badge-sha1-text);
   background: var(--badge-sha1-bg);
