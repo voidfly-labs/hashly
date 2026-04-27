@@ -48,7 +48,7 @@
     <title>SHA3-256 Hash Calculator | SHA3Kit</title>
     <meta
       name="description"
-      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes online. No data leaves your device."
+      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking."
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://www.sha3kit.com/" />
@@ -59,7 +59,7 @@
     <meta property="og:title" content="SHA3-256 Hash Calculator | SHA3Kit" />
     <meta
       property="og:description"
-      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes online. No data leaves your device."
+      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking."
     />
     <meta property="og:image" content="https://www.sha3kit.com/og-image.png" />
     <meta property="og:site_name" content="SHA3Kit" />
@@ -71,7 +71,7 @@
     <meta name="twitter:title" content="SHA3-256 Hash Calculator | SHA3Kit" />
     <meta
       name="twitter:description"
-      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes online. No data leaves your device."
+      content="Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking."
     />
     <meta name="twitter:image" content="https://www.sha3kit.com/og-image.png" />
 
@@ -87,6 +87,8 @@
         "name": "SHA3Kit",
         "url": "https://www.sha3kit.com/",
         "description": "Browser-based SHA3 hash calculator supporting SHA3-224, SHA3-256, SHA3-384, and SHA3-512. All computation is local — no data is transmitted.",
+        "headline": "SHA3-256 Hash Calculator",
+        "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Any",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -159,6 +161,8 @@
     <meta name="author" content="SHA3Kit" />
 
     <!-- ── Performance hints ── -->
+    <link rel="preload" href="/vendor/fonts/fonts.css" as="style" />
+    <link rel="preload" href="/assets/css/main.css" as="style" />
     <link rel="stylesheet" href="/vendor/fonts/fonts.css" />
     <link rel="stylesheet" href="/assets/css/main.css" />
     <link rel="stylesheet" href="app.css" />
@@ -722,6 +726,13 @@
           <use href="/assets/images/icons.svg#icon-github"></use>
         </svg>
       </a>
+      <nav class="footer__links" aria-label="More tools">
+        <a class="footer__link" href="https://www.crckit.com">CRCKit</a>
+        <a class="footer__link" href="https://www.keccalc.com">Keccalc</a>
+        <a class="footer__link" href="https://www.md5kit.com">MD5Kit</a>
+        <a class="footer__link" href="https://www.ripemd.com">RIPEMD</a>
+        <a class="footer__link" href="https://shafile.com">SHAFile</a>
+      </nav>
     </footer>
 
     <!-- ========== JAVASCRIPT ========== -->
