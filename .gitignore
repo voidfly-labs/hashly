@@ -4,10 +4,13 @@ CLAUDE.md
 
 # Build outputs
 dist/
-vendor/
 
 # JetBrains IDEs
 .idea/
+
+# Local development
+drafts/
+vendor/
 
 # Node artifacts
 node_modules/

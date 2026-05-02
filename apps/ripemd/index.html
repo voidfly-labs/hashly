@@ -8,36 +8,10 @@
        Prevents the browser's own UA-stylesheet flash before our CSS loads. ── -->
     <meta name="color-scheme" content="light dark" />
 
-    <!-- ── Anti-FOUC theme init — runs synchronously, before any CSS is parsed.
-       Priority: (1) explicit user choice in localStorage, (2) OS preference via
-       prefers-color-scheme, (3) time-of-day heuristic as a last resort.
-       The data-theme attribute is set here so the very first paint is correct.
-       A matchMedia listener is registered so the theme tracks OS changes live,
-       but only when the user has NOT made a manual choice. ── -->
-    <script>
-      (function () {
-        var STORAGE_KEY = 'ripemd-theme';
-        var saved = localStorage.getItem(STORAGE_KEY);
-        var theme;
-        if (saved) {
-          theme = saved;
-        } else if (window.matchMedia) {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        } else {
-          var h = new Date().getHours();
-          theme = h >= 6 && h < 21 ? 'light' : 'dark';
-        }
-        document.documentElement.setAttribute('data-theme', theme);
-        // Live-sync with OS when no manual preference is stored.
-        if (!saved && window.matchMedia) {
-          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-            if (!localStorage.getItem(STORAGE_KEY)) {
-              document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
-            }
-          });
-        }
-      })();
-    </script>
+    <!-- ── Anti-FOUC theme init — script runs synchronously before CSS; storage
+       key is read from the meta tag below so the script is shared across apps. ── -->
+    <meta name="theme-storage-key" content="ripemd-theme" />
+    <script src="/assets/js/theme-init.js"></script>
 
     <!-- ── Favicons ── -->
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon.svg" />

@@ -23,6 +23,9 @@
   <symbol id="icon-edit" viewBox="0 0 24 24">
     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zm20.71-12.67a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
   </symbol>
+  <symbol id="icon-email" viewBox="1.5 3.75 21 16.5">
+    <path style="fill:none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/>
+  </symbol>
   <symbol id="icon-file" viewBox="0 0 24 24">
     <path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/>
   </symbol>

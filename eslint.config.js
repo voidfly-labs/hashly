@@ -13,7 +13,7 @@ module.exports = [
 
   // Node.js build scripts
   {
-    files: ['scripts/**/*.js'],
+    files: ['scripts/**/*.js', 'apps/*/legal/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'commonjs',

@@ -147,6 +147,7 @@ async function buildApp(app) {
   copy(path.join(ROOT, 'assets/images/icons.svg'), path.join(distDir, 'assets/images/icons.svg'));
   copy(path.join(ROOT, 'assets/images/apple-touch-icon.png'), path.join(distDir, 'assets/images/apple-touch-icon.png'));
   await copyJs(path.join(ROOT, 'assets/js/shared.js'), path.join(distDir, 'assets/js/shared.js'));
+  await copyJs(path.join(ROOT, 'assets/js/theme-init.js'), path.join(distDir, 'assets/js/theme-init.js'));
 
   // App-specific local scripts
   for (const rel of LOCAL_SCRIPTS[app] ?? []) {
