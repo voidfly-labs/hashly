@@ -8,6 +8,8 @@ const { minify: htmlMinify } = require('html-minifier-terser');
 const { minify: terserMinify } = require('terser');
 const { transform: lightningTransform } = require('lightningcss');
 const { APPS, VENDOR_SCRIPTS, LOCAL_SCRIPTS, FONTS } = require('./build.config.js');
+const { generatePrivacy } = require('./legal/privacy.js');
+const { generateTerms } = require('./legal/terms.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const VENDOR_DIR = path.join(ROOT, 'vendor'); // dev source; gitignored
@@ -169,6 +171,16 @@ async function buildApp(app) {
   // index.html
   const html = fs.readFileSync(path.join(appDir, 'index.html'), 'utf8');
   fs.writeFileSync(path.join(distDir, 'index.html'), await htmlMinify(html, HTML_MINIFY_OPTIONS));
+
+  // Legal pages → extensionless URLs (privacy.html → /privacy, terms.html → /terms)
+  for (const [page, generate] of [
+    ['privacy', generatePrivacy],
+    ['terms', generateTerms],
+  ]) {
+    const content = require(path.join(appDir, 'legal', `${page}.js`));
+    const html = generate(content);
+    fs.writeFileSync(path.join(distDir, `${page}.html`), await htmlMinify(html, HTML_MINIFY_OPTIONS));
+  }
 
   console.log(`  ✓  dist/${app}/`);
 
