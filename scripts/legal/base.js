@@ -1,6 +1,6 @@
 'use strict';
 
-const LEGAL_UPDATED = '2026-05-01';
+const LEGAL_UPDATED = 'May 1, 2026';
 
 const ALL_TOOLS = [
   { name: 'CRCKit', url: 'https://www.crckit.com' },
@@ -73,7 +73,7 @@ ${mainHtml}
           <div>
             <a class="footer__brand" href="/" aria-label="${brand.full} — go to homepage">
               <div class="footer__brand-logo" aria-hidden="true">
-                <img src="/assets/images/logo.svg" alt="" width="28" height="28" />
+                <img src="/assets/images/logo.svg" alt="" width="33" height="33" />
               </div>
               <span class="footer__brand-title">${brandHtml}</span>
             </a>
@@ -93,12 +93,12 @@ ${mainHtml}
 
           <div>
             <span class="footer__col-heading">${brand.full}</span>
-            <a class="footer__link" href="/">Homepage</a>
+            <a class="footer__link" href="/">Home</a>
           </div>
 
           <div>
             <span class="footer__col-heading">More Tools</span>
-${otherTools.map((t) => `            <a class="footer__link" href="${t.url}">${t.name}</a>`).join('\n')}
+${otherTools.map((t) => `            <a class="footer__link" href="${t.url}" target="_blank" rel="noopener noreferrer">${t.name}</a>`).join('\n')}
           </div>
 
         </div>

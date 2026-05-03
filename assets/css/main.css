@@ -1217,6 +1217,17 @@ main {
   color: var(--text);
 }
 
+.info ul,
+.info ol {
+  color: var(--text-muted);
+  padding-left: 1.5em;
+  margin-bottom: 4px;
+}
+
+.info li + li {
+  margin-top: 4px;
+}
+
 .info code {
   background: var(--surface-2);
   border: 1px solid var(--border);

@@ -9,36 +9,35 @@ function generatePrivacy(content) {
   const mainHtml = `    <main aria-label="Privacy Policy">
       <div class="page-heading">
         <h1><span>Privacy</span> Policy</h1>
+        <p class="page-heading__subtitle">// Last updated: ${LEGAL_UPDATED}</p>
       </div>
 
       <div class="info" role="region" aria-label="Privacy Policy content">
         <div class="info__panel" data-active>
 
-          <h3>Operator</h3>
           <p>
-            Voidfly Labs, operator of <a href="/">${domain}</a>.
+            This Privacy Policy governs <a href="${url}" target="_blank" rel="noopener noreferrer">${domain}</a>, operated by Voidfly Labs.
           </p>
-          <p><strong>Last updated:</strong> ${LEGAL_UPDATED}</p>
 
           <h3>What we collect</h3>
           <p>
-            Nothing on our end. All hashing runs entirely inside your browser. No text you type,
+            We collect nothing on our end. All hashing runs entirely inside your browser. No text you type,
             no file you drop, and no hash output is ever transmitted to our servers or any third party.
           </p>
 
           <h3>Browser storage</h3>
           <p>
-            This tool stores two things locally in your browser using <code>localStorage</code>:
+            This tool stores two things locally in your browser using local storage:
           </p>
-          <p>
-            <strong>Theme preference</strong> — whether you have chosen light or dark mode.
-          </p>
-          <p>
-            <strong>Hash history</strong> — a log of recent hashes you have computed, including the
-            hash value, the algorithm used, the timestamp, and (for file hashes) the filename. This
-            data never leaves your device.
-          </p>
-          <p>You can clear this data at any time by clearing your browser's site data for ${domain}.</p>
+          <ul>
+            <li><strong>Theme preference</strong> — whether you have chosen light or dark mode.</li>
+            <li>
+              <strong>Hash history</strong> — a log of recent hashes you have computed, including
+              the hash value, the algorithm used, the timestamp, and (for file hashes) the filename.
+              This data never leaves your device.
+            </li>
+          </ul>
+          <p>You can clear this data at any time by clearing your browser's site data for <a href="${url}" target="_blank" rel="noopener noreferrer">${domain}</a>.</p>
 
           <h3>Server logs</h3>
           <p>

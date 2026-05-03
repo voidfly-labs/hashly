@@ -9,16 +9,16 @@ function generateTerms(content) {
   const mainHtml = `    <main aria-label="Terms of Service">
       <div class="page-heading">
         <h1><span>Terms</span> of Service</h1>
+        <p class="page-heading__subtitle">// Last updated: ${LEGAL_UPDATED}</p>
       </div>
 
       <div class="info" role="region" aria-label="Terms of Service content">
         <div class="info__panel" data-active>
 
-          <h3>Operator</h3>
           <p>
-            Voidfly Labs, operator of <a href="/">${domain}</a>.
+            These Terms of Service govern your use of <a href="${url}" target="_blank" rel="noopener noreferrer">${domain}</a>, operated by
+            Voidfly Labs.
           </p>
-          <p><strong>Last updated:</strong> ${LEGAL_UPDATED}</p>
 
           <h3>Use of the tool</h3>
           <p>
@@ -45,7 +45,7 @@ function generateTerms(content) {
           <p>
             You agree not to use this tool for any unlawful purpose. You also agree not to attempt
             to disrupt, overload, or compromise the availability of
-            <a href="/">${domain}</a>.
+            <a href="${url}" target="_blank" rel="noopener noreferrer">${domain}</a>.
           </p>
 
           <h3>Changes and availability</h3>
@@ -56,7 +56,7 @@ function generateTerms(content) {
 
           <h3>Contact</h3>
           <p>
-            Questions or concerns:
+            If you have questions about these terms, contact us at
             <a href="mailto:legal@voidfly.com">legal@voidfly.com</a>.
           </p>
 
