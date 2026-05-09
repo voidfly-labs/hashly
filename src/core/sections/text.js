@@ -1,8 +1,8 @@
-import { Format } from '../utils/format.js';
-import { Download } from '../utils/download.js';
-import { Clipboard } from '../utils/clipboard.js';
-import { Tooltip } from '../components/tooltip.js';
-import { History } from '../components/history.js';
+import { Format } from '@core/utils/format.js';
+import { Download } from '@core/utils/download.js';
+import { Clipboard } from '@core/utils/clipboard.js';
+import { Tooltip } from '@core/components/tooltip.js';
+import { History } from '@core/components/history.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -309,7 +309,10 @@ export const TextSection = {
       '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>';
     const iconUnchecked =
       '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
-    const icon = allSelected ? iconChecked : allDeselected ? iconUnchecked : iconIndeterminate;
+    let icon;
+    if (allSelected) icon = iconChecked;
+    else if (allDeselected) icon = iconUnchecked;
+    else icon = iconIndeterminate;
     btn.querySelector('svg').innerHTML = icon;
     btn.setAttribute('aria-label', allSelected ? 'Deselect all text algorithms' : 'Select all text algorithms');
   },
@@ -393,9 +396,7 @@ export const TextSection = {
     }
   },
 
-  // ── Event handlers ─────────────────────────────────────────────────────
-
-  // ── Counter helpers ────────────────────────────────────────────────────────────────────────────
+  // ── Counter helpers ─────────────────────────────────────────────────────
 
   _updateCounter(text) {
     const chars = text.length;
@@ -414,6 +415,7 @@ export const TextSection = {
           bytes = Math.ceil(text.replace(/\s+/g, '').length / 2);
           break;
         case 'base64': {
+          // eslint-disable-next-line sonarjs/slow-regex
           const stripped = text.replace(/[^A-Za-z0-9+/=]/g, '').replace(/=+$/, '');
           bytes = Math.ceil((stripped.length * 3) / 4);
           break;

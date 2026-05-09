@@ -13,10 +13,10 @@ export const FaqSection = {
       wrap.style.setProperty('--tabs-fade-right', scrollLeft + clientWidth < scrollWidth - 1 ? '1' : '0');
     };
     tablist.addEventListener('scroll', updateFade, { passive: true });
-    if (typeof ResizeObserver !== 'undefined') {
-      new ResizeObserver(updateFade).observe(tablist);
-    } else {
+    if (typeof ResizeObserver === 'undefined') {
       window.addEventListener('resize', updateFade, { passive: true });
+    } else {
+      new ResizeObserver(updateFade).observe(tablist);
     }
     updateFade();
 

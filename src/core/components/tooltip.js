@@ -35,6 +35,7 @@ export const Tooltip = (() => {
       el.classList.remove('tooltip-singleton--visible');
 
       // Force a reflow so the transition fires even if already visible
+      // eslint-disable-next-line sonarjs/void-use
       void el.offsetWidth;
 
       _position(anchorElement);
@@ -52,6 +53,7 @@ export const Tooltip = (() => {
       clearTimeout(hideTimer);
       el.textContent = text;
       el.classList.remove('tooltip-singleton--visible');
+      // eslint-disable-next-line sonarjs/void-use
       void el.offsetWidth;
       _position(anchorElement);
       el.classList.add('tooltip-singleton--visible');

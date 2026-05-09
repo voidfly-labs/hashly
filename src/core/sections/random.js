@@ -1,6 +1,6 @@
-import { Clipboard } from '../utils/clipboard.js';
-import { Download } from '../utils/download.js';
-import { Tooltip } from '../components/tooltip.js';
+import { Clipboard } from '@core/utils/clipboard.js';
+import { Download } from '@core/utils/download.js';
+import { Tooltip } from '@core/components/tooltip.js';
 
 let _APP_CONFIG, _ALGORITHMS, _DEFAULT_ALGO, _Hasher;
 
@@ -45,7 +45,7 @@ export const RandomSection = {
   },
 
   generate() {
-    const count = parseInt(this.elements.count.value, 10);
+    const count = Number.parseInt(this.elements.count.value, 10);
     const algo = this.elements.algo.value;
     this.hashes = Array.from({ length: count }, () => ({
       hash: _Hasher.generateRandom(algo),
@@ -101,7 +101,7 @@ export const RandomSection = {
 
       // Hover tooltips for icon-only Copy / Download buttons in random list
       item.querySelectorAll('.random__item-btn[data-action]').forEach((btn) => {
-        const label = btn.getAttribute('data-action') === 'copy' ? 'Copy' : 'Download';
+        const label = btn.dataset.action === 'copy' ? 'Copy' : 'Download';
         btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
         btn.addEventListener('mouseleave', () => Tooltip.hide());
       });
@@ -114,15 +114,15 @@ export const RandomSection = {
   },
 
   handleItemAction(button) {
-    const action = button.getAttribute('data-action');
-    const hash = button.getAttribute('data-hash');
+    const action = button.dataset.action;
+    const hash = button.dataset.hash;
 
     if (action === 'copy') {
       Clipboard.copy(hash);
       Tooltip.flash(button);
     } else if (action === 'download') {
-      const index = button.getAttribute('data-index');
-      const algo = button.getAttribute('data-algo') ?? _DEFAULT_ALGO;
+      const index = button.dataset.index;
+      const algo = button.dataset.algo ?? _DEFAULT_ALGO;
       const csvData = `id,algorithm,hash\n${index},${algo},${hash}`;
       const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
       Download.trigger(csvData, filename, 'text/csv');

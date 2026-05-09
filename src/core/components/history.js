@@ -1,5 +1,5 @@
-import { Clipboard } from '../utils/clipboard.js';
-import { Download } from '../utils/download.js';
+import { Clipboard } from '@core/utils/clipboard.js';
+import { Download } from '@core/utils/download.js';
 import { Tooltip } from './tooltip.js';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
@@ -101,12 +101,11 @@ export const History = {
     // Sort: primary = batchId descending (newest calculation first),
     // secondary = algo index ascending (SHA-1 → SHA-256 → … within a batch).
     // Entries without a batchId (legacy localStorage data) fall back to ts.
-    const algoOrder = _ALGO_ORDER;
     const sorted = entries.slice().sort((a, b) => {
       const bA = a.batchId ?? -a.ts;
       const bB = b.batchId ?? -b.ts;
       if (bB !== bA) return bB - bA;
-      return (algoOrder.get(a.algo) ?? 999) - (algoOrder.get(b.algo) ?? 999);
+      return (_ALGO_ORDER.get(a.algo) ?? 999) - (_ALGO_ORDER.get(b.algo) ?? 999);
     });
 
     const slice = sorted.slice(start, start + this.PAGE_SIZE);
@@ -231,7 +230,7 @@ export const History = {
       this._renderFooter(ns, popover);
       // Re-wire hover tooltips on the newly-rendered action buttons
       body.querySelectorAll('.history-table__action-btn[data-action]').forEach((btn) => {
-        const label = btn.getAttribute('data-action') === 'copy-history' ? 'Copy' : 'Download';
+        const label = btn.dataset.action === 'copy-history' ? 'Copy' : 'Download';
         btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
         btn.addEventListener('mouseleave', () => Tooltip.hide());
       });
@@ -240,7 +239,7 @@ export const History = {
         pbtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const pages = Math.max(1, Math.ceil(this.entries(ns).length / this.PAGE_SIZE));
-          this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + parseInt(pbtn.dataset.dir, 10), pages - 1));
+          this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + Number.parseInt(pbtn.dataset.dir, 10), pages - 1));
           refresh();
         });
       });

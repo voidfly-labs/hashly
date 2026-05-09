@@ -2,9 +2,15 @@ import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { resolve } from 'node:path';
 import { APPS_META, LEGAL_UPDATED_ON, getLegalUpdatedLabel } from './scripts/apps-meta.js';
-import { createFontPreloads } from './scripts/vite-plugins/create-font-preloads.js';
+import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
 
+const VALID_APPS = Object.keys(APPS_META);
 const app = process.env.APP;
+
+if (!app || !VALID_APPS.includes(app)) {
+  throw new Error(`APP env var must be one of: ${VALID_APPS.join(', ')}. Got: ${JSON.stringify(app)}`);
+}
+
 const injectData = {
   ...APPS_META[app],
   legalUpdatedOn: LEGAL_UPDATED_ON,
@@ -14,6 +20,13 @@ const ejsOptions = { root: resolve('.') };
 
 export default defineConfig({
   root: '.',
+  resolve: {
+    alias: {
+      '@assets': resolve('./src/assets'),
+      '@core': resolve('./src/core'),
+      '@styles': resolve('./src/styles'),
+    },
+  },
   optimizeDeps: {
     exclude: ['crypto-api'],
   },
@@ -32,7 +45,6 @@ export default defineConfig({
     open: `/src/apps/${app}/`,
   },
   plugins: [
-    createFontPreloads(),
     createHtmlPlugin({
       pages: [
         {
@@ -52,5 +64,6 @@ export default defineConfig({
         },
       ],
     }),
+    injectFontPreloads(),
   ],
 });

@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import sonarjs from 'eslint-plugin-sonarjs';
 
 const browserRules = {
   ...js.configs.recommended.rules,
@@ -7,11 +8,11 @@ const browserRules = {
 };
 
 export default [
-  { ignores: ['dist/', 'vendor/', 'assets/vendor/', 'node_modules/', 'vite.config.js'] },
+  { ignores: ['dist/', 'vendor/', 'assets/vendor/', 'node_modules/'] },
 
-  // Node.js build scripts (ESM)
+  // Node.js build scripts and Vite config (ESM)
   {
-    files: ['scripts/**/*.js'],
+    files: ['scripts/**/*.js', 'vite.config.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
@@ -22,12 +23,16 @@ export default [
 
   // Browser: shared modules and per-app modules (ES modules)
   {
-    files: ['src/shared/**/*.js', 'src/apps/**/*.js'],
+    files: ['src/core/**/*.js', 'src/apps/**/*.js'],
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
       globals: globals.browser,
     },
-    rules: browserRules,
+    plugins: { sonarjs },
+    rules: {
+      ...browserRules,
+      ...sonarjs.configs.recommended.rules,
+    },
   },
 ];

@@ -6,6 +6,7 @@ export const Format = {
     // Strip existing padding, re-pad to the next multiple of 4.
     // A try/catch covers the length % 4 === 1 residue, which is
     // structurally invalid and cannot be salvaged by padding alone.
+    // eslint-disable-next-line sonarjs/slow-regex
     const stripped = b64.replace(/=+$/, '');
     const padded = stripped + '==='.slice((stripped.length + 3) % 4);
     try {
@@ -19,14 +20,14 @@ export const Format = {
   hexToBytes(hex) {
     const clean = hex.replace(/\s+/g, '');
     const arr = new Uint8Array(clean.length / 2);
-    for (let i = 0; i < arr.length; i++) arr[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+    for (let i = 0; i < arr.length; i++) arr[i] = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16);
     return arr;
   },
 
   binaryToBytes(bin) {
     // Accept groups of 8 bits, optionally space-separated
     const groups = bin.trim().split(/\s+/);
-    return new Uint8Array(groups.map((g) => parseInt(g, 2)));
+    return new Uint8Array(groups.map((g) => Number.parseInt(g, 2)));
   },
 
   /** Convert user text to bytes according to the selected input format. */
@@ -45,14 +46,14 @@ export const Format = {
 
   hexToBase64(hex) {
     const h = hex.length % 2 === 0 ? hex : hex.padStart(hex.length + 1, '0');
-    return btoa(String.fromCharCode(...h.match(/.{2}/g).map((b) => parseInt(b, 16))));
+    return btoa(String.fromCharCode(...h.match(/.{2}/g).map((b) => Number.parseInt(b, 16))));
   },
 
   hexToBinary(hex) {
     const h = hex.length % 2 === 0 ? hex : hex.padStart(hex.length + 1, '0');
     return h
       .match(/.{2}/g)
-      .map((b) => parseInt(b, 16).toString(2).padStart(8, '0'))
+      .map((b) => Number.parseInt(b, 16).toString(2).padStart(8, '0'))
       .join(' ');
   },
 

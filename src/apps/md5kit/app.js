@@ -1,7 +1,7 @@
 import { md4, md5, createMD4, createMD5 } from 'hash-wasm';
-import { md2 } from '../../core/algos/md2.js';
-import { Format } from '../../core/utils/format.js';
-import { initApp } from '../../core/bootstrap.js';
+import { md2 } from '@core/algos/md2.js';
+import { Format } from '@core/utils/format.js';
+import { initApp } from '@core/bootstrap.js';
 
 const APP_CONFIG = {
   appName: 'md5kit',
