@@ -2,11 +2,11 @@
   "name": "hashly",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "build": "node scripts/build.js",
-    "build:all": "node scripts/build.js all",
-    "dev": "npx live-server .",
-    "download": "node scripts/build.js download",
+    "dev": "vite",
+    "build": "vite build",
+    "build:all": "node scripts/build-all.js",
     "format": "prettier --write .",
     "lint": "eslint .",
     "prepare": "husky"
@@ -21,17 +21,23 @@
     ],
     "*.{css,html}": "prettier --write"
   },
+  "dependencies": {
+    "@fontsource-variable/geist": "^5.2.8",
+    "@fontsource-variable/geist-mono": "^5.2.7",
+    "crypto-api": "^0.8.5",
+    "hash-wasm": "^4.12.0",
+    "js-crc": "^0.3.1"
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.5.2",
     "@commitlint/config-conventional": "^20.5.0",
     "@eslint/js": "^10.0.1",
     "eslint": "^10.2.1",
     "globals": "^17.5.0",
-    "html-minifier-terser": "^7.2.0",
     "husky": "^9.1.7",
-    "lightningcss": "^1.32.0",
     "lint-staged": "^16.4.0",
     "prettier": "^3.8.3",
-    "terser": "^5.46.2"
+    "vite": "^8.0.10",
+    "vite-plugin-html": "^3.2.2"
   }
 }

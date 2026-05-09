@@ -1,0 +1,36 @@
+/* =========================================================================
+       TOOLTIP
+       — Singleton <div class="tooltip-singleton"> appended to <body> by Tooltip.flash().
+         Inline <span class="tooltip"> in markup are hidden and only used to carry
+         the label text; the singleton is the only element ever made visible.
+         position: fixed on a body child is always viewport-relative regardless
+         of any transformed ancestor (e.g. the history popover).
+       ========================================================================= */
+
+/* Hide all inline tooltip spans — only the singleton is ever shown */
+.tooltip {
+  display: none;
+}
+
+.tooltip-singleton {
+  position: fixed;
+  transform: translateX(-50%) translateY(calc(-100% + 4px));
+  background: var(--text);
+  color: var(--bg);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+  font-family: var(--sans);
+  z-index: 9999;
+}
+
+.tooltip-singleton--visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(calc(-100% - 6px));
+}

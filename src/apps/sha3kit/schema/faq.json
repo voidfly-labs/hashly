@@ -1,0 +1,54 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is SHA-3?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA-3 (Secure Hash Algorithm 3) is a family of cryptographic hash functions standardised by NIST in 2015 under FIPS 202. It is based on Keccak, which won the NIST hash function competition in 2012. SHA-3 uses a sponge construction over the Keccak-f[1600] permutation — a fundamentally different design from the Merkle–Damgård structure used by MD5, SHA-1, and SHA-2. The four standard variants are SHA3-224, SHA3-256, SHA3-384, and SHA3-512, named by their output size in bits."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is SHA3-256 used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA3-256 is the most widely used member of the SHA-3 family, producing a 256-bit digest represented as a 64-character hex string. It is used for data integrity verification, digital signatures, certificate fingerprinting, and as a modern alternative to SHA-256 where resistance to length-extension attacks is important. SHA3-256 differs from Ethereum's Keccak-256 in its padding scheme — NIST SHA-3 uses a 0x06 suffix while the original Keccak used 0x01."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is SHA3-256 secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA3-256 is considered secure against all known practical attacks. No collision or pre-image attack has been demonstrated against the full variant. Its sponge construction provides strong security bounds and is inherently resistant to length-extension attacks, a weakness present in SHA-2. The algorithm has withstood extensive cryptanalytic scrutiny since the SHA-3 competition began in 2007."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SHA-3 variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA3-256 is the right default for most applications, offering a 256-bit digest and strong security. SHA3-384 and SHA3-512 provide wider digests for higher-security contexts. SHA3-224 should only be chosen where a smaller digest size is a strict requirement."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are SHA-3 hashes safe for passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. SHA-3 functions are designed to be fast, which makes them unsuitable for password storage. Use a slow, purpose-built algorithm such as bcrypt, scrypt, or Argon2 instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does SHA3Kit protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser using hash-wasm by Daninet, a WebAssembly-accelerated library. No text, file content, or hash output is ever transmitted to any server."
+      }
+    }
+  ]
+}

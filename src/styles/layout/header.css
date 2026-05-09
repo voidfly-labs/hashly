@@ -1,0 +1,151 @@
+/* =========================================================================
+       HEADER
+       ========================================================================= */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow);
+  transition:
+    background 0.3s,
+    border-color 0.3s;
+}
+
+[data-theme='dark'] .header {
+  background: rgba(28, 32, 48, 0.78);
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: inherit;
+  /* No visible hover effects — link is invisible by design — but cursor
+         remains as pointer so the browser still signals interactivity.
+         The negative margin + compensating padding pattern expands the hit
+         target by 5 px on every side without affecting the layout of the
+         surrounding flex container or the visual appearance of the brand area. */
+  margin: -5px;
+  padding: 5px;
+  border-radius: var(--radius-sm);
+}
+
+.header__logo-icon {
+  display: flex;
+  align-items: center;
+}
+
+.header__title {
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    sans-serif;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--text);
+  letter-spacing: -0.75px;
+  line-height: 1;
+}
+
+.header__title span {
+  color: var(--accent);
+}
+
+.header__nav {
+  display: flex;
+  gap: 2px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.header__nav-link {
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.2s,
+    background 0.2s;
+}
+
+.header__nav-link:hover {
+  color: var(--text);
+  background: var(--accent-muted);
+}
+
+.header__nav-link + .header__nav-link {
+  position: relative;
+}
+
+.header__nav-link + .header__nav-link::before {
+  content: '';
+  position: absolute;
+  left: -1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+}
+
+/* Theme toggle */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 7px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.theme-toggle svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: none;
+}
+
+[data-theme='dark'] .theme-toggle__sun {
+  display: block;
+}
+[data-theme='light'] .theme-toggle__moon {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .header {
+    padding: 10px 16px;
+  }
+
+  .header__nav {
+    display: none;
+  }
+}

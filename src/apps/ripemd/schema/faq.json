@@ -1,0 +1,54 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is RIPEMD?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "RIPEMD (RACE Integrity Primitives Evaluation Message Digest) is a family of cryptographic hash functions developed in the mid-1990s at KU Leuven. The four current variants — RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320 — were published in 1996 and use a dual parallel pipeline design on a Merkle–Damgård construction. Unlike the NIST SHA family, RIPEMD was designed independently in Europe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is RIPEMD-160 used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "RIPEMD-160 is used in Bitcoin address generation (the HASH160 operation applies RIPEMD-160 to a SHA-256 digest of the public key), OpenPGP key fingerprints, and TLS certificate processing. It produces a 160-bit digest and is the most widely deployed member of the RIPEMD family."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is RIPEMD-160 still secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "RIPEMD-160 is considered secure against all known practical attacks. No collision or pre-image attack has been demonstrated against the full variant. It has seen less cryptanalytic scrutiny than SHA-256, which is a reason to prefer SHA-256 for new general-purpose systems, but migration from RIPEMD-160 is unnecessary on security grounds alone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which RIPEMD variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "RIPEMD-160 is the right default for most applications. RIPEMD-256 and RIPEMD-320 provide wider digests but do not increase security beyond their 128 and 160-bit counterparts respectively. RIPEMD-128 should only be chosen where a 128-bit digest is strictly required and MD5 is undesirable."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are RIPEMD hashes safe for passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. RIPEMD functions are designed to be fast, which makes them unsuitable for password storage. Use a slow, purpose-built algorithm such as bcrypt, scrypt, or Argon2 instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does RIPEMD.com protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser using crypto-api by nf404, a pure-JavaScript library. No text, file content, or hash output is ever transmitted to any server."
+      }
+    }
+  ]
+}

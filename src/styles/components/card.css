@@ -1,0 +1,35 @@
+/* =========================================================================
+       CARD (shared wrapper)
+       ========================================================================= */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+
+.card:focus-within,
+.card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Text drag-and-drop affordance — mirrors file-drop--page-drag.
+       Border and background are scoped to the textarea wrapper so only
+       the input area is highlighted, not the full card. The base wrap
+       carries a transparent 2px border to prevent layout shift on drag. */
+.card--text-drag .text-input__wrap {
+  border: 2px dashed var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.card__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

@@ -1,0 +1,57 @@
+/* =========================================================================
+       DESIGN TOKENS — Arctic Slate palette (from index1) + dark mode variant
+       ========================================================================= */
+:root {
+  --bg: #f4f5f7;
+  --bg-gradient: linear-gradient(135deg, rgba(67, 97, 238, 0.065) 0%, transparent 55%, rgba(107, 138, 255, 0.045) 100%);
+  --surface: #ffffff;
+  --surface-2: #ebedf0;
+  --border: #d8dbe0;
+  --accent: #4361ee;
+  --accent-dim: #3651d4;
+  --accent-muted: rgba(67, 97, 238, 0.07);
+  --accent-surface: #f2f4fe; /* --accent-muted composited over --surface (#FFF); used
+                                     wherever the tinted bg must be opaque (result bar,
+                                     popover header/footer). */
+  --accent-glow: rgba(67, 97, 238, 0.14);
+  --accent-border: rgba(67, 97, 238, 0.3);
+  --text: #1a1d23;
+  --text-muted: #7a8494;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 6px 28px rgba(0, 0, 0, 0.09);
+  --radius: 8px;
+  --radius-sm: 5px;
+  --mono: 'Geist Mono', monospace;
+  --sans: 'Geist', sans-serif;
+
+  /* Result row zebra: odd rows use --accent-surface (blue tint, defined above).
+         Even rows use --result-alt-surface — a lighter, barely-there step of the
+         same hue family so the stripe is gentle and the card reads as one block. */
+  --result-alt-surface: #f7f8fe;
+}
+
+[data-theme='dark'] {
+  --bg: #12151c;
+  --bg-gradient: linear-gradient(135deg, rgba(107, 138, 255, 0.09) 0%, transparent 55%, rgba(67, 97, 238, 0.06) 100%);
+  --surface: #1c2030;
+  --surface-2: #252a3a;
+  --border: #2e3448;
+  --accent: #6b8aff;
+  --accent-dim: #5572e8;
+  --accent-muted: rgba(107, 138, 255, 0.08);
+  --accent-surface: rgba(
+    107,
+    138,
+    255,
+    0.08
+  ); /* dark mode: semi-transparent is fine
+                                                       as the popover surface is opaque */
+  --accent-glow: rgba(107, 138, 255, 0.16);
+  --accent-border: rgba(107, 138, 255, 0.32);
+  --text: #e2e6ef;
+  --text-muted: #7a85a0;
+  --shadow: 0 2px 12px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.16);
+  --shadow-lg: 0 6px 28px rgba(0, 0, 0, 0.32);
+
+  --result-alt-surface: rgba(107, 138, 255, 0.03);
+}

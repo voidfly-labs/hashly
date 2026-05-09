@@ -1,0 +1,102 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a CRC checksum?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A Cyclic Redundancy Check (CRC) is an error-detection algorithm that maps an input of any size to a short fixed-length value called a checksum. It is deterministic and optimised for detecting accidental data corruption in storage and transmission."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which CRC variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-32 is the right default for most applications — it is universally supported, well-studied, and used in Ethernet, ZIP, and PNG. CRC-32C (Castagnoli) is preferred for storage systems and databases: it has better error-detection properties and is hardware-accelerated on modern CPUs. Use CRC-16 variants for embedded or serial-communication protocols. CRC-8 (SMBus) variants are common in sensors and one-wire buses. CRC-24 variants serve niche protocols: OpenPGP ASCII Armor, Bluetooth Low Energy, and Interlaken chip-to-chip links. CRC-64 variants are suited to large-scale data integrity in storage and database systems."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are CRC checksums secure for cryptographic use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. CRC is an error-detection algorithm, not a cryptographic hash. It is not collision resistant and can be reversed or forged by an attacker. For security purposes, use SHA-256 or another cryptographic hash function."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CRC-8 used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-8 produces an 8-bit (1-byte) checksum widely used in embedded systems, sensors, and low-bandwidth buses where minimal overhead matters. CRC-8 (SMBus) is used for Packet Error Code (PEC) on the SMBus and ATM HEC. CRC-8 (1-Wire) is standard for Dallas/Maxim 1-Wire devices such as DS18B20 sensors. CRC-8 (DVB-S2) protects baseband frame headers in the DVB-S2 satellite broadcast standard."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CRC-8 (1-Wire)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-8 (1-Wire) uses the reflected polynomial 0x31 and was designed by Dallas Semiconductor for the 1-Wire single-wire bus protocol. It is the standard integrity check for devices such as DS18B20 temperature sensors and iButton tokens, where the entire ROM code and data scratchpad are verified with this 8-bit checksum."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CRC-8 (DVB-S2)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-8 (DVB-S2) uses the polynomial 0xD5 and is defined in the DVB-S2 satellite broadcast standard (ETSI EN 302 307) for protecting the baseband frame header. Its non-reflected, zero-initialised form is optimised for hardware implementation in satellite receivers."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CRC-32 (JamCRC)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-32 (JamCRC) uses the same polynomial and reflected processing as standard CRC-32 but omits the final XOR with 0xFFFFFFFF, so its output is the bitwise complement of a standard CRC-32. It is used in network equipment and some JAM file formats, and its unchained property makes it useful when concatenating partial checksums."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between CRC-16 variants?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-16 variants share the same 16-bit output width but differ in their generator polynomial, initial value, and reflection settings. CCITT is used in X.25 and HDLC. Modbus uses a reflected polynomial for serial RTU framing. Kermit is used in the Kermit file-transfer protocol. XMODEM uses the CCITT polynomial with no reflection."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does CRCKit protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All checksum computation runs entirely inside your browser using the js-crc JavaScript library by emn178. No text, file content, or checksum output is ever transmitted to any server."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are CRC-24 variants used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-24 produces a 24-bit (3-byte) checksum shown as a 6-character hex string. CRC-24 (OpenPGP) is defined in RFC 4880 as the ASCII Armor checksum for PGP data. CRC-24 (BLE) uses a reflected polynomial for Bluetooth Low Energy link-layer packet integrity. CRC-24 (Intlkn) is specified by the Interlaken Alliance for high-speed chip-to-chip serial links."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What are CRC-64 checksums used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-64 produces a 64-bit (8-byte) checksum with a collision probability of roughly one in 18 quintillion, making it well-suited for large-scale data integrity in storage systems, databases, and high-throughput pipelines. CRC-64 (ECMA) is defined in the ECMA-182 standard for DLT tape. CRC-64 (NVMe) is used in the NVMe storage protocol for command integrity. CRC-64 (Redis) is the variant used by the Redis in-memory database for cluster slot hashing. CRC-64 (XZ) is used in the XZ compressed archive format."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is CRC-82 (DARC)?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "CRC-82 (DARC) uses an 82-bit polynomial defined in the DARC (Data Radio Channel) standard for data broadcast over FM subcarriers. Its unusual width provides strong error detection for the short data frames transmitted in FM multiplex data services."
+      }
+    }
+  ]
+}

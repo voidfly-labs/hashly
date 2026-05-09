@@ -1,0 +1,132 @@
+/* =========================================================================
+       RANDOM HASHES
+       ========================================================================= */
+.random__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Thin muted separator between the count/algo selects and the action buttons */
+.random__controls-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.random__select {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 5px 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.random__select:focus {
+  border-color: var(--accent-border);
+}
+
+.random__list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition:
+    box-shadow 0.25s,
+    border-color 0.25s;
+}
+
+.random__list:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.random__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 14px;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+
+.random__item:last-child {
+  border-bottom: none;
+}
+
+.random__item:hover {
+  background: var(--accent-muted);
+}
+
+.random__item-index {
+  color: var(--text-muted);
+  font-size: 11px;
+  min-width: 26px;
+}
+
+.random__item-hash {
+  flex: 1;
+  min-width: 0; /* needed for ellipsis to work inside flex */
+  color: var(--text);
+  user-select: none;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  position: relative; /* anchor for inline .tooltip */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.random__item-actions {
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.random__item:hover .random__item-actions {
+  opacity: 1;
+}
+
+.random__item-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.random__item-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.random__item-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
+/* Touch devices have no hover — always show action buttons and history
+       table actions so they remain reachable regardless of viewport width.
+       @media (hover: none) targets the input mechanism, not the screen size,
+       which is the correct semantic here. */
+@media (hover: none) {
+  .random__item-actions {
+    opacity: 1;
+  }
+}

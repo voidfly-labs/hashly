@@ -1,0 +1,496 @@
+/* ── Hover tooltips for icon-only buttons ─────────────────────────────────
+       history-btn, random__item-btn, history-table__action-btn
+       Tooltip.show() / hide() are wired in JS; these declarations are no-ops
+       at rest (the singleton does all rendering) but serve as a reminder that
+       these elements participate in the tooltip system. */
+.history-btn,
+.random__item-btn,
+.history-table__action-btn {
+  position: relative; /* already set elsewhere; harmless repeat */
+}
+
+.section__label-row {
+  gap: 6px;
+}
+
+.toggle-all-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.toggle-all-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.toggle-all-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* =========================================================================
+       SECTION LABEL ROW (label + history toggle)
+       ========================================================================= */
+.section__label-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.section__label-row .section__label {
+  flex: 1;
+  margin: 0;
+}
+
+.history-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.history-btn:hover,
+.history-btn[aria-expanded='true'] {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.history-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.permalink-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition:
+    color 0.15s,
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+.permalink-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.permalink-btn svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.permalink-btn__icon-check {
+  display: none;
+}
+.permalink-btn--copied .permalink-btn__icon-link {
+  display: none;
+}
+.permalink-btn--copied .permalink-btn__icon-check {
+  display: block;
+}
+
+/* =========================================================================
+       HISTORY POPOVER
+       ========================================================================= */
+.history-popover {
+  position: absolute;
+  right: 0;
+  max-width: max(calc(max(100vw, 330px) - 32px), 268px);
+  top: calc(100% + 6px);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  z-index: 120;
+  /* No overflow:hidden — tooltips on hash cells must escape the container */
+  /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0.18s;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+[data-theme='dark'] .history-popover {
+  background: rgba(28, 32, 48, 0.78);
+}
+
+.history-popover--visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.history-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--accent-surface);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+
+.history-popover__title {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--accent-dim);
+}
+
+/* Borderless dismiss button in the popover header top-right corner.
+       Sized and coloured to harmonise with the muted icon buttons elsewhere.
+       Shares all visual styles with .file-drop__clear — the grouped selector
+       makes that parity structural rather than coincidental.
+       display is intentionally omitted: each element manages its own
+       (history-popover__close is always visible; file-drop__clear defaults to
+       none and is revealed by the --visible modifier). */
+.history-popover__close,
+.file-drop__clear,
+.text-input__clear {
+  background: none;
+  border: none;
+  padding: 2px;
+  color: var(--text-muted);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition:
+    color 0.15s,
+    background 0.15s;
+  flex-shrink: 0;
+}
+
+.history-popover__close {
+  display: flex;
+  margin: -2px; /* optical alignment against the edge of the header padding */
+}
+
+.history-popover__close:hover,
+.file-drop__clear:hover,
+.text-input__clear:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.history-popover__close:active,
+.file-drop__clear:active,
+.text-input__clear:active {
+  transform: scale(0.9);
+}
+
+.history-popover__close svg,
+.file-drop__clear svg,
+.text-input__clear svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* Matches .btn exactly — same surface, border, sizing, transitions */
+.history-popover__clear {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.history-popover__clear svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.history-popover__clear:hover {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.history-popover__clear:active {
+  transform: scale(0.96);
+}
+
+.history-popover__empty {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text-muted);
+  font-style: italic;
+  text-align: center;
+  padding: 20px 14px;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--mono);
+  font-size: 12px;
+  table-layout: fixed;
+}
+
+.history-table thead th {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+[data-theme='dark'] .history-table thead th {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-table tbody td {
+  padding: 7px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+[data-theme='dark'] .history-table tbody td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr:hover td {
+  background: var(--accent-muted);
+}
+
+.history-table__num {
+  color: var(--text-muted);
+  width: 35px;
+}
+
+.history-table__hash {
+  color: var(--text);
+  letter-spacing: 0.3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  position: relative; /* anchor for inline .tooltip */
+}
+
+.history-table__time {
+  color: var(--text-muted);
+  white-space: nowrap;
+  /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
+  width: 150px;
+}
+
+.history-table__algo {
+  width: 79px;
+}
+
+/* Action buttons column — mirrors .random__item-actions pattern */
+.history-table__actions {
+  width: 52px;
+  padding-left: 4px !important;
+  padding-right: 8px !important;
+  text-align: right;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.history-table__action-btns {
+  display: inline-flex;
+  gap: 1px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.history-table tbody tr:hover .history-table__action-btns {
+  opacity: 1;
+}
+
+/* Unified with .random__item-btn — identical padding, icon size, hover ring */
+.history-table__action-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 3px;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.history-table__action-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.history-table__action-btn svg {
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}
+
+/* =========================================================================
+       HISTORY PAGINATION
+       ========================================================================= */
+.history-popover__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--accent-surface);
+  gap: 8px;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.history-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Pagination buttons adopt the same visual language as .btn (result section
+       buttons): surface background, border, hover ring, disabled opacity.
+       The fixed 26×26 square replaces the standard .btn padding for icon-only use. */
+.history-pagination__btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.history-pagination__btn:hover:not(:disabled) {
+  border-color: var(--accent-border);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.history-pagination__btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.history-pagination__btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+
+.history-pagination__btn svg {
+  width: 12px;
+  height: 12px;
+  fill: currentColor;
+}
+
+.history-pagination__info {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  padding: 0 2px;
+}
+
+/* =========================================================================
+       HISTORY BACKDROP
+       — Fullscreen overlay rendered behind all popovers but above page content.
+         Provides the visual "focus" effect (blur + darken) when a popover is open.
+       =========================================================================  */
+.history-backdrop {
+  position: fixed;
+  inset: 0;
+  /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(3px) brightness(0.85);
+  /* z-index above the sticky header (100) so the header is also dimmed/blurred,
+         but below the popover (z-index: 120) so the popover stays fully visible. */
+  z-index: 110;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+  pointer-events: none;
+}
+
+.history-backdrop--visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+[data-theme='dark'] .history-backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+
+/* Touch devices have no hover — always show action buttons and history
+       table actions so they remain reachable regardless of viewport width.
+       @media (hover: none) targets the input mechanism, not the screen size,
+       which is the correct semantic here. */
+@media (hover: none) {
+  .history-table__action-btns {
+    opacity: 1;
+  }
+}

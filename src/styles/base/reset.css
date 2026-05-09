@@ -1,0 +1,72 @@
+/* =========================================================================
+       RESET & BASE
+       ========================================================================= */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  min-width: 330px;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.6;
+  transition:
+    background 0.3s,
+    color 0.3s;
+  font-size: 15px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--bg-gradient);
+  z-index: -1;
+  pointer-events: none;
+  transition: background 0.3s;
+}
+
+/* Skip navigation link (accessibility + SEO) */
+.skip-link {
+  position: absolute;
+  top: -999px;
+  left: 0;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-family: var(--sans);
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 var(--radius) 0;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* =========================================================================
+       SCROLLBAR
+       ========================================================================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}

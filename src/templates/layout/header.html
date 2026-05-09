@@ -1,0 +1,25 @@
+<!-- ========== HEADER ========== -->
+<header class="header">
+  <a class="header__brand" href="<%= brandUrl %>" aria-label="<%= siteName %> — go to homepage">
+    <div class="header__logo-icon" aria-hidden="true">
+      <img src="/src/assets/images/logo.svg" alt="<%= siteName %> logo" width="40" height="40" />
+    </div>
+    <span class="header__title"><%- brandTitleHtml %></span>
+  </a>
+  <div class="header__right">
+    <nav class="header__nav" aria-label="Page sections">
+      <a class="header__nav-link" href="#text">Text</a>
+      <a class="header__nav-link" href="#file">File</a>
+      <a class="header__nav-link" href="#random">Random</a>
+      <a class="header__nav-link" href="#about">FAQ</a>
+    </nav>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle colour theme">
+      <!-- Sun icon — shown in dark mode -->
+      <svg class="theme-toggle__sun" viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-sun"></use></svg>
+      <!-- Moon icon — shown in light mode -->
+      <svg class="theme-toggle__moon" viewBox="0 0 24 24">
+        <use href="/src/assets/images/icons.svg#icon-moon"></use>
+      </svg>
+    </button>
+  </div>
+</header>

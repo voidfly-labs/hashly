@@ -1,0 +1,52 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ── Colour-scheme hint: tells the browser which themes this page supports.
+       Prevents the browser's own UA-stylesheet flash before our CSS loads. ── -->
+  <meta name="color-scheme" content="light dark" />
+
+  <!-- ── Anti-FOUC theme init — script runs synchronously before CSS; storage
+       key is read from the meta tag below so the script is shared across apps. ── -->
+  <meta name="theme-storage-key" content="<%= themeStorageKey %>" />
+  <script src="/src/core/theme/init.js"></script>
+
+  <!-- ── Favicons ── -->
+  <link rel="icon" type="image/svg+xml" href="/src/assets/images/favicons/favicon.svg" />
+  <link rel="icon" type="image/x-icon" href="/src/assets/images/favicons/favicon.ico" />
+  <link rel="apple-touch-icon" href="/src/assets/images/favicons/apple-touch-icon.png" />
+
+  <!-- ── Primary SEO ── -->
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="<%= canonicalUrl %>" />
+
+  <!-- ── Open Graph (Facebook / LinkedIn previews) ── -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="<%= canonicalUrl %>" />
+  <meta property="og:title" content="<%= title %>" />
+  <meta property="og:description" content="<%= description %>" />
+  <meta property="og:image" content="<%= ogImage %>" />
+  <meta property="og:site_name" content="<%= siteName %>" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- ── Twitter / X Card ── -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="<%= canonicalUrl %>" />
+  <meta name="twitter:title" content="<%= title %>" />
+  <meta name="twitter:description" content="<%= description %>" />
+  <meta name="twitter:image" content="<%= ogImage %>" />
+
+  <!-- ── Appearance ── -->
+  <meta name="theme-color" content="#4361EE" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#6B8AFF" media="(prefers-color-scheme: dark)" />
+
+  <meta name="author" content="<%= author %>" />
+
+  <!-- ── Styles ── -->
+  <link rel="stylesheet" href="/src/styles/main.css" />
+  <% var _appCss = (typeof appCssHref !== 'undefined') ? appCssHref : './app.css'; if (_appCss) { %>
+  <link rel="stylesheet" href="<%= _appCss %>" />
+  <% } %>
+</head>

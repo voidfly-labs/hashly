@@ -1,0 +1,75 @@
+<!-- ========== FOOTER ========== -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__grid">
+      <div>
+        <a class="footer__brand" href="<%= footerBrandUrl %>" aria-label="<%= siteName %> — go to homepage">
+          <div class="footer__brand-logo" aria-hidden="true">
+            <img src="/src/assets/images/logo.svg" alt="" width="33" height="33" />
+          </div>
+          <span class="footer__brand-title"><%- brandTitleHtml %></span>
+        </a>
+        <p class="footer__tagline">built for developers · client-side only · zero tracking</p>
+        <div class="footer__social">
+          <a
+            class="footer__social-icon"
+            href="https://github.com/voidfly-labs/hashly"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View source on GitHub"
+          >
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-github"></use>
+            </svg>
+          </a>
+          <a
+            class="footer__social-icon"
+            href="https://x.com/HashlyIO"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Follow @HashlyIO on X"
+          >
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-x"></use>
+            </svg>
+          </a>
+          <a class="footer__social-icon" href="mailto:info@voidfly.com" aria-label="Email Voidfly Labs">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-email"></use>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <span class="footer__col-heading"><%= footerColHeading %></span>
+        <a class="footer__link" href="#text">Text</a>
+        <a class="footer__link" href="#file">File</a>
+        <a class="footer__link" href="#random">Random</a>
+        <a class="footer__link" href="#about">FAQ</a>
+      </div>
+
+      <div>
+        <span class="footer__col-heading">More Tools</span>
+        <% moreToolsLinks.forEach(function(link) { %>
+        <a class="footer__link" href="<%= link.href %>" target="_blank" rel="noopener noreferrer"><%= link.text %></a>
+        <% }); %>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <span
+        >© <span id="footerYear"></span>&ensp;<a
+          href="https://www.github.com/voidfly-labs"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Voidfly Labs</a
+        ></span
+      >
+      <span><a href="/privacy">Privacy Policy</a>&ensp;·&ensp;<a href="/terms">Terms of Service</a></span>
+      <div class="footer__bar-right">
+        <a href="mailto:report@voidfly.com">report an issue</a>
+      </div>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,46 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a cryptographic hash function?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A cryptographic hash function maps an input of any size to a fixed-length digest. It is deterministic, one-way (pre-image resistant), and collision resistant — making it infeasible to reverse the output or find two inputs that produce the same hash."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is SHA-1 still secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA-1 is cryptographically broken for collision resistance. Google's 2017 SHAttered attack demonstrated a practical SHA-1 collision. It should not be used for digital signatures or certificate fingerprints, but remains acceptable for non-security-critical checksums."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SHA-2 variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA-256 is the right default for most applications. Use SHA-384 or SHA-512 when a compliance requirement mandates a larger digest. SHA-224 is a truncated form of SHA-256 for constrained environments."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are SHA hashes safe for passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. SHA functions are designed to be fast, which makes them unsuitable for password storage. Use a slow, purpose-built algorithm such as bcrypt, scrypt, or Argon2 instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does SHAFile protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser using hash-wasm, a WebAssembly library. No text, file content, or hash output is ever transmitted to any server."
+      }
+    }
+  ]
+}

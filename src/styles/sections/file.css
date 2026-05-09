@@ -1,0 +1,114 @@
+/* =========================================================================
+       FILE DROP
+       ========================================================================= */
+.file-drop {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  background: var(--surface);
+}
+
+.file-drop:hover,
+.file-drop--active {
+  border-color: var(--accent-border);
+  background: var(--accent-muted);
+}
+
+/* Whole-page drag: file is being dragged anywhere over the browser window.
+       Uses a stronger border colour than the hover/active state to signal
+       "drop anywhere near here" rather than "drop exactly here". */
+.file-drop--page-drag {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* When the cursor is over the clear button, suppress the drop-zone hover
+       state so only the button's own :hover styles apply. :has() is supported
+       in all modern browsers and is the correct CSS-only solution — it avoids
+       pointer-event hacks or additional wrapper elements. */
+.file-drop:has(.file-drop__clear:hover) {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.file-drop__input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.file-drop__icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--text-muted);
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.file-drop__text {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.file-drop__text strong {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.file-drop__filename {
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--accent);
+  display: none;
+  max-width: calc(100% - 48px);
+}
+
+.file-drop__filename--visible {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0;
+  vertical-align: top;
+}
+
+.file-drop__filename-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.file-drop__filesize {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  opacity: 0.75;
+  white-space: nowrap;
+}
+
+/* Dismiss button — top-right corner of the drop zone.
+       Shares all visual styles with .history-popover__close (see grouped ruleset above).
+       Hidden by default; revealed once a file is loaded.
+       z-index must exceed the invisible file input overlay (no explicit z-index,
+       so any positive value suffices) so click events reach this button first. */
+.file-drop__clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: none; /* hidden until a file is loaded */
+}
+
+.file-drop__clear--visible {
+  display: flex;
+}

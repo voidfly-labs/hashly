@@ -1,0 +1,70 @@
+/* =========================================================================
+       TEXT INPUT
+       ========================================================================= */
+/* Wrapper gives us a positioning context for the dismiss button,
+       mirroring the .file-drop pattern exactly. */
+.text-input__wrap {
+  position: relative;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+}
+
+.text-input__textarea {
+  width: 100%;
+  min-height: 110px;
+  max-height: 400px;
+  padding: 14px;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.65;
+  resize: vertical;
+  outline: none;
+}
+
+.text-input__textarea::placeholder {
+  color: var(--text-muted);
+}
+.text-input__counter {
+  position: absolute;
+  bottom: 3px;
+  right: 15px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 1;
+}
+
+.text-input__counter-sep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+/* Dismiss button — top-right corner of the textarea wrapper.
+       Identical position/behaviour to .file-drop__clear; shares visual
+       styles via the grouped selector with .history-popover__close and
+       .file-drop__clear defined further below. */
+.text-input__clear {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1;
+  display: none; /* hidden until input has content */
+}
+
+.text-input__clear--visible {
+  display: flex;
+}

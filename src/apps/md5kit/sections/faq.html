@@ -1,0 +1,181 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-legacy"
+          aria-controls="faq-panel-legacy"
+          aria-selected="false"
+          data-tab="legacy"
+        >
+          MD2 &amp; MD4
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-modern"
+          aria-controls="faq-panel-modern"
+          aria-selected="false"
+          data-tab="modern"
+        >
+          MD5
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a cryptographic hash function?</h3>
+      <p>
+        A cryptographic hash function takes an input of any size and produces a fixed-length digest. Three properties
+        define it: determinism (same input always gives the same output), pre-image resistance (you cannot reverse the
+        hash to recover the input), and collision resistance (it is computationally infeasible to find two different
+        inputs that produce the same digest).
+      </p>
+
+      <h3>Are MD hashes safe for passwords?</h3>
+      <p>
+        No. All MD variants are designed to be fast, which is useful for integrity checking but harmful for password
+        storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a
+        purpose-built slow algorithm:
+        <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank" rel="noopener noreferrer">bcrypt</a>,
+        <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">scrypt</a>, or
+        <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer">Argon2</a>, all of
+        which incorporate salting and adjustable work factors.
+      </p>
+
+      <h3>How does MD5Kit ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser. MD4 and MD5 use
+        <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        (a WebAssembly library loaded from CDN), and MD2 uses a custom inlined implementation of
+        <a href="https://www.rfc-editor.org/rfc/rfc1319" target="_blank" rel="noopener noreferrer">RFC 1319</a>. No
+        text, no file content, and no hash output is ever transmitted to any server. You can verify this by running the
+        tool while offline — it works identically.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw digest bytes as a shorter string (standard Base64, using
+        <code>+</code>, <code>/</code>, and <code>=</code> padding) — common in HTTP headers and certificate
+        fingerprints. Binary shows the individual bits of each byte separated by spaces, useful for educational and
+        low-level inspection purposes.
+      </p>
+    </div>
+
+    <!-- MD2 & MD4 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-legacy" aria-labelledby="faq-tab-legacy">
+      <h3>What is MD2?</h3>
+      <p>
+        MD2 (Message Digest 2) was designed by Ronald Rivest in 1989, originally for systems with limited resources such
+        as 8-bit machines. It produces a 128-bit (16-byte) digest, displayed as a 32-character hex string. MD2 is the
+        slowest of the MD family and is considered cryptographically broken — pre-image attacks have been demonstrated.
+        It has no practical use in new systems.
+      </p>
+
+      <h3>What is MD4?</h3>
+      <p>
+        MD4 was also designed by Rivest in 1990 as a faster successor to MD2, targeting 32-bit machines. It produces a
+        128-bit digest and introduced design ideas later adopted by MD5, SHA-1, and RIPEMD. MD4 was found to be weak
+        very quickly: full collision attacks exist, and it was deprecated by Rivest himself shortly after MD5 was
+        published. It should not be used for any security purpose.
+      </p>
+
+      <h3>When are MD2 and MD4 still seen?</h3>
+      <p>
+        Both appear in legacy protocol analysis, forensic tooling, and academic study of hash function evolution. MD4 is
+        still used internally in some older Windows NTLM authentication implementations. Neither should be introduced
+        into any new system — even for non-security uses where MD5 would serve equally well with greater ecosystem
+        support.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="MD2 and MD4 comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Year</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">MD2</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Year">1989</td>
+            <td class="info-table__status--broken" data-label="Status">Broken</td>
+            <td data-label="Notes">Pre-image attacks demonstrated; obsolete</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">MD4</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Year">1990</td>
+            <td class="info-table__status--broken" data-label="Status">Broken</td>
+            <td data-label="Notes">Full collision attacks; still in NTLM legacy paths</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MD5 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-modern" aria-labelledby="faq-tab-modern">
+      <h3>What is MD5?</h3>
+      <p>
+        MD5 (Message Digest 5) was designed by Ronald Rivest in 1991 as a more secure replacement for MD4. It produces a
+        128-bit digest and was the dominant hash function for file integrity verification, digital signatures, and
+        checksums throughout the 1990s and 2000s. MD5 is still the most widely encountered hash in practice — you will
+        find it on download pages, software packages, and configuration files worldwide.
+      </p>
+
+      <h3>Is MD5 still secure?</h3>
+      <p>
+        MD5 is cryptographically broken for collision resistance. Practical collision attacks require only seconds on
+        modern hardware. It should not be used for digital signatures, certificate fingerprints, or any context where an
+        adversary might benefit from crafting a collision. For non-security-critical checksums — verifying accidental
+        corruption of a download, for example — MD5 remains widely accepted and is perfectly adequate.
+      </p>
+
+      <h3>Can MD5 be reversed or cracked?</h3>
+      <p>
+        MD5 has no known mathematical inverse, but its short 128-bit output and fast computation make it highly
+        susceptible to precomputed
+        <a href="https://en.wikipedia.org/wiki/Rainbow_table" target="_blank" rel="noopener noreferrer"
+          >rainbow table</a
+        >
+        lookups. For any short or common input, MD5 can often be "reversed" this way within seconds using publicly
+        available databases. This is why MD5 must never be used for passwords or security tokens.
+      </p>
+
+      <h3>Where is MD5 still used today?</h3>
+      <p>
+        Despite its broken collision resistance, MD5 remains ubiquitous for non-adversarial integrity checks. Linux
+        distributions publish MD5 checksums alongside ISO images, package managers use it for cache validation, and many
+        version control and build systems rely on it for change detection. In these contexts, the goal is detecting
+        accidental corruption rather than resisting deliberate tampering, so MD5's weaknesses are not a concern.
+      </p>
+    </div>
+  </div>
+</section>

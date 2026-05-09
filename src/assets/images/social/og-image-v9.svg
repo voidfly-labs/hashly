@@ -1,0 +1,372 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!--
+    Isometric City — OG image concept #9 for md5kit.com
+    Canvas: 1200 × 630
+
+    Grid params: tw=54, th=27, bh=48, origin=(830,65)
+    sx(col,row) = 830 + (col-row)*54
+    sy(col,row) = 65  + (col+row)*27
+
+    Block heights: staircase — h(col,row) = max(1, 7 - col - row)
+      row 0 (front): [7, 6, 5, 4]
+      row 1:         [6, 5, 4, 3]
+      row 2:         [5, 4, 3, 2]
+      row 3:         [4, 3, 2, 1]
+      row 4 (back):  [3, 2, 1, 1]
+
+    Top face:  (sx+54,sy)  (sx+108,sy+27) (sx+54,sy+54) (sx,sy+27)
+    Left face: (sx,sy+27)  (sx+54,sy+54)  (sx+54,sy+54+h*48) (sx,sy+27+h*48)
+    Right face:(sx+54,sy+54)(sx+108,sy+27)(sx+108,sy+27+h*48)(sx+54,sy+54+h*48)
+
+    Color categories (top / left / right):
+      A (h=1-2): #4B68F0 / #3249C8 / #21338A
+      B (h=3-4): #6B8AFF / #4361EE / #3249C8
+      C (h=5-6): #8EA5FF / #6B8AFF / #4361EE
+      D (h=7):   #B0C0FF / #8EA5FF / #6B8AFF
+      Purple:    #A78BFA / #7C3AED / #5B21B6
+      Teal:      #67E8F9 / #0EA5E9 / #0284C7
+
+    Render order: row 4 → 3 → 2 → 1 → 0 (painter's algorithm)
+  -->
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;800&amp;family=Geist+Mono:wght@400;500&amp;display=swap');
+    </style>
+
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090c15"/>
+      <stop offset="100%" stop-color="#111624"/>
+    </linearGradient>
+
+    <!-- ambient blob blur -->
+    <filter id="bb" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+
+    <!-- left panel overlay gradient (fades blocks behind text) -->
+    <linearGradient id="left-fade" x1="0" y1="0" x2="600" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090c15" stop-opacity="1"/>
+      <stop offset="60%" stop-color="#090c15" stop-opacity="0.92"/>
+      <stop offset="100%" stop-color="#090c15" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- subtle bar grad -->
+    <linearGradient id="bar-grad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6b8aff"/>
+      <stop offset="100%" stop-color="#4361ee" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- ── Dot grid texture ── -->
+  <pattern id="dots" x="0" y="0" width="28" height="28" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="0.9" fill="white" opacity="0.035"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- ── Ambient blobs ── -->
+  <ellipse cx="970" cy="185" rx="310" ry="270" fill="#4361ee" opacity="0.38" filter="url(#bb)"/>
+  <ellipse cx="730" cy="530" rx="230" ry="200" fill="#6b33cc" opacity="0.22" filter="url(#bb)"/>
+  <ellipse cx="1160" cy="460" rx="190" ry="170" fill="#3651d4" opacity="0.18" filter="url(#bb)"/>
+  <ellipse cx="160" cy="110" rx="170" ry="150" fill="#4361ee" opacity="0.09" filter="url(#bb)"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       ISOMETRIC STAIRCASE BLOCKS
+       h(col,row) = max(1, 7 - col - row)
+       Paint back → front (row 4 first, row 0 last)
+       ════════════════════════════════════════════════════════════ -->
+
+  <!-- ── ROW 4 (back): h = [3,2,1,1] ── -->
+
+  <!-- (0,4) sx=614,sy=173 h=3 catB -->
+  <polygon points="668,173 722,200 668,227 614,200" fill="#6B8AFF"/>
+  <polygon points="614,200 668,227 668,371 614,344" fill="#4361EE"/>
+  <polygon points="668,227 722,200 722,344 668,371" fill="#3249C8"/>
+
+  <!-- (1,4) sx=668,sy=200 h=2 teal accent -->
+  <polygon points="722,200 776,227 722,254 668,227" fill="#67E8F9"/>
+  <polygon points="668,227 722,254 722,350 668,323" fill="#0EA5E9"/>
+  <polygon points="722,254 776,227 776,323 722,350" fill="#0284C7"/>
+
+  <!-- (2,4) sx=722,sy=227 h=1 catA -->
+  <polygon points="776,227 830,254 776,281 722,254" fill="#4B68F0"/>
+  <polygon points="722,254 776,281 776,329 722,302" fill="#3249C8"/>
+  <polygon points="776,281 830,254 830,302 776,329" fill="#21338A"/>
+
+  <!-- (3,4) sx=776,sy=254 h=1 catA -->
+  <polygon points="830,254 884,281 830,308 776,281" fill="#4B68F0"/>
+  <polygon points="776,281 830,308 830,356 776,329" fill="#3249C8"/>
+  <polygon points="830,308 884,281 884,329 830,356" fill="#21338A"/>
+
+  <!-- ── ROW 3: h = [4,3,2,1] ── -->
+
+  <!-- (0,3) sx=668,sy=146 h=4 teal accent -->
+  <polygon points="722,146 776,173 722,200 668,173" fill="#67E8F9"/>
+  <polygon points="668,173 722,200 722,392 668,365" fill="#0EA5E9"/>
+  <polygon points="722,200 776,173 776,365 722,392" fill="#0284C7"/>
+
+  <!-- (1,3) sx=722,sy=173 h=3 catB -->
+  <polygon points="776,173 830,200 776,227 722,200" fill="#6B8AFF"/>
+  <polygon points="722,200 776,227 776,371 722,344" fill="#4361EE"/>
+  <polygon points="776,227 830,200 830,344 776,371" fill="#3249C8"/>
+
+  <!-- (2,3) sx=776,sy=200 h=2 catA -->
+  <polygon points="830,200 884,227 830,254 776,227" fill="#4B68F0"/>
+  <polygon points="776,227 830,254 830,350 776,323" fill="#3249C8"/>
+  <polygon points="830,254 884,227 884,323 830,350" fill="#21338A"/>
+
+  <!-- (3,3) sx=830,sy=227 h=1 catA -->
+  <polygon points="884,227 938,254 884,281 830,254" fill="#4B68F0"/>
+  <polygon points="830,254 884,281 884,329 830,302" fill="#3249C8"/>
+  <polygon points="884,281 938,254 938,302 884,329" fill="#21338A"/>
+
+  <!-- ── ROW 2: h = [5,4,3,2] ── -->
+
+  <!-- (0,2) sx=722,sy=119 h=5 catC -->
+  <polygon points="776,119 830,146 776,173 722,146" fill="#8EA5FF"/>
+  <polygon points="722,146 776,173 776,413 722,386" fill="#6B8AFF"/>
+  <polygon points="776,173 830,146 830,386 776,413" fill="#4361EE"/>
+
+  <!-- (1,2) sx=776,sy=146 h=4 catB -->
+  <polygon points="830,146 884,173 830,200 776,173" fill="#6B8AFF"/>
+  <polygon points="776,173 830,200 830,392 776,365" fill="#4361EE"/>
+  <polygon points="830,200 884,173 884,365 830,392" fill="#3249C8"/>
+
+  <!-- (2,2) sx=830,sy=173 h=3 catB -->
+  <polygon points="884,173 938,200 884,227 830,200" fill="#6B8AFF"/>
+  <polygon points="830,200 884,227 884,371 830,344" fill="#4361EE"/>
+  <polygon points="884,227 938,200 938,344 884,371" fill="#3249C8"/>
+
+  <!-- (3,2) sx=884,sy=200 h=2 catA -->
+  <polygon points="938,200 992,227 938,254 884,227" fill="#4B68F0"/>
+  <polygon points="884,227 938,254 938,350 884,323" fill="#3249C8"/>
+  <polygon points="938,254 992,227 992,323 938,350" fill="#21338A"/>
+
+  <!-- ── ROW 1: h = [6,5,4,3] ── -->
+
+  <!-- (0,1) sx=776,sy=92 h=6 catC -->
+  <polygon points="830,92 884,119 830,146 776,119" fill="#8EA5FF"/>
+  <polygon points="776,119 830,146 830,434 776,407" fill="#6B8AFF"/>
+  <polygon points="830,146 884,119 884,407 830,434" fill="#4361EE"/>
+
+  <!-- (1,1) sx=830,sy=119 h=5 catC -->
+  <polygon points="884,119 938,146 884,173 830,146" fill="#8EA5FF"/>
+  <polygon points="830,146 884,173 884,413 830,386" fill="#6B8AFF"/>
+  <polygon points="884,173 938,146 938,386 884,413" fill="#4361EE"/>
+
+  <!-- (2,1) sx=884,sy=146 h=4 purple accent -->
+  <polygon points="938,146 992,173 938,200 884,173" fill="#A78BFA"/>
+  <polygon points="884,173 938,200 938,392 884,365" fill="#7C3AED"/>
+  <polygon points="938,200 992,173 992,365 938,392" fill="#5B21B6"/>
+
+  <!-- (3,1) sx=938,sy=173 h=3 catB -->
+  <polygon points="992,173 1046,200 992,227 938,200" fill="#6B8AFF"/>
+  <polygon points="938,200 992,227 992,371 938,344" fill="#4361EE"/>
+  <polygon points="992,227 1046,200 1046,344 992,371" fill="#3249C8"/>
+
+  <!-- ── ROW 0 (front): h = [7,6,5,4] ── -->
+
+  <!-- (0,0) sx=830,sy=65 h=7 catD ← TALLEST BLOCK -->
+  <polygon points="884,65 938,92 884,119 830,92" fill="#B0C0FF"/>
+  <polygon points="830,92 884,119 884,455 830,428" fill="#8EA5FF"/>
+  <polygon points="884,119 938,92 938,428 884,455" fill="#6B8AFF"/>
+
+  <!-- (1,0) sx=884,sy=92 h=6 catC -->
+  <polygon points="938,92 992,119 938,146 884,119" fill="#8EA5FF"/>
+  <polygon points="884,119 938,146 938,434 884,407" fill="#6B8AFF"/>
+  <polygon points="938,146 992,119 992,407 938,434" fill="#4361EE"/>
+
+  <!-- (2,0) sx=938,sy=119 h=5 catC -->
+  <polygon points="992,119 1046,146 992,173 938,146" fill="#8EA5FF"/>
+  <polygon points="938,146 992,173 992,413 938,386" fill="#6B8AFF"/>
+  <polygon points="992,173 1046,146 1046,386 992,413" fill="#4361EE"/>
+
+  <!-- (3,0) sx=992,sy=146 h=4 catB -->
+  <polygon points="1046,146 1100,173 1046,200 992,173" fill="#6B8AFF"/>
+  <polygon points="992,173 1046,200 1046,392 992,365" fill="#4361EE"/>
+  <polygon points="1046,200 1100,173 1100,365 1046,392" fill="#3249C8"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       NETWORK MESH — connects top-face apices of adjacent blocks
+       Apex (col,row) = (sx+54, sy); positions fixed by grid, not height
+       ════════════════════════════════════════════════════════════ -->
+  <g id="network-mesh">
+
+    <!-- same-row connections (col → col+1) -->
+    <line x1="884" y1="65"  x2="938" y2="92"  stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="938" y1="92"  x2="992" y2="119" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="992" y1="119" x2="1046" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="92"  x2="884" y2="119" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="884" y1="119" x2="938" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="938" y1="146" x2="992" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="776" y1="119" x2="830" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="146" x2="884" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="884" y1="173" x2="938" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="722" y1="146" x2="776" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="776" y1="173" x2="830" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="200" x2="884" y2="227" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="668" y1="173" x2="722" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="722" y1="200" x2="776" y2="227" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="776" y1="227" x2="830" y2="254" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+
+    <!-- same-col connections (row → row+1) -->
+    <line x1="884" y1="65"  x2="830" y2="92"  stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="938" y1="92"  x2="884" y2="119" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="992" y1="119" x2="938" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="1046" y1="146" x2="992" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="92"  x2="776" y2="119" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="884" y1="119" x2="830" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="938" y1="146" x2="884" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="992" y1="173" x2="938" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="776" y1="119" x2="722" y2="146" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="146" x2="776" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="884" y1="173" x2="830" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="938" y1="200" x2="884" y2="227" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="722" y1="146" x2="668" y2="173" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="776" y1="173" x2="722" y2="200" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="830" y1="200" x2="776" y2="227" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+    <line x1="884" y1="227" x2="830" y2="254" stroke="rgba(142,165,255,0.22)" stroke-width="0.9"/>
+
+    <!-- diagonal connections (col,row) → (col+1,row+1) — vertical in screen-space -->
+    <line x1="884" y1="65"  x2="884" y2="119" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="938" y1="92"  x2="938" y2="146" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="992" y1="119" x2="992" y2="173" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="830" y1="92"  x2="830" y2="146" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="884" y1="119" x2="884" y2="173" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="938" y1="146" x2="938" y2="200" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="776" y1="119" x2="776" y2="173" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="830" y1="146" x2="830" y2="200" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="884" y1="173" x2="884" y2="227" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="722" y1="146" x2="722" y2="200" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="776" y1="173" x2="776" y2="227" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+    <line x1="830" y1="200" x2="830" y2="254" stroke="rgba(142,165,255,0.15)" stroke-width="0.8"/>
+
+    <!-- apex dots — accent-colored on teal/purple blocks -->
+    <circle cx="884"  cy="65"  r="2.2" fill="rgba(176,192,255,0.70)"/>
+    <circle cx="938"  cy="92"  r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="992"  cy="119" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="1046" cy="146" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="830"  cy="92"  r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="884"  cy="119" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="938"  cy="146" r="2.2" fill="rgba(167,139,250,0.70)"/>
+    <circle cx="992"  cy="173" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="776"  cy="119" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="830"  cy="146" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="884"  cy="173" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="938"  cy="200" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="722"  cy="146" r="2.2" fill="rgba(103,232,249,0.70)"/>
+    <circle cx="776"  cy="173" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="830"  cy="200" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="884"  cy="227" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="668"  cy="173" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="722"  cy="200" r="2.2" fill="rgba(103,232,249,0.70)"/>
+    <circle cx="776"  cy="227" r="2.2" fill="rgba(142,165,255,0.55)"/>
+    <circle cx="830"  cy="254" r="2.2" fill="rgba(142,165,255,0.55)"/>
+  </g>
+
+  <!-- ── Top-edge highlights on the three tallest block tops ── -->
+  <polygon points="884,65 938,92 884,119 830,92"   fill="none" stroke="rgba(255,255,255,0.20)" stroke-width="0.8"/>
+  <polygon points="830,92 884,119 830,146 776,119"  fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+  <polygon points="938,92 992,119 938,146 884,119"  fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+
+  <!-- ════════════════════════════════════════════
+       LEFT CONTENT ZONE (faded overlay keeps text legible)
+       ════════════════════════════════════════════ -->
+  <rect width="600" height="630" fill="url(#left-fade)"/>
+
+  <!-- Logo box (82×82, rx=18) -->
+  <g transform="translate(60, 60)">
+    <rect width="82" height="82" rx="18" fill="#4361ee"/>
+    <polygon points="41,34.5 63.5,45.9 41,57.2 18.5,45.9" fill="white" opacity="0.42"/>
+    <polygon points="41,34.5 63.5,45.9 41,57.2 18.5,45.9" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="18.5,45.9 41,57.2 41,70.3 18.5,58.9" fill="white" opacity="0.34"/>
+    <polygon points="63.5,45.9 41,57.2 41,70.3 63.5,58.9" fill="white" opacity="0.20"/>
+    <polygon points="41,21.5 63.5,32.8 41,44.2 18.5,32.8" fill="white" opacity="0.55"/>
+    <polygon points="41,21.5 63.5,32.8 41,44.2 18.5,32.8" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="18.5,32.8 41,44.2 41,57.2 18.5,45.9" fill="white" opacity="0.44"/>
+    <polygon points="63.5,32.8 41,44.2 41,57.2 63.5,45.9" fill="white" opacity="0.25"/>
+    <polygon points="41,8.5 63.5,19.8 41,31.2 18.5,19.8" fill="white"/>
+    <polygon points="18.5,19.8 41,31.2 41,44.2 18.5,32.8" fill="white" opacity="0.50"/>
+    <polygon points="63.5,19.8 41,31.2 41,44.2 63.5,32.8" fill="white" opacity="0.28"/>
+  </g>
+
+  <!-- App name -->
+  <text x="60" y="225"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="68" font-weight="800" fill="#ffffff" letter-spacing="-2.5">MD5Kit</text>
+
+  <!-- Algorithm subtitle — bullets 15% smaller via tspan -->
+  <text x="60" y="268"
+        font-family="'Geist Mono', 'Courier New', monospace"
+        font-size="24" font-weight="700" fill="#6b8aff" letter-spacing="0.5">MD2 <tspan font-size="18">&#x2022;</tspan> MD4 <tspan font-size="18">&#x2022;</tspan> MD5</text>
+
+  <!-- Feature lines -->
+  <text x="60" y="310"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="17" fill="#8896b8">Hash text and files in your browser.</text>
+  <text x="60" y="336"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="17" fill="#8896b8">No uploads. No tracking. No server.</text>
+
+  <!-- Output format pills -->
+  <g transform="translate(60, 366)">
+    <rect width="64" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="32" y="14" text-anchor="middle" dominant-baseline="central"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Hex</text>
+  </g>
+  <g transform="translate(136, 366)">
+    <rect width="78" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="39" y="14" text-anchor="middle" dominant-baseline="central"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Base64</text>
+  </g>
+  <g transform="translate(226, 366)">
+    <rect width="72" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="36" y="14" text-anchor="middle" dominant-baseline="central"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Binary</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="60" y1="416" x2="430" y2="416" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- ── Badges ── -->
+
+  <!-- GitHub (165×52) — Simple Icons official path, viewBox 0 0 24 24 -->
+  <g transform="translate(60, 443)">
+    <rect width="165" height="52" rx="12" fill="#21262d" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <g transform="translate(11, 15) scale(0.9167)">
+      <path fill="#f0f6fc" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+    </g>
+    <text x="42" y="22" font-family="'Geist', system-ui, sans-serif" font-size="12" fill="#8b949e">Source on</text>
+    <text x="42" y="38" font-family="'Geist', system-ui, sans-serif" font-size="16" font-weight="700" fill="#f0f6fc">GitHub</text>
+  </g>
+
+  <!-- App Store (165×52) — Simple Icons official Apple path, viewBox 0 0 24 24 -->
+  <g transform="translate(237, 443)">
+    <rect width="165" height="52" rx="12" fill="#000" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <g transform="translate(11, 15) scale(0.9167)">
+      <path fill="white" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/>
+    </g>
+    <text x="42" y="22" font-family="'Geist', system-ui, sans-serif" font-size="12" fill="#a1a1a6">Download on the</text>
+    <text x="42" y="38" font-family="'Geist', system-ui, sans-serif" font-size="16" font-weight="700" fill="white">App Store</text>
+  </g>
+
+  <!-- Google Play (165×52) — official 4-color paths -->
+  <g transform="translate(414, 443)">
+    <rect width="165" height="52" rx="12" fill="#000" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <g transform="translate(11, 15) scale(0.6875)">
+      <path fill="#4285F4" d="M.12 2.66a3.46 3.46 0 0 0-.12.92v24.84a3.66 3.66 0 0 0 .12.92L14 15.64Z"/>
+      <path fill="#34A853" d="M13.64 16L20.58 9.15L5.5.51A3.72 3.72 0 0 0 3.63 0 3.64 3.64 0 0 0 .12 2.65Z"/>
+      <path fill="#EA4335" d="M13.54 15.28L.12 29.34a3.64 3.64 0 0 0 5.33 2.16l15.1-8.6z"/>
+      <path fill="#FBBC04" d="M27.11 12.89l-6.53-3.74-7.35 6.45 7.38 7.28 6.48-3.7a3.55 3.55 0 0 0 0-6.29z"/>
+    </g>
+    <text x="42" y="22" font-family="'Geist', system-ui, sans-serif" font-size="12" fill="#a1a1a6">GET IT ON</text>
+    <text x="42" y="38" font-family="'Geist', system-ui, sans-serif" font-size="16" font-weight="700" fill="white">Google Play</text>
+  </g>
+
+  <!-- URL watermark -->
+  <text x="1168" y="608"
+        font-family="'Geist Mono', monospace"
+        font-size="13" fill="rgba(255,255,255,0.48)" text-anchor="end">md5kit.com</text>
+</svg>

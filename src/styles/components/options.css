@@ -1,0 +1,135 @@
+/* =========================================================================
+       OPTIONS — segmented format picker
+       ========================================================================= */
+.options {
+  display: flex;
+  align-items: center;
+}
+
+.options__segment {
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+[data-theme='dark'] .options__segment {
+  background: rgba(28, 32, 48, 0.78);
+}
+
+.options__segment-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 11px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.options__segment-label:last-child {
+  border-right: none;
+}
+
+.options__segment-label:hover {
+  color: var(--text);
+  background: var(--accent-muted);
+}
+
+/* Hidden radio — selection state driven purely by CSS :checked sibling */
+.options__radio {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.options__radio:checked + .options__segment-label {
+  color: var(--accent);
+  background: var(--accent-muted);
+  font-weight: 600;
+}
+
+/* =========================================================================
+       OPTIONS ROW — wraps input + output format pickers side by side
+       ========================================================================= */
+.options-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Single-side (output-only) row used in File section */
+.options-row--end {
+  justify-content: flex-end;
+}
+
+/* Label cell — sits inside the segment pill as its first cell, separated
+       from the options by the standard inter-cell border. Smaller (10px vs 11px)
+       and lighter (weight 400, opacity 0.65) than the option labels, so it reads
+       as a caption for the group rather than a peer choice. No background fill,
+       no hover state, cursor default — unambiguously non-interactive. */
+.options__prefix {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 9px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  justify-content: center;
+  border-right: 1px solid var(--border);
+  user-select: none;
+  white-space: nowrap;
+  min-width: 57px;
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Wrapper — no gap needed; label is inside the pill */
+.options__group {
+  display: flex;
+  align-items: center;
+}
+
+/* Closes the blindspot: fires before the groups naturally wrap (~686px),
+       ensuring full-width expansion kicks in at the same time as the wrap. */
+@media (max-width: 620px) {
+  .options__group,
+  .options,
+  .options__segment {
+    width: 100%;
+  }
+
+  .options__segment-label {
+    flex: 1;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Format pickers: chips share space equally at narrow widths */
+  .options__group,
+  .options,
+  .options__segment {
+    width: 100%;
+  }
+
+  .options__segment-label {
+    flex: 1;
+  }
+}

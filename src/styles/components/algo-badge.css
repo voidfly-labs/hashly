@@ -1,0 +1,79 @@
+/* =========================================================================
+       ALGORITHM BADGE
+       — Single vocabulary for "which algorithm" across result bars,
+         random lists, and history popovers.
+         Per-algorithm colours are set via data-algo on the badge element,
+         keeping the palette in one place (design tokens above).
+       ========================================================================= */
+.algo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-radius: 4px;
+  padding: 1px 5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  opacity: 0.82;
+  transition: opacity 0.15s;
+  /* Fallback to accent colours for any unrecognised algo */
+  color: var(--accent-dim);
+  background: var(--accent-muted);
+}
+
+/* Brighten badge when its containing row is hovered */
+.random__item:hover .algo-badge,
+.history-table tr:hover .algo-badge {
+  opacity: 1;
+}
+
+.result .algo-badge {
+  opacity: 1;
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    filter 0.15s;
+}
+
+.result--disabled .algo-badge,
+.result--disabled .result__hash {
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+
+.result:not(.result--disabled) .algo-badge,
+.result:not(.result--disabled) .result__hash {
+  transition: opacity 0.2s;
+}
+
+.result--disabled .result__hash {
+  cursor: default;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.result--disabled .result__actions {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
+
+.result:not(.result--disabled) .result__actions {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+}
+
+/* In random items the badge sits at the trailing end; flex: 1 on the hash
+       span pushes everything after it to the right naturally. */
+.random__item-badge {
+  cursor: default;
+}

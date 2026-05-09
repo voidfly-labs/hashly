@@ -1,0 +1,17 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "MD5Kit",
+  "url": "https://www.md5kit.com/",
+  "description": "Browser-based MD hash calculator supporting MD2, MD4, and MD5. All computation is local — no data is transmitted.",
+  "headline": "MD5 Hash Calculator",
+  "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Organization",
+    "name": "MD5Kit",
+    "url": "https://www.md5kit.com/"
+  }
+}

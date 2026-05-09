@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;600;800&amp;family=Geist+Mono:wght@400;500&amp;display=swap');
+
+      .glass { backdrop-filter: blur(18px) saturate(160%); }
+    </style>
+
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#090c15"/>
+      <stop offset="100%" stop-color="#111624"/>
+    </linearGradient>
+
+    <!-- blob blur -->
+    <filter id="bb" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="70"/>
+    </filter>
+
+    <!-- card drop shadow -->
+    <filter id="cs" x="-15%" y="-15%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+
+    <!-- subtle inner highlight gradient for glass cards -->
+    <linearGradient id="card-shine-1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.03)"/>
+    </linearGradient>
+    <linearGradient id="card-shine-2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.16)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.05)"/>
+    </linearGradient>
+    <linearGradient id="card-shine-3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.07)"/>
+    </linearGradient>
+
+    <!-- accent top bar gradient -->
+    <linearGradient id="bar-grad" x1="0" y1="0" x2="330" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6b8aff"/>
+      <stop offset="100%" stop-color="#4361ee" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Background ── -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- ── Ambient blobs ── -->
+  <ellipse cx="970" cy="185" rx="310" ry="270" fill="#4361ee" opacity="0.38" filter="url(#bb)"/>
+  <ellipse cx="730" cy="530" rx="230" ry="200" fill="#6b33cc" opacity="0.22" filter="url(#bb)"/>
+  <ellipse cx="1160" cy="460" rx="190" ry="170" fill="#3651d4" opacity="0.18" filter="url(#bb)"/>
+  <ellipse cx="160" cy="110" rx="170" ry="150" fill="#4361ee" opacity="0.09" filter="url(#bb)"/>
+
+  <!-- ── Subtle noise texture overlay ── -->
+  <!-- Fine dot grid -->
+  <pattern id="dot-grid" x="0" y="0" width="24" height="24" patternUnits="userSpaceOnUse">
+    <circle cx="1" cy="1" r="0.8" fill="white" opacity="0.04"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#dot-grid)"/>
+
+  <!-- ════════════════════════════════════════════
+       LEFT CONTENT ZONE
+       ════════════════════════════════════════════ -->
+
+  <!-- Logo box (scaled to 82×82, rx=18) -->
+  <g transform="translate(60, 58)">
+    <rect width="82" height="82" rx="18" fill="#4361ee"/>
+    <!-- Isometric layer stack (original 144×144 → scale 0.569) -->
+    <!-- Bottom block -->
+    <polygon points="41,34.5 63.5,45.9 41,57.2 18.5,45.9" fill="white" opacity="0.42"/>
+    <polygon points="41,34.5 63.5,45.9 41,57.2 18.5,45.9" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="18.5,45.9 41,57.2 41,70.3 18.5,58.9" fill="white" opacity="0.34"/>
+    <polygon points="63.5,45.9 41,57.2 41,70.3 63.5,58.9" fill="white" opacity="0.20"/>
+    <!-- Mid block -->
+    <polygon points="41,21.5 63.5,32.8 41,44.2 18.5,32.8" fill="white" opacity="0.55"/>
+    <polygon points="41,21.5 63.5,32.8 41,44.2 18.5,32.8" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/>
+    <polygon points="18.5,32.8 41,44.2 41,57.2 18.5,45.9" fill="white" opacity="0.44"/>
+    <polygon points="63.5,32.8 41,44.2 41,57.2 63.5,45.9" fill="white" opacity="0.25"/>
+    <!-- Top block -->
+    <polygon points="41,8.5 63.5,19.8 41,31.2 18.5,19.8" fill="white"/>
+    <polygon points="18.5,19.8 41,31.2 41,44.2 18.5,32.8" fill="white" opacity="0.50"/>
+    <polygon points="63.5,19.8 41,31.2 41,44.2 63.5,32.8" fill="white" opacity="0.28"/>
+  </g>
+
+  <!-- App name -->
+  <text x="60" y="222"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="68" font-weight="800" fill="#ffffff" letter-spacing="-2.5">MD5Kit</text>
+
+  <!-- Algorithm line -->
+  <text x="60" y="266"
+        font-family="'Geist Mono', 'Courier New', monospace"
+        font-size="20" font-weight="500" fill="#6b8aff" letter-spacing="1">MD2 · MD4 · MD5</text>
+
+  <!-- Feature description -->
+  <text x="60" y="308"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="17" fill="#8896b8">Hash text and files in your browser.</text>
+  <text x="60" y="334"
+        font-family="'Geist', 'Inter', system-ui, sans-serif"
+        font-size="17" fill="#8896b8">No uploads. No tracking. No server.</text>
+
+  <!-- Output format pills -->
+  <g transform="translate(60, 364)">
+    <rect width="64" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="32" y="19" text-anchor="middle"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Hex</text>
+  </g>
+  <g transform="translate(136, 364)">
+    <rect width="78" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="39" y="19" text-anchor="middle"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Base64</text>
+  </g>
+  <g transform="translate(226, 364)">
+    <rect width="72" height="28" rx="14" fill="rgba(107,138,255,0.12)" stroke="rgba(107,138,255,0.28)" stroke-width="1"/>
+    <text x="36" y="19" text-anchor="middle"
+          font-family="'Geist Mono', monospace" font-size="12" fill="#6b8aff">Binary</text>
+  </g>
+
+  <!-- ── Divider ── -->
+  <line x1="60" y1="415" x2="420" y2="415" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+  <!-- ════════════════════════════════════════════
+       BADGE ROW
+       ════════════════════════════════════════════ -->
+
+  <!-- GitHub badge -->
+  <g transform="translate(60, 442)">
+    <rect width="158" height="50" rx="12" fill="#21262d" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <!-- GitHub mark (16×16, scaled ×1.2, translated to 14,15) -->
+    <g transform="translate(14, 15) scale(1.25)">
+      <path fill="#f0f6fc" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.53-.49-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02A9.56 9.56 0 0 1 8 4.84c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.593 1.028 2.686 0 3.841-2.337 4.687-4.565 4.935.359.309.679.919.679 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C13.7 14.53 16 11.54 16 8c0-4.42-3.58-8-8-8z"/>
+    </g>
+    <text x="40" y="21" font-family="'Geist', system-ui, sans-serif" font-size="10" fill="#8b949e">Source on</text>
+    <text x="40" y="36" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600" fill="#f0f6fc">GitHub</text>
+  </g>
+
+  <!-- App Store badge -->
+  <g transform="translate(230, 442)">
+    <rect width="148" height="50" rx="12" fill="#000000" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <!-- Apple logo (simplified path, ~16px tall) -->
+    <g transform="translate(13, 12)">
+      <path fill="white" d="M11.5 5.5c.1-1.1.7-2.1 1.6-2.7-.6-.9-1.6-1.4-2.6-1.4-1.1-.1-2.1.6-2.7.6-.6 0-1.5-.6-2.4-.6-1.3.02-2.5.8-3.1 2-1.4 2.4-.4 6 1 7.9.6.9 1.4 1.9 2.4 1.9.9-.04 1.3-.6 2.4-.6 1.1 0 1.4.6 2.4.58.97-.02 1.63-.9 2.28-1.82.4-.59.73-1.23.93-1.9-1.5-.6-2.45-2.14-2.43-3.9zM9.7 1.5C10.38.74 10.65-.1 10.6-1c-.88.05-1.73.5-2.32 1.23-.55.67-.89 1.57-.78 2.42.93.07 1.8-.4 2.2-1.15z"/>
+    </g>
+    <text x="38" y="21" font-family="'Geist', system-ui, sans-serif" font-size="10" fill="#a1a1a6">Download on the</text>
+    <text x="38" y="36" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600" fill="white">App Store</text>
+  </g>
+
+  <!-- Google Play badge -->
+  <g transform="translate(390, 442)">
+    <rect width="152" height="50" rx="12" fill="#000000" stroke="rgba(255,255,255,0.13)" stroke-width="1"/>
+    <!-- Google Play triangle (colorful) -->
+    <g transform="translate(14, 13)">
+      <path fill="#EA4335" d="M0 0.5l11 6.25L7.8 10z"/>
+      <path fill="#FBBC04" d="M11 6.75L0 13l7.8-3.25z"/>
+      <path fill="#34A853" d="M0 13V0.5l7.8 9.25z"/>
+      <path fill="#4285F4" d="M11 6.75L13.5 5.4c.6-.32.6-1.18 0-1.5L11 2.5 7.8 6.25z"/>
+    </g>
+    <text x="39" y="21" font-family="'Geist', system-ui, sans-serif" font-size="10" fill="#a1a1a6">Get it on</text>
+    <text x="39" y="36" font-family="'Geist', system-ui, sans-serif" font-size="15" font-weight="600" fill="white">Google Play</text>
+  </g>
+
+  <!-- ════════════════════════════════════════════
+       RIGHT: GLASS CARDS (back → front)
+       Card dims: 330 × 205, rx=20
+       ════════════════════════════════════════════ -->
+
+  <!-- Card 1 — MD2 (back) -->
+  <g transform="translate(524, 108) rotate(-7, 165, 102)">
+    <rect width="330" height="205" rx="20"
+          fill="url(#card-shine-1)" class="glass"
+          stroke="rgba(255,255,255,0.12)" stroke-width="1"
+          filter="url(#cs)"/>
+    <!-- Top accent bar -->
+    <rect x="0" y="0" width="330" height="3" rx="1.5" fill="url(#bar-grad)"/>
+    <!-- Header -->
+    <circle cx="28" cy="38" r="9" fill="rgba(67,97,238,0.55)"/>
+    <text x="46" y="44"
+          font-family="'Geist Mono', 'Courier New', monospace"
+          font-size="21" font-weight="600" fill="rgba(255,255,255,0.45)" letter-spacing="-0.3">MD2</text>
+    <text x="46" y="63"
+          font-family="'Geist Mono', monospace"
+          font-size="11" fill="rgba(107,138,255,0.42)">128-bit · RSA Data Security, 1989</text>
+    <!-- Skeleton content lines -->
+    <rect x="20" y="82" width="290" height="11" rx="5.5" fill="rgba(255,255,255,0.05)"/>
+    <rect x="20" y="102" width="240" height="11" rx="5.5" fill="rgba(255,255,255,0.04)"/>
+    <rect x="20" y="122" width="265" height="11" rx="5.5" fill="rgba(255,255,255,0.04)"/>
+    <!-- Hash preview -->
+    <text x="20" y="178"
+          font-family="'Geist Mono', monospace"
+          font-size="10.5" fill="rgba(107,138,255,0.28)">8350e5a3e24c153df2275c9f80692773</text>
+  </g>
+
+  <!-- Card 2 — MD4 (middle) -->
+  <g transform="translate(576, 178) rotate(-2, 165, 102)">
+    <rect width="330" height="205" rx="20"
+          fill="url(#card-shine-2)" class="glass"
+          stroke="rgba(255,255,255,0.17)" stroke-width="1"
+          filter="url(#cs)"/>
+    <rect x="0" y="0" width="330" height="3" rx="1.5" fill="url(#bar-grad)"/>
+    <circle cx="28" cy="38" r="9" fill="rgba(67,97,238,0.72)"/>
+    <text x="46" y="44"
+          font-family="'Geist Mono', monospace"
+          font-size="21" font-weight="600" fill="rgba(255,255,255,0.65)" letter-spacing="-0.3">MD4</text>
+    <text x="46" y="63"
+          font-family="'Geist Mono', monospace"
+          font-size="11" fill="rgba(107,138,255,0.55)">128-bit · Ron Rivest, 1990</text>
+    <rect x="20" y="82" width="290" height="11" rx="5.5" fill="rgba(255,255,255,0.07)"/>
+    <rect x="20" y="102" width="250" height="11" rx="5.5" fill="rgba(255,255,255,0.05)"/>
+    <rect x="20" y="122" width="270" height="11" rx="5.5" fill="rgba(255,255,255,0.05)"/>
+    <text x="20" y="178"
+          font-family="'Geist Mono', monospace"
+          font-size="10.5" fill="rgba(107,138,255,0.42)">31d6cfe0d16ae931b73c59d7e0c089c0</text>
+  </g>
+
+  <!-- Card 3 — MD5 (front) -->
+  <g transform="translate(632, 252) rotate(4, 165, 102)">
+    <rect width="330" height="205" rx="20"
+          fill="url(#card-shine-3)" class="glass"
+          stroke="rgba(255,255,255,0.24)" stroke-width="1.5"
+          filter="url(#cs)"/>
+    <rect x="0" y="0" width="330" height="3" rx="1.5" fill="#6b8aff"/>
+    <circle cx="28" cy="38" r="9" fill="#4361ee"/>
+    <text x="46" y="44"
+          font-family="'Geist Mono', monospace"
+          font-size="21" font-weight="600" fill="white" letter-spacing="-0.3">MD5</text>
+    <text x="46" y="63"
+          font-family="'Geist Mono', monospace"
+          font-size="11" fill="rgba(107,138,255,0.75)">128-bit · Ron Rivest, 1991</text>
+    <rect x="20" y="82" width="290" height="11" rx="5.5" fill="rgba(255,255,255,0.1)"/>
+    <rect x="20" y="102" width="255" height="11" rx="5.5" fill="rgba(255,255,255,0.07)"/>
+    <rect x="20" y="122" width="275" height="11" rx="5.5" fill="rgba(255,255,255,0.07)"/>
+    <!-- Hash result area -->
+    <rect x="20" y="156" width="290" height="30" rx="8" fill="rgba(67,97,238,0.12)" stroke="rgba(107,138,255,0.2)" stroke-width="1"/>
+    <text x="34" y="177"
+          font-family="'Geist Mono', monospace"
+          font-size="10.5" fill="rgba(107,138,255,0.85)">d41d8cd98f00b204e9800998ecf8427e</text>
+  </g>
+
+  <!-- ── URL watermark ── -->
+  <text x="1140" y="608"
+        font-family="'Geist Mono', monospace"
+        font-size="13" fill="rgba(255,255,255,0.22)" text-anchor="end">md5kit.com</text>
+</svg>

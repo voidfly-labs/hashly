@@ -1,0 +1,492 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc8"
+          aria-controls="faq-panel-crc8"
+          aria-selected="false"
+          data-tab="crc8"
+        >
+          CRC-8 <span class="info__tab-badge">×3</span>
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc16"
+          aria-controls="faq-panel-crc16"
+          aria-selected="false"
+          data-tab="crc16"
+        >
+          CRC-16 <span class="info__tab-badge">×7</span>
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc24"
+          aria-controls="faq-panel-crc24"
+          aria-selected="false"
+          data-tab="crc24"
+        >
+          CRC-24 <span class="info__tab-badge">×3</span>
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc32"
+          aria-controls="faq-panel-crc32"
+          aria-selected="false"
+          data-tab="crc32"
+        >
+          CRC-32 <span class="info__tab-badge">×5</span>
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc64"
+          aria-controls="faq-panel-crc64"
+          aria-selected="false"
+          data-tab="crc64"
+        >
+          CRC-64 <span class="info__tab-badge">×4</span>
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-crc82"
+          aria-controls="faq-panel-crc82"
+          aria-selected="false"
+          data-tab="crc82"
+        >
+          CRC-82
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a CRC checksum?</h3>
+      <p>
+        A Cyclic Redundancy Check (CRC) is an error-detection algorithm that maps an input of any size to a short,
+        fixed-length value called a checksum or digest. It is deterministic — the same input always produces the same
+        output — and highly sensitive to accidental bit errors, making it ideal for verifying data integrity in storage
+        and network transmission.
+      </p>
+
+      <h3>Are CRC checksums safe for cryptographic use?</h3>
+      <p>
+        No. CRC is an error-detection algorithm, not a cryptographic hash. It is not collision resistant and can be
+        deliberately forged by an attacker — finding a second input that produces a given CRC is computationally
+        trivial. For security-sensitive applications such as digital signatures or message authentication, use a
+        purpose-built cryptographic hash like
+        <a href="https://en.wikipedia.org/wiki/SHA-2" target="_blank" rel="noopener noreferrer">SHA-256</a>
+        or
+        <a href="https://en.wikipedia.org/wiki/BLAKE_(hash_function)" target="_blank" rel="noopener noreferrer"
+          >BLAKE2</a
+        >.
+      </p>
+
+      <h3>How does CRCKit protect my data?</h3>
+      <p>
+        All checksum computation runs entirely inside your browser using the
+        <a href="https://github.com/emn178/js-crc" target="_blank" rel="noopener noreferrer">js-crc</a>
+        library by emn178. No text, no file content, and no checksum output is ever transmitted to any server. You can
+        verify this by running the tool while offline — it works identically once the page has loaded.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw bytes as a shorter string often used in HTTP headers and data URIs. Binary
+        shows the individual bits, useful for educational purposes or low-level protocol work.
+      </p>
+    </div>
+
+    <!-- CRC-8 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc8" aria-labelledby="faq-tab-crc8">
+      <h3>What is CRC-8?</h3>
+      <p>
+        CRC-8 produces an 8-bit (1-byte) checksum, shown as a 2-character hex string. Its compact output makes it the
+        preferred choice for embedded systems, low-bandwidth sensors, and peripheral buses where even a single extra
+        byte of overhead matters. Several CRC-8 variants exist, each standardised for a specific protocol, differing in
+        polynomial, initial value, and whether input bits are reflected before processing.
+      </p>
+
+      <h3>What does CRC-8 detect?</h3>
+      <p>
+        An 8-bit CRC is guaranteed to detect all single and double-bit errors in messages up to 119 bits, all odd
+        numbers of bit errors, and all burst errors of length 8 or fewer. For typical short sensor payloads of a few
+        bytes this covers the overwhelming majority of realistic corruption scenarios. For longer messages or
+        adversarial environments, a wider CRC or a cryptographic MAC is more appropriate.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="CRC-8 variant comparison">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th>Polynomial</th>
+            <th>Init</th>
+            <th>Reflected</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-8 (1-Wire)</td>
+            <td data-label="Polynomial">0x31</td>
+            <td data-label="Init">0x00</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Dallas/Maxim 1-Wire bus, DS18B20, iButton</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-8 (DVB-S2)</td>
+            <td data-label="Polynomial">0xD5</td>
+            <td data-label="Init">0x00</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">DVB-S2 baseband frame header (ETSI EN 302 307)</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-8 (SMBus)</td>
+            <td data-label="Polynomial">0x07</td>
+            <td data-label="Init">0x00</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">SMBus PEC, ATM HEC, general purpose</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which CRC-8 variant should I use?</h3>
+      <p>
+        Follow your hardware or protocol specification. If you are working with a Dallas/Maxim 1-Wire device, CRC-8
+        (1-Wire) is mandatory — its reflected polynomial is baked into the silicon. If you are implementing a DVB-S2
+        receiver or modulator, CRC-8 (DVB-S2) is required by the standard. For SMBus or general-purpose use, CRC-8
+        (SMBus) (<code>0x07</code>) is the most broadly supported choice.
+      </p>
+    </div>
+
+    <!-- CRC-16 variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc16" aria-labelledby="faq-tab-crc16">
+      <h3>Why are there so many CRC-16 variants?</h3>
+      <p>
+        All CRC-16 variants produce a 16-bit (2-byte) checksum but differ in four parameters: the generator polynomial,
+        the initial register value, whether input and output bits are reflected, and a final XOR value. Each combination
+        was standardised by a different industry body for a specific protocol, which is why a single bit-width has
+        accumulated so many named forms over the decades.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="CRC-16 variant comparison">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th>Polynomial</th>
+            <th>Init</th>
+            <th>Reflected</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16</td>
+            <td data-label="Polynomial">0x8005</td>
+            <td data-label="Init">0x0000</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">USB, floppy disk, general purpose</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (CCITT)</td>
+            <td data-label="Polynomial">0x1021</td>
+            <td data-label="Init">0xFFFF</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">X.25, HDLC, Bluetooth</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (Modbus)</td>
+            <td data-label="Polynomial">0x8005</td>
+            <td data-label="Init">0xFFFF</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Modbus RTU serial framing</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (Kermit)</td>
+            <td data-label="Polynomial">0x1021</td>
+            <td data-label="Init">0x0000</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Kermit file-transfer protocol</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (XMODEM)</td>
+            <td data-label="Polynomial">0x1021</td>
+            <td data-label="Init">0x0000</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">XMODEM and YMODEM transfer protocols</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (USB)</td>
+            <td data-label="Polynomial">0x8005</td>
+            <td data-label="Init">0xFFFF</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">USB full-speed and low-speed data packets</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-16 (DNP)</td>
+            <td data-label="Polynomial">0x3D65</td>
+            <td data-label="Init">0x0000</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">DNP3 / SCADA / industrial automation (IEC 60870)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which CRC-16 variant should I use?</h3>
+      <p>
+        Follow your protocol specification exactly — mixing variants produces incompatible checksums even though they
+        share the same bit width. If you are choosing freely (e.g. for a custom framing layer), CRC-16 (Modbus) is a
+        solid default: its non-zero initial value catches leading-zero errors that the plain CRC-16 misses. Use CRC-16
+        (USB) when implementing USB device firmware, and CRC-16 (DNP) for any DNP3 or IEC 60870-compatible SCADA
+        integration.
+      </p>
+    </div>
+
+    <!-- CRC-24 variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc24" aria-labelledby="faq-tab-crc24">
+      <h3>What is CRC-24?</h3>
+      <p>
+        CRC-24 produces a 24-bit (3-byte) checksum, shown as a 6-character hex string. Its 24-bit width offers a
+        collision probability of roughly one in 16 million — a substantial improvement over 16-bit CRCs while remaining
+        smaller than CRC-32. Several incompatible CRC-24 variants exist, each standardised by a different body for a
+        specific protocol, differing in polynomial, initial value, input reflection, and final XOR.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="CRC-24 variant comparison">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th>Polynomial</th>
+            <th>Init</th>
+            <th>Reflected</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-24 (BLE)</td>
+            <td data-label="Polynomial">0x00065B</td>
+            <td data-label="Init">0x555555</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Bluetooth Low Energy link-layer packets</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-24 (Intlkn)</td>
+            <td data-label="Polynomial">0x328B63</td>
+            <td data-label="Init">0xFFFFFF</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">Interlaken high-speed chip-to-chip serial links</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-24 (OpenPGP)</td>
+            <td data-label="Polynomial">0x864CFB</td>
+            <td data-label="Init">0xB704CE</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">OpenPGP ASCII Armor checksum (RFC 4880)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which CRC-24 variant should I use?</h3>
+      <p>
+        Follow your protocol specification exactly — the three variants use entirely different polynomials and are
+        mutually incompatible. CRC-24 (BLE) is mandatory for Bluetooth Low Energy link-layer implementations; note that
+        the init value is fixed for advertising packets but negotiated per-connection on data channels. CRC-24 (Intlkn)
+        is required for Interlaken-compliant chip-to-chip serial hardware. CRC-24 (OpenPGP) is the correct choice for
+        any PGP or GPG ASCII Armor interoperability. If you are choosing freely and need a 24-bit checksum, CRC-24
+        (OpenPGP) is the most widely implemented variant in existing software libraries.
+      </p>
+    </div>
+
+    <!-- CRC-32 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc32" aria-labelledby="faq-tab-crc32">
+      <h3>What is CRC-32?</h3>
+      <p>
+        CRC-32 uses the polynomial <code>0x04C11DB7</code> in reflected form and produces a 32-bit (4-byte) checksum,
+        typically shown as an 8-character hex string. It was standardised in IEEE 802.3 (Ethernet) and is embedded in
+        Ethernet frames, ZIP archives, PNG images, and gzip streams. Its 32-bit width makes accidental collision
+        probability roughly one in four billion, which is sufficient for most integrity-checking workloads.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="CRC-32 variant comparison">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th>Polynomial</th>
+            <th>Init</th>
+            <th>Reflected</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-32</td>
+            <td data-label="Polynomial">0x04C11DB7</td>
+            <td data-label="Init">0xFFFFFFFF</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Ethernet, ZIP, PNG, gzip, zlib</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-32C</td>
+            <td data-label="Polynomial">0x1EDC6F41</td>
+            <td data-label="Init">0xFFFFFFFF</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">iSCSI, SCTP, Btrfs, ext4, ZFS, RocksDB, SSE4.2</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-32 (BZIP2)</td>
+            <td data-label="Polynomial">0x04C11DB7</td>
+            <td data-label="Init">0xFFFFFFFF</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">bzip2 compression, ATM AAL5, DECT-B</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-32 (JamCRC)</td>
+            <td data-label="Polynomial">0x04C11DB7</td>
+            <td data-label="Init">0xFFFFFFFF</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">JAM file format, network equipment</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-32 (MPEG-2)</td>
+            <td data-label="Polynomial">0x04C11DB7</td>
+            <td data-label="Init">0xFFFFFFFF</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">MPEG-2 transport streams, DVB</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which CRC-32 variant should I use?</h3>
+      <p>
+        CRC-32 is the right default for most new applications — it is universally supported and used in Ethernet, ZIP,
+        PNG, and gzip. If you are working on storage systems, databases, or any context where hardware acceleration
+        matters, prefer CRC-32C (Castagnoli): it uses a superior polynomial with better error-detection properties and
+        is directly accelerated by the
+        <code>crc32</code> SSE4.2 instruction on x86 and equivalent instructions on ARM. CRC-32 (MPEG-2) and CRC-32
+        (BZIP2) are non-reflected variants required by their respective standards — only use them when the spec mandates
+        it. CRC-32 (JamCRC) is a niche variant that omits the final XOR, making it useful for chaining partial
+        checksums; it is otherwise interchangeable with standard CRC-32 in terms of error detection.
+      </p>
+    </div>
+
+    <!-- CRC-64 variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc64" aria-labelledby="faq-tab-crc64">
+      <h3>What is CRC-64?</h3>
+      <p>
+        CRC-64 produces a 64-bit (8-byte) checksum, shown as a 16-character hex string. Its much wider output space —
+        roughly 18 quintillion possible values — makes accidental collisions vanishingly unlikely, so it is preferred
+        for large-scale storage systems, databases, and high-throughput data pipelines where even a one-in-four-billion
+        CRC-32 collision rate is unacceptable. Several incompatible CRC-64 variants exist because different standards
+        bodies chose different polynomials for different contexts.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="CRC-64 variant comparison">
+        <thead>
+          <tr>
+            <th>Variant</th>
+            <th>Polynomial</th>
+            <th>Reflected</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-64 (ECMA)</td>
+            <td data-label="Polynomial">0x42F0E1EBA9EA3693</td>
+            <td class="info-table__status--niche" data-label="Reflected">No</td>
+            <td data-label="Common use">ECMA-182 standard, DLT tape drives</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-64 (NVMe)</td>
+            <td data-label="Polynomial">0xAD93D23594C935A9</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">NVMe storage protocol, command integrity</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-64 (Redis)</td>
+            <td data-label="Polynomial">0xAD93D23594C935A9</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">Redis cluster slot hashing, key routing</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Variant">CRC-64 (XZ)</td>
+            <td data-label="Polynomial">0x42F0E1EBA9EA3693</td>
+            <td class="info-table__status--common" data-label="Reflected">Yes</td>
+            <td data-label="Common use">XZ compressed archive format</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which CRC-64 variant should I use?</h3>
+      <p>
+        Use the variant your protocol or storage system mandates — mixing them produces silently wrong checksums. CRC-64
+        (ECMA) and CRC-64 (XZ) both use the ECMA polynomial but differ in bit reflection: ECMA processes data without
+        reflection while XZ uses the reflected form, so they produce different outputs from the same input. CRC-64
+        (NVMe) and CRC-64 (Redis) share the Jones polynomial in reflected form; Redis sets its initial value and final
+        XOR to zero for hash-table consistency. Reach for CRC-64 in place of CRC-32 when protecting large datasets —
+        multi-gigabyte files, database tables, tape archives — where the one-in-four-billion collision probability of
+        CRC-32 becomes a real operational risk over millions of objects. For individual files or network framing, CRC-32
+        is almost always sufficient.
+      </p>
+    </div>
+
+    <!-- CRC-82 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-crc82" aria-labelledby="faq-tab-crc82">
+      <h3>What is CRC-82 (DARC)?</h3>
+      <p>
+        CRC-82 (DARC) uses an 82-bit polynomial defined in the DARC (Data Radio Channel) standard for broadcasting data
+        over FM subcarriers — the multiplex data layer embedded in FM radio signals. It produces an 82-bit (rounded to
+        11 bytes, shown as a 21-character hex string) checksum. The unusual bit width was chosen specifically to match
+        the frame structure of DARC data packets rather than any binary boundary, making it one of the few production
+        CRCs with a non-power-of-two output width.
+      </p>
+
+      <h3>What is DARC used for?</h3>
+      <p>
+        DARC is a Japanese standard for FM multiplex broadcasting, used to deliver text data such as traffic
+        information, news headlines, and programme guides over the 76 kHz subcarrier of FM radio. It is deployed in
+        Japan's VICS traffic information system and similar FM data services. The 82-bit CRC protects short data frames
+        where any undetected corruption could cause incorrect navigation instructions or garbled display text.
+      </p>
+
+      <h3>How does CRC-82 compare to other wide CRCs?</h3>
+      <p>
+        Its 82-bit width sits between the common 64-bit and 128-bit extremes, giving it a theoretical undetected-error
+        probability of about one in 4.8 sextillion — stronger than CRC-64 but achieved at the cost of a non-standard
+        output size that requires BigInt arithmetic in software implementations. Outside of DARC and its direct
+        derivatives, you are unlikely to encounter CRC-82 in practice; CRC-64 covers most use cases that outgrow CRC-32.
+      </p>
+    </div>
+  </div>
+</section>

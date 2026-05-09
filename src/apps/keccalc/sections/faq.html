@@ -1,0 +1,200 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-keccak256"
+          aria-controls="faq-panel-keccak256"
+          aria-selected="false"
+          data-tab="keccak256"
+        >
+          Keccak-256
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-variants"
+          aria-controls="faq-panel-variants"
+          aria-selected="false"
+          data-tab="variants"
+        >
+          Variants <span class="info__tab-badge">×3</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a cryptographic hash function?</h3>
+      <p>
+        A cryptographic hash function takes an input of any size and produces a fixed-length digest. Three properties
+        define it: determinism (same input always gives the same output), pre-image resistance (you cannot reverse the
+        hash to recover the input), and collision resistance (it is computationally infeasible to find two different
+        inputs that produce the same digest).
+      </p>
+
+      <h3>What is Keccak?</h3>
+      <p>
+        Keccak is a family of cryptographic hash functions designed by Guido Bertoni, Joan Daemen, Michaël Peeters, and
+        Gilles Van Assche. It won the NIST hash function competition in 2012 and became the basis for SHA-3. Unlike
+        earlier designs such as MD5 or SHA-1, Keccak uses a sponge construction built on the Keccak-f permutation — a
+        fundamentally different approach to hashing that avoids the Merkle–Damgård length-extension weakness. The four
+        standard variants are Keccak-224, Keccak-256, Keccak-384, and Keccak-512, named by their output size in bits.
+      </p>
+
+      <h3>Are Keccak hashes safe for passwords?</h3>
+      <p>
+        No. All Keccak variants are designed to be fast, which is ideal for integrity checking but harmful for password
+        storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a
+        purpose-built slow algorithm:
+        <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank" rel="noopener noreferrer">bcrypt</a>,
+        <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">scrypt</a>, or
+        <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer">Argon2</a>, all of
+        which incorporate salting and adjustable work factors.
+      </p>
+
+      <h3>How does Keccalc ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser using
+        <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        by Daninet. No text, no file content, and no hash output is ever transmitted to any server. You can verify this
+        by running the tool while offline — it works identically.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw digest bytes as a compact string using the standard Base64 alphabet — note
+        that the <code>+</code> and <code>/</code> characters are not URL-safe and require percent-encoding when
+        embedded in a URL; use hex instead if URL embedding is needed. Binary shows each byte's individual bits, useful
+        for educational and low-level inspection purposes.
+      </p>
+    </div>
+
+    <!-- Keccak-256 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-keccak256" aria-labelledby="faq-tab-keccak256">
+      <h3>What is Keccak-256?</h3>
+      <p>
+        Keccak-256 is the most widely deployed member of the Keccak family, producing a 256-bit (32-byte) digest
+        represented as a 64-character hex string. It is the hash function used natively by Ethereum and predates the
+        NIST standardisation of SHA-3 — importantly, Keccak-256 and SHA3-256 are not identical, differing in their
+        padding scheme. Keccak uses a simpler
+        <code>0x01</code> padding suffix while NIST SHA-3 uses <code>0x06</code>, producing different outputs for the
+        same input.
+      </p>
+
+      <h3>Where is Keccak-256 used?</h3>
+      <p>
+        Keccak-256 is the hash function at the core of Ethereum: it is used for address derivation (hashing a public key
+        to produce a 20-byte address), transaction signing, block header commitments, and Solidity's built-in
+        <code>keccak256()</code> opcode. Beyond Ethereum, it is also used in other EVM-compatible chains, the Tezos
+        smart contract platform, and various blockchain protocols that adopted the pre-standardisation Keccak variant
+        rather than the NIST SHA-3 finalisation.
+      </p>
+
+      <h3>Is Keccak-256 still secure?</h3>
+      <p>
+        Keccak-256 is considered secure against all known practical attacks. No collision has ever been demonstrated,
+        and no pre-image attack is known. Its sponge construction provides formal security bounds and has received
+        extensive cryptanalytic scrutiny since the SHA-3 competition began in 2007.
+      </p>
+
+      <h3>Can Keccak-256 be reversed or cracked?</h3>
+      <p>
+        Keccak-256 has no known mathematical inverse. Brute-forcing a 256-bit digest is computationally infeasible. For
+        short or common inputs, precomputed
+        <a href="https://en.wikipedia.org/wiki/Rainbow_table" target="_blank" rel="noopener noreferrer"
+          >rainbow tables</a
+        >
+        could theoretically recover the original value — salt your data if that is a concern.
+      </p>
+    </div>
+
+    <!-- Variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-variants" aria-labelledby="faq-tab-variants">
+      <h3>The Keccak family</h3>
+      <p>
+        The four Keccak variants share the same sponge construction and Keccak-f[1600] permutation, differing only in
+        the capacity and rate parameters that determine digest length and security level. All four are based on the
+        original pre-standardisation Keccak submission — not the NIST SHA-3 finalisation, which introduced a different
+        padding suffix. If SHA-3 compatibility is required, use a SHA-3 library rather than Keccak.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="Keccak variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Rate</th>
+            <th>Capacity</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">Keccak-224</td>
+            <td data-label="Digest">224 bit · 56 hex</td>
+            <td data-label="Rate">1152 bit</td>
+            <td data-label="Capacity">448 bit</td>
+            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
+            <td data-label="Common use">Constrained environments requiring a smaller digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">Keccak-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Rate">1088 bit</td>
+            <td data-label="Capacity">512 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Ethereum addresses, smart contracts, EVM chains</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">Keccak-384</td>
+            <td data-label="Digest">384 bit · 96 hex</td>
+            <td data-label="Rate">832 bit</td>
+            <td data-label="Capacity">768 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Higher-security contexts requiring a wider digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">Keccak-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Rate">576 bit</td>
+            <td data-label="Capacity">1024 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Maximum digest width, archival and high-security use</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which variant should I use?</h3>
+      <p>
+        Keccak-256 is the right default for almost all applications and the only choice for Ethereum compatibility.
+        Keccak-384 and Keccak-512 offer wider digests and higher capacity for security-sensitive contexts, at the cost
+        of slightly lower throughput. Keccak-224 should only be chosen in environments where a smaller digest size is a
+        strict requirement.
+      </p>
+    </div>
+  </div>
+</section>

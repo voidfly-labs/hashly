@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <%- include('/src/templates/layout/head.html') %>
+  <body>
+    <!-- Backdrop overlay for history popovers (UX focus effect) -->
+    <div class="history-backdrop" id="historyBackdrop" aria-hidden="true"></div>
+
+    <!-- Skip navigation for accessibility (also crawlable anchor text) -->
+    <a class="skip-link" href="#text"><%= skipLinkText %></a>
+
+    <%- include('/src/templates/layout/header.html') %>
+
+    <!-- ========== MAIN ========== -->
+    <main aria-label="<%= mainAriaLabel %>">
+      <!-- Page heading -->
+      <div class="page-heading">
+        <h1><%- pageH1Html %></h1>
+        <p class="page-heading__subtitle"><%= pageSubtitle %></p>
+        <div class="page-heading__algos" id="algoBadges" aria-label="Supported algorithms"></div>
+      </div>
+
+      <%- include('/src/templates/sections/text.html') %> <%- include('/src/templates/sections/file.html') %> <%-
+      include('/src/templates/sections/random.html') %>
+
+      <!-- ── ABOUT & FAQ ── -->
+      <%- include('/src/apps/sha3kit/sections/faq.html') %>
+    </main>
+
+    <%- include('/src/templates/layout/footer.html') %>
+
+    <!-- ── Structured Data ── -->
+    <script type="application/ld+json">
+      <%- include('/src/apps/sha3kit/schema/webapp.json') %>
+    </script>
+    <script type="application/ld+json">
+      <%- include('/src/apps/sha3kit/schema/faq.json') %>
+    </script>
+
+    <!-- ========== JAVASCRIPT ========== -->
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

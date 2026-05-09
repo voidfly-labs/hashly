@@ -1,0 +1,99 @@
+/* =========================================================================
+       RESULT BAR (hash output attached to input card)
+       ========================================================================= */
+.result {
+  border-top: 1px solid var(--border);
+  background: var(--accent-surface);
+  padding: 9px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--mono);
+}
+
+.result__hash {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--text);
+  word-break: break-all;
+  user-select: none;
+  letter-spacing: 0.45px;
+  cursor: pointer;
+  position: relative; /* anchor for inline .tooltip */
+}
+
+.result__hash--empty {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 13px;
+  letter-spacing: 0;
+  user-select: none;
+  cursor: default;
+}
+
+/* ── Computing / progress state ───────────────────────────────────────────
+       The hash cell doubles as a progress bar while file hashing is in progress.
+       A CSS custom property --progress (0–100) drives a two-stop linear-gradient
+       that fills left-to-right, turning the entire cell into a track.
+       The percentage text is rendered inside the cell — no extra pill element.
+    ──────────────────────────────────────────────────────────────────────── */
+.result__hash--computing {
+  background: linear-gradient(
+    to right,
+    var(--accent-glow) calc(var(--progress, 0) * 1%),
+    transparent calc(var(--progress, 0) * 1%)
+  );
+  border-radius: 3px;
+  color: var(--accent-dim);
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: default;
+  user-select: none;
+  transition: background 0.15s linear;
+  padding: 3px 6px;
+  line-height: 1.8;
+}
+
+.result__actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+/* ── Multi-algorithm stacked results ──────────────────────────────────────
+       Each algorithm gets its own .result row inside the card.
+       Odd rows (1st, 3rd…) use --accent-surface (the existing blue tint used
+       everywhere else as the "active" background).
+       Even rows use --result-alt-surface — a slightly lighter/dimmer shade of
+       the same hue — so the stripe is a gentle, same-family step rather than
+       the jarring jump to plain white. Both are intentionally close so the
+       card reads as a unified block, not a striped table. */
+.result:nth-child(odd) {
+  background: var(--accent-surface);
+}
+
+.result:nth-child(even) {
+  background: var(--result-alt-surface);
+}
+
+.result + .result {
+  border-top: 1px solid var(--border);
+}
+
+/* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
+
+@media (max-width: 600px) {
+  /* Result bar: buttons wrap onto their own row */
+  .result {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .result__actions {
+    flex-basis: 100%;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+}

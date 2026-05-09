@@ -1,0 +1,202 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-sha3256"
+          aria-controls="faq-panel-sha3256"
+          aria-selected="false"
+          data-tab="sha3256"
+        >
+          SHA3-256
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-variants"
+          aria-controls="faq-panel-variants"
+          aria-selected="false"
+          data-tab="variants"
+        >
+          Variants <span class="info__tab-badge">×3</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a cryptographic hash function?</h3>
+      <p>
+        A cryptographic hash function takes an input of any size and produces a fixed-length digest. Three properties
+        define it: determinism (same input always gives the same output), pre-image resistance (you cannot reverse the
+        hash to recover the input), and collision resistance (it is computationally infeasible to find two different
+        inputs that produce the same digest).
+      </p>
+
+      <h3>What is SHA-3?</h3>
+      <p>
+        SHA-3 (Secure Hash Algorithm 3) is a family of cryptographic hash functions standardised by NIST in 2015 under
+        FIPS 202. It is based on Keccak, which won the NIST hash function competition in 2012. Unlike earlier designs
+        such as MD5 or SHA-1, SHA-3 uses a sponge construction built on the Keccak-f[1600] permutation — a fundamentally
+        different approach that avoids the Merkle–Damgård length-extension weakness present in SHA-2. The four standard
+        variants are SHA3-224, SHA3-256, SHA3-384, and SHA3-512, named by their output size in bits.
+      </p>
+
+      <h3>Are SHA-3 hashes safe for passwords?</h3>
+      <p>
+        No. All SHA-3 variants are designed to be fast, which is ideal for integrity checking but harmful for password
+        storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a
+        purpose-built slow algorithm:
+        <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank" rel="noopener noreferrer">bcrypt</a>,
+        <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">scrypt</a>, or
+        <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer">Argon2</a>, all of
+        which incorporate salting and adjustable work factors.
+      </p>
+
+      <h3>How does SHA3Kit ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser using
+        <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        by Daninet. No text, no file content, and no hash output is ever transmitted to any server. You can verify this
+        by running the tool while offline — it works identically.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw digest bytes as a compact string using the standard Base64 alphabet — note
+        that the <code>+</code> and <code>/</code> characters are not URL-safe and require percent-encoding when
+        embedded in a URL; use hex instead if URL embedding is needed. Binary shows each byte's individual bits, useful
+        for educational and low-level inspection purposes.
+      </p>
+    </div>
+
+    <!-- SHA3-256 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-sha3256" aria-labelledby="faq-tab-sha3256">
+      <h3>What is SHA3-256?</h3>
+      <p>
+        SHA3-256 is the most widely used member of the SHA-3 family, producing a 256-bit (32-byte) digest represented as
+        a 64-character hex string. It was standardised by NIST in 2015 as part of FIPS 202. Importantly, SHA3-256 and
+        Ethereum's Keccak-256 are not the same — they differ in their padding scheme. NIST SHA-3 uses a
+        <code>0x06</code> padding suffix, while the original pre-standardisation Keccak used <code>0x01</code>,
+        producing different outputs for the same input.
+      </p>
+
+      <h3>Where is SHA3-256 used?</h3>
+      <p>
+        SHA3-256 is used for data integrity verification, digital signatures, certificate fingerprinting, and as a
+        modern drop-in alternative to SHA-256 where resistance to length-extension attacks matters. It appears in TLS
+        certificate transparency logs, software package verification pipelines, and various security protocols that have
+        adopted NIST-standardised SHA-3. It is also the recommended choice when migrating away from SHA-2 in new system
+        designs.
+      </p>
+
+      <h3>Is SHA3-256 secure?</h3>
+      <p>
+        SHA3-256 is considered secure against all known practical attacks. No collision has ever been demonstrated, and
+        no pre-image attack is known. Its sponge construction is inherently immune to length-extension attacks — a class
+        of weakness that affects SHA-2 — and provides formal security bounds backed by extensive cryptanalytic scrutiny
+        since the SHA-3 competition began in 2007.
+      </p>
+
+      <h3>Can SHA3-256 be reversed or cracked?</h3>
+      <p>
+        SHA3-256 has no known mathematical inverse. Brute-forcing a 256-bit digest is computationally infeasible. For
+        short or common inputs, precomputed
+        <a href="https://en.wikipedia.org/wiki/Rainbow_table" target="_blank" rel="noopener noreferrer"
+          >rainbow tables</a
+        >
+        could theoretically recover the original value — salt your data if that is a concern.
+      </p>
+    </div>
+
+    <!-- Variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-variants" aria-labelledby="faq-tab-variants">
+      <h3>The SHA-3 family</h3>
+      <p>
+        The four SHA-3 variants share the same sponge construction and Keccak-f[1600] permutation, differing only in the
+        capacity and rate parameters that determine digest length and security level. All four are NIST-standardised
+        under FIPS 202 and use the
+        <code>0x06</code> padding suffix — distinct from the pre-standardisation Keccak variants used by Ethereum and
+        other blockchain protocols. If Ethereum or EVM compatibility is required, use a Keccak library rather than
+        SHA-3.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="SHA-3 variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Rate</th>
+            <th>Capacity</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-224</td>
+            <td data-label="Digest">224 bit · 56 hex</td>
+            <td data-label="Rate">1152 bit</td>
+            <td data-label="Capacity">448 bit</td>
+            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
+            <td data-label="Common use">Constrained environments requiring a smaller digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Rate">1088 bit</td>
+            <td data-label="Capacity">512 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">General-purpose hashing, integrity checks, digital signatures</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-384</td>
+            <td data-label="Digest">384 bit · 96 hex</td>
+            <td data-label="Rate">832 bit</td>
+            <td data-label="Capacity">768 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Higher-security contexts requiring a wider digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Rate">576 bit</td>
+            <td data-label="Capacity">1024 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Maximum digest width, archival and high-security use</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which variant should I use?</h3>
+      <p>
+        SHA3-256 is the right default for almost all applications — it offers a strong security level, wide tooling
+        support, and is the most recognisable member of the family. SHA3-384 and SHA3-512 provide wider digests and
+        higher capacity for security-sensitive contexts, at the cost of slightly lower throughput. SHA3-224 should only
+        be chosen in environments where a smaller digest size is a strict requirement.
+      </p>
+    </div>
+  </div>
+</section>

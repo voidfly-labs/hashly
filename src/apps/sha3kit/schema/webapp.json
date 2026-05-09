@@ -1,0 +1,17 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "SHA3Kit",
+  "url": "https://www.sha3kit.com/",
+  "description": "Browser-based SHA3 hash calculator supporting SHA3-224, SHA3-256, SHA3-384, and SHA3-512. All computation is local — no data is transmitted.",
+  "headline": "SHA3-256 Hash Calculator",
+  "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Organization",
+    "name": "SHA3Kit",
+    "url": "https://www.sha3kit.com/"
+  }
+}

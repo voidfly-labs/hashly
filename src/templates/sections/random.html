@@ -1,0 +1,41 @@
+<!-- ── RANDOM ── -->
+<section class="section" id="random" aria-labelledby="section-random-heading">
+  <h2 class="section__label" id="section-random-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-dice"></use>
+    </svg>
+    Random <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>s
+  </h2>
+
+  <div class="random__controls">
+    <button class="btn btn--primary" id="randomRegenerate">
+      <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-refresh"></use></svg>
+      Regenerate
+    </button>
+    <!-- Options populated by RandomSection.init() from ALGORITHMS -->
+    <select
+      class="random__select"
+      id="randomAlgo"
+      aria-label="Algorithm for random <%= sectionNoun %> generation"
+    ></select>
+    <select class="random__select" id="randomCount" aria-label="Number of <%= sectionNoun %>s to generate">
+      <option value="10" selected>10</option>
+      <option value="25">25</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+      <option value="200">200</option>
+      <option value="500">500</option>
+    </select>
+    <div class="random__controls-sep" aria-hidden="true"></div>
+    <button class="btn" id="randomCopyAll" aria-label="Copy all hashes to clipboard">
+      <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
+      Copy All<span class="tooltip">Copied!</span>
+    </button>
+    <button class="btn" id="randomDownloadAll">
+      <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
+      Download CSV<span class="tooltip">Exported</span>
+    </button>
+  </div>
+
+  <div class="random__list" id="randomList"></div>
+</section>

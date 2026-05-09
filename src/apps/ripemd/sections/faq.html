@@ -1,0 +1,204 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-ripemd160"
+          aria-controls="faq-panel-ripemd160"
+          aria-selected="false"
+          data-tab="ripemd160"
+        >
+          RIPEMD-160
+        </button>
+        <button
+          class="info__tab"
+          role="tab"
+          id="faq-tab-variants"
+          aria-controls="faq-panel-variants"
+          aria-selected="false"
+          data-tab="variants"
+        >
+          Variants <span class="info__tab-badge">×3</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a cryptographic hash function?</h3>
+      <p>
+        A cryptographic hash function takes an input of any size and produces a fixed-length digest. Three properties
+        define it: determinism (same input always gives the same output), pre-image resistance (you cannot reverse the
+        hash to recover the input), and collision resistance (it is computationally infeasible to find two different
+        inputs that produce the same digest).
+      </p>
+
+      <h3>What is RIPEMD?</h3>
+      <p>
+        RIPEMD (RACE Integrity Primitives Evaluation Message Digest) is a family of cryptographic hash functions
+        developed in the mid-1990s by Hans Dobbertin, Antoon Bosselaers, and Bart Preneel at KU Leuven, as part of the
+        EU-funded RACE project. The original 1992 RIPEMD had weaknesses similar to MD4; the strengthened variants —
+        RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320 — were published in 1996 and are the current standard. Unlike
+        the NIST SHA family, RIPEMD was designed independently in Europe and has never been subject to NIST deprecation
+        timelines.
+      </p>
+
+      <h3>Are RIPEMD hashes safe for passwords?</h3>
+      <p>
+        No. All RIPEMD variants are designed to be fast, which is ideal for integrity checking but harmful for password
+        storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a
+        purpose-built slow algorithm:
+        <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank" rel="noopener noreferrer">bcrypt</a>,
+        <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">scrypt</a>, or
+        <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer">Argon2</a>, all of
+        which incorporate salting and adjustable work factors.
+      </p>
+
+      <h3>How does RIPEMD.com ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser using
+        <a href="https://github.com/nf404/crypto-api" target="_blank" rel="noopener noreferrer">crypto-api</a>
+        by nf404 — a pure-JavaScript library that computes RIPEMD digests locally without any network calls. No text, no
+        file content, and no hash output is ever transmitted to any server. You can verify this by running the tool
+        while offline — it works identically.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw digest bytes as a compact string using the standard Base64 alphabet — note
+        that the <code>+</code> and <code>/</code> characters are not URL-safe and require percent-encoding when
+        embedded in a URL; use hex instead if URL embedding is needed. Binary shows each byte's individual bits, useful
+        for educational and low-level inspection purposes.
+      </p>
+    </div>
+
+    <!-- RIPEMD-160 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-ripemd160" aria-labelledby="faq-tab-ripemd160">
+      <h3>What is RIPEMD-160?</h3>
+      <p>
+        RIPEMD-160 is the most widely deployed member of the RIPEMD family, producing a 160-bit (20-byte) digest
+        typically represented as a 40-character hex string. Published in 1996, it uses a dual parallel pipeline design
+        on a Merkle–Damgård construction — two independent computation paths are run simultaneously and merged at each
+        compression step, a structure that significantly hardens it against the differential attacks that broke earlier
+        single-pipeline designs like MD4 and the original RIPEMD.
+      </p>
+
+      <h3>Where is RIPEMD-160 used?</h3>
+      <p>
+        RIPEMD-160 sees its most prominent use in cryptocurrency infrastructure. Bitcoin address generation applies
+        RIPEMD-160 to a SHA-256 digest of the public key — the combined HASH160 operation produces the 20-byte payload
+        embedded in a Pay-to-Public-Key-Hash (P2PKH) address. OpenPGP (RFC 4880) uses RIPEMD-160 as one of its supported
+        hash algorithms for key fingerprints and message signatures. It is also available in TLS cipher suites and X.509
+        certificate processing, though SHA-256 is preferred in most modern deployments.
+      </p>
+
+      <h3>Is RIPEMD-160 still secure?</h3>
+      <p>
+        RIPEMD-160 is considered secure against all known practical attacks. No collision has ever been demonstrated
+        against the full 160-bit variant, and no pre-image attack is known. It has seen less cryptanalytic scrutiny than
+        SHA-256, which is a reason to prefer SHA-256 for new general-purpose systems. However, for applications already
+        built on RIPEMD-160 — particularly Bitcoin and OpenPGP — migration is unnecessary on security grounds alone.
+      </p>
+
+      <h3>Can RIPEMD-160 be reversed or cracked?</h3>
+      <p>
+        RIPEMD-160 has no known mathematical inverse. Brute-forcing a 160-bit digest is computationally infeasible. For
+        short or common inputs, precomputed
+        <a href="https://en.wikipedia.org/wiki/Rainbow_table" target="_blank" rel="noopener noreferrer"
+          >rainbow tables</a
+        >
+        could theoretically recover the original value — salt your data if that is a concern.
+      </p>
+    </div>
+
+    <!-- Variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-variants" aria-labelledby="faq-tab-variants">
+      <h3>The RIPEMD family</h3>
+      <p>
+        The 1996 RIPEMD family contains four strengthened variants sharing the same dual-pipeline Merkle–Damgård
+        construction. RIPEMD-128 and RIPEMD-160 are the primary designs — both use completely independent pipelines.
+        RIPEMD-256 and RIPEMD-320 are extended-output variants that do not increase security beyond their 128 and
+        160-bit counterparts; they simply concatenate the two pipeline outputs to produce a wider digest for
+        applications where digest length matters.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="RIPEMD variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Block size</th>
+            <th>Rounds</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">RIPEMD-128</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Block size">512 bit</td>
+            <td data-label="Rounds">4×16</td>
+            <td class="info-table__status--legacy" data-label="Status">Use with care</td>
+            <td data-label="Common use">Drop-in MD5 replacement, constrained environments</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">RIPEMD-160</td>
+            <td data-label="Digest">160 bit · 40 hex</td>
+            <td data-label="Block size">512 bit</td>
+            <td data-label="Rounds">5×16</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Bitcoin addresses, OpenPGP key fingerprints</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">RIPEMD-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Block size">512 bit</td>
+            <td data-label="Rounds">4×16</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Wider digest without SHA-2, same security as RIPEMD-128</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">RIPEMD-320</td>
+            <td data-label="Digest">320 bit · 80 hex</td>
+            <td data-label="Block size">512 bit</td>
+            <td data-label="Rounds">5×16</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Wider digest without SHA-2, same security as RIPEMD-160</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which variant should I use?</h3>
+      <p>
+        RIPEMD-160 is the right default for almost all applications. It is the most studied, most widely deployed, and
+        has the best library and tooling support of the four. RIPEMD-320 offers no security advantage over RIPEMD-160 —
+        it only provides a wider output — but may be useful when a longer digest is a protocol requirement. Similarly,
+        RIPEMD-256 extends RIPEMD-128 without strengthening it. RIPEMD-128 should only be chosen in environments where a
+        128-bit digest is strictly required and MD5 is undesirable.
+      </p>
+    </div>
+  </div>
+</section>
