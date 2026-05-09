@@ -1,18 +1,12 @@
-let _STORAGE_KEY;
-
 export const Theme = {
-  init(APP_CONFIG) {
-    _STORAGE_KEY = APP_CONFIG.appName + '-theme';
-    const saved = localStorage.getItem(_STORAGE_KEY);
-    const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-
-    document.documentElement.setAttribute('data-theme', theme);
+  init() {
+    const meta = document.querySelector('meta[name="theme-storage-key"]');
+    const key = meta ? meta.getAttribute('content') : 'hashly-theme';
 
     document.getElementById('themeToggle').addEventListener('click', () => {
-      const current = document.documentElement.dataset.theme;
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem(_STORAGE_KEY, next);
+      const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      localStorage.setItem(key, next);
     });
   },
 };

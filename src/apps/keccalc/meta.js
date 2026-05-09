@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'Keccak-256 hash calculator',
   pageH1Html: '<span>Keccak-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
-  footerBrandUrl: 'https://www.keccalc.com',
-  footerColHeading: 'Keccalc',
   sectionNoun: 'hash',
   legal: {
     domain: 'keccalc.com',

@@ -54,6 +54,6 @@ export const FaqSection = {
         inline: 'nearest',
       });
     }
-    if (panel) panel.setAttribute('data-active', '');
+    if (panel) panel.dataset.active = '';
   },
 };

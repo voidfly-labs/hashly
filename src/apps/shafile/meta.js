@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'SHA-256 hash calculator',
   pageH1Html: '<span>SHA-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
-  footerBrandUrl: 'https://www.shafile.com',
-  footerColHeading: 'SHAFile',
   sectionNoun: 'hash',
   legal: {
     domain: 'shafile.com',

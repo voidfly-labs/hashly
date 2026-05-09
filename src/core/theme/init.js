@@ -11,12 +11,12 @@
     var h = new Date().getHours();
     theme = h >= 6 && h < 21 ? 'light' : 'dark';
   }
-  document.documentElement.setAttribute('data-theme', theme);
+  document.documentElement.dataset.theme = theme;
   // Live-sync with OS when no manual preference is stored.
   if (!saved && window.matchMedia) {
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
       if (!localStorage.getItem(STORAGE_KEY)) {
-        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
       }
     });
   }

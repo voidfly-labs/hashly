@@ -34,6 +34,7 @@
   color: inherit;
   border-radius: var(--radius-sm);
   margin-bottom: 10px;
+  padding-right: 5px;
 }
 
 .footer__brand-logo {

@@ -1,5 +1,5 @@
 import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/bootstrap.js';
+import { initApp } from '@core/init/app.js';
 import CryptoApi from 'crypto-api/src/crypto-api.mjs';
 
 const APP_CONFIG = {

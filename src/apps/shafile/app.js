@@ -11,7 +11,7 @@ import {
   createSHA512,
 } from 'hash-wasm';
 import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/bootstrap.js';
+import { initApp } from '@core/init/app.js';
 
 const APP_CONFIG = {
   appName: 'shafile',

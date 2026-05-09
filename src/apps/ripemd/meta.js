@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'RIPEMD-160 hash calculator',
   pageH1Html: '<span>RIPEMD-160</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
-  footerBrandUrl: 'https://www.ripemd.com',
-  footerColHeading: 'RIPEMD',
   sectionNoun: 'hash',
   legal: {
     domain: 'ripemd.com',

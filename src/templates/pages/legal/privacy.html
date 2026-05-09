@@ -3,10 +3,11 @@
   <%- include('/src/templates/layout/head.html', { title: legal.privacy.title, description: legal.privacy.description,
   canonicalUrl: legal.privacy.canonicalUrl, appCssHref: false }) %>
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
     <%- include('/src/templates/layout/legal/header.html') %>
 
     <!-- ========== MAIN ========== -->
-    <main aria-label="Privacy Policy">
+    <main id="main" aria-label="Privacy Policy">
       <div class="page-heading">
         <h1><span>Privacy</span> Policy</h1>
         <p class="page-heading__subtitle">
@@ -73,8 +74,6 @@
     <%- include('/src/templates/layout/legal/footer.html') %>
 
     <!-- ========== JAVASCRIPT ========== -->
-    <script>
-      document.getElementById('footerYear').textContent = new Date().getFullYear();
-    </script>
+    <script type="module" src="/src/core/init/legal.js"></script>
   </body>
 </html>

@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'MD5 hash calculator',
   pageH1Html: '<span>MD5</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
-  footerBrandUrl: 'https://www.md5kit.com',
-  footerColHeading: 'MD5Kit',
   sectionNoun: 'hash',
   legal: {
     domain: 'md5kit.com',

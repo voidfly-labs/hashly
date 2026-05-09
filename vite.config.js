@@ -3,6 +3,7 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import { resolve } from 'node:path';
 import { APPS_META, LEGAL_UPDATED_ON, getLegalUpdatedLabel } from './scripts/apps-meta.js';
 import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
+import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
 
 const VALID_APPS = Object.keys(APPS_META);
 const app = process.env.APP;
@@ -45,6 +46,11 @@ export default defineConfig({
     open: `/src/apps/${app}/`,
   },
   plugins: [
+    devRewrites({
+      '/': `/src/apps/${app}/index.html`,
+      '/privacy': '/src/templates/pages/legal/privacy.html',
+      '/terms': '/src/templates/pages/legal/terms.html',
+    }),
     createHtmlPlugin({
       pages: [
         {

@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'CRC-32 checksum calculator',
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',
   pageSubtitle: '// instant checksums — no data leaves your browser',
-  footerBrandUrl: 'https://www.crckit.com',
-  footerColHeading: 'CRCKit',
   sectionNoun: 'checksum',
   legal: {
     domain: 'crckit.com',

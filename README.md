@@ -36,22 +36,22 @@ Node.js 18 or later.
 npm install
 ```
 
-Start a dev server for any app:
+### Run the dev server
 
 ```bash
 APP=shafile npm run dev   # → http://localhost:5173/src/apps/shafile/
 APP=crckit npm run dev
-# ... etc.
+# ...
 ```
 
-Build:
+### Build packages
 
 ```bash
-APP=shafile npm run build # → dist/shafile/
-npm run build:all         # build all six apps → dist/
+APP=shafile npm run build   # → dist/shafile/
+npm run build:all           # build all six apps → dist/
 ```
 
-Lint and format:
+### Lint and format
 
 ```bash
 npm run lint

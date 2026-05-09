@@ -13,8 +13,6 @@ export default {
   mainAriaLabel: 'SHA3-256 hash calculator',
   pageH1Html: '<span>SHA3-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
-  footerBrandUrl: 'https://www.sha3kit.com',
-  footerColHeading: 'SHA3Kit',
   sectionNoun: 'hash',
   legal: {
     domain: 'sha3kit.com',
