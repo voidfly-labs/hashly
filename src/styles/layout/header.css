@@ -82,6 +82,7 @@
   text-decoration: none;
   padding: 6px 16px;
   border-radius: var(--radius-sm);
+  white-space: nowrap;
   transition:
     color 0.2s,
     background 0.2s;
@@ -138,6 +139,12 @@
 }
 [data-theme='light'] .theme-toggle__moon {
   display: block;
+}
+
+@media (max-width: 670px) {
+  .header--legal .header__nav {
+    display: none;
+  }
 }
 
 @media (max-width: 600px) {
