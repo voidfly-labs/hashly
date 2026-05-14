@@ -42,10 +42,13 @@ export const FaqSection = {
   },
 
   activate(tabId) {
-    this._tabs.forEach((t) => t.setAttribute('aria-selected', 'false'));
-    this._panels.forEach((p) => p.removeAttribute('data-active'));
-    const tab = this._tabs.find((t) => t.dataset.tab === tabId);
     const panel = document.getElementById(`faq-panel-${tabId}`);
+    const tab = this._tabs.find((t) => t.dataset.tab === tabId);
+    if (panel) panel.dataset.active = '';
+    this._panels.forEach((p) => {
+      if (p !== panel) p.removeAttribute('data-active');
+    });
+    this._tabs.forEach((t) => t.setAttribute('aria-selected', 'false'));
     if (tab) {
       tab.setAttribute('aria-selected', 'true');
       tab.scrollIntoView({
@@ -54,6 +57,5 @@ export const FaqSection = {
         inline: 'nearest',
       });
     }
-    if (panel) panel.dataset.active = '';
   },
 };

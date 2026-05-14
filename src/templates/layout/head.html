@@ -9,7 +9,9 @@
   <!-- ── Anti-FOUC theme init — script runs synchronously before CSS; storage
        key is read from the meta tag below so the script is shared across apps. ── -->
   <meta name="theme-storage-key" content="<%= themeStorageKey %>" />
-  <script src="/src/core/theme/init.js"></script>
+  <script>
+    <%- include('/src/core/theme/init.js') %>
+  </script>
 
   <!-- ── Favicons ── -->
   <link rel="icon" type="image/svg+xml" href="/src/assets/images/favicons/favicon.svg" />
