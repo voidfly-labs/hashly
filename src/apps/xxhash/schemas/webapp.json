@@ -1,0 +1,17 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "xxHash.dev",
+  "url": "https://www.xxhash.dev/",
+  "description": "Browser-based xxHash calculator supporting xxHash32, xxHash64, xxHash3, and xxHash128. All computation is local — no data is transmitted.",
+  "headline": "xxHash64 Hash Calculator",
+  "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Organization",
+    "name": "xxHash.dev",
+    "url": "https://www.xxhash.dev/"
+  }
+}

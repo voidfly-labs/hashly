@@ -1,0 +1,217 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-xxhash64"
+          aria-controls="faq-panel-xxhash64"
+          aria-selected="false"
+          data-tab="xxhash64"
+        >
+          xxHash64
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-variants"
+          aria-controls="faq-panel-variants"
+          aria-selected="false"
+          data-tab="variants"
+        >
+          Variants <span class="info__tab-badge">×4</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is xxHash?</h3>
+      <p>
+        xxHash is a family of extremely fast non-cryptographic hash functions created by
+        <a href="https://github.com/Cyan4973" target="_blank" rel="noopener noreferrer">Yann Collet</a> — also the
+        author of the
+        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
+        compression algorithm. It is designed to hash data at near-memory-bandwidth speeds, making it suitable for hash
+        tables, data deduplication, cache keying, and non-adversarial file integrity checks. All four variants —
+        xxHash32, xxHash64, xxHash3, and xxHash128 — are deterministic and produce consistent checksums across
+        platforms.
+      </p>
+
+      <h3>Is xxHash cryptographically secure?</h3>
+      <p>
+        No. xxHash is explicitly <em>not</em> a cryptographic hash function. It provides no pre-image resistance and no
+        collision resistance against adversarial inputs — an attacker with knowledge of the algorithm can craft inputs
+        that produce any desired output. For any use case where data integrity must hold against a malicious party
+        (digital signatures, MACs, certificate fingerprints, content-addressable storage exposed to untrusted input),
+        use a cryptographic hash function such as
+        <a href="https://shafile.com" target="_blank" rel="noopener noreferrer">SHA-256</a>
+        or
+        <a href="https://blake3.io" target="_blank" rel="noopener noreferrer">BLAKE3</a>. For passwords specifically,
+        use bcrypt, scrypt, or Argon2.
+      </p>
+
+      <h3>What is xxHash actually used for?</h3>
+      <p>
+        xxHash is widely used in databases, build systems, data pipelines, and compression tools where throughput
+        matters and inputs come from trusted sources. Notable adopters include
+        <a href="https://rocksdb.org" target="_blank" rel="noopener noreferrer">RocksDB</a>,
+        <a href="https://clickhouse.com" target="_blank" rel="noopener noreferrer">ClickHouse</a>,
+        <a href="https://duckdb.org" target="_blank" rel="noopener noreferrer">DuckDB</a>,
+        <a href="https://buck2.build" target="_blank" rel="noopener noreferrer">Buck2</a>, and
+        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>. It also
+        appears in file sync tools, content-addressed caches, and embedded systems where the cost of a cryptographic
+        hash is too high.
+      </p>
+
+      <h3>How does xxHash.dev ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser using
+        <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        by Daninet — a WebAssembly library that computes xxHash digests locally without any network calls. No text, no
+        file content, and no hash output is ever transmitted to any server. You can verify this by running the tool
+        while offline — it works identically.
+      </p>
+    </div>
+
+    <!-- xxHash64 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-xxhash64" aria-labelledby="faq-tab-xxhash64">
+      <h3>What is xxHash64?</h3>
+      <p>
+        xxHash64 is the original 64-bit member of the xxHash family, released alongside xxHash32 in 2012. It produces a
+        64-bit (8-byte) digest represented as a 16-character hex string. Designed for 64-bit platforms, xxHash64
+        processes data in 32-byte blocks and achieves throughput that approaches main-memory bandwidth on modern
+        hardware — typically several times faster than CRC32 and orders of magnitude faster than any cryptographic hash.
+      </p>
+
+      <h3>Where is xxHash64 used?</h3>
+      <p>
+        xxHash64 is the most widely deployed xxHash variant in production systems. It is used internally by
+        <a href="https://rocksdb.org" target="_blank" rel="noopener noreferrer">RocksDB</a>
+        for SST file checksums,
+        <a href="https://clickhouse.com" target="_blank" rel="noopener noreferrer">ClickHouse</a>
+        and
+        <a href="https://duckdb.org" target="_blank" rel="noopener noreferrer">DuckDB</a>
+        for data block integrity,
+        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
+        for frame checksums, and
+        <a href="https://buck2.build" target="_blank" rel="noopener noreferrer">Buck2</a>
+        for action cache keying. Its combination of speed, 64-bit collision resistance, and long track record makes it
+        the practical default for non-cryptographic checksumming.
+      </p>
+
+      <h3>xxHash64 vs xxHash3 — which should I use?</h3>
+      <p>
+        Both produce 64-bit digests, but they differ in architecture and performance profile. xxHash3 (released 2019) is
+        optimised for SIMD instruction sets (AVX2, SSE2, NEON) and outperforms xxHash64 on most modern CPUs,
+        particularly for small inputs under 128 bytes. xxHash64 performs better on older hardware without SIMD support
+        and has a longer deployment history with broader library support. For new projects where xxHash3 is available,
+        xxHash3 is generally the better choice. For compatibility with existing systems already using xxHash64, there is
+        no practical reason to migrate — the speed difference is rarely the bottleneck.
+      </p>
+
+      <h3>Can xxHash64 collide?</h3>
+      <p>
+        Like any 64-bit hash, xxHash64 has a birthday-bound collision probability: for a uniformly random set of inputs,
+        you can expect the first collision after roughly 2<sup>32</sup> (about 4 billion) distinct values. This is
+        acceptable for most in-process hash tables and checksums. If collision probability at that scale is a concern —
+        for example in a long-lived persistent store with billions of distinct keys — consider using xxHash128, which
+        raises the birthday bound to approximately 2<sup>64</sup> distinct values.
+      </p>
+    </div>
+
+    <!-- Variants panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-variants" aria-labelledby="faq-tab-variants">
+      <h3>The xxHash family</h3>
+      <p>
+        xxHash has two generations. The first generation (2012) comprises xxHash32 and xxHash64 — portable, branch-heavy
+        algorithms that run well on all hardware. The second generation (2019) comprises xxHash3 and xxHash128, both
+        built on the same SIMD-friendly core and capable of exploiting AVX2, SSE2, or NEON instructions when available.
+        All four variants are non-cryptographic and deterministic. None should be used where collision resistance
+        against adversarial inputs is required.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="xxHash variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Generation</th>
+            <th>SIMD</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">xxHash32</td>
+            <td data-label="Digest">32 bit · 8 hex</td>
+            <td data-label="Generation">1st gen (2012)</td>
+            <td data-label="SIMD">No</td>
+            <td class="info-table__status--legacy" data-label="Status">Stable</td>
+            <td data-label="Common use">32-bit platforms, embedded systems, legacy tooling</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">xxHash64</td>
+            <td data-label="Digest">64 bit · 16 hex</td>
+            <td data-label="Generation">1st gen (2012)</td>
+            <td data-label="SIMD">No</td>
+            <td class="info-table__status--secure" data-label="Status">Stable</td>
+            <td data-label="Common use">Databases, build systems, file integrity, general-purpose checksums</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">xxHash3</td>
+            <td data-label="Digest">64 bit · 16 hex</td>
+            <td data-label="Generation">2nd gen (2019)</td>
+            <td data-label="SIMD">Yes</td>
+            <td class="info-table__status--secure" data-label="Status">Recommended</td>
+            <td data-label="Common use">New projects on modern hardware, small-input hashing, hash tables</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">xxHash128</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Generation">2nd gen (2019)</td>
+            <td data-label="SIMD">Yes</td>
+            <td class="info-table__status--secure" data-label="Status">Stable</td>
+            <td data-label="Common use">
+              Content-addressed storage, deduplication at scale, lower collision probability
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which variant should I use?</h3>
+      <p>
+        For new projects on modern hardware, <strong>xxHash3</strong> is the recommended choice — it is faster than
+        xxHash64, especially for short inputs, and benefits from SIMD acceleration. Use <strong>xxHash64</strong> when
+        integrating with existing systems that already depend on it, or when targeting older hardware without SIMD
+        support. Choose <strong>xxHash128</strong> when a wider 128-bit digest is needed to reduce birthday-bound
+        collision probability at very large scales. Use <strong>xxHash32</strong> only if you are constrained to a
+        32-bit platform or need compatibility with legacy tooling that cannot accept a wider digest.
+      </p>
+    </div>
+  </div>
+</section>

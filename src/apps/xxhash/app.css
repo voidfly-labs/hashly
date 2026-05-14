@@ -1,0 +1,68 @@
+:root {
+  /* Algorithm badge palette — 4-hue spread, light theme.
+         Distinct from all other Hashly apps:
+           xxHash32  → rose/red    (~5°)   — smallest / 1st-gen 32-bit
+           xxHash64  → sky-blue    (~205°) — most deployed / 1st-gen default
+           xxHash3   → teal        (~170°) — modern 2nd-gen 64-bit
+           xxHash128 → fuchsia     (~290°) — widest digest / 2nd-gen */
+  --badge-xxhash32-bg: #fee2e2;
+  --badge-xxhash32-text: #9b1c1c;
+  --badge-xxhash64-bg: #e0f2fe;
+  --badge-xxhash64-text: #0369a1;
+  --badge-xxhash3-bg: #ccfbf1;
+  --badge-xxhash3-text: #0f766e;
+  --badge-xxhash128-bg: #fae8ff;
+  --badge-xxhash128-text: #86198f;
+}
+
+[data-theme='dark'] {
+  /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+  --badge-xxhash32-bg: rgba(220, 50, 50, 0.14);
+  --badge-xxhash32-text: #fca5a5;
+  --badge-xxhash64-bg: rgba(30, 140, 255, 0.14);
+  --badge-xxhash64-text: #60b8ff;
+  --badge-xxhash3-bg: rgba(30, 200, 170, 0.14);
+  --badge-xxhash3-text: #5eead4;
+  --badge-xxhash128-bg: rgba(200, 80, 220, 0.14);
+  --badge-xxhash128-text: #e879f9;
+}
+
+.algo-badge {
+  min-width: 72px;
+}
+
+.history-table__algo {
+  width: 85px;
+}
+
+.algo-badge[data-algo='xxHash32'] {
+  color: var(--badge-xxhash32-text);
+  background: var(--badge-xxhash32-bg);
+}
+
+.algo-badge[data-algo='xxHash64'] {
+  color: var(--badge-xxhash64-text);
+  background: var(--badge-xxhash64-bg);
+}
+
+.algo-badge[data-algo='xxHash3'] {
+  color: var(--badge-xxhash3-text);
+  background: var(--badge-xxhash3-bg);
+}
+
+.algo-badge[data-algo='xxHash128'] {
+  color: var(--badge-xxhash128-text);
+  background: var(--badge-xxhash128-bg);
+}
+
+@media (max-width: 349px) {
+  .history-table__hash {
+    display: none;
+  }
+  .history-table__time {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+}

@@ -80,10 +80,10 @@
       <p>
         Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
         uppercase. Base64 encodes the raw digest bytes as a compact string using the standard Base64 alphabet (A–Z, a–z,
-        0–9, <code>+</code>, <code>/</code>) — note that the <code>+</code> and <code>/</code> characters are
-        <strong>not</strong> URL-safe and require percent-encoding when embedded in a URL; use the hex output instead if
-        URL embedding is needed. Base64 is commonly seen in HTTP headers, X.509 certificates, and PEM files. Binary
-        shows each byte's individual bits, useful for educational purposes.
+        0–9, <code>+</code>, <code>/</code>) — note that the <code>+</code> and <code>/</code> characters are not
+        URL-safe and require percent-encoding when embedded in a URL; use the hex output instead if URL embedding is
+        needed. Base64 is commonly seen in HTTP headers, X.509 certificates, and PEM files. Binary shows each byte's
+        individual bits, useful for educational purposes.
       </p>
     </div>
 
@@ -109,8 +109,8 @@
       <p>
         SHA-1 remains acceptable for non-security-critical checksums where collision resistance is not required — for
         example, detecting accidental file corruption, cache invalidation keys, or legacy system interoperability where
-        migration is not yet possible. It should <strong>never</strong> be used for digital signatures, certificate
-        fingerprints, or any context where an adversary could benefit from crafting a collision.
+        migration is not yet possible. It should never be used for digital signatures, certificate fingerprints, or any
+        context where an adversary could benefit from crafting a collision.
       </p>
     </div>
 
@@ -120,8 +120,8 @@
       <p>
         SHA-2 is a family of hash functions designed by the NSA and published by NIST in 2001, sharing the same
         Merkle–Damgård construction but differing in internal word size, number of rounds, and output length. All four
-        variants implemented here — SHA-224, SHA-256, SHA-384, and SHA-512 — are currently considered
-        <strong>cryptographically secure</strong> with no known practical attacks on collision or pre-image resistance.
+        variants implemented here — SHA-224, SHA-256, SHA-384, and SHA-512 — are currently considered cryptographically
+        secure with no known practical attacks on collision or pre-image resistance.
       </p>
 
       <h3>Variant comparison</h3>
@@ -176,12 +176,11 @@
 
       <h3>Which SHA-2 variant should I use?</h3>
       <p>
-        <strong>SHA-256</strong> is the right default for almost everything: it is universally supported, well-studied,
-        and produces a digest small enough to be practical. Use <strong>SHA-384</strong> or
-        <strong>SHA-512</strong> when a standard or compliance requirement mandates a larger digest (e.g. FIPS 186-5 for
-        digital signatures) or when you are operating on a 64-bit platform where the larger internal word size of
-        SHA-512 may be faster than SHA-256. <strong>SHA-224</strong> is a truncated form of SHA-256 used only when
-        digest length is constrained — it offers no security advantage over SHA-256.
+        SHA-256 is the right default for almost everything: it is universally supported, well-studied, and produces a
+        digest small enough to be practical. Use SHA-384 or SHA-512 when a standard or compliance requirement mandates a
+        larger digest (e.g. FIPS 186-5 for digital signatures) or when you are operating on a 64-bit platform where the
+        larger internal word size of SHA-512 may be faster than SHA-256. SHA-224 is a truncated form of SHA-256 used
+        only when digest length is constrained — it offers no security advantage over SHA-256.
       </p>
 
       <h3>Can SHA-2 be reversed or cracked?</h3>

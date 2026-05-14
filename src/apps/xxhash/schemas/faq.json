@@ -1,0 +1,54 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is xxHash?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "xxHash is a family of extremely fast non-cryptographic hash functions created by Yann Collet, also the author of Zstandard compression. It is designed for near-memory-bandwidth hashing speeds and is used in databases, build systems, data pipelines, and compression tools where throughput matters and inputs come from trusted sources."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is xxHash cryptographically secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. xxHash is explicitly not a cryptographic hash function. It provides no pre-image resistance and no collision resistance against adversarial inputs. For security-sensitive use cases, use a cryptographic hash such as SHA-256 or BLAKE3. For passwords, use bcrypt, scrypt, or Argon2."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is xxHash64 used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "xxHash64 is the most widely deployed xxHash variant. It is used by RocksDB for SST file checksums, ClickHouse and DuckDB for data block integrity, Zstandard for frame checksums, and Buck2 for action cache keying. Its speed, 64-bit collision resistance, and long track record make it the practical default for non-cryptographic checksumming."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which xxHash variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "For new projects on modern hardware, xxHash3 is the recommended choice — it is faster than xxHash64 due to SIMD optimisation. Use xxHash64 when integrating with existing systems or targeting older hardware. Choose xxHash128 when a 128-bit digest is needed to reduce birthday-bound collision probability at scale. Use xxHash32 only for 32-bit platforms or legacy compatibility."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between xxHash3 and xxHash64?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Both produce 64-bit digests, but xxHash3 (2019) is built on a SIMD-friendly core that leverages AVX2, SSE2, or NEON instructions, outperforming xxHash64 on most modern CPUs especially for small inputs. xxHash64 (2012) has no SIMD dependency and performs better on older hardware. For new projects where xxHash3 is available, it is generally the better choice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does xxHash.dev protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser using hash-wasm by Daninet, a WebAssembly-accelerated library. No text, file content, or hash output is ever transmitted to any server."
+      }
+    }
+  ]
+}
