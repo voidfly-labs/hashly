@@ -36,7 +36,7 @@
     },
     {
       "@type": "Question",
-      "name": "How does SHAFile protect my data?",
+      "name": "How does SHA2Kit protect my data?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "All hashing runs entirely inside your browser using hash-wasm, a WebAssembly library. No text, file content, or hash output is ever transmitted to any server."

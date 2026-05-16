@@ -14,7 +14,7 @@ import { Format } from '@core/utils/format.js';
 import { initApp } from '@core/init/app.js';
 
 const APP_CONFIG = {
-  appName: 'shafile',
+  appName: 'sha2kit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
   defaultDisabledAlgos: [],
