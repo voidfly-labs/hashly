@@ -14,18 +14,18 @@ import { initApp } from '@core/init/app.js';
 const APP_CONFIG = {
   appName: 'xxhash',
   fileNoun: 'hash',
-  slugify: (algo) => algo.replace('xxHash', 'xxh').toLowerCase(),
+  slugify: (algo) => algo.toLowerCase(),
   defaultDisabledAlgos: [],
 };
 
 const ALGORITHMS = [
-  { id: 'xxHash32', fn: xxhash32, createFn: createXXHash32, bits: 32, hexLen: 8 },
-  { id: 'xxHash64', fn: xxhash64, createFn: createXXHash64, bits: 64, hexLen: 16 },
-  { id: 'xxHash3', fn: xxhash3, createFn: createXXHash3, bits: 64, hexLen: 16 },
-  { id: 'xxHash128', fn: xxhash128, createFn: createXXHash128, bits: 128, hexLen: 32 },
+  { id: 'XXH32', fn: xxhash32, createFn: createXXHash32, bits: 32, hexLen: 8 },
+  { id: 'XXH64', fn: xxhash64, createFn: createXXHash64, bits: 64, hexLen: 16 },
+  { id: 'XXH3', fn: xxhash3, createFn: createXXHash3, bits: 64, hexLen: 16 },
+  { id: 'XXH128', fn: xxhash128, createFn: createXXHash128, bits: 128, hexLen: 32 },
 ];
 
-const DEFAULT_ALGO = 'xxHash64';
+const DEFAULT_ALGO = 'XXH64';
 const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
 const Hasher = {

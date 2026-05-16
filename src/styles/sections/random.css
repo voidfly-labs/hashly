@@ -45,7 +45,7 @@
 }
 
 .random__list:hover {
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
 }
 
 .random__item {

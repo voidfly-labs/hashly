@@ -1,61 +1,61 @@
 :root {
-  /* Algorithm badge palette — 4-hue spread, light theme.
-         Distinct from all other Hashly apps:
-           xxHash32  → rose/red    (~5°)   — smallest / 1st-gen 32-bit
-           xxHash64  → sky-blue    (~205°) — most deployed / 1st-gen default
-           xxHash3   → teal        (~170°) — modern 2nd-gen 64-bit
-           xxHash128 → fuchsia     (~290°) — widest digest / 2nd-gen */
-  --badge-xxhash32-bg: #fee2e2;
-  --badge-xxhash32-text: #9b1c1c;
-  --badge-xxhash64-bg: #e0f2fe;
-  --badge-xxhash64-text: #0369a1;
-  --badge-xxhash3-bg: #ccfbf1;
-  --badge-xxhash3-text: #0f766e;
-  --badge-xxhash128-bg: #fae8ff;
-  --badge-xxhash128-text: #86198f;
+  /* Algorithm badge palette — 4-hue rainbow spread, light theme.
+         Spectral progression matches algo order (32-bit → 128-bit):
+           XXH32  → amber       (~35°)  — smallest / 1st-gen 32-bit
+           XXH64  → green-teal  (~150°) — most deployed / 1st-gen default
+           XXH3   → blue        (~220°) — modern 2nd-gen 64-bit
+           XXH128 → violet      (~285°) — widest digest / 2nd-gen */
+  --badge-xxhash32-bg: #fef3e2;
+  --badge-xxhash32-text: #995500;
+  --badge-xxhash64-bg: #e2f5ee;
+  --badge-xxhash64-text: #0c7055;
+  --badge-xxhash3-bg: #ddeafc;
+  --badge-xxhash3-text: var(--accent-dim);
+  --badge-xxhash128-bg: #eee8fa;
+  --badge-xxhash128-text: #6428b4;
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-xxhash32-bg: rgba(220, 50, 50, 0.14);
-  --badge-xxhash32-text: #fca5a5;
-  --badge-xxhash64-bg: rgba(30, 140, 255, 0.14);
-  --badge-xxhash64-text: #60b8ff;
-  --badge-xxhash3-bg: rgba(30, 200, 170, 0.14);
-  --badge-xxhash3-text: #5eead4;
-  --badge-xxhash128-bg: rgba(200, 80, 220, 0.14);
-  --badge-xxhash128-text: #e879f9;
+  --badge-xxhash32-bg: rgba(255, 180, 60, 0.13);
+  --badge-xxhash32-text: #ffb84d;
+  --badge-xxhash64-bg: rgba(14, 200, 140, 0.13);
+  --badge-xxhash64-text: #34d9a8;
+  --badge-xxhash3-bg: var(--accent-surface);
+  --badge-xxhash3-text: var(--accent);
+  --badge-xxhash128-bg: rgba(160, 90, 255, 0.14);
+  --badge-xxhash128-text: #c090ff;
 }
 
 .algo-badge {
-  min-width: 72px;
+  min-width: 54px;
 }
 
 .history-table__algo {
-  width: 85px;
+  width: 68px;
 }
 
-.algo-badge[data-algo='xxHash32'] {
+.algo-badge[data-algo='XXH32'] {
   color: var(--badge-xxhash32-text);
   background: var(--badge-xxhash32-bg);
 }
 
-.algo-badge[data-algo='xxHash64'] {
+.algo-badge[data-algo='XXH64'] {
   color: var(--badge-xxhash64-text);
   background: var(--badge-xxhash64-bg);
 }
 
-.algo-badge[data-algo='xxHash3'] {
+.algo-badge[data-algo='XXH3'] {
   color: var(--badge-xxhash3-text);
   background: var(--badge-xxhash3-bg);
 }
 
-.algo-badge[data-algo='xxHash128'] {
+.algo-badge[data-algo='XXH128'] {
   color: var(--badge-xxhash128-text);
   background: var(--badge-xxhash128-bg);
 }
 
-@media (max-width: 349px) {
+@media (max-width: 341px) {
   .history-table__hash {
     display: none;
   }

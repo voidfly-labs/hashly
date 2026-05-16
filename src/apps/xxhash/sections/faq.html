@@ -167,7 +167,7 @@
         </thead>
         <tbody>
           <tr>
-            <td class="info-table__algo" data-label="Algorithm">xxHash32</td>
+            <td class="info-table__algo" data-label="Algorithm">XXH32</td>
             <td data-label="Digest">32 bit · 8 hex</td>
             <td data-label="Generation">1st gen (2012)</td>
             <td data-label="SIMD">No</td>
@@ -175,7 +175,7 @@
             <td data-label="Common use">32-bit platforms, embedded systems, legacy tooling</td>
           </tr>
           <tr>
-            <td class="info-table__algo" data-label="Algorithm">xxHash64</td>
+            <td class="info-table__algo" data-label="Algorithm">XXH64</td>
             <td data-label="Digest">64 bit · 16 hex</td>
             <td data-label="Generation">1st gen (2012)</td>
             <td data-label="SIMD">No</td>
@@ -183,7 +183,7 @@
             <td data-label="Common use">Databases, build systems, file integrity, general-purpose checksums</td>
           </tr>
           <tr>
-            <td class="info-table__algo" data-label="Algorithm">xxHash3</td>
+            <td class="info-table__algo" data-label="Algorithm">XXH3</td>
             <td data-label="Digest">64 bit · 16 hex</td>
             <td data-label="Generation">2nd gen (2019)</td>
             <td data-label="SIMD">Yes</td>
@@ -191,7 +191,7 @@
             <td data-label="Common use">New projects on modern hardware, small-input hashing, hash tables</td>
           </tr>
           <tr>
-            <td class="info-table__algo" data-label="Algorithm">xxHash128</td>
+            <td class="info-table__algo" data-label="Algorithm">XXH128</td>
             <td data-label="Digest">128 bit · 32 hex</td>
             <td data-label="Generation">2nd gen (2019)</td>
             <td data-label="SIMD">Yes</td>
@@ -205,12 +205,12 @@
 
       <h3>Which variant should I use?</h3>
       <p>
-        For new projects on modern hardware, <strong>xxHash3</strong> is the recommended choice — it is faster than
-        xxHash64, especially for short inputs, and benefits from SIMD acceleration. Use <strong>xxHash64</strong> when
-        integrating with existing systems that already depend on it, or when targeting older hardware without SIMD
-        support. Choose <strong>xxHash128</strong> when a wider 128-bit digest is needed to reduce birthday-bound
-        collision probability at very large scales. Use <strong>xxHash32</strong> only if you are constrained to a
-        32-bit platform or need compatibility with legacy tooling that cannot accept a wider digest.
+        For new projects on modern hardware, xxHash3 is the recommended choice — it is faster than xxHash64, especially
+        for short inputs, and benefits from SIMD acceleration. Use xxHash64 when integrating with existing systems that
+        already depend on it, or when targeting older hardware without SIMD support. Choose xxHash128 when a wider
+        128-bit digest is needed to reduce birthday-bound collision probability at very large scales. Use xxHash32 only
+        if you are constrained to a 32-bit platform or need compatibility with legacy tooling that cannot accept a wider
+        digest.
       </p>
     </div>
   </div>

@@ -10,10 +10,10 @@
 
 ## Overview 
 
-Hashly is a suite of six standalone hash-calculator apps. 
+Hashly is a suite of seven standalone hash-calculator apps. 
 
-Each app focuses on a specific family of algorithms, with a clean UI and helpful features like history, permalinks, 
-and file downloads.
+Each app focuses on a specific family of algorithms, with a clean UI and helpful features like
+history, permalinks, and file downloads.
 
 | App        | Domain      | Algorithms                             |
 |------------|-------------|----------------------------------------|
@@ -23,12 +23,22 @@ and file downloads.
 | `ripemd/`  | ripemd.com  | RIPEMD-128/160/256/320                 |
 | `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                   |
 | `shafile/` | shafile.com | SHA-1, SHA-224/256/384/512             |
+| `xxhash/`  | xxhash.dev  | XXH3/32/64/128                         |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
 
+## Philosophy
+
+_"The best tool for the job is often the simplest one."_
+
+Hashly uses no frameworks, component libraries, or CDN dependencies. 
+Vendor libraries are pre-packaged for hash calculation only, as WASM-backed implementations
+offer significant performance gains over pure JS. Graphics are all SVG-based, keeping the bundle 
+lightweight. The target budget is 100–200 kB per app, fully loaded. 
+
 ## Requirements
 
-Node.js 18 or later.
+Node.js 18+ to build; any modern browser to use.
 
 ## Getting started
 
@@ -48,7 +58,7 @@ APP=crckit npm run dev
 
 ```bash
 APP=shafile npm run build   # → dist/shafile/
-npm run build:all           # build all six apps → dist/
+npm run build:all           # build all seven apps → dist/
 ```
 
 ### Lint and format
@@ -63,11 +73,11 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 
 ## Techonologies
 
-- [Vite](https://vite.dev) — dev server and bundler
-- [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations (SHA-1, SHA-2, SHA-3, Keccak, MD4/MD5)
-- [js-crc](https://github.com/emn178/js-crc) — CRC checksum implementations
 - [crypto-api](https://github.com/nf404/crypto-api) — RIPEMD digest implementations
-- [Geist](https://vercel.com/font) — variable font via `@fontsource-variable/geist`
+- [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations (SHA-1, SHA-2, SHA-3, Keccak, MD4/MD5, XXH)
+- [js-crc](https://github.com/emn178/js-crc) — CRC checksum implementations
+- [Geist](https://vercel.com/font) — main font, all text in the apps
+- [Vite](https://vite.dev) — dev server and bundler
 
 ## Feedback
 
