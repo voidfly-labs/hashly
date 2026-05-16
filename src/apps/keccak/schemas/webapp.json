@@ -1,8 +1,8 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "Keccalc",
-  "url": "https://www.keccalc.com/",
+  "name": "Keccak",
+  "url": "https://www.keccak.org/",
   "description": "Browser-based Keccak hash calculator supporting Keccak-224, Keccak-256, Keccak-384, and Keccak-512. All computation is local — no data is transmitted.",
   "headline": "Keccak-256 Hash Calculator",
   "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "Keccalc",
-    "url": "https://www.keccalc.com/"
+    "name": "Keccak",
+    "url": "https://www.keccak.org/"
   }
 }
