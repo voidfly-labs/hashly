@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "SHA2Kit",
-  "url": "https://sha256.app/",
+  "url": "https://www.sha256.app/",
   "description": "Browser-based SHA hash calculator supporting SHA-1, SHA-224, SHA-256, SHA-384, and SHA-512. All computation is local — no data is transmitted.",
   "headline": "SHA-256 Hash Calculator",
   "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
@@ -12,6 +12,6 @@
   "author": {
     "@type": "Organization",
     "name": "SHA2Kit",
-    "url": "https://sha256.app/"
+    "url": "https://www.sha256.app/"
   }
 }

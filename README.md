@@ -21,8 +21,8 @@ history, permalinks, and file downloads.
 | `keccak/`  | keccak.org  | Keccak-224/256/384/512                 |
 | `md5kit/`  | md5kit.com  | MD2, MD4, MD5                          |
 | `ripemd/`  | ripemd.com  | RIPEMD-128/160/256/320                 |
-| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                   |
 | `sha2kit/` | sha256.app  | SHA-1, SHA-224/256/384/512             |
+| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                   |
 | `xxhash/`  | xxhash.dev  | XXH3/32/64/128                         |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
@@ -49,7 +49,7 @@ npm install
 ### Run the dev server
 
 ```bash
-APP=sha2kit npm run dev   # → http://localhost:5173/src/apps/sha2kit/
+APP=md5kit npm run dev   # → http://localhost:5173/src/apps/md5kit/
 APP=crckit npm run dev
 # ...
 ```
@@ -57,7 +57,7 @@ APP=crckit npm run dev
 ### Build packages
 
 ```bash
-APP=sha2kit npm run build   # → dist/sha2kit/
+APP=md5kit npm run build   # → dist/md5kit/
 npm run build:all           # build all seven apps → dist/
 ```
 

@@ -51,9 +51,9 @@
       <h3>What is xxHash?</h3>
       <p>
         xxHash is a family of extremely fast non-cryptographic hash functions created by
-        <a href="https://github.com/Cyan4973" target="_blank" rel="noopener noreferrer">Yann Collet</a> — also the
+        <a href="https://www.github.com/Cyan4973" target="_blank" rel="noopener noreferrer">Yann Collet</a> — also the
         author of the
-        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
+        <a href="https://www.github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
         compression algorithm. It is designed to hash data at near-memory-bandwidth speeds, making it suitable for hash
         tables, data deduplication, cache keying, and non-adversarial file integrity checks. All four variants —
         xxHash32, xxHash64, xxHash3, and xxHash128 — are deterministic and produce consistent checksums across
@@ -67,7 +67,7 @@
         that produce any desired output. For any use case where data integrity must hold against a malicious party
         (digital signatures, MACs, certificate fingerprints, content-addressable storage exposed to untrusted input),
         use a cryptographic hash function such as
-        <a href="https://sha256.app" target="_blank" rel="noopener noreferrer">SHA-256</a>
+        <a href="https://www.sha256.app" target="_blank" rel="noopener noreferrer">SHA-256</a>
         or
         <a href="https://blake3.io" target="_blank" rel="noopener noreferrer">BLAKE3</a>. For passwords specifically,
         use bcrypt, scrypt, or Argon2.
@@ -81,7 +81,7 @@
         <a href="https://clickhouse.com" target="_blank" rel="noopener noreferrer">ClickHouse</a>,
         <a href="https://duckdb.org" target="_blank" rel="noopener noreferrer">DuckDB</a>,
         <a href="https://buck2.build" target="_blank" rel="noopener noreferrer">Buck2</a>, and
-        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>. It also
+        <a href="https://www.github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>. It also
         appears in file sync tools, content-addressed caches, and embedded systems where the cost of a cryptographic
         hash is too high.
       </p>
@@ -89,7 +89,7 @@
       <h3>How does xxHash.dev ensure privacy?</h3>
       <p>
         All hashing runs entirely inside your browser using
-        <a href="https://github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        <a href="https://www.github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
         by Daninet — a WebAssembly library that computes xxHash digests locally without any network calls. No text, no
         file content, and no hash output is ever transmitted to any server. You can verify this by running the tool
         while offline — it works identically.
@@ -115,7 +115,7 @@
         and
         <a href="https://duckdb.org" target="_blank" rel="noopener noreferrer">DuckDB</a>
         for data block integrity,
-        <a href="https://github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
+        <a href="https://www.github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>
         for frame checksums, and
         <a href="https://buck2.build" target="_blank" rel="noopener noreferrer">Buck2</a>
         for action cache keying. Its combination of speed, 64-bit collision resistance, and long track record makes it
