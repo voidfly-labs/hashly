@@ -1,0 +1,62 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is a cryptographic hash function?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A cryptographic hash function maps an input of any size to a fixed-length digest. It is deterministic, one-way (pre-image resistant), and collision resistant — making it infeasible to reverse the output or find two inputs that produce the same hash."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which hash algorithm should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SHA-256 is the right default for most applications — it is universally supported, well-studied, and fast. Use SHA-384 or SHA-512 for higher-security requirements. Use Keccak-256 for Ethereum compatibility. Use RIPEMD-160 for Bitcoin or OpenPGP. Use xxHash3 for fast non-cryptographic checksums."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is MD5 still secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "MD5 is cryptographically broken for collision resistance — practical collisions can be computed in seconds. It should not be used for digital signatures or security-sensitive contexts, but remains widely acceptable for non-adversarial integrity checks such as download checksums."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between Keccak-256 and SHA3-256?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Both are based on the same sponge construction, but they differ in padding: Keccak uses a 0x01 suffix (the pre-standardisation version used by Ethereum), while NIST SHA-3 uses a 0x06 suffix. They produce different outputs for the same input."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are these hash functions safe for passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All hash functions on this tool are designed to be fast, which makes them unsuitable for password storage. Use a purpose-built slow algorithm such as bcrypt, scrypt, or Argon2 instead."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is xxHash cryptographically secure?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. xxHash is a non-cryptographic hash function designed for speed. It provides no pre-image resistance or collision resistance against adversarial inputs. Use SHA-256 or similar when security is required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does Hashly protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser. No text, file content, or hash output is ever transmitted to any server. The tool works identically while offline."
+      }
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const APPS = ['crckit', 'keccak', 'md5kit', 'ripemd', 'sha2kit', 'sha3kit', 'xxhash'];
+const APPS = ['crckit', 'hashly', 'keccak', 'md5kit', 'ripemd', 'sha2kit', 'sha3kit', 'xxhash'];
 
 function buildApp(app) {
   execSync('npx vite build', {

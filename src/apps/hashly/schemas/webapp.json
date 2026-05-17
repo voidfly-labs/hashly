@@ -1,0 +1,17 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Hashly",
+  "url": "https://www.hashly.org/",
+  "description": "Browser-based hash calculator supporting 24 algorithms: MD2, MD4, MD5, SHA-1, SHA-224, SHA-256, SHA-384, SHA-512, Keccak-224/256/384/512, SHA3-224/256/384/512, RIPEMD-128/160/256/320, and xxHash32/64/3/128. All computation is local — no data is transmitted.",
+  "headline": "Online Hash Calculator",
+  "featureList": "MD5 hashing, SHA-256 hashing, Keccak-256 hashing, RIPEMD-160 hashing, xxHash checksums, 24 hash algorithms, Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Organization",
+    "name": "Hashly",
+    "url": "https://www.hashly.org/"
+  }
+}

@@ -1,4 +1,5 @@
 import crckit from '../src/apps/crckit/meta.js';
+import hashly from '../src/apps/hashly/meta.js';
 import keccak from '../src/apps/keccak/meta.js';
 import md5kit from '../src/apps/md5kit/meta.js';
 import ripemd from '../src/apps/ripemd/meta.js';
@@ -8,7 +9,7 @@ import xxhash from '../src/apps/xxhash/meta.js';
 
 export const LEGAL_UPDATED_ON = '2026-05-01';
 
-const metas = { crckit, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
+const metas = { crckit, hashly, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
 
 export const APPS_META = Object.fromEntries(
   Object.entries(metas).map(([id, meta]) => [

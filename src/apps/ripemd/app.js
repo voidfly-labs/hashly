@@ -27,7 +27,7 @@ const Hasher = {
   },
 
   async fromTextAll(text, inputFmt = 'utf-8') {
-    const encoded = Format.textToBytes(text, inputFmt);
+    const encoded = CryptoApi.encoder.fromArrayBuffer(Format.textToBytes(text, inputFmt).buffer);
     const results = await Promise.all(
       ALGORITHMS.map(async ({ id, cryptoApiId }) => [id, this._call(cryptoApiId, encoded)]),
     );

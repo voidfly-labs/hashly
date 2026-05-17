@@ -1,0 +1,270 @@
+:root {
+  /* Algorithm badge palette — 24-hue full spectral spread, light theme.
+         Hues spaced ~14° apart from orange (~25°) to deep rose (~346°),
+         mapped to algorithm families:
+           MD2–MD5        → orange → amber → yellow          (~25°–53°)
+           SHA-1          → yellow-green                      (~67°)
+           SHA-224–512    → lime → green → teal-green         (~81°–123°)
+           Keccak-224–512 → teal → cyan → sky-blue           (~136°–178°)
+           SHA3-224–512   → sky → blue → indigo              (~192°–234°)
+           RIPEMD-128–320 → indigo-violet → violet → magenta (~248°–290°)
+           XXH32–XXH128   → magenta → pink → rose            (~304°–346°) */
+
+  /* MDx family */
+  --badge-md2-bg: #f9efe5;
+  --badge-md2-text: #a95c18;
+  --badge-md4-bg: #f9f3e5;
+  --badge-md4-text: #9a7010;
+  --badge-md5-bg: #f9f7e5;
+  --badge-md5-text: #7a7810;
+
+  /* SHA-1 */
+  --badge-sha1-bg: #f2f9e5;
+  --badge-sha1-text: #5a8010;
+
+  /* SHA-2 family */
+  --badge-sha224-bg: #eaf9e5;
+  --badge-sha224-text: #307a10;
+  --badge-sha256-bg: #e5f9e6;
+  --badge-sha256-text: #107a20;
+  --badge-sha384-bg: #e5f9ec;
+  --badge-sha384-text: #0a7a48;
+  --badge-sha512-bg: #e5f9f3;
+  --badge-sha512-text: #0a7065;
+
+  /* Keccak family */
+  --badge-keccak224-bg: #e5f7f9;
+  --badge-keccak224-text: #0a6475;
+  --badge-keccak256-bg: #e5f1f9;
+  --badge-keccak256-text: #0a5482;
+  --badge-keccak384-bg: #e5ebf9;
+  --badge-keccak384-text: #0a4490;
+  --badge-keccak512-bg: #e5e6f9;
+  --badge-keccak512-text: #0e319e;
+
+  /* SHA-3 family */
+  --badge-sha3224-bg: #e6e5f9;
+  --badge-sha3224-text: #1c20a0;
+  --badge-sha3256-bg: #e9e5f9;
+  --badge-sha3256-text: #2e15a0;
+  --badge-sha3384-bg: #ede5f9;
+  --badge-sha3384-text: #430ea0;
+  --badge-sha3512-bg: #f1e5f9;
+  --badge-sha3512-text: #5808a0;
+
+  /* RIPEMD family */
+  --badge-ripemd128-bg: #f5e5f9;
+  --badge-ripemd128-text: #6c0898;
+  --badge-ripemd160-bg: #f8e5f9;
+  --badge-ripemd160-text: #800890;
+  --badge-ripemd256-bg: #f9e5f6;
+  --badge-ripemd256-text: #900880;
+  --badge-ripemd320-bg: #f9e5f2;
+  --badge-ripemd320-text: #98086a;
+
+  /* xxHash family */
+  --badge-xxh32-bg: #f9e5ee;
+  --badge-xxh32-text: #980850;
+  --badge-xxh64-bg: #f9e5eb;
+  --badge-xxh64-text: #980838;
+  --badge-xxh3-bg: #f9e5e8;
+  --badge-xxh3-text: #981028;
+  --badge-xxh128-bg: #f9e4e5;
+  --badge-xxh128-text: #a01018;
+}
+
+[data-theme='dark'] {
+  /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+
+  /* MDx family */
+  --badge-md2-bg: rgba(220, 140, 40, 0.14);
+  --badge-md2-text: #f0b870;
+  --badge-md4-bg: rgba(215, 190, 40, 0.13);
+  --badge-md4-text: #ede068;
+  --badge-md5-bg: rgba(190, 205, 40, 0.13);
+  --badge-md5-text: #d8e868;
+
+  /* SHA-1 */
+  --badge-sha1-bg: rgba(135, 215, 40, 0.13);
+  --badge-sha1-text: #aaec68;
+
+  /* SHA-2 family */
+  --badge-sha224-bg: rgba(70, 220, 40, 0.13);
+  --badge-sha224-text: #82ee68;
+  --badge-sha256-bg: rgba(40, 218, 58, 0.13);
+  --badge-sha256-text: #68ee7a;
+  --badge-sha384-bg: rgba(40, 218, 135, 0.13);
+  --badge-sha384-text: #68eeb8;
+  --badge-sha512-bg: rgba(40, 205, 200, 0.13);
+  --badge-sha512-text: #68e4e0;
+
+  /* Keccak family */
+  --badge-keccak224-bg: rgba(40, 185, 218, 0.13);
+  --badge-keccak224-text: #68d4ee;
+  --badge-keccak256-bg: rgba(40, 148, 218, 0.13);
+  --badge-keccak256-text: #68b8ee;
+  --badge-keccak384-bg: rgba(40, 108, 218, 0.14);
+  --badge-keccak384-text: #7898f0;
+  --badge-keccak512-bg: rgba(40, 68, 220, 0.14);
+  --badge-keccak512-text: #7878f0;
+
+  /* SHA-3 family */
+  --badge-sha3224-bg: rgba(52, 40, 220, 0.14);
+  --badge-sha3224-text: #8080f0;
+  --badge-sha3256-bg: rgba(74, 40, 220, 0.14);
+  --badge-sha3256-text: #8a78f0;
+  --badge-sha3384-bg: rgba(100, 40, 220, 0.14);
+  --badge-sha3384-text: #a070f0;
+  --badge-sha3512-bg: rgba(128, 40, 220, 0.14);
+  --badge-sha3512-text: #b870f0;
+
+  /* RIPEMD family */
+  --badge-ripemd128-bg: rgba(160, 40, 215, 0.14);
+  --badge-ripemd128-text: #d070e8;
+  --badge-ripemd160-bg: rgba(190, 40, 200, 0.14);
+  --badge-ripemd160-text: #e070d8;
+  --badge-ripemd256-bg: rgba(205, 40, 175, 0.14);
+  --badge-ripemd256-text: #e870c0;
+  --badge-ripemd320-bg: rgba(210, 40, 148, 0.14);
+  --badge-ripemd320-text: #f070a8;
+
+  /* xxHash family */
+  --badge-xxh32-bg: rgba(210, 40, 115, 0.14);
+  --badge-xxh32-text: #f07090;
+  --badge-xxh64-bg: rgba(210, 40, 82, 0.14);
+  --badge-xxh64-text: #f07078;
+  --badge-xxh3-bg: rgba(210, 45, 55, 0.14);
+  --badge-xxh3-text: #f07070;
+  --badge-xxh128-bg: rgba(215, 45, 35, 0.14);
+  --badge-xxh128-text: #f06868;
+}
+
+.algo-badge {
+  min-width: 75px;
+}
+
+.history-table__algo {
+  width: 89px;
+}
+
+/* MDx family */
+.algo-badge[data-algo='MD2'] {
+  color: var(--badge-md2-text);
+  background: var(--badge-md2-bg);
+}
+.algo-badge[data-algo='MD4'] {
+  color: var(--badge-md4-text);
+  background: var(--badge-md4-bg);
+}
+.algo-badge[data-algo='MD5'] {
+  color: var(--badge-md5-text);
+  background: var(--badge-md5-bg);
+}
+
+/* SHA-1 */
+.algo-badge[data-algo='SHA-1'] {
+  color: var(--badge-sha1-text);
+  background: var(--badge-sha1-bg);
+}
+
+/* SHA-2 family */
+.algo-badge[data-algo='SHA-224'] {
+  color: var(--badge-sha224-text);
+  background: var(--badge-sha224-bg);
+}
+.algo-badge[data-algo='SHA-256'] {
+  color: var(--badge-sha256-text);
+  background: var(--badge-sha256-bg);
+}
+.algo-badge[data-algo='SHA-384'] {
+  color: var(--badge-sha384-text);
+  background: var(--badge-sha384-bg);
+}
+.algo-badge[data-algo='SHA-512'] {
+  color: var(--badge-sha512-text);
+  background: var(--badge-sha512-bg);
+}
+
+/* Keccak family */
+.algo-badge[data-algo='Keccak-224'] {
+  color: var(--badge-keccak224-text);
+  background: var(--badge-keccak224-bg);
+}
+.algo-badge[data-algo='Keccak-256'] {
+  color: var(--badge-keccak256-text);
+  background: var(--badge-keccak256-bg);
+}
+.algo-badge[data-algo='Keccak-384'] {
+  color: var(--badge-keccak384-text);
+  background: var(--badge-keccak384-bg);
+}
+.algo-badge[data-algo='Keccak-512'] {
+  color: var(--badge-keccak512-text);
+  background: var(--badge-keccak512-bg);
+}
+
+/* SHA-3 family */
+.algo-badge[data-algo='SHA3-224'] {
+  color: var(--badge-sha3224-text);
+  background: var(--badge-sha3224-bg);
+}
+.algo-badge[data-algo='SHA3-256'] {
+  color: var(--badge-sha3256-text);
+  background: var(--badge-sha3256-bg);
+}
+.algo-badge[data-algo='SHA3-384'] {
+  color: var(--badge-sha3384-text);
+  background: var(--badge-sha3384-bg);
+}
+.algo-badge[data-algo='SHA3-512'] {
+  color: var(--badge-sha3512-text);
+  background: var(--badge-sha3512-bg);
+}
+
+/* RIPEMD family */
+.algo-badge[data-algo='RIPEMD-128'] {
+  color: var(--badge-ripemd128-text);
+  background: var(--badge-ripemd128-bg);
+}
+.algo-badge[data-algo='RIPEMD-160'] {
+  color: var(--badge-ripemd160-text);
+  background: var(--badge-ripemd160-bg);
+}
+.algo-badge[data-algo='RIPEMD-256'] {
+  color: var(--badge-ripemd256-text);
+  background: var(--badge-ripemd256-bg);
+}
+.algo-badge[data-algo='RIPEMD-320'] {
+  color: var(--badge-ripemd320-text);
+  background: var(--badge-ripemd320-bg);
+}
+
+/* xxHash family */
+.algo-badge[data-algo='XXH32'] {
+  color: var(--badge-xxh32-text);
+  background: var(--badge-xxh32-bg);
+}
+.algo-badge[data-algo='XXH64'] {
+  color: var(--badge-xxh64-text);
+  background: var(--badge-xxh64-bg);
+}
+.algo-badge[data-algo='XXH3'] {
+  color: var(--badge-xxh3-text);
+  background: var(--badge-xxh3-bg);
+}
+.algo-badge[data-algo='XXH128'] {
+  color: var(--badge-xxh128-text);
+  background: var(--badge-xxh128-bg);
+}
+
+@media (max-width: 359px) {
+  .history-table__hash {
+    display: none;
+  }
+  .history-table__time {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+}
