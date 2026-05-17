@@ -17,6 +17,12 @@ import {
   createKeccak,
   sha3,
   createSHA3,
+  blake2b,
+  blake2s,
+  blake3,
+  createBLAKE2b,
+  createBLAKE2s,
+  createBLAKE3,
   xxhash32,
   xxhash64,
   xxhash3,
@@ -54,6 +60,13 @@ const ALGORITHMS = [
   { id: 'SHA3-256', type: 'wasm-sha3', bits: 256, hexLen: 64 },
   { id: 'SHA3-384', type: 'wasm-sha3', bits: 384, hexLen: 96 },
   { id: 'SHA3-512', type: 'wasm-sha3', bits: 512, hexLen: 128 },
+  // BLAKE family
+  { id: 'BLAKE2b-256', type: 'wasm-blake2b', bits: 256, hexLen: 64 },
+  { id: 'BLAKE2b-512', type: 'wasm-blake2b', bits: 512, hexLen: 128 },
+  { id: 'BLAKE2s-128', type: 'wasm-blake2s', bits: 128, hexLen: 32 },
+  { id: 'BLAKE2s-256', type: 'wasm-blake2s', bits: 256, hexLen: 64 },
+  { id: 'BLAKE3-256', type: 'wasm-blake3', bits: 256, hexLen: 64 },
+  { id: 'BLAKE3-512', type: 'wasm-blake3', bits: 512, hexLen: 128 },
   // Keccak family
   { id: 'Keccak-224', type: 'wasm-keccak', bits: 224, hexLen: 56 },
   { id: 'Keccak-256', type: 'wasm-keccak', bits: 256, hexLen: 64 },
@@ -78,6 +91,9 @@ const Hasher = (() => {
   // Lazily initialised pools for parameterised wasm hashers
   const _keccakPool = new Map();
   const _sha3Pool = new Map();
+  const _blake2bPool = new Map();
+  const _blake2sPool = new Map();
+  const _blake3Pool = new Map();
 
   function _getKeccakHasher(bits) {
     if (!_keccakPool.has(bits)) _keccakPool.set(bits, createKeccak(bits));
@@ -87,6 +103,21 @@ const Hasher = (() => {
   function _getSha3Hasher(bits) {
     if (!_sha3Pool.has(bits)) _sha3Pool.set(bits, createSHA3(bits));
     return _sha3Pool.get(bits);
+  }
+
+  function _getBlake2bHasher(bits) {
+    if (!_blake2bPool.has(bits)) _blake2bPool.set(bits, createBLAKE2b(bits));
+    return _blake2bPool.get(bits);
+  }
+
+  function _getBlake2sHasher(bits) {
+    if (!_blake2sPool.has(bits)) _blake2sPool.set(bits, createBLAKE2s(bits));
+    return _blake2sPool.get(bits);
+  }
+
+  function _getBlake3Hasher(bits) {
+    if (!_blake3Pool.has(bits)) _blake3Pool.set(bits, createBLAKE3(bits));
+    return _blake3Pool.get(bits);
   }
 
   return {
@@ -103,6 +134,12 @@ const Hasher = (() => {
             hash = await keccak(data, algo.bits);
           } else if (algo.type === 'wasm-sha3') {
             hash = await sha3(data, algo.bits);
+          } else if (algo.type === 'wasm-blake2b') {
+            hash = await blake2b(data, algo.bits);
+          } else if (algo.type === 'wasm-blake2s') {
+            hash = await blake2s(data, algo.bits);
+          } else if (algo.type === 'wasm-blake3') {
+            hash = await blake3(data, algo.bits);
           } else {
             // ripemd — crypto-api expects a binary string, not Uint8Array
             const hasher = CryptoApi.getHasher(algo.cryptoApiId);
@@ -131,6 +168,15 @@ const Hasher = (() => {
             instance.init();
           } else if (algo.type === 'wasm-sha3') {
             instance = await _getSha3Hasher(algo.bits);
+            instance.init();
+          } else if (algo.type === 'wasm-blake2b') {
+            instance = await _getBlake2bHasher(algo.bits);
+            instance.init();
+          } else if (algo.type === 'wasm-blake2s') {
+            instance = await _getBlake2sHasher(algo.bits);
+            instance.init();
+          } else if (algo.type === 'wasm-blake3') {
+            instance = await _getBlake3Hasher(algo.bits);
             instance.init();
           } else {
             // ripemd

@@ -15,17 +15,17 @@ Hashly is a suite of nine standalone hash-calculator apps.
 Each app focuses on a specific family of algorithms, with a clean UI and helpful features like
 history, permalinks, and file downloads.
 
-| App          | Domain      | Algorithms                                      |
-|--------------|-------------|-------------------------------------------------|
-| `blakekit/`  | blake3.app  | BLAKE2b-256/512, BLAKE2s-128/256, BLAKE3-256/512 |
-| `crckit/`    | crckit.com  | 23 CRC variants (CRC-8 through CRC-82)          |
-| `hashly/`    | hashly.org  | All 30 algorithms below (aggregator)            |
-| `keccak/`    | keccak.org  | Keccak-224/256/384/512                          |
-| `md5kit/`    | md5kit.com  | MD2, MD4, MD5                                   |
-| `ripemd/`    | ripemd.com  | RIPEMD-128/160/256/320                          |
-| `sha2kit/`   | sha256.app  | SHA-1, SHA-224/256/384/512                      |
-| `sha3kit/`   | sha3kit.com | SHA3-224/256/384/512                            |
-| `xxhash/`    | xxhash.dev  | XXH3/32/64/128                                  |
+| App         | Domain      | Algorithms                             |
+|-------------|-------------|----------------------------------------|
+| `blakekit/` | blake3.app  | BLAKE2b, BLAKE2s, BLAKE3               |
+| `crckit/`   | crckit.com  | 23 CRC variants (CRC-8 through CRC-82) |
+| `hashly/`   | hashly.org  | All 30 non-CRC algorithms (aggregator) |
+| `keccak/`   | keccak.app  | Keccak-224/256/384/512                 |
+| `md5kit/`   | md5kit.com  | MD2, MD4, MD5                          |
+| `ripemd/`   | ripemd.com  | RIPEMD-128/160/256/320                 |
+| `sha2kit/`  | sha256.app  | SHA-1, SHA-224/256/384/512             |
+| `sha3kit/`  | sha3kit.com | SHA3-224/256/384/512                   |
+| `xxhash/`   | xxhash.dev  | XXH3/32/64/128                         |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
 
@@ -76,7 +76,8 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 ## Technologies
 
 - [crypto-api](https://github.com/nf404/crypto-api) — RIPEMD digest implementations
-- [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations (BLAKE2, BLAKE3, SHA-1, SHA-2, SHA-3, Keccak, MD4/MD5, XXH)
+- [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations 
+(MD4/5, SHA-1, SHA-2, SHA-3, BLAKE2/3, Keccak, XXH)
 - [js-crc](https://github.com/emn178/js-crc) — CRC checksum implementations
 - [Geist](https://vercel.com/font) — main font, all text in the apps
 - [Vite](https://vite.dev) — dev server and bundler

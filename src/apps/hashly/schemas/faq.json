@@ -15,7 +15,7 @@
       "name": "Which hash algorithm should I use?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "SHA-256 is the right default for most applications — it is universally supported, well-studied, and fast. Use SHA-384 or SHA-512 for higher-security requirements. Use Keccak-256 for Ethereum compatibility. Use RIPEMD-160 for Bitcoin or OpenPGP. Use xxHash3 for fast non-cryptographic checksums."
+        "text": "SHA-256 is the right default for most applications — it is universally supported, well-studied, and fast. Use BLAKE3-256 when throughput is a priority and protocol compatibility is not a constraint. Use SHA-384 or SHA-512 for higher-security requirements. Use Keccak-256 for Ethereum compatibility. Use RIPEMD-160 for Bitcoin or OpenPGP. Use xxHash3 for fast non-cryptographic checksums."
       }
     },
     {

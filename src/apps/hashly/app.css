@@ -1,150 +1,178 @@
 :root {
-  /* Algorithm badge palette — 24-hue full spectral spread, light theme.
-         Hues spaced ~14° apart from orange (~25°) to deep rose (~346°),
-         mapped to algorithm families:
-           MD2–MD5        → orange → amber → yellow          (~25°–53°)
-           SHA-1          → yellow-green                      (~67°)
-           SHA-224–512    → lime → green → teal-green         (~81°–123°)
-           SHA3-224–512   → teal → cyan → sky-blue           (~136°–178°)
-           Keccak-224–512 → sky → blue → indigo              (~192°–234°)
-           RIPEMD-128–320 → indigo-violet → violet → magenta (~248°–290°)
-           XXH32–XXH128   → magenta → pink → rose            (~304°–346°) */
+  /* Algorithm badge palette — 30-hue full spectral spread, light theme.
+         Hues exactly 11.1° apart from orange (25°) to deep rose (347°):
+           MD2–MD5        → orange → amber → yellow          (25°–47°)
+           SHA-1          → yellow                            (58°)
+           SHA-224–512    → lime → green → teal-green         (69°–103°)
+           SHA3-224–512   → teal-green → teal                (114°–147°)
+           BLAKE2b–BLAKE3 → teal → cyan → sky → blue         (158°–214°)
+           Keccak-224–512 → blue → indigo → violet           (225°–258°)
+           RIPEMD-128–320 → violet → purple → magenta        (269°–303°)
+           XXH32–XXH128   → pink → rose → deep rose          (314°–347°) */
 
   /* MDx family */
-  --badge-md2-bg: #f9efe5;
-  --badge-md2-text: #a95c18;
-  --badge-md4-bg: #f9f3e5;
-  --badge-md4-text: #9a7010;
-  --badge-md5-bg: #f9f7e5;
-  --badge-md5-text: #7a7810;
+  --badge-md2-bg: #fbeee5;
+  --badge-md2-text: #b1510b;
+  --badge-md4-bg: #fbf2e5;
+  --badge-md4-text: #b16f0b;
+  --badge-md5-bg: #fbf6e5;
+  --badge-md5-text: #b18e0b;
 
   /* SHA-1 */
-  --badge-sha1-bg: #f2f9e5;
-  --badge-sha1-text: #5a8010;
+  --badge-sha1-bg: #fbfae5;
+  --badge-sha1-text: #8b8709;
 
   /* SHA-2 family */
-  --badge-sha224-bg: #eaf9e5;
-  --badge-sha224-text: #307a10;
-  --badge-sha256-bg: #e5f9e6;
-  --badge-sha256-text: #107a20;
-  --badge-sha384-bg: #e5f9ec;
-  --badge-sha384-text: #0a7a48;
-  --badge-sha512-bg: #e5f9f3;
-  --badge-sha512-text: #0a7065;
+  --badge-sha224-bg: #f7fbe5;
+  --badge-sha224-text: #778b09;
+  --badge-sha256-bg: #f3fbe5;
+  --badge-sha256-text: #5f8b09;
+  --badge-sha384-bg: #effbe5;
+  --badge-sha384-text: #468b09;
+  --badge-sha512-bg: #ebfbe5;
+  --badge-sha512-text: #2b8108;
 
   /* SHA-3 family */
-  --badge-sha3224-bg: #e5f7f9;
-  --badge-sha3224-text: #0a6475;
-  --badge-sha3256-bg: #e5f1f9;
-  --badge-sha3256-text: #0a5482;
-  --badge-sha3384-bg: #e5ebf9;
-  --badge-sha3384-text: #0a4490;
-  --badge-sha3512-bg: #e5e6f9;
-  --badge-sha3512-text: #0e319e;
+  --badge-sha3224-bg: #e7fbe5;
+  --badge-sha3224-text: #158108;
+  --badge-sha3256-bg: #e5fbe6;
+  --badge-sha3256-text: #088112;
+  --badge-sha3384-bg: #e5fbeb;
+  --badge-sha3384-text: #088129;
+  --badge-sha3512-bg: #e5fbef;
+  --badge-sha3512-text: #08813f;
+
+  /* BLAKE family */
+  --badge-blake2b256-bg: #e5fbf3;
+  --badge-blake2b256-text: #088155;
+  --badge-blake2b512-bg: #e5fbf7;
+  --badge-blake2b512-text: #098b74;
+  --badge-blake2s128-bg: #e5fbfb;
+  --badge-blake2s128-text: #098a8b;
+  --badge-blake2s256-bg: #e5f6fb;
+  --badge-blake2s256-text: #09728b;
+  --badge-blake3256-bg: #e5f2fb;
+  --badge-blake3256-text: #095a8b;
+  --badge-blake3512-bg: #e5eefb;
+  --badge-blake3512-text: #09428b;
 
   /* Keccak family */
-  --badge-keccak224-bg: #e6e5f9;
-  --badge-keccak224-text: #1c20a0;
-  --badge-keccak256-bg: #e9e5f9;
-  --badge-keccak256-text: #2e15a0;
-  --badge-keccak384-bg: #ede5f9;
-  --badge-keccak384-text: #430ea0;
-  --badge-keccak512-bg: #f1e5f9;
-  --badge-keccak512-text: #5808a0;
+  --badge-keccak224-bg: #e5eafb;
+  --badge-keccak224-text: #092a8b;
+  --badge-keccak256-bg: #e5e6fb;
+  --badge-keccak256-text: #0a15a3;
+  --badge-keccak384-bg: #e7e5fb;
+  --badge-keccak384-text: #1c0aa3;
+  --badge-keccak512-bg: #ebe5fb;
+  --badge-keccak512-text: #390aa3;
 
   /* RIPEMD family */
-  --badge-ripemd128-bg: #f5e5f9;
-  --badge-ripemd128-text: #6c0898;
-  --badge-ripemd160-bg: #f8e5f9;
-  --badge-ripemd160-text: #800890;
-  --badge-ripemd256-bg: #f9e5f6;
-  --badge-ripemd256-text: #900880;
-  --badge-ripemd320-bg: #f9e5f2;
-  --badge-ripemd320-text: #98086a;
+  --badge-ripemd128-bg: #efe5fb;
+  --badge-ripemd128-text: #550aa3;
+  --badge-ripemd160-bg: #f4e5fb;
+  --badge-ripemd160-text: #710aa3;
+  --badge-ripemd256-bg: #f8e5fb;
+  --badge-ripemd256-text: #960bad;
+  --badge-ripemd320-bg: #fbe5fa;
+  --badge-ripemd320-text: #ad0ba6;
 
   /* xxHash family */
-  --badge-xxh32-bg: #f9e5ee;
-  --badge-xxh32-text: #980850;
-  --badge-xxh64-bg: #f9e5eb;
-  --badge-xxh64-text: #980838;
-  --badge-xxh3-bg: #f9e5e8;
-  --badge-xxh3-text: #981028;
-  --badge-xxh128-bg: #f9e4e5;
-  --badge-xxh128-text: #a01018;
+  --badge-xxh32-bg: #fbe5f6;
+  --badge-xxh32-text: #ad0b88;
+  --badge-xxh64-bg: #fbe5f2;
+  --badge-xxh64-text: #ad0b6a;
+  --badge-xxh3-bg: #fbe5ee;
+  --badge-xxh3-text: #ad0b4c;
+  --badge-xxh128-bg: #fbe5e9;
+  --badge-xxh128-text: #ad0b2e;
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
 
   /* MDx family */
-  --badge-md2-bg: rgba(220, 140, 40, 0.14);
-  --badge-md2-text: #f0b870;
-  --badge-md4-bg: rgba(215, 190, 40, 0.13);
-  --badge-md4-text: #ede068;
-  --badge-md5-bg: rgba(190, 205, 40, 0.13);
-  --badge-md5-text: #d8e868;
+  --badge-md2-bg: rgba(228, 117, 37, 0.14);
+  --badge-md2-text: #f2ae7d;
+  --badge-md4-bg: rgba(228, 152, 37, 0.14);
+  --badge-md4-text: #f2c47d;
+  --badge-md5-bg: rgba(228, 187, 37, 0.14);
+  --badge-md5-text: #f2d97d;
 
   /* SHA-1 */
-  --badge-sha1-bg: rgba(135, 215, 40, 0.13);
-  --badge-sha1-text: #aaec68;
+  --badge-sha1-bg: rgba(228, 223, 37, 0.14);
+  --badge-sha1-text: #f0ed6a;
 
   /* SHA-2 family */
-  --badge-sha224-bg: rgba(70, 220, 40, 0.13);
-  --badge-sha224-text: #82ee68;
-  --badge-sha256-bg: rgba(40, 218, 58, 0.13);
-  --badge-sha256-text: #68ee7a;
-  --badge-sha384-bg: rgba(40, 218, 135, 0.13);
-  --badge-sha384-text: #68eeb8;
-  --badge-sha512-bg: rgba(40, 205, 200, 0.13);
-  --badge-sha512-text: #68e4e0;
+  --badge-sha224-bg: rgba(198, 228, 37, 0.14);
+  --badge-sha224-text: #dbf06a;
+  --badge-sha256-bg: rgba(163, 228, 37, 0.14);
+  --badge-sha256-text: #c3f06a;
+  --badge-sha384-bg: rgba(127, 228, 37, 0.14);
+  --badge-sha384-text: #aaf06a;
+  --badge-sha512-bg: rgba(92, 228, 37, 0.14);
+  --badge-sha512-text: #91f06a;
 
   /* SHA-3 family */
-  --badge-sha3224-bg: rgba(40, 185, 218, 0.13);
-  --badge-sha3224-text: #68d4ee;
-  --badge-sha3256-bg: rgba(40, 148, 218, 0.13);
-  --badge-sha3256-text: #68b8ee;
-  --badge-sha3384-bg: rgba(40, 108, 218, 0.14);
-  --badge-sha3384-text: #7898f0;
-  --badge-sha3512-bg: rgba(40, 68, 220, 0.14);
-  --badge-sha3512-text: #7878f0;
+  --badge-sha3224-bg: rgba(57, 228, 37, 0.14);
+  --badge-sha3224-text: #78f06a;
+  --badge-sha3256-bg: rgba(37, 228, 53, 0.14);
+  --badge-sha3256-text: #6af075;
+  --badge-sha3384-bg: rgba(37, 228, 88, 0.14);
+  --badge-sha3384-text: #6af08e;
+  --badge-sha3512-bg: rgba(37, 228, 123, 0.14);
+  --badge-sha3512-text: #6af0a7;
+
+  /* BLAKE family */
+  --badge-blake2b256-bg: rgba(37, 228, 159, 0.14);
+  --badge-blake2b256-text: #7df2c8;
+  --badge-blake2b512-bg: rgba(37, 228, 194, 0.14);
+  --badge-blake2b512-text: #7df2dd;
+  --badge-blake2s128-bg: rgba(37, 227, 228, 0.14);
+  --badge-blake2s128-text: #7df1f2;
+  --badge-blake2s256-bg: rgba(37, 191, 228, 0.14);
+  --badge-blake2s256-text: #7ddcf2;
+  --badge-blake3256-bg: rgba(37, 156, 228, 0.14);
+  --badge-blake3256-text: #7dc6f2;
+  --badge-blake3512-bg: rgba(37, 121, 228, 0.14);
+  --badge-blake3512-text: #7db0f2;
 
   /* Keccak family */
-  --badge-keccak224-bg: rgba(52, 40, 220, 0.14);
-  --badge-keccak224-text: #8080f0;
-  --badge-keccak256-bg: rgba(74, 40, 220, 0.14);
-  --badge-keccak256-text: #8a78f0;
-  --badge-keccak384-bg: rgba(100, 40, 220, 0.14);
-  --badge-keccak384-text: #a070f0;
-  --badge-keccak512-bg: rgba(128, 40, 220, 0.14);
-  --badge-keccak512-text: #b870f0;
+  --badge-keccak224-bg: rgba(37, 85, 228, 0.14);
+  --badge-keccak224-text: #7d9bf2;
+  --badge-keccak256-bg: rgba(37, 50, 228, 0.14);
+  --badge-keccak256-text: #7d85f2;
+  --badge-keccak384-bg: rgba(60, 37, 228, 0.14);
+  --badge-keccak384-text: #8b7df2;
+  --badge-keccak512-bg: rgba(95, 37, 228, 0.14);
+  --badge-keccak512-text: #a17df2;
 
   /* RIPEMD family */
-  --badge-ripemd128-bg: rgba(160, 40, 215, 0.14);
-  --badge-ripemd128-text: #d070e8;
-  --badge-ripemd160-bg: rgba(190, 40, 200, 0.14);
-  --badge-ripemd160-text: #e070d8;
-  --badge-ripemd256-bg: rgba(205, 40, 175, 0.14);
-  --badge-ripemd256-text: #e870c0;
-  --badge-ripemd320-bg: rgba(210, 40, 148, 0.14);
-  --badge-ripemd320-text: #f070a8;
+  --badge-ripemd128-bg: rgba(130, 37, 228, 0.14);
+  --badge-ripemd128-text: #b67df2;
+  --badge-ripemd160-bg: rgba(166, 37, 228, 0.14);
+  --badge-ripemd160-text: #cc7df2;
+  --badge-ripemd256-bg: rgba(201, 37, 228, 0.14);
+  --badge-ripemd256-text: #e27df2;
+  --badge-ripemd320-bg: rgba(228, 37, 220, 0.14);
+  --badge-ripemd320-text: #f27ded;
 
   /* xxHash family */
-  --badge-xxh32-bg: rgba(210, 40, 115, 0.14);
-  --badge-xxh32-text: #f07090;
-  --badge-xxh64-bg: rgba(210, 40, 82, 0.14);
-  --badge-xxh64-text: #f07078;
-  --badge-xxh3-bg: rgba(210, 45, 55, 0.14);
-  --badge-xxh3-text: #f07070;
-  --badge-xxh128-bg: rgba(215, 45, 35, 0.14);
-  --badge-xxh128-text: #f06868;
+  --badge-xxh32-bg: rgba(228, 37, 185, 0.14);
+  --badge-xxh32-text: #f27dd7;
+  --badge-xxh64-bg: rgba(228, 37, 149, 0.14);
+  --badge-xxh64-text: #f27dc2;
+  --badge-xxh3-bg: rgba(228, 37, 114, 0.14);
+  --badge-xxh3-text: #f27dac;
+  --badge-xxh128-bg: rgba(228, 37, 78, 0.14);
+  --badge-xxh128-text: #f27d96;
 }
 
 .algo-badge {
-  min-width: 75px;
+  min-width: 82px;
 }
 
 .history-table__algo {
-  width: 89px;
+  width: 90px;
 }
 
 /* MDx family */
@@ -201,6 +229,32 @@
 .algo-badge[data-algo='SHA3-512'] {
   color: var(--badge-sha3512-text);
   background: var(--badge-sha3512-bg);
+}
+
+/* BLAKE family */
+.algo-badge[data-algo='BLAKE2b-256'] {
+  color: var(--badge-blake2b256-text);
+  background: var(--badge-blake2b256-bg);
+}
+.algo-badge[data-algo='BLAKE2b-512'] {
+  color: var(--badge-blake2b512-text);
+  background: var(--badge-blake2b512-bg);
+}
+.algo-badge[data-algo='BLAKE2s-128'] {
+  color: var(--badge-blake2s128-text);
+  background: var(--badge-blake2s128-bg);
+}
+.algo-badge[data-algo='BLAKE2s-256'] {
+  color: var(--badge-blake2s256-text);
+  background: var(--badge-blake2s256-bg);
+}
+.algo-badge[data-algo='BLAKE3-256'] {
+  color: var(--badge-blake3256-text);
+  background: var(--badge-blake3256-bg);
+}
+.algo-badge[data-algo='BLAKE3-512'] {
+  color: var(--badge-blake3512-text);
+  background: var(--badge-blake3512-bg);
 }
 
 /* Keccak family */

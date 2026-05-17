@@ -69,6 +69,17 @@
           type="button"
           class="info__tab"
           role="tab"
+          id="faq-tab-blake"
+          aria-controls="faq-panel-blake"
+          aria-selected="false"
+          data-tab="blake"
+        >
+          BLAKE <span class="info__tab-badge">×6</span>
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
           id="faq-tab-keccak"
           aria-controls="faq-panel-keccak"
           aria-selected="false"
@@ -114,10 +125,10 @@
       <h3>Which algorithm should I choose?</h3>
       <p>
         SHA-256 is the right default for almost all general-purpose hashing — universally supported, well-studied, and
-        fast. Use SHA-384 or SHA-512 when a compliance requirement mandates a wider digest. Use Keccak-256 for Ethereum
-        and EVM-compatible chains. Use SHA3-256 as a modern alternative to SHA-256 that is immune to length-extension
-        attacks. Use RIPEMD-160 for Bitcoin addresses or OpenPGP. Use xxHash3 for high-throughput non-cryptographic
-        checksums.
+        fast. Use BLAKE3-256 when throughput is a priority and protocol compatibility is not a constraint. Use SHA-384
+        or SHA-512 when a compliance requirement mandates a wider digest. Use Keccak-256 for Ethereum and EVM-compatible
+        chains. Use SHA3-256 as a modern alternative to SHA-256 that is immune to length-extension attacks. Use
+        RIPEMD-160 for Bitcoin addresses or OpenPGP. Use xxHash3 for high-throughput non-cryptographic checksums.
       </p>
 
       <h3>Are these hashes safe for passwords?</h3>
@@ -401,6 +412,98 @@
         support, and is the most recognisable member of the family. SHA3-384 and SHA3-512 provide wider digests and
         higher capacity for security-sensitive contexts. SHA3-224 should only be chosen in environments where a smaller
         digest size is a strict requirement.
+      </p>
+    </div>
+
+    <!-- BLAKE panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-blake" aria-labelledby="faq-tab-blake">
+      <h3>What is BLAKE?</h3>
+      <p>
+        BLAKE is a family of high-speed cryptographic hash functions. BLAKE2, released in 2013 by Jean-Philippe
+        Aumasson, Samuel Neves, Zooko Wilcox-O'Hearn, and Christian Winnerlein, improved on its predecessor and became
+        one of the fastest secure hash functions available — outperforming MD5, SHA-1, SHA-2, and SHA-3 on modern 64-bit
+        hardware while offering equivalent or stronger security guarantees. BLAKE3, released in 2020 by Jack O'Connor
+        and the same team, is a full redesign that is faster still and adds built-in support for keying, key derivation,
+        and extensible output.
+      </p>
+
+      <h3>What is BLAKE3?</h3>
+      <p>
+        BLAKE3 uses a binary Merkle tree structure that enables parallelism across multiple CPU cores and SIMD lanes,
+        making it significantly faster than BLAKE2 on multi-core hardware. It also unifies hashing, keyed hashing, key
+        derivation, and pseudo-random generation into a single algorithm. BLAKE3 is an
+        <a href="https://en.wikipedia.org/wiki/Extendable-output_function" target="_blank" rel="noopener noreferrer"
+          >XOF (extensible output function)</a
+        >
+        by design — its output length is not fixed at 256 bits but can be extended arbitrarily.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="BLAKE variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Platform</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2b-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Platform">64-bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">SHA-256 drop-in replacement, high-throughput integrity checks</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2b-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Platform">64-bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">High-security contexts, archival hashing, wide digest requirement</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2s-128</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Platform">32-bit</td>
+            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
+            <td data-label="Common use">Constrained environments requiring a compact digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2s-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Platform">32-bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Embedded and 32-bit platforms, Noise protocol, WireGuard</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE3-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Platform">Any</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">General-purpose hashing, file integrity, content addressing</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE3-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Platform">Any</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Extended XOF output, wide digest requirements</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which BLAKE variant should I use?</h3>
+      <p>
+        BLAKE3-256 is the right choice for new projects where raw throughput matters and protocol compatibility is not a
+        constraint — its unified API simplifies implementations and it is the fastest of the six. BLAKE2b-256 is the
+        best SHA-256 drop-in replacement when targeting a protocol or system that already specifies BLAKE2. BLAKE2s-256
+        is the correct choice for 32-bit microcontrollers and protocols that mandate a 32-bit-friendly design, such as
+        <a href="https://noiseprotocol.org/" target="_blank" rel="noopener noreferrer">Noise</a> and
+        <a href="https://www.wireguard.com/" target="_blank" rel="noopener noreferrer">WireGuard</a>. The wider variants
+        (BLAKE2b-512, BLAKE3-512) should only be chosen when a larger digest is a strict requirement.
       </p>
     </div>
 
