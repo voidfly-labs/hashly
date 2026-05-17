@@ -1,7 +1,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "RIPEMD",
+  "name": "RIPEMDKit",
   "url": "https://www.ripemd.com/",
   "description": "Browser-based RIPEMD hash calculator supporting RIPEMD, RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320. All computation is local — no data is transmitted.",
   "headline": "RIPEMD-160 Hash Calculator",
@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "RIPEMD",
+    "name": "RIPEMDKit",
     "url": "https://www.ripemd.com/"
   }
 }

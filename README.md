@@ -22,7 +22,7 @@ history, permalinks, and file downloads.
 | `hashly/`   | hashly.org  | All 30 non-CRC algorithms (aggregator) |
 | `keccakkit/` | keccak.app  | Keccak-224/256/384/512                 |
 | `md5kit/`   | md5kit.com  | MD2, MD4, MD5                          |
-| `ripemd/`   | ripemd.com  | RIPEMD-128/160/256/320                 |
+| `ripemdkit/` | ripemd.com  | RIPEMD-128/160/256/320                 |
 | `sha2kit/`  | sha256.app  | SHA-1, SHA-224/256/384/512             |
 | `sha3kit/`  | sha3kit.com | SHA3-224/256/384/512                   |
 | `xxhashkit/` | xxhash.dev  | XXH3/32/64/128                         |

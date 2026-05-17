@@ -3,7 +3,7 @@ import { initApp } from '@core/init/app.js';
 import CryptoApi from 'crypto-api/src/crypto-api.mjs';
 
 const APP_CONFIG = {
-  appName: 'ripemd',
+  appName: 'ripemdkit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
   defaultDisabledAlgos: [],
