@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "SHA3Kit",
-    "url": "https://www.sha3kit.com/"
+    "name": "Voidfly Labs",
+    "url": "https://www.voidfly.com/"
   }
 }

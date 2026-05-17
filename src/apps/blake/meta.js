@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.blake3.app/',
   ogImage: 'https://www.blake3.app/og-image.png',
   siteName: 'BLAKEKit',
-  author: 'BLAKEKit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.blake3.app',
   brandTitleHtml: '<span>BLAKE</span>Kit',
   footerLabel: 'BLAKE2/3',

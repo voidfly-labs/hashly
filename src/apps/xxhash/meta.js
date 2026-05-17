@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.xxhash.dev/',
   ogImage: 'https://www.xxhash.dev/og-image.png',
   siteName: 'xxHashKit',
-  author: 'xxHashKit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.xxhash.dev',
   brandTitleHtml: '<span>xx</span>HashKit',
   footerLabel: 'xxHash',

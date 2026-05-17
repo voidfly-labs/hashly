@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.ripemd.com/',
   ogImage: 'https://www.ripemd.com/og-image.png',
   siteName: 'RIPEMDKit',
-  author: 'RIPEMDKit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.ripemd.com',
   brandTitleHtml: '<span>RIPEMD</span>Kit',
   footerLabel: 'RIPEMD',

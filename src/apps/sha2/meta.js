@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.sha256.app/',
   ogImage: 'https://www.sha256.app/og-image.png',
   siteName: 'SHA2Kit',
-  author: 'SHA2Kit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.sha256.app',
   brandTitleHtml: '<span>SHA2</span>Kit',
   footerLabel: 'SHA-1/2',

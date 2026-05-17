@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.md5kit.com/',
   ogImage: 'https://www.md5kit.com/og-image.png',
   siteName: 'MD5Kit',
-  author: 'MD5Kit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.md5kit.com',
   brandTitleHtml: '<span>MD5</span>Kit',
   footerLabel: 'MD4/5',

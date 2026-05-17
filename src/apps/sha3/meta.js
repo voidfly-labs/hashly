@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.sha3kit.com/',
   ogImage: 'https://www.sha3kit.com/og-image.png',
   siteName: 'SHA3Kit',
-  author: 'SHA3Kit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.sha3kit.com',
   brandTitleHtml: '<span>SHA3</span>Kit',
   footerLabel: 'SHA-3',

@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "SHA2Kit",
-    "url": "https://www.sha256.app/"
+    "name": "Voidfly Labs",
+    "url": "https://www.voidfly.com/"
   }
 }

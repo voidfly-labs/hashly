@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.crckit.com/',
   ogImage: 'https://www.crckit.com/og-image.png',
   siteName: 'CRCKit',
-  author: 'CRCKit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.crckit.com',
   brandTitleHtml: '<span>CRC</span>Kit',
   footerLabel: 'CRC',

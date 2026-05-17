@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.keccak.app/',
   ogImage: 'https://www.keccak.app/og-image.png',
   siteName: 'KeccakKit',
-  author: 'KeccakKit',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.keccak.app',
   brandTitleHtml: '<span>Keccak</span>Kit',
   footerLabel: 'Keccak',

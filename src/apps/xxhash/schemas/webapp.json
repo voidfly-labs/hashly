@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "xxHashKit",
-    "url": "https://www.xxhash.dev/"
+    "name": "Voidfly Labs",
+    "url": "https://www.voidfly.com/"
   }
 }

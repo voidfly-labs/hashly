@@ -6,7 +6,7 @@ export default {
   canonicalUrl: 'https://www.hashly.org/',
   ogImage: 'https://www.hashly.org/og-image.png',
   siteName: 'Hashly',
-  author: 'Hashly',
+  author: 'Voidfly Labs',
   brandUrl: 'https://www.hashly.org',
   brandTitleHtml: '<span>Hash</span>ly',
   skipLinkText: 'Skip to hash calculator',

@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "MD5Kit",
-    "url": "https://www.md5kit.com/"
+    "name": "Voidfly Labs",
+    "url": "https://www.voidfly.com/"
   }
 }
