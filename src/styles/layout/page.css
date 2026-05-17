@@ -39,8 +39,8 @@ main {
        the result rows. opacity slightly reduced so the row reads as supporting
        metadata rather than competing with the h1. */
 .page-heading__algos {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--badge-min-width, 82px), 1fr));
   gap: 6px;
   margin-top: 12px;
 }

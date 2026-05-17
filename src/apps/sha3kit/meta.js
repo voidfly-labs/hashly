@@ -9,6 +9,7 @@ export default {
   author: 'SHA3Kit',
   brandUrl: 'https://www.sha3kit.com',
   brandTitleHtml: '<span>SHA3</span>Kit',
+  footerLabel: 'SHA-3',
   skipLinkText: 'Skip to SHA3-256 hash calculator',
   mainAriaLabel: 'SHA3-256 hash calculator',
   pageH1Html: '<span>SHA3-256</span> Hash Calculator',

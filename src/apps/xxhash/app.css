@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 54px;
+
   /* Algorithm badge palette — 4-hue rainbow spread, light theme.
          Spectral progression matches algo order (32-bit → 128-bit):
            XXH32  → amber       (~35°)  — smallest / 1st-gen 32-bit
@@ -25,10 +27,6 @@
   --badge-xxhash3-text: var(--accent);
   --badge-xxhash128-bg: rgba(160, 90, 255, 0.14);
   --badge-xxhash128-text: #c090ff;
-}
-
-.algo-badge {
-  min-width: 54px;
 }
 
 .history-table__algo {

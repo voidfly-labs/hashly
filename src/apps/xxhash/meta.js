@@ -9,6 +9,7 @@ export default {
   author: 'xxHash',
   brandUrl: 'https://www.xxhash.dev',
   brandTitleHtml: '<span>xx</span>Hash',
+  footerLabel: 'xxHash',
   skipLinkText: 'Skip to xxHash64 hash calculator',
   mainAriaLabel: 'xxHash64 hash calculator',
   pageH1Html: '<span>xxHash64</span> Hash Calculator',

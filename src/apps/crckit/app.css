@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 114px;
+
   /* Algorithm badge palette — 23-hue spectral spread, light theme.
          Hues spaced evenly ~13° apart from orange (~28°) to rose (~314°):
            CRC-8 (1-Wire)   → orange        (~28°)
@@ -120,10 +122,6 @@
   --badge-crc64xz-text: #f07078;
   --badge-crc82darc-bg: rgba(210, 45, 55, 0.14);
   --badge-crc82darc-text: #f07070;
-}
-
-.algo-badge {
-  min-width: 114px;
 }
 
 .history-table__algo {

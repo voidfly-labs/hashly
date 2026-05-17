@@ -9,6 +9,7 @@ export default {
   author: 'BLAKEKit',
   brandUrl: 'https://www.blake3.app',
   brandTitleHtml: '<span>BLAKE</span>Kit',
+  footerLabel: 'BLAKE2/3',
   skipLinkText: 'Skip to BLAKE3 hash calculator',
   mainAriaLabel: 'BLAKE3 hash calculator',
   pageH1Html: '<span>BLAKE3</span> Hash Calculator',

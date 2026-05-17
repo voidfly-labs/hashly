@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 75px;
+
   /* Algorithm badge palette — 4-hue spectral spread, light theme.
          Full rainbow coverage:
            Keccak-224 → amber-orange (~35°)  — smallest digest
@@ -25,10 +27,6 @@
   --badge-keccak384-text: #8898ff;
   --badge-keccak512-bg: rgba(160, 90, 255, 0.14);
   --badge-keccak512-text: #c090ff;
-}
-
-.algo-badge {
-  min-width: 75px;
 }
 
 .history-table__algo {

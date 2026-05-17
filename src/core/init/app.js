@@ -1,4 +1,5 @@
 import { Theme } from '../theme/manager.js';
+import { NavMenu } from '../components/nav-menu.js';
 import { FaqSection } from '../sections/faq.js';
 import { History } from '../components/history.js';
 import { TextSection } from '../sections/text.js';
@@ -53,6 +54,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
   document.addEventListener('DOMContentLoaded', () => {
     History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
     Theme.init();
+    NavMenu.init();
     FaqSection.init();
     History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
     History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');

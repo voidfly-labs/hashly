@@ -2,9 +2,10 @@ import { execSync } from 'node:child_process';
 import { rmSync, existsSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { APPS_META } from './apps-meta.js';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const APPS = ['blakekit', 'crckit', 'hashly', 'keccak', 'md5kit', 'ripemd', 'sha2kit', 'sha3kit', 'xxhash'];
+const APPS = Object.keys(APPS_META);
 
 function buildApp(app) {
   execSync('npx vite build', {

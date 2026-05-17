@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 64px;
+
   /* Algorithm badge palette — 4-hue spectral spread, light theme.
          Full rainbow coverage:
            SHA3-224 → amber-orange (~35°)  — smallest digest
@@ -25,10 +27,6 @@
   --badge-sha3384-text: #c090ff;
   --badge-sha3512-bg: rgba(255, 80, 180, 0.13);
   --badge-sha3512-text: #ff80d0;
-}
-
-.algo-badge {
-  min-width: 64px;
 }
 
 .history-table__algo {

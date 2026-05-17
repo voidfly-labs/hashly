@@ -10,14 +10,17 @@ import xxhash from '../src/apps/xxhash/meta.js';
 
 const metas = { blakekit, crckit, hashly, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
 
+// The suite index app — avoid listing as a peer tool
+const SUITE_APP = 'hashly';
+
 export const APPS_META = Object.fromEntries(
   Object.entries(metas).map(([id, meta]) => [
     id,
     {
       ...meta,
       moreToolsLinks: Object.entries(metas)
-        .filter(([i]) => i !== id)
-        .map(([, meta]) => ({ text: meta.siteName, href: meta.brandUrl })),
+        .filter(([i]) => i !== id && i !== SUITE_APP)
+        .map(([, meta]) => ({ text: meta.footerLabel, href: meta.brandUrl })),
     },
   ]),
 );

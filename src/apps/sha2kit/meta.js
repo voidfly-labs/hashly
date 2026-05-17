@@ -9,6 +9,7 @@ export default {
   author: 'SHA2Kit',
   brandUrl: 'https://www.sha256.app',
   brandTitleHtml: '<span>SHA2</span>Kit',
+  footerLabel: 'SHA-1/2',
   skipLinkText: 'Skip to SHA hash calculator',
   mainAriaLabel: 'SHA-256 hash calculator',
   pageH1Html: '<span>SHA-256</span> Hash Calculator',

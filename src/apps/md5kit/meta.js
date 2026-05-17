@@ -9,6 +9,7 @@ export default {
   author: 'MD5Kit',
   brandUrl: 'https://www.md5kit.com',
   brandTitleHtml: '<span>MD5</span>Kit',
+  footerLabel: 'MD4/5',
   skipLinkText: 'Skip to MD5 hash calculator',
   mainAriaLabel: 'MD5 hash calculator',
   pageH1Html: '<span>MD5</span> Hash Calculator',

@@ -9,6 +9,7 @@ export default {
   author: 'Keccak',
   brandUrl: 'https://www.keccak.app',
   brandTitleHtml: '<span>Kec</span>cak',
+  footerLabel: 'Keccak',
   skipLinkText: 'Skip to Keccak-256 hash calculator',
   mainAriaLabel: 'Keccak-256 hash calculator',
   pageH1Html: '<span>Keccak-256</span> Hash Calculator',

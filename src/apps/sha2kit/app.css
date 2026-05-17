@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 58px;
+
   /* Algorithm badge palette — 5-hue spectral spread, light theme.
          Hues evenly spaced ~30° apart on the colour wheel:
            SHA-1   → green-teal  (~155°)  — warmest / most legacy
@@ -30,10 +32,6 @@
   --badge-sha384-text: #8898ff;
   --badge-sha512-bg: rgba(160, 90, 255, 0.14);
   --badge-sha512-text: #c090ff;
-}
-
-.algo-badge {
-  min-width: 58px;
 }
 
 .history-table__algo {

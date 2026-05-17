@@ -1,0 +1,92 @@
+/* =========================================================================
+       NAV MENU (hamburger toggle + mobile overlay)
+       ========================================================================= */
+
+/* Trigger button */
+.nav-toggle {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 7px;
+  margin-left: 8px;
+  border-radius: var(--radius-sm);
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.nav-toggle:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.nav-toggle__icon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+  display: none;
+}
+
+.nav-toggle__icon--open {
+  display: block;
+}
+
+.header.is-open .nav-toggle__icon--open {
+  display: none;
+}
+
+.header.is-open .nav-toggle__icon--close {
+  display: block;
+}
+
+/* Arrow spacer inside menu link labels */
+.nav-link__arrow {
+  margin: 0 4px;
+}
+
+/* Overlay drawer — hidden on desktop */
+.nav-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (max-width: 600px) {
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-menu {
+    display: flex;
+  }
+
+  .header.is-open .nav-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .nav-menu .header__nav-link {
+    padding: 8px 12px;
+  }
+
+  .nav-menu .header__nav-link + .header__nav-link::before {
+    display: none;
+  }
+}

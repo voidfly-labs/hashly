@@ -16,6 +16,7 @@
 @import './components/tooltip.css';
 @import './components/options.css';
 @import './components/history.css';
+@import './components/nav-menu.css';
 
 /* Sections */
 @import './sections/text.css';

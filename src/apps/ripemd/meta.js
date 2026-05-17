@@ -9,6 +9,7 @@ export default {
   author: 'RIPEMD',
   brandUrl: 'https://www.ripemd.com',
   brandTitleHtml: '<span>RIPE</span>MD',
+  footerLabel: 'RIPEMD',
   skipLinkText: 'Skip to RIPEMD-160 hash calculator',
   mainAriaLabel: 'RIPEMD-160 hash calculator',
   pageH1Html: '<span>RIPEMD-160</span> Hash Calculator',

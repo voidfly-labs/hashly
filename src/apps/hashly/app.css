@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 82px;
+
   /* Algorithm badge palette — 30-hue full spectral spread, light theme.
          Hues exactly 11.1° apart from orange (25°) to deep rose (347°):
            MD2–MD5        → orange → amber → yellow          (25°–47°)
@@ -165,10 +167,6 @@
   --badge-xxh3-text: #f27dac;
   --badge-xxh128-bg: rgba(228, 37, 78, 0.14);
   --badge-xxh128-text: #f27d96;
-}
-
-.algo-badge {
-  min-width: 82px;
 }
 
 .history-table__algo {

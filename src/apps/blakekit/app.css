@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 82px;
+
   /* Algorithm badge palette — 6-hue spectral spread, light theme.
          Full rainbow coverage (~48° apart):
            BLAKE2b-256 → amber        (~35°)
@@ -35,10 +37,6 @@
   --badge-blake3256-text: var(--accent);
   --badge-blake3512-bg: rgba(160, 90, 255, 0.14);
   --badge-blake3512-text: #c090ff;
-}
-
-.algo-badge {
-  min-width: 76px;
 }
 
 .history-table__algo {

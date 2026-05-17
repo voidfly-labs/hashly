@@ -14,8 +14,9 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   border-radius: 4px;
-  padding: 1px 5px;
+  padding: 4px 5px;
   white-space: nowrap;
+  min-width: var(--badge-min-width, 82px);
   flex-shrink: 0;
   user-select: none;
   opacity: 0.82;

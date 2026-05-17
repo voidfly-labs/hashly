@@ -1,4 +1,6 @@
 :root {
+  --badge-min-width: 75px;
+
   /* Algorithm badge palette — 4-hue spectral spread, light theme.
          Full rainbow coverage including green:
            RIPEMD-128 → green-teal  (~150°)  — compact / legacy
@@ -25,10 +27,6 @@
   --badge-ripemd256-text: #8898ff;
   --badge-ripemd320-bg: rgba(160, 90, 255, 0.14);
   --badge-ripemd320-text: #c090ff;
-}
-
-.algo-badge {
-  min-width: 75px;
 }
 
 .history-table__algo {

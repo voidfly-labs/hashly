@@ -9,6 +9,7 @@ export default {
   author: 'CRCKit',
   brandUrl: 'https://www.crckit.com',
   brandTitleHtml: '<span>CRC</span>Kit',
+  footerLabel: 'CRC',
   skipLinkText: 'Skip to CRC-32 checksum calculator',
   mainAriaLabel: 'CRC-32 checksum calculator',
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',
