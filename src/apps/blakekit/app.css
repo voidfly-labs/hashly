@@ -1,0 +1,88 @@
+:root {
+  /* Algorithm badge palette — 6-hue spectral spread, light theme.
+         Full rainbow coverage (~48° apart):
+           BLAKE2b-256 → amber        (~35°)
+           BLAKE2b-512 → yellow-green (~83°)
+           BLAKE2s-128 → green        (~131°)
+           BLAKE2s-256 → teal         (~179°)
+           BLAKE3-256  → blue         (~227°) — most popular, inherits accent family
+           BLAKE3-512  → violet       (~275°) — widest digest */
+  --badge-blake2b256-bg: #fef3e2;
+  --badge-blake2b256-text: #995500;
+  --badge-blake2b512-bg: #f0f9e2;
+  --badge-blake2b512-text: #4a7a10;
+  --badge-blake2s128-bg: #e4f9e6;
+  --badge-blake2s128-text: #0a7830;
+  --badge-blake2s256-bg: #e4f7f9;
+  --badge-blake2s256-text: #0a6478;
+  --badge-blake3256-bg: #ddeafc;
+  --badge-blake3256-text: var(--accent-dim);
+  --badge-blake3512-bg: #eee8fa;
+  --badge-blake3512-text: #6428b4;
+}
+
+[data-theme='dark'] {
+  /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
+  --badge-blake2b256-bg: rgba(255, 180, 60, 0.13);
+  --badge-blake2b256-text: #ffb84d;
+  --badge-blake2b512-bg: rgba(150, 220, 40, 0.13);
+  --badge-blake2b512-text: #a8e060;
+  --badge-blake2s128-bg: rgba(40, 210, 100, 0.13);
+  --badge-blake2s128-text: #60e8a0;
+  --badge-blake2s256-bg: rgba(40, 200, 215, 0.13);
+  --badge-blake2s256-text: #60d8e8;
+  --badge-blake3256-bg: var(--accent-surface);
+  --badge-blake3256-text: var(--accent);
+  --badge-blake3512-bg: rgba(160, 90, 255, 0.14);
+  --badge-blake3512-text: #c090ff;
+}
+
+.algo-badge {
+  min-width: 76px;
+}
+
+.history-table__algo {
+  width: 90px;
+}
+
+.algo-badge[data-algo='BLAKE2b-256'] {
+  color: var(--badge-blake2b256-text);
+  background: var(--badge-blake2b256-bg);
+}
+
+.algo-badge[data-algo='BLAKE2b-512'] {
+  color: var(--badge-blake2b512-text);
+  background: var(--badge-blake2b512-bg);
+}
+
+.algo-badge[data-algo='BLAKE2s-128'] {
+  color: var(--badge-blake2s128-text);
+  background: var(--badge-blake2s128-bg);
+}
+
+.algo-badge[data-algo='BLAKE2s-256'] {
+  color: var(--badge-blake2s256-text);
+  background: var(--badge-blake2s256-bg);
+}
+
+.algo-badge[data-algo='BLAKE3-256'] {
+  color: var(--badge-blake3256-text);
+  background: var(--badge-blake3256-bg);
+}
+
+.algo-badge[data-algo='BLAKE3-512'] {
+  color: var(--badge-blake3512-text);
+  background: var(--badge-blake3512-bg);
+}
+
+@media (max-width: 370px) {
+  .history-table__hash {
+    display: none;
+  }
+  .history-table__time {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+  }
+}

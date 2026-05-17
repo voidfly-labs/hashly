@@ -1,0 +1,246 @@
+<section class="section" id="about" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-info"></use>
+    </svg>
+    Frequently Asked Questions
+  </h2>
+
+  <div class="info" role="region" aria-label="FAQ">
+    <!-- Tab strip — horizontally scrollable with fade-edge affordance -->
+    <div class="info__tabs-wrap" id="faqTabsWrap">
+      <div class="info__tabs" role="tablist" aria-label="FAQ categories" id="faqTablist">
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-general"
+          aria-controls="faq-panel-general"
+          aria-selected="true"
+          data-tab="general"
+        >
+          General
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-blake2"
+          aria-controls="faq-panel-blake2"
+          aria-selected="false"
+          data-tab="blake2"
+        >
+          BLAKE2
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-blake3"
+          aria-controls="faq-panel-blake3"
+          aria-selected="false"
+          data-tab="blake3"
+        >
+          BLAKE3
+        </button>
+      </div>
+    </div>
+
+    <!-- General panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-general" aria-labelledby="faq-tab-general" data-active>
+      <h3>What is a cryptographic hash function?</h3>
+      <p>
+        A cryptographic hash function takes an input of any size and produces a fixed-length digest. Three properties
+        define it: determinism (same input always gives the same output), pre-image resistance (you cannot reverse the
+        hash to recover the input), and collision resistance (it is computationally infeasible to find two different
+        inputs that produce the same digest).
+      </p>
+
+      <h3>What is BLAKE?</h3>
+      <p>
+        BLAKE is a family of high-speed cryptographic hash functions. BLAKE2, released in 2013, improved on its
+        predecessor and became one of the fastest secure hash functions available — outperforming MD5, SHA-1, SHA-2, and
+        SHA-3 on modern 64-bit hardware while offering equivalent or stronger security guarantees. BLAKE3, released in
+        2020, is a full redesign that is faster still and adds built-in support for keying, key derivation, and
+        extensible output.
+      </p>
+
+      <h3>Are BLAKE hashes safe for passwords?</h3>
+      <p>
+        No. All BLAKE variants are designed to be fast, which is ideal for integrity checking but harmful for password
+        storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a
+        purpose-built slow algorithm:
+        <a href="https://en.wikipedia.org/wiki/Bcrypt" target="_blank" rel="noopener noreferrer">bcrypt</a>,
+        <a href="https://en.wikipedia.org/wiki/Scrypt" target="_blank" rel="noopener noreferrer">scrypt</a>, or
+        <a href="https://en.wikipedia.org/wiki/Argon2" target="_blank" rel="noopener noreferrer">Argon2</a>, all of
+        which incorporate salting and adjustable work factors.
+      </p>
+
+      <h3>How does BLAKEKit ensure privacy?</h3>
+      <p>
+        All hashing runs entirely inside your browser using
+        <a href="https://www.github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
+        by Daninet. No text, no file content, and no hash output is ever transmitted to any server. You can verify this
+        by running the tool while offline — it works identically.
+      </p>
+
+      <h3>What output formats are available?</h3>
+      <p>
+        Hex (lowercase hexadecimal) is the most common format used in tooling and documentation. HEX is the same in
+        uppercase. Base64 encodes the raw digest bytes as a compact string using the standard Base64 alphabet — note
+        that the <code>+</code> and <code>/</code> characters are not URL-safe and require percent-encoding when
+        embedded in a URL; use hex instead if URL embedding is needed. Binary shows each byte's individual bits, useful
+        for educational and low-level inspection purposes.
+      </p>
+    </div>
+
+    <!-- BLAKE2 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-blake2" aria-labelledby="faq-tab-blake2">
+      <h3>What is BLAKE2?</h3>
+      <p>
+        BLAKE2 is a cryptographic hash function published in 2013 by Jean-Philippe Aumasson, Samuel Neves, Zooko
+        Wilcox-O'Hearn, and Christian Winnerlein. It is based on the BLAKE finalist from the SHA-3 competition, itself
+        derived from Dan Bernstein's ChaCha stream cipher. BLAKE2 is faster than MD5 on 64-bit platforms without
+        sacrificing security, and is widely used in password managers, package managers, and content-addressed storage
+        systems.
+      </p>
+
+      <h3>What is the difference between BLAKE2b and BLAKE2s?</h3>
+      <p>
+        BLAKE2b is optimised for 64-bit platforms. It operates on 64-bit words, uses 10 rounds, and supports output
+        sizes from 1 to 512 bits. BLAKE2s is optimised for 32-bit and embedded platforms. It operates on 32-bit words,
+        uses 10 rounds, and supports output sizes from 1 to 256 bits. On a modern 64-bit CPU, BLAKE2b is significantly
+        faster; on microcontrollers and other 32-bit hardware, BLAKE2s is the correct choice.
+      </p>
+
+      <h3>BLAKE2 variant comparison</h3>
+      <table class="info-table" aria-label="BLAKE2 variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Word size</th>
+            <th>Rounds</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2b-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Word size">64-bit</td>
+            <td data-label="Rounds">10</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">SHA-256 drop-in replacement, high-throughput integrity checks</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2b-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Word size">64-bit</td>
+            <td data-label="Rounds">10</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">High-security contexts, archival hashing, wide digest requirement</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2s-128</td>
+            <td data-label="Digest">128 bit · 32 hex</td>
+            <td data-label="Word size">32-bit</td>
+            <td data-label="Rounds">10</td>
+            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
+            <td data-label="Common use">Constrained environments requiring a compact digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE2s-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Word size">32-bit</td>
+            <td data-label="Rounds">10</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Embedded and 32-bit platforms, Noise protocol, WireGuard</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which BLAKE2 variant should I use?</h3>
+      <p>
+        On a 64-bit server or desktop, BLAKE2b-256 is the right default — it offers the same digest width as SHA-256
+        with higher throughput. Use BLAKE2b-512 when a wider digest is required for security or protocol compliance.
+        BLAKE2s-256 is the correct choice for 32-bit microcontrollers and protocols that mandate a 32-bit-friendly
+        design, such as
+        <a href="https://noiseprotocol.org/" target="_blank" rel="noopener noreferrer">Noise</a> and
+        <a href="https://www.wireguard.com/" target="_blank" rel="noopener noreferrer">WireGuard</a>. BLAKE2s-128
+        should only be chosen where a compact digest is a strict requirement.
+      </p>
+    </div>
+
+    <!-- BLAKE3 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-blake3" aria-labelledby="faq-tab-blake3">
+      <h3>What is BLAKE3?</h3>
+      <p>
+        BLAKE3 is a cryptographic hash function released in 2020 by Jack O'Connor, Jean-Philippe Aumasson, Samuel
+        Neves, and Zooko Wilcox-O'Hearn. It is a complete redesign rather than an iteration of BLAKE2. BLAKE3 uses a
+        binary Merkle tree structure that enables parallelism across multiple CPU cores and SIMD lanes, making it
+        significantly faster than BLAKE2 on multi-core hardware. It also unifies hashing, keyed hashing, key
+        derivation, and pseudo-random generation into a single algorithm.
+      </p>
+
+      <h3>How is BLAKE3 different from BLAKE2?</h3>
+      <p>
+        The core differences are architecture and speed. BLAKE2 uses a sequential compression function; BLAKE3 builds a
+        Merkle tree over input chunks that can be processed in parallel, unlocking substantial throughput gains on
+        modern hardware. BLAKE3 also reduces the round count from 10 to 7 per chunk, relying on parallelism rather than
+        per-byte work for security margin. Additionally, BLAKE3 is an
+        <a href="https://en.wikipedia.org/wiki/Extendable-output_function" target="_blank" rel="noopener noreferrer"
+          >XOF (extensible output function)</a
+        >
+        by design — its output length is not fixed at 256 bits but can be extended arbitrarily.
+      </p>
+
+      <h3>BLAKE3 variant comparison</h3>
+      <table class="info-table" aria-label="BLAKE3 variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Rounds</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE3-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Rounds">7</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">General-purpose hashing, file integrity, content addressing</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">BLAKE3-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Rounds">7</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Extended XOF output, wide digest requirements</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Is BLAKE3 secure?</h3>
+      <p>
+        BLAKE3-256 is considered secure against all known practical attacks. It provides 128 bits of collision
+        resistance and 256 bits of pre-image resistance. The algorithm has received significant cryptanalytic scrutiny
+        since its release, and no practical weaknesses have been found. Its reduced round count compared to BLAKE2 is
+        deliberate — the security margin comes from its Merkle tree structure rather than sequential rounds.
+      </p>
+
+      <h3>Should I use BLAKE3 or BLAKE2 for new projects?</h3>
+      <p>
+        BLAKE3 is the right choice for new projects where raw throughput matters and protocol compatibility is not a
+        constraint. Its unified API for hashing, keyed hashing, and key derivation simplifies implementations. BLAKE2
+        remains the better option when targeting a protocol or system that already specifies it — such as WireGuard
+        (BLAKE2s) or Zcash (BLAKE2b) — or when deploying to hardware without multi-core or SIMD support, where BLAKE3's
+        parallelism advantage disappears.
+      </p>
+    </div>
+  </div>
+</section>

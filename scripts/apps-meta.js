@@ -1,3 +1,4 @@
+import blakekit from '../src/apps/blakekit/meta.js';
 import crckit from '../src/apps/crckit/meta.js';
 import hashly from '../src/apps/hashly/meta.js';
 import keccak from '../src/apps/keccak/meta.js';
@@ -7,7 +8,7 @@ import sha2kit from '../src/apps/sha2kit/meta.js';
 import sha3kit from '../src/apps/sha3kit/meta.js';
 import xxhash from '../src/apps/xxhash/meta.js';
 
-const metas = { crckit, hashly, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
+const metas = { blakekit, crckit, hashly, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
 
 export const APPS_META = Object.fromEntries(
   Object.entries(metas).map(([id, meta]) => [

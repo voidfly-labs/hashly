@@ -1,0 +1,54 @@
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is BLAKE?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BLAKE is a family of cryptographic hash functions. BLAKE2, released in 2013, is faster than MD5, SHA-1, SHA-2, and SHA-3 on 64-bit platforms while providing strong security. It comes in two variants: BLAKE2b, optimised for 64-bit systems and producing digests up to 512 bits, and BLAKE2s, optimised for 32-bit and embedded systems with a maximum output of 256 bits. BLAKE3, released in 2020, is a complete redesign that is significantly faster than BLAKE2 and adds features such as built-in keying, derivation mode, and extensible output."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is BLAKE3 used for?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BLAKE3-256 is widely used for file integrity verification, content-addressed storage, key derivation, and as a general-purpose hash where high throughput matters. It is used in projects such as the Zig programming language, the IPFS ecosystem, and various security tools. Its extended-output mode (XOF) also makes it suitable as a stream cipher and pseudo-random function."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between BLAKE2b and BLAKE2s?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BLAKE2b is optimised for 64-bit platforms and supports output sizes from 1 to 512 bits. BLAKE2s is optimised for 32-bit and embedded systems and supports output sizes from 1 to 256 bits. For most server and desktop use cases, BLAKE2b-256 or BLAKE2b-512 are the right choice. BLAKE2s-256 is preferred in constrained environments or protocols that require a 32-bit-friendly design."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which BLAKE variant should I use?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BLAKE3-256 is the best default for new projects — it is faster than BLAKE2, has a simpler API, and includes built-in support for keying and key derivation. Use BLAKE2b-256 or BLAKE2b-512 when targeting a system or protocol that specifically requires BLAKE2. Use BLAKE2s-256 on 32-bit or embedded platforms. BLAKE2s-128 and BLAKE3-512 address specific niche requirements such as constrained digest sizes or extended output."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are BLAKE hashes safe for passwords?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. All BLAKE variants are designed to be fast, which is ideal for integrity checking but harmful for password storage — a fast hash lets attackers brute-force millions of candidates per second. For passwords, use a purpose-built slow algorithm such as bcrypt, scrypt, or Argon2, all of which incorporate salting and adjustable work factors."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does BLAKEKit protect my data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "All hashing runs entirely inside your browser using hash-wasm by Daninet, a WebAssembly-accelerated library. No text, file content, or hash output is ever transmitted to any server."
+      }
+    }
+  ]
+}

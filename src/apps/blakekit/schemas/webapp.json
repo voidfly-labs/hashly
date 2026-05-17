@@ -1,0 +1,17 @@
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "BLAKEKit",
+  "url": "https://www.blake3.app/",
+  "description": "Browser-based BLAKE hash calculator supporting BLAKE2b-256, BLAKE2b-512, BLAKE2s-128, BLAKE2s-256, BLAKE3-256, and BLAKE3-512. All computation is local — no data is transmitted.",
+  "headline": "BLAKE3 Hash Calculator",
+  "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "Any",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "author": {
+    "@type": "Organization",
+    "name": "BLAKEKit",
+    "url": "https://www.blake3.app/"
+  }
+}
