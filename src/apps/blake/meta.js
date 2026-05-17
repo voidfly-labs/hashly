@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'blakekit-theme',
-  title: 'BLAKE3 Hash Calculator | BLAKEKit',
-  description:
-    'Calculate BLAKE2b, BLAKE2s, and BLAKE3 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.blake3.app/',
-  ogImage: 'https://www.blake3.app/og-image.png',
+  // Brand
   siteName: 'BLAKEKit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.blake3.app',
   brandTitleHtml: '<span>BLAKE</span>Kit',
   footerLabel: 'BLAKE2/3',
-  skipLinkText: 'Skip to BLAKE3 hash calculator',
-  mainAriaLabel: 'BLAKE3 hash calculator',
+
+  // SEO
+  title: 'BLAKE3 Hash Calculator | BLAKEKit',
+  description:
+    'Calculate BLAKE2b, BLAKE2s, and BLAKE3 hashes in your browser. Text and file input. No uploads, no tracking.',
+  canonicalUrl: 'https://www.blake3.app/',
+  ogImage: 'https://www.blake3.app/og-image.png',
+
+  // Page
   pageH1Html: '<span>BLAKE3</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to BLAKE3 hash calculator',
+  mainAriaLabel: 'BLAKE3 hash calculator',
+
+  // Runtime
+  themeStorageKey: 'blakekit-theme',
+
+  // Build
+  srcDir: 'blake',
   legal: {
     domain: 'blake3.app',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],

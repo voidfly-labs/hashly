@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'sha3kit-theme',
-  title: 'SHA3-256 Hash Calculator | SHA3Kit',
-  description:
-    'Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.sha3kit.com/',
-  ogImage: 'https://www.sha3kit.com/og-image.png',
+  // Brand
   siteName: 'SHA3Kit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.sha3kit.com',
   brandTitleHtml: '<span>SHA3</span>Kit',
   footerLabel: 'SHA-3',
-  skipLinkText: 'Skip to SHA3-256 hash calculator',
-  mainAriaLabel: 'SHA3-256 hash calculator',
+
+  // SEO
+  title: 'SHA3-256 Hash Calculator | SHA3Kit',
+  description:
+    'Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking.',
+  canonicalUrl: 'https://www.sha3kit.com/',
+  ogImage: 'https://www.sha3kit.com/og-image.png',
+
+  // Page
   pageH1Html: '<span>SHA3-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to SHA3-256 hash calculator',
+  mainAriaLabel: 'SHA3-256 hash calculator',
+
+  // Runtime
+  themeStorageKey: 'sha3kit-theme',
+
+  // Build
+  srcDir: 'sha3',
   legal: {
     domain: 'sha3kit.com',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],

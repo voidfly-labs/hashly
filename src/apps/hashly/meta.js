@@ -1,19 +1,31 @@
 export default {
-  themeStorageKey: 'hashly-theme',
+  // Brand
+  siteName: 'Hashly',
+  author: 'Voidfly Labs',
+  brandUrl: 'https://www.hashly.org',
+  brandTitleHtml: '<span>Hash</span>ly',
+
+  // SEO
   title: 'Online Hash Calculator | Hashly',
   description:
     'Calculate MD5, SHA-256, BLAKE3, Keccak-256, RIPEMD-160, and 25 more hash algorithms in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.hashly.org/',
   ogImage: 'https://www.hashly.org/og-image.png',
-  siteName: 'Hashly',
-  author: 'Voidfly Labs',
-  brandUrl: 'https://www.hashly.org',
-  brandTitleHtml: '<span>Hash</span>ly',
-  skipLinkText: 'Skip to hash calculator',
-  mainAriaLabel: 'Multi-algorithm hash calculator',
+
+  // Page
   pageH1Html: '<span>Online Hash</span> Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to hash calculator',
+  mainAriaLabel: 'Multi-algorithm hash calculator',
+
+  // Runtime
+  themeStorageKey: 'hashly-theme',
+
+  // Build
+  srcDir: 'hashly',
   legal: {
     domain: 'hashly.org',
     libraries: [

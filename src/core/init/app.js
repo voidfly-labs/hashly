@@ -69,5 +69,15 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
 
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+    const versionEl = document.querySelector('.footer__version[data-build-date]');
+    if (versionEl) {
+      const tip = `Built on ${versionEl.dataset.buildDate}`;
+      versionEl.addEventListener('mouseenter', () => Tooltip.show(versionEl, tip));
+      versionEl.addEventListener('mouseleave', () => Tooltip.hide());
+      versionEl.addEventListener('click', () => Tooltip.show(versionEl, tip));
+      versionEl.addEventListener('focus', () => Tooltip.show(versionEl, tip));
+      versionEl.addEventListener('blur', () => Tooltip.hide());
+    }
   });
 }

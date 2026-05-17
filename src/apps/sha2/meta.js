@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'sha2kit-theme',
-  title: 'SHA-256 Hash Calculator | SHA2Kit',
-  description:
-    'Calculate SHA-224, SHA-256, SHA-384, SHA-512, and SHA-1 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.sha256.app/',
-  ogImage: 'https://www.sha256.app/og-image.png',
+  // Brand
   siteName: 'SHA2Kit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.sha256.app',
   brandTitleHtml: '<span>SHA2</span>Kit',
   footerLabel: 'SHA-1/2',
-  skipLinkText: 'Skip to SHA hash calculator',
-  mainAriaLabel: 'SHA-256 hash calculator',
+
+  // SEO
+  title: 'SHA-256 Hash Calculator | SHA2Kit',
+  description:
+    'Calculate SHA-224, SHA-256, SHA-384, SHA-512, and SHA-1 hashes in your browser. Text and file input. No uploads, no tracking.',
+  canonicalUrl: 'https://www.sha256.app/',
+  ogImage: 'https://www.sha256.app/og-image.png',
+
+  // Page
   pageH1Html: '<span>SHA-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to SHA hash calculator',
+  mainAriaLabel: 'SHA-256 hash calculator',
+
+  // Runtime
+  themeStorageKey: 'sha2kit-theme',
+
+  // Build
+  srcDir: 'sha2',
   legal: {
     domain: 'sha256.app',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],

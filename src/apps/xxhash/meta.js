@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'xxhash-theme',
-  title: 'xxHash64 Hash Calculator | xxHashKit',
-  description:
-    'Calculate xxHash32, xxHash64, xxHash3, and xxHash128 checksums in your browser. Instant non-cryptographic hashing — no uploads, no tracking.',
-  canonicalUrl: 'https://www.xxhash.dev/',
-  ogImage: 'https://www.xxhash.dev/og-image.png',
+  // Brand
   siteName: 'xxHashKit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.xxhash.dev',
   brandTitleHtml: '<span>xx</span>HashKit',
   footerLabel: 'xxHash',
-  skipLinkText: 'Skip to xxHash64 hash calculator',
-  mainAriaLabel: 'xxHash64 hash calculator',
+
+  // SEO
+  title: 'xxHash64 Hash Calculator | xxHashKit',
+  description:
+    'Calculate xxHash32, xxHash64, xxHash3, and xxHash128 checksums in your browser. Instant non-cryptographic hashing — no uploads, no tracking.',
+  canonicalUrl: 'https://www.xxhash.dev/',
+  ogImage: 'https://www.xxhash.dev/og-image.png',
+
+  // Page
   pageH1Html: '<span>xxHash64</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to xxHash64 hash calculator',
+  mainAriaLabel: 'xxHash64 hash calculator',
+
+  // Runtime
+  themeStorageKey: 'xxhash-theme',
+
+  // Build
+  srcDir: 'xxhash',
   legal: {
     domain: 'xxhash.dev',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],

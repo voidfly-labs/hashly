@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'crckit-theme',
-  title: 'CRC-32 Checksum Calculator | CRCKit',
-  description:
-    'Calculate CRC-8, CRC-16, CRC-24, CRC-32, CRC-64, CRC-82, and more checksum variants in your browser. No uploads, no tracking.',
-  canonicalUrl: 'https://www.crckit.com/',
-  ogImage: 'https://www.crckit.com/og-image.png',
+  // Brand
   siteName: 'CRCKit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.crckit.com',
   brandTitleHtml: '<span>CRC</span>Kit',
   footerLabel: 'CRC',
-  skipLinkText: 'Skip to CRC-32 checksum calculator',
-  mainAriaLabel: 'CRC-32 checksum calculator',
+
+  // SEO
+  title: 'CRC-32 Checksum Calculator | CRCKit',
+  description:
+    'Calculate CRC-8, CRC-16, CRC-24, CRC-32, CRC-64, CRC-82, and more checksum variants in your browser. No uploads, no tracking.',
+  canonicalUrl: 'https://www.crckit.com/',
+  ogImage: 'https://www.crckit.com/og-image.png',
+
+  // Page
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',
   pageSubtitle: '// instant checksums — no data leaves your browser',
   sectionNoun: 'checksum',
+
+  // Accessibility
+  skipLinkText: 'Skip to CRC-32 checksum calculator',
+  mainAriaLabel: 'CRC-32 checksum calculator',
+
+  // Runtime
+  themeStorageKey: 'crckit-theme',
+
+  // Build
+  srcDir: 'crc',
   legal: {
     domain: 'crckit.com',
     libraries: [{ name: 'js-crc', url: 'https://github.com/emn178/js-crc', author: 'emn178' }],

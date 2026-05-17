@@ -1,20 +1,32 @@
 export default {
-  themeStorageKey: 'md5kit-theme',
-  title: 'MD5 Hash Calculator | MD5Kit',
-  description:
-    'Calculate MD2, MD4, and MD5 hashes in your browser. Text and file input, hex/Base64/binary output. No uploads, no tracking.',
-  canonicalUrl: 'https://www.md5kit.com/',
-  ogImage: 'https://www.md5kit.com/og-image.png',
+  // Brand
   siteName: 'MD5Kit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.md5kit.com',
   brandTitleHtml: '<span>MD5</span>Kit',
   footerLabel: 'MD4/5',
-  skipLinkText: 'Skip to MD5 hash calculator',
-  mainAriaLabel: 'MD5 hash calculator',
+
+  // SEO
+  title: 'MD5 Hash Calculator | MD5Kit',
+  description:
+    'Calculate MD2, MD4, and MD5 hashes in your browser. Text and file input, hex/Base64/binary output. No uploads, no tracking.',
+  canonicalUrl: 'https://www.md5kit.com/',
+  ogImage: 'https://www.md5kit.com/og-image.png',
+
+  // Page
   pageH1Html: '<span>MD5</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+
+  // Accessibility
+  skipLinkText: 'Skip to MD5 hash calculator',
+  mainAriaLabel: 'MD5 hash calculator',
+
+  // Runtime
+  themeStorageKey: 'md5kit-theme',
+
+  // Build
+  srcDir: 'md5',
   legal: {
     domain: 'md5kit.com',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],

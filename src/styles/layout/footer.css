@@ -154,7 +154,13 @@
   justify-content: flex-end;
 }
 
-@media (max-width: 600px) {
+.footer__version {
+  opacity: 0.6;
+  font-size: 10.5px;
+  letter-spacing: 0.4px;
+}
+
+@media (max-width: 710px) {
   /* Footer: reduce inner padding and collapse grid to 2-up below brand */
   .footer__inner {
     padding: 22px 16px 18px;
