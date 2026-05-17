@@ -16,7 +16,7 @@ export default {
   sectionNoun: 'hash',
   legal: {
     domain: 'ripemd.com',
-    library: { name: 'crypto-api', url: 'https://github.com/nf404/crypto-api', author: 'nf404' },
+    libraries: [{ name: 'crypto-api', url: 'https://github.com/nf404/crypto-api', author: 'nf404' }],
     privacy: {
       title: 'Privacy Policy | RIPEMD',
       description:

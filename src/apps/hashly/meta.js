@@ -12,11 +12,14 @@ export default {
   skipLinkText: 'Skip to hash calculator',
   mainAriaLabel: 'Multi-algorithm hash calculator',
   pageH1Html: '<span>Online Hash</span> Calculator',
-  pageSubtitle: '// 24 algorithms — no data leaves your browser',
+  pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
   legal: {
     domain: 'hashly.org',
-    library: { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+    libraries: [
+      { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+      { name: 'crypto-api', url: 'https://github.com/nf404/crypto-api', author: 'nf404' },
+    ],
     privacy: {
       title: 'Privacy Policy | Hashly',
       description:

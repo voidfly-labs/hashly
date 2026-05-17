@@ -49,16 +49,16 @@ const ALGORITHMS = [
   { id: 'SHA-256', type: 'wasm', fn: sha256, createFn: createSHA256, bits: 256, hexLen: 64 },
   { id: 'SHA-384', type: 'wasm', fn: sha384, createFn: createSHA384, bits: 384, hexLen: 96 },
   { id: 'SHA-512', type: 'wasm', fn: sha512, createFn: createSHA512, bits: 512, hexLen: 128 },
-  // Keccak family
-  { id: 'Keccak-224', type: 'wasm-keccak', bits: 224, hexLen: 56 },
-  { id: 'Keccak-256', type: 'wasm-keccak', bits: 256, hexLen: 64 },
-  { id: 'Keccak-384', type: 'wasm-keccak', bits: 384, hexLen: 96 },
-  { id: 'Keccak-512', type: 'wasm-keccak', bits: 512, hexLen: 128 },
   // SHA-3 family
   { id: 'SHA3-224', type: 'wasm-sha3', bits: 224, hexLen: 56 },
   { id: 'SHA3-256', type: 'wasm-sha3', bits: 256, hexLen: 64 },
   { id: 'SHA3-384', type: 'wasm-sha3', bits: 384, hexLen: 96 },
   { id: 'SHA3-512', type: 'wasm-sha3', bits: 512, hexLen: 128 },
+  // Keccak family
+  { id: 'Keccak-224', type: 'wasm-keccak', bits: 224, hexLen: 56 },
+  { id: 'Keccak-256', type: 'wasm-keccak', bits: 256, hexLen: 64 },
+  { id: 'Keccak-384', type: 'wasm-keccak', bits: 384, hexLen: 96 },
+  { id: 'Keccak-512', type: 'wasm-keccak', bits: 512, hexLen: 128 },
   // RIPEMD family
   { id: 'RIPEMD-128', type: 'ripemd', cryptoApiId: 'ripemd128', bits: 128, hexLen: 32 },
   { id: 'RIPEMD-160', type: 'ripemd', cryptoApiId: 'ripemd160', bits: 160, hexLen: 40 },

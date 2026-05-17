@@ -10,20 +10,21 @@
 
 ## Overview 
 
-Hashly is a suite of seven standalone hash-calculator apps. 
+Hashly is a suite of eight standalone hash-calculator apps. 
 
 Each app focuses on a specific family of algorithms, with a clean UI and helpful features like
 history, permalinks, and file downloads.
 
-| App        | Domain      | Algorithms                             |
-|------------|-------------|----------------------------------------|
-| `crckit/`  | crckit.com  | 23 CRC variants (CRC-8 through CRC-82) |
-| `keccak/`  | keccak.org  | Keccak-224/256/384/512                 |
-| `md5kit/`  | md5kit.com  | MD2, MD4, MD5                          |
-| `ripemd/`  | ripemd.com  | RIPEMD-128/160/256/320                 |
-| `sha2kit/` | sha256.app  | SHA-1, SHA-224/256/384/512             |
-| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                   |
-| `xxhash/`  | xxhash.dev  | XXH3/32/64/128                         |
+| App        | Domain      | Algorithms                                      |
+|------------|-------------|-------------------------------------------------|
+| `crckit/`  | crckit.com  | 23 CRC variants (CRC-8 through CRC-82)          |
+| `hashly/`  | hashly.org  | All 24 algorithms below (aggregator)            |
+| `keccak/`  | keccak.org  | Keccak-224/256/384/512                          |
+| `md5kit/`  | md5kit.com  | MD2, MD4, MD5                                   |
+| `ripemd/`  | ripemd.com  | RIPEMD-128/160/256/320                          |
+| `sha2kit/` | sha256.app  | SHA-1, SHA-224/256/384/512                      |
+| `sha3kit/` | sha3kit.com | SHA3-224/256/384/512                            |
+| `xxhash/`  | xxhash.dev  | XXH3/32/64/128                                  |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
 
@@ -32,9 +33,9 @@ Each app is a fully self-contained SPA. No server, no tracking, no data leaves t
 _"The best tool for the job is often the simplest one."_
 
 Hashly uses no frameworks, component libraries, or CDN dependencies. 
-Vendor libraries are pre-packaged for hash calculation only, as WASM-backed implementations
+Vendor libraries are used for hash calculation only, as WASM-backed implementations
 offer significant performance gains over pure JS. Graphics are all SVG-based, keeping the bundle 
-lightweight. The target budget is 100–200 kB per app, fully loaded. 
+lightweight. The target budget is 150–250 kB per app, fully loaded. 
 
 ## Requirements
 
@@ -58,7 +59,7 @@ APP=crckit npm run dev
 
 ```bash
 APP=md5kit npm run build   # → dist/md5kit/
-npm run build:all           # build all seven apps → dist/
+npm run build:all           # build all eight apps → dist/
 ```
 
 ### Lint and format
@@ -71,7 +72,7 @@ npm run format
 Pre-commit hooks (Husky + lint-staged) auto-fix JS and format CSS/HTML before each commit. 
 Commit messages must follow [Conventional Commits](https://www.conventionalcommits.org/).
 
-## Techonologies
+## Technologies
 
 - [crypto-api](https://github.com/nf404/crypto-api) — RIPEMD digest implementations
 - [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations (SHA-1, SHA-2, SHA-3, Keccak, MD4/MD5, XXH)

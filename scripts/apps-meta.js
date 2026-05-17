@@ -7,8 +7,6 @@ import sha2kit from '../src/apps/sha2kit/meta.js';
 import sha3kit from '../src/apps/sha3kit/meta.js';
 import xxhash from '../src/apps/xxhash/meta.js';
 
-export const LEGAL_UPDATED_ON = '2026-05-01';
-
 const metas = { crckit, hashly, keccak, md5kit, ripemd, sha2kit, sha3kit, xxhash };
 
 export const APPS_META = Object.fromEntries(
@@ -22,12 +20,3 @@ export const APPS_META = Object.fromEntries(
     },
   ]),
 );
-
-export function getLegalUpdatedLabel() {
-  return new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(LEGAL_UPDATED_ON));
-}

@@ -16,7 +16,7 @@ export default {
   sectionNoun: 'hash',
   legal: {
     domain: 'xxhash.dev',
-    library: { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+    libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],
     privacy: {
       title: 'Privacy Policy | xxHash',
       description:

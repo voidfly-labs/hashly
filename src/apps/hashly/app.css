@@ -5,8 +5,8 @@
            MD2–MD5        → orange → amber → yellow          (~25°–53°)
            SHA-1          → yellow-green                      (~67°)
            SHA-224–512    → lime → green → teal-green         (~81°–123°)
-           Keccak-224–512 → teal → cyan → sky-blue           (~136°–178°)
-           SHA3-224–512   → sky → blue → indigo              (~192°–234°)
+           SHA3-224–512   → teal → cyan → sky-blue           (~136°–178°)
+           Keccak-224–512 → sky → blue → indigo              (~192°–234°)
            RIPEMD-128–320 → indigo-violet → violet → magenta (~248°–290°)
            XXH32–XXH128   → magenta → pink → rose            (~304°–346°) */
 
@@ -32,25 +32,25 @@
   --badge-sha512-bg: #e5f9f3;
   --badge-sha512-text: #0a7065;
 
-  /* Keccak family */
-  --badge-keccak224-bg: #e5f7f9;
-  --badge-keccak224-text: #0a6475;
-  --badge-keccak256-bg: #e5f1f9;
-  --badge-keccak256-text: #0a5482;
-  --badge-keccak384-bg: #e5ebf9;
-  --badge-keccak384-text: #0a4490;
-  --badge-keccak512-bg: #e5e6f9;
-  --badge-keccak512-text: #0e319e;
-
   /* SHA-3 family */
-  --badge-sha3224-bg: #e6e5f9;
-  --badge-sha3224-text: #1c20a0;
-  --badge-sha3256-bg: #e9e5f9;
-  --badge-sha3256-text: #2e15a0;
-  --badge-sha3384-bg: #ede5f9;
-  --badge-sha3384-text: #430ea0;
-  --badge-sha3512-bg: #f1e5f9;
-  --badge-sha3512-text: #5808a0;
+  --badge-sha3224-bg: #e5f7f9;
+  --badge-sha3224-text: #0a6475;
+  --badge-sha3256-bg: #e5f1f9;
+  --badge-sha3256-text: #0a5482;
+  --badge-sha3384-bg: #e5ebf9;
+  --badge-sha3384-text: #0a4490;
+  --badge-sha3512-bg: #e5e6f9;
+  --badge-sha3512-text: #0e319e;
+
+  /* Keccak family */
+  --badge-keccak224-bg: #e6e5f9;
+  --badge-keccak224-text: #1c20a0;
+  --badge-keccak256-bg: #e9e5f9;
+  --badge-keccak256-text: #2e15a0;
+  --badge-keccak384-bg: #ede5f9;
+  --badge-keccak384-text: #430ea0;
+  --badge-keccak512-bg: #f1e5f9;
+  --badge-keccak512-text: #5808a0;
 
   /* RIPEMD family */
   --badge-ripemd128-bg: #f5e5f9;
@@ -98,25 +98,25 @@
   --badge-sha512-bg: rgba(40, 205, 200, 0.13);
   --badge-sha512-text: #68e4e0;
 
-  /* Keccak family */
-  --badge-keccak224-bg: rgba(40, 185, 218, 0.13);
-  --badge-keccak224-text: #68d4ee;
-  --badge-keccak256-bg: rgba(40, 148, 218, 0.13);
-  --badge-keccak256-text: #68b8ee;
-  --badge-keccak384-bg: rgba(40, 108, 218, 0.14);
-  --badge-keccak384-text: #7898f0;
-  --badge-keccak512-bg: rgba(40, 68, 220, 0.14);
-  --badge-keccak512-text: #7878f0;
-
   /* SHA-3 family */
-  --badge-sha3224-bg: rgba(52, 40, 220, 0.14);
-  --badge-sha3224-text: #8080f0;
-  --badge-sha3256-bg: rgba(74, 40, 220, 0.14);
-  --badge-sha3256-text: #8a78f0;
-  --badge-sha3384-bg: rgba(100, 40, 220, 0.14);
-  --badge-sha3384-text: #a070f0;
-  --badge-sha3512-bg: rgba(128, 40, 220, 0.14);
-  --badge-sha3512-text: #b870f0;
+  --badge-sha3224-bg: rgba(40, 185, 218, 0.13);
+  --badge-sha3224-text: #68d4ee;
+  --badge-sha3256-bg: rgba(40, 148, 218, 0.13);
+  --badge-sha3256-text: #68b8ee;
+  --badge-sha3384-bg: rgba(40, 108, 218, 0.14);
+  --badge-sha3384-text: #7898f0;
+  --badge-sha3512-bg: rgba(40, 68, 220, 0.14);
+  --badge-sha3512-text: #7878f0;
+
+  /* Keccak family */
+  --badge-keccak224-bg: rgba(52, 40, 220, 0.14);
+  --badge-keccak224-text: #8080f0;
+  --badge-keccak256-bg: rgba(74, 40, 220, 0.14);
+  --badge-keccak256-text: #8a78f0;
+  --badge-keccak384-bg: rgba(100, 40, 220, 0.14);
+  --badge-keccak384-text: #a070f0;
+  --badge-keccak512-bg: rgba(128, 40, 220, 0.14);
+  --badge-keccak512-text: #b870f0;
 
   /* RIPEMD family */
   --badge-ripemd128-bg: rgba(160, 40, 215, 0.14);
@@ -185,24 +185,6 @@
   background: var(--badge-sha512-bg);
 }
 
-/* Keccak family */
-.algo-badge[data-algo='Keccak-224'] {
-  color: var(--badge-keccak224-text);
-  background: var(--badge-keccak224-bg);
-}
-.algo-badge[data-algo='Keccak-256'] {
-  color: var(--badge-keccak256-text);
-  background: var(--badge-keccak256-bg);
-}
-.algo-badge[data-algo='Keccak-384'] {
-  color: var(--badge-keccak384-text);
-  background: var(--badge-keccak384-bg);
-}
-.algo-badge[data-algo='Keccak-512'] {
-  color: var(--badge-keccak512-text);
-  background: var(--badge-keccak512-bg);
-}
-
 /* SHA-3 family */
 .algo-badge[data-algo='SHA3-224'] {
   color: var(--badge-sha3224-text);
@@ -219,6 +201,24 @@
 .algo-badge[data-algo='SHA3-512'] {
   color: var(--badge-sha3512-text);
   background: var(--badge-sha3512-bg);
+}
+
+/* Keccak family */
+.algo-badge[data-algo='Keccak-224'] {
+  color: var(--badge-keccak224-text);
+  background: var(--badge-keccak224-bg);
+}
+.algo-badge[data-algo='Keccak-256'] {
+  color: var(--badge-keccak256-text);
+  background: var(--badge-keccak256-bg);
+}
+.algo-badge[data-algo='Keccak-384'] {
+  color: var(--badge-keccak384-text);
+  background: var(--badge-keccak384-bg);
+}
+.algo-badge[data-algo='Keccak-512'] {
+  color: var(--badge-keccak512-text);
+  background: var(--badge-keccak512-bg);
 }
 
 /* RIPEMD family */

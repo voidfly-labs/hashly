@@ -1,7 +1,8 @@
 import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { resolve } from 'node:path';
-import { APPS_META, LEGAL_UPDATED_ON, getLegalUpdatedLabel } from './scripts/apps-meta.js';
+import { APPS_META } from './scripts/apps-meta.js';
+import { LEGAL_UPDATED_ON, getLegalUpdatedLabel, getVendorNotice } from './scripts/legal.js';
 import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
 import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
 
@@ -14,8 +15,9 @@ if (!app || !VALID_APPS.includes(app)) {
 
 const injectData = {
   ...APPS_META[app],
-  legalUpdatedOn: LEGAL_UPDATED_ON,
+  getVendorNotice,
   legalUpdatedLabel: getLegalUpdatedLabel(),
+  legalUpdatedOn: LEGAL_UPDATED_ON,
 };
 const ejsOptions = { root: resolve('.') };
 

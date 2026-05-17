@@ -27,14 +27,16 @@
       <option value="500">500</option>
     </select>
     <div class="random__controls-sep" aria-hidden="true"></div>
-    <button class="btn" id="randomCopyAll" aria-label="Copy all hashes to clipboard">
-      <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
-      Copy All<span class="tooltip">Copied!</span>
-    </button>
-    <button class="btn" id="randomDownloadAll">
-      <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
-      Download CSV<span class="tooltip">Exported</span>
-    </button>
+    <div class="random__actions">
+      <button class="btn" id="randomCopyAll" aria-label="Copy all hashes to clipboard">
+        <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
+        Copy All<span class="tooltip">Copied!</span>
+      </button>
+      <button class="btn" id="randomDownloadAll">
+        <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
+        Download CSV<span class="tooltip">Exported</span>
+      </button>
+    </div>
   </div>
 
   <div class="random__list" id="randomList"></div>

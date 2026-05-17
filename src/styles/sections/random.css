@@ -8,6 +8,12 @@
   flex-wrap: wrap;
 }
 
+.random__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* Thin muted separator between the count/algo selects and the action buttons */
 .random__controls-sep {
   width: 1px;
@@ -119,6 +125,26 @@
   width: 13px;
   height: 13px;
   fill: currentColor;
+}
+
+@media (max-width: 600px) {
+  .random__controls-sep {
+    display: none;
+  }
+
+  #randomAlgo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .random__actions {
+    width: 100%;
+  }
+
+  .random__actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
 }
 
 /* Touch devices have no hover — always show action buttons and history

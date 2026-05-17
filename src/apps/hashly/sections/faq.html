@@ -58,23 +58,23 @@
           type="button"
           class="info__tab"
           role="tab"
-          id="faq-tab-keccak"
-          aria-controls="faq-panel-keccak"
-          aria-selected="false"
-          data-tab="keccak"
-        >
-          Keccak <span class="info__tab-badge">×4</span>
-        </button>
-        <button
-          type="button"
-          class="info__tab"
-          role="tab"
           id="faq-tab-sha3"
           aria-controls="faq-panel-sha3"
           aria-selected="false"
           data-tab="sha3"
         >
           SHA-3 <span class="info__tab-badge">×4</span>
+        </button>
+        <button
+          type="button"
+          class="info__tab"
+          role="tab"
+          id="faq-tab-keccak"
+          aria-controls="faq-panel-keccak"
+          aria-selected="false"
+          data-tab="keccak"
+        >
+          Keccak <span class="info__tab-badge">×4</span>
         </button>
         <button
           type="button"
@@ -113,12 +113,11 @@
 
       <h3>Which algorithm should I choose?</h3>
       <p>
-        <strong>SHA-256</strong> is the right default for almost all general-purpose hashing — universally supported,
-        well-studied, and fast. Use <strong>SHA-384</strong> or <strong>SHA-512</strong> when a compliance requirement
-        mandates a wider digest. Use <strong>Keccak-256</strong> for Ethereum and EVM-compatible chains. Use
-        <strong>SHA3-256</strong> as a modern alternative to SHA-256 that is immune to length-extension attacks. Use
-        <strong>RIPEMD-160</strong> for Bitcoin addresses or OpenPGP. Use <strong>xxHash3</strong> for
-        high-throughput non-cryptographic checksums.
+        SHA-256 is the right default for almost all general-purpose hashing — universally supported, well-studied, and
+        fast. Use SHA-384 or SHA-512 when a compliance requirement mandates a wider digest. Use Keccak-256 for Ethereum
+        and EVM-compatible chains. Use SHA3-256 as a modern alternative to SHA-256 that is immune to length-extension
+        attacks. Use RIPEMD-160 for Bitcoin addresses or OpenPGP. Use xxHash3 for high-throughput non-cryptographic
+        checksums.
       </p>
 
       <h3>Are these hashes safe for passwords?</h3>
@@ -137,11 +136,11 @@
         <a href="https://www.github.com/Daninet/hash-wasm" target="_blank" rel="noopener noreferrer">hash-wasm</a>
         by Daninet, a WebAssembly library that runs locally without any network calls. MD2 uses a custom inlined
         implementation of
-        <a href="https://www.rfc-editor.org/rfc/rfc1319" target="_blank" rel="noopener noreferrer">RFC 1319</a>.
-        RIPEMD variants use
+        <a href="https://www.rfc-editor.org/rfc/rfc1319" target="_blank" rel="noopener noreferrer">RFC 1319</a>. RIPEMD
+        variants use
         <a href="https://www.github.com/nf404/crypto-api" target="_blank" rel="noopener noreferrer">crypto-api</a>
-        by nf404. No text, no file content, and no hash output is ever transmitted to any server. You can verify this
-        by running the tool while offline — it works identically.
+        by nf404. No text, no file content, and no hash output is ever transmitted to any server. You can verify this by
+        running the tool while offline — it works identically.
       </p>
 
       <h3>What output formats are available?</h3>
@@ -228,18 +227,18 @@
     <div class="info__panel" role="tabpanel" id="faq-panel-sha1" aria-labelledby="faq-tab-sha1">
       <h3>What is SHA-1?</h3>
       <p>
-        SHA-1 (Secure Hash Algorithm 1) was designed by the NSA and published by NIST in 1995 as the successor to
-        SHA-0. It produces a 160-bit (20-byte) digest, typically shown as a 40-character hex string. For many years it
-        was the dominant hash function in TLS certificates, code signing, and version control systems — Git still uses
-        SHA-1 internally for object addressing.
+        SHA-1 (Secure Hash Algorithm 1) was designed by the NSA and published by NIST in 1995 as the successor to SHA-0.
+        It produces a 160-bit (20-byte) digest, typically shown as a 40-character hex string. For many years it was the
+        dominant hash function in TLS certificates, code signing, and version control systems — Git still uses SHA-1
+        internally for object addressing.
       </p>
 
       <h3>Is SHA-1 still secure?</h3>
       <p>
-        SHA-1 is cryptographically broken for collision resistance. In 2017, Google's SHAttered project demonstrated
-        the first practical SHA-1 collision: two distinct PDF files with the same SHA-1 digest. The attack required
-        roughly 6,500 CPU-years of computation, making it expensive but feasible for well-resourced adversaries. NIST
-        formally deprecated SHA-1 for digital signatures in 2011 and disallowed it entirely from 2030 onwards.
+        SHA-1 is cryptographically broken for collision resistance. In 2017, Google's SHAttered project demonstrated the
+        first practical SHA-1 collision: two distinct PDF files with the same SHA-1 digest. The attack required roughly
+        6,500 CPU-years of computation, making it expensive but feasible for well-resourced adversaries. NIST formally
+        deprecated SHA-1 for digital signatures in 2011 and disallowed it entirely from 2030 onwards.
       </p>
 
       <h3>When is SHA-1 still acceptable?</h3>
@@ -313,9 +312,9 @@
       <p>
         SHA-256 is the right default for almost everything: universally supported, well-studied, and produces a digest
         small enough to be practical. Use SHA-384 or SHA-512 when a standard or compliance requirement mandates a larger
-        digest (e.g. FIPS 186-5 for digital signatures) or when you are operating on a 64-bit platform where
-        SHA-512's wider internal word size may be faster. SHA-224 is a truncated form of SHA-256 used only when digest
-        length is constrained.
+        digest (e.g. FIPS 186-5 for digital signatures) or when you are operating on a 64-bit platform where SHA-512's
+        wider internal word size may be faster. SHA-224 is a truncated form of SHA-256 used only when digest length is
+        constrained.
       </p>
 
       <h3>Can SHA-2 be reversed or cracked?</h3>
@@ -326,6 +325,82 @@
           >rainbow tables</a
         >
         could theoretically recover the original value — salt your data if that is a concern.
+      </p>
+    </div>
+
+    <!-- SHA-3 panel -->
+    <div class="info__panel" role="tabpanel" id="faq-panel-sha3" aria-labelledby="faq-tab-sha3">
+      <h3>What is SHA-3?</h3>
+      <p>
+        SHA-3 (Secure Hash Algorithm 3) is a family of cryptographic hash functions standardised by NIST in 2015 under
+        FIPS 202. It is based on Keccak, which won the NIST hash function competition in 2012. Unlike SHA-2, SHA-3 uses
+        a sponge construction built on the Keccak-f[1600] permutation — a fundamentally different approach that avoids
+        the Merkle–Damgård length-extension weakness present in SHA-2. The four standard variants are SHA3-224,
+        SHA3-256, SHA3-384, and SHA3-512.
+      </p>
+
+      <h3>What is SHA3-256?</h3>
+      <p>
+        SHA3-256 is the most widely used member of the SHA-3 family, producing a 256-bit (32-byte) digest represented as
+        a 64-character hex string. It is the recommended modern alternative to SHA-256 when resistance to
+        length-extension attacks is required. Importantly, SHA3-256 and Keccak-256 are not the same — they differ in
+        padding suffix (<code>0x06</code> vs <code>0x01</code>), producing different outputs for the same input.
+      </p>
+
+      <h3>Variant comparison</h3>
+      <table class="info-table" aria-label="SHA-3 variant comparison">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Digest</th>
+            <th>Rate</th>
+            <th>Capacity</th>
+            <th>Status</th>
+            <th>Common use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-224</td>
+            <td data-label="Digest">224 bit · 56 hex</td>
+            <td data-label="Rate">1152 bit</td>
+            <td data-label="Capacity">448 bit</td>
+            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
+            <td data-label="Common use">Constrained environments requiring a smaller digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-256</td>
+            <td data-label="Digest">256 bit · 64 hex</td>
+            <td data-label="Rate">1088 bit</td>
+            <td data-label="Capacity">512 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">General-purpose hashing, integrity checks, digital signatures</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-384</td>
+            <td data-label="Digest">384 bit · 96 hex</td>
+            <td data-label="Rate">832 bit</td>
+            <td data-label="Capacity">768 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Higher-security contexts requiring a wider digest</td>
+          </tr>
+          <tr>
+            <td class="info-table__algo" data-label="Algorithm">SHA3-512</td>
+            <td data-label="Digest">512 bit · 128 hex</td>
+            <td data-label="Rate">576 bit</td>
+            <td data-label="Capacity">1024 bit</td>
+            <td class="info-table__status--secure" data-label="Status">Secure</td>
+            <td data-label="Common use">Maximum digest width, archival and high-security use</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Which variant should I use?</h3>
+      <p>
+        SHA3-256 is the right default for almost all applications — it offers a strong security level, wide tooling
+        support, and is the most recognisable member of the family. SHA3-384 and SHA3-512 provide wider digests and
+        higher capacity for security-sensitive contexts. SHA3-224 should only be chosen in environments where a smaller
+        digest size is a strict requirement.
       </p>
     </div>
 
@@ -407,82 +482,6 @@
       </p>
     </div>
 
-    <!-- SHA-3 panel -->
-    <div class="info__panel" role="tabpanel" id="faq-panel-sha3" aria-labelledby="faq-tab-sha3">
-      <h3>What is SHA-3?</h3>
-      <p>
-        SHA-3 (Secure Hash Algorithm 3) is a family of cryptographic hash functions standardised by NIST in 2015 under
-        FIPS 202. It is based on Keccak, which won the NIST hash function competition in 2012. Unlike SHA-2, SHA-3 uses
-        a sponge construction built on the Keccak-f[1600] permutation — a fundamentally different approach that avoids
-        the Merkle–Damgård length-extension weakness present in SHA-2. The four standard variants are SHA3-224,
-        SHA3-256, SHA3-384, and SHA3-512.
-      </p>
-
-      <h3>What is SHA3-256?</h3>
-      <p>
-        SHA3-256 is the most widely used member of the SHA-3 family, producing a 256-bit (32-byte) digest represented
-        as a 64-character hex string. It is the recommended modern alternative to SHA-256 when resistance to
-        length-extension attacks is required. Importantly, SHA3-256 and Keccak-256 are not the same — they differ in
-        padding suffix (<code>0x06</code> vs <code>0x01</code>), producing different outputs for the same input.
-      </p>
-
-      <h3>Variant comparison</h3>
-      <table class="info-table" aria-label="SHA-3 variant comparison">
-        <thead>
-          <tr>
-            <th>Algorithm</th>
-            <th>Digest</th>
-            <th>Rate</th>
-            <th>Capacity</th>
-            <th>Status</th>
-            <th>Common use</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="info-table__algo" data-label="Algorithm">SHA3-224</td>
-            <td data-label="Digest">224 bit · 56 hex</td>
-            <td data-label="Rate">1152 bit</td>
-            <td data-label="Capacity">448 bit</td>
-            <td class="info-table__status--legacy" data-label="Status">Niche use</td>
-            <td data-label="Common use">Constrained environments requiring a smaller digest</td>
-          </tr>
-          <tr>
-            <td class="info-table__algo" data-label="Algorithm">SHA3-256</td>
-            <td data-label="Digest">256 bit · 64 hex</td>
-            <td data-label="Rate">1088 bit</td>
-            <td data-label="Capacity">512 bit</td>
-            <td class="info-table__status--secure" data-label="Status">Secure</td>
-            <td data-label="Common use">General-purpose hashing, integrity checks, digital signatures</td>
-          </tr>
-          <tr>
-            <td class="info-table__algo" data-label="Algorithm">SHA3-384</td>
-            <td data-label="Digest">384 bit · 96 hex</td>
-            <td data-label="Rate">832 bit</td>
-            <td data-label="Capacity">768 bit</td>
-            <td class="info-table__status--secure" data-label="Status">Secure</td>
-            <td data-label="Common use">Higher-security contexts requiring a wider digest</td>
-          </tr>
-          <tr>
-            <td class="info-table__algo" data-label="Algorithm">SHA3-512</td>
-            <td data-label="Digest">512 bit · 128 hex</td>
-            <td data-label="Rate">576 bit</td>
-            <td data-label="Capacity">1024 bit</td>
-            <td class="info-table__status--secure" data-label="Status">Secure</td>
-            <td data-label="Common use">Maximum digest width, archival and high-security use</td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3>Which variant should I use?</h3>
-      <p>
-        SHA3-256 is the right default for almost all applications — it offers a strong security level, wide tooling
-        support, and is the most recognisable member of the family. SHA3-384 and SHA3-512 provide wider digests and
-        higher capacity for security-sensitive contexts. SHA3-224 should only be chosen in environments where a smaller
-        digest size is a strict requirement.
-      </p>
-    </div>
-
     <!-- RIPEMD panel -->
     <div class="info__panel" role="tabpanel" id="faq-panel-ripemd" aria-labelledby="faq-tab-ripemd">
       <h3>What is RIPEMD?</h3>
@@ -497,11 +496,11 @@
       <h3>What is RIPEMD-160?</h3>
       <p>
         RIPEMD-160 is the most widely deployed member of the RIPEMD family, producing a 160-bit (20-byte) digest
-        typically represented as a 40-character hex string. It uses a dual parallel pipeline design on a
-        Merkle–Damgård construction — two independent computation paths that merge at each compression step, hardening
-        it against the differential attacks that broke MD4 and the original RIPEMD. Bitcoin address generation applies
-        RIPEMD-160 to a SHA-256 digest of the public key (the HASH160 operation). OpenPGP (RFC 4880) also supports
-        RIPEMD-160 for key fingerprints and message signatures.
+        typically represented as a 40-character hex string. It uses a dual parallel pipeline design on a Merkle–Damgård
+        construction — two independent computation paths that merge at each compression step, hardening it against the
+        differential attacks that broke MD4 and the original RIPEMD. Bitcoin address generation applies RIPEMD-160 to a
+        SHA-256 digest of the public key (the HASH160 operation). OpenPGP (RFC 4880) also supports RIPEMD-160 for key
+        fingerprints and message signatures.
       </p>
 
       <h3>Variant comparison</h3>
@@ -555,10 +554,10 @@
       <h3>Which variant should I use?</h3>
       <p>
         RIPEMD-160 is the right default for almost all applications. It is the most studied, most widely deployed, and
-        has the best library and tooling support of the four. RIPEMD-320 offers no security advantage over RIPEMD-160
-        — it only provides a wider output — but may be useful when a longer digest is a protocol requirement.
-        Similarly, RIPEMD-256 extends RIPEMD-128 without strengthening it. RIPEMD-128 should only be chosen in
-        environments where a 128-bit digest is strictly required and MD5 is undesirable.
+        has the best library and tooling support of the four. RIPEMD-320 offers no security advantage over RIPEMD-160 —
+        it only provides a wider output — but may be useful when a longer digest is a protocol requirement. Similarly,
+        RIPEMD-256 extends RIPEMD-128 without strengthening it. RIPEMD-128 should only be chosen in environments where a
+        128-bit digest is strictly required and MD5 is undesirable.
       </p>
     </div>
 
@@ -568,10 +567,11 @@
       <p>
         xxHash is a family of extremely fast non-cryptographic hash functions created by
         <a href="https://www.github.com/Cyan4973" target="_blank" rel="noopener noreferrer">Yann Collet</a> — also the
-        author of <a href="https://www.github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>.
-        It is designed to hash data at near-memory-bandwidth speeds, making it suitable for hash tables, data
-        deduplication, cache keying, and non-adversarial integrity checks. All four variants are deterministic and
-        produce consistent checksums across platforms.
+        author of
+        <a href="https://www.github.com/facebook/zstd" target="_blank" rel="noopener noreferrer">Zstandard</a>. It is
+        designed to hash data at near-memory-bandwidth speeds, making it suitable for hash tables, data deduplication,
+        cache keying, and non-adversarial integrity checks. All four variants are deterministic and produce consistent
+        checksums across platforms.
       </p>
 
       <h3>Is xxHash cryptographically secure?</h3>
@@ -644,11 +644,10 @@
 
       <h3>Which variant should I use?</h3>
       <p>
-        For new projects on modern hardware, xxHash3 is the recommended choice — it is faster than xxHash64,
-        especially for short inputs, and benefits from SIMD acceleration. Use xxHash64 when integrating with existing
-        systems that already depend on it. Choose xxHash128 when a wider 128-bit digest is needed to reduce
-        birthday-bound collision probability at very large scales. Use xxHash32 only when constrained to a 32-bit
-        platform or legacy tooling.
+        For new projects on modern hardware, xxHash3 is the recommended choice — it is faster than xxHash64, especially
+        for short inputs, and benefits from SIMD acceleration. Use xxHash64 when integrating with existing systems that
+        already depend on it. Choose xxHash128 when a wider 128-bit digest is needed to reduce birthday-bound collision
+        probability at very large scales. Use xxHash32 only when constrained to a 32-bit platform or legacy tooling.
       </p>
     </div>
   </div>

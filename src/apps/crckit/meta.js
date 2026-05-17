@@ -16,7 +16,7 @@ export default {
   sectionNoun: 'checksum',
   legal: {
     domain: 'crckit.com',
-    library: { name: 'js-crc', url: 'https://github.com/emn178/js-crc', author: 'emn178' },
+    libraries: [{ name: 'js-crc', url: 'https://github.com/emn178/js-crc', author: 'emn178' }],
     privacy: {
       title: 'Privacy Policy | CRCKit',
       description:

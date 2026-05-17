@@ -16,7 +16,7 @@ export default {
   sectionNoun: 'hash',
   legal: {
     domain: 'sha3kit.com',
-    library: { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+    libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],
     privacy: {
       title: 'Privacy Policy | SHA3Kit',
       description:

@@ -56,10 +56,7 @@
           <h3>Third-party libraries</h3>
           <p>
             We do not use analytics platforms, advertising networks, or any other third-party tracking services. All
-            computation runs locally using
-            <a href="<%= legal.library.url %>" target="_blank" rel="noopener noreferrer"><%= legal.library.name %></a>
-            by <%= legal.library.author %>, an open-source library bundled with this tool that makes no network
-            requests.
+            computation runs locally using <%- getVendorNotice(legal.libraries) %>.
           </p>
 
           <h3>Contact</h3>
