@@ -1,12 +1,12 @@
-import blakekit from '../src/apps/blakekit/meta.js';
-import crckit from '../src/apps/crckit/meta.js';
+import blakekit from '../src/apps/blake/meta.js';
+import crckit from '../src/apps/crc/meta.js';
 import hashly from '../src/apps/hashly/meta.js';
-import keccakkit from '../src/apps/keccakkit/meta.js';
-import md5kit from '../src/apps/md5kit/meta.js';
-import ripemdkit from '../src/apps/ripemdkit/meta.js';
-import sha2kit from '../src/apps/sha2kit/meta.js';
-import sha3kit from '../src/apps/sha3kit/meta.js';
-import xxhashkit from '../src/apps/xxhashkit/meta.js';
+import keccakkit from '../src/apps/keccak/meta.js';
+import md5kit from '../src/apps/md5/meta.js';
+import ripemdkit from '../src/apps/ripemd/meta.js';
+import sha2kit from '../src/apps/sha2/meta.js';
+import sha3kit from '../src/apps/sha3/meta.js';
+import xxhashkit from '../src/apps/xxhash/meta.js';
 
 const metas = { blakekit, crckit, hashly, keccakkit, md5kit, ripemdkit, sha2kit, sha3kit, xxhashkit };
 
