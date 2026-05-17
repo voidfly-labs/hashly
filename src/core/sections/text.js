@@ -1,10 +1,17 @@
 import { Format } from '@core/utils/format.js';
 import { Download } from '@core/utils/download.js';
 import { Clipboard } from '@core/utils/clipboard.js';
+import { Hint } from '@core/components/hint.js';
 import { Tooltip } from '@core/components/tooltip.js';
 import { History } from '@core/components/history.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
+
+const _FORMAT_HINTS = {
+  hex: 'hex only · 0–9, a–f',
+  base64: 'base64 only · a–z, 0–9, +/=',
+  binary: 'binary only · 0, 1, <space>',
+};
 
 export const TextSection = {
   // rawHexMap: Map<algoId, hex> — the unformatted digests for the current input.
@@ -31,6 +38,7 @@ export const TextSection = {
     this._counter = document.getElementById('textCounter');
     this._counterChars = document.getElementById('textCounterChars');
     this._counterBytes = document.getElementById('textCounterBytes');
+    this._formatHint = document.getElementById('textFormatHint');
 
     // Build one result row per algorithm (least to most complex = ALGORITHMS order).
     _ALGORITHMS.forEach(({ id }) => this._buildRow(id));
@@ -73,15 +81,26 @@ export const TextSection = {
           valid = ch === '0' || ch === '1' || ch === ' ';
           break;
       }
-      if (!valid) e.preventDefault();
+      if (!valid) {
+        e.preventDefault();
+        Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
+      } else {
+        Hint.hide(this._formatHint);
+      }
     });
 
-    // Switching input format clears the textarea (stale content in the old
-    // encoding would produce a meaningless hash in the new one).
+    // Switching input format clears the textarea and updates the placeholder
+    // to guide what valid input looks like for the new encoding.
+    const placeholders = {
+      'utf-8': 'Start typing or paste text…',
+      hex: 'Start typing or paste hex…',
+      base64: 'Start typing or paste Base64…',
+      binary: 'Start typing or paste binary…',
+    };
     document.querySelectorAll('input[name="textInputFormat"]').forEach((radio) =>
       radio.addEventListener('change', () => {
         this.onClear();
-        // Placeholder stays constant; format is communicated by the Input label chip
+        this._input.placeholder = placeholders[radio.value] ?? placeholders['utf-8'];
       }),
     );
 

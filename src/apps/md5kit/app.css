@@ -1,24 +1,25 @@
 :root {
   --badge-min-width: 40px;
 
-  /* Algorithm badge palette — 3-hue spectral spread, light theme.
-         MD2 → green-teal  (~155°)  — oldest / most legacy
-         MD4 → cyan-blue   (~200°)
-         MD5 → blue        (~225°)  — inherits accent; most popular */
-  --badge-md2-bg: #e2f5ee;
-  --badge-md2-text: #0c7055;
-  --badge-md4-bg: #e0f3f9;
-  --badge-md4-text: #0a6882;
+  /* Algorithm badge palette — 3-hue rainbow spread, light theme.
+         Rainbow order (R→G→B, smallest digest first):
+         MD2 → rose-pink  (~320°) — oldest / most legacy
+         MD4 → green-teal (~150°)
+         MD5 → blue       (~220°) — inherits accent; most popular */
+  --badge-md2-bg: #fce8f3;
+  --badge-md2-text: #9c1b6a;
+  --badge-md4-bg: #e1f5ee;
+  --badge-md4-text: #0b7055;
   --badge-md5-bg: #ddeafc;
   --badge-md5-text: var(--accent-dim);
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette */
-  --badge-md2-bg: rgba(14, 200, 140, 0.13);
-  --badge-md2-text: #34d9a8;
-  --badge-md4-bg: rgba(10, 190, 230, 0.13);
-  --badge-md4-text: #40ccee;
+  --badge-md2-bg: rgba(255, 80, 180, 0.13);
+  --badge-md2-text: #ff80d0;
+  --badge-md4-bg: rgba(14, 200, 140, 0.13);
+  --badge-md4-text: #34d9a8;
   --badge-md5-bg: var(--accent-surface);
   --badge-md5-text: var(--accent);
 }

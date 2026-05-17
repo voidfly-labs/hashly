@@ -1,0 +1,14 @@
+.hint {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--text-hint);
+  letter-spacing: 0.3px;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.hint--visible {
+  opacity: 1;
+}

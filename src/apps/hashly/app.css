@@ -13,60 +13,60 @@
            XXH32–XXH128   → pink → rose → deep rose          (314°–347°) */
 
   /* MDx family */
-  --badge-md2-bg: #fbeee5;
-  --badge-md2-text: #b1510b;
-  --badge-md4-bg: #fbf2e5;
-  --badge-md4-text: #b16f0b;
-  --badge-md5-bg: #fbf6e5;
-  --badge-md5-text: #b18e0b;
+  --badge-md2-bg: #fcdfc7;
+  --badge-md2-text: #a04510;
+  --badge-md4-bg: #fce8c7;
+  --badge-md4-text: #a06010;
+  --badge-md5-bg: #fdf0c7;
+  --badge-md5-text: #a07c10;
 
   /* SHA-1 */
-  --badge-sha1-bg: #fbfae5;
-  --badge-sha1-text: #8b8709;
+  --badge-sha1-bg: #fdf6c6;
+  --badge-sha1-text: #7a7210;
 
   /* SHA-2 family */
-  --badge-sha224-bg: #f7fbe5;
-  --badge-sha224-text: #778b09;
-  --badge-sha256-bg: #f3fbe5;
-  --badge-sha256-text: #5f8b09;
-  --badge-sha384-bg: #effbe5;
-  --badge-sha384-text: #468b09;
-  --badge-sha512-bg: #ebfbe5;
-  --badge-sha512-text: #2b8108;
+  --badge-sha224-bg: #f4f9c4;
+  --badge-sha224-text: #5f7410;
+  --badge-sha256-bg: #ebf8c4;
+  --badge-sha256-text: #477010;
+  --badge-sha384-bg: #dff6c4;
+  --badge-sha384-text: #2e6e10;
+  --badge-sha512-bg: #d3f5c4;
+  --badge-sha512-text: #186810;
 
   /* SHA-3 family */
-  --badge-sha3224-bg: #e7fbe5;
-  --badge-sha3224-text: #158108;
-  --badge-sha3256-bg: #e5fbe6;
-  --badge-sha3256-text: #088112;
-  --badge-sha3384-bg: #e5fbeb;
-  --badge-sha3384-text: #088129;
-  --badge-sha3512-bg: #e5fbef;
-  --badge-sha3512-text: #08813f;
+  --badge-sha3224-bg: #c6f5d0;
+  --badge-sha3224-text: #0b7030;
+  --badge-sha3256-bg: #c4f5d8;
+  --badge-sha3256-text: #0a7040;
+  --badge-sha3384-bg: #c4f5e2;
+  --badge-sha3384-text: #0a7055;
+  --badge-sha3512-bg: #c4f5ec;
+  --badge-sha3512-text: #0a706a;
 
   /* BLAKE family */
-  --badge-blake2b256-bg: #e5fbf3;
-  --badge-blake2b256-text: #088155;
-  --badge-blake2b512-bg: #e5fbf7;
-  --badge-blake2b512-text: #098b74;
-  --badge-blake2s128-bg: #e5fbfb;
-  --badge-blake2s128-text: #098a8b;
-  --badge-blake2s256-bg: #e5f6fb;
-  --badge-blake2s256-text: #09728b;
-  --badge-blake3256-bg: #e5f2fb;
-  --badge-blake3256-text: #095a8b;
-  --badge-blake3512-bg: #e5eefb;
-  --badge-blake3512-text: #09428b;
+  --badge-blake2b256-bg: #bef5e8;
+  --badge-blake2b256-text: #086858;
+  --badge-blake2b512-bg: #bef5f0;
+  --badge-blake2b512-text: #087070;
+  --badge-blake2s128-bg: #bef3f5;
+  --badge-blake2s128-text: #087880;
+  --badge-blake2s256-bg: #beecf5;
+  --badge-blake2s256-text: #086890;
+  --badge-blake3256-bg: #bee4f5;
+  --badge-blake3256-text: #0a5898;
+  --badge-blake3512-bg: #bedcf5;
+  --badge-blake3512-text: #0a48a0;
 
   /* Keccak family */
-  --badge-keccak224-bg: #e5eafb;
-  --badge-keccak224-text: #092a8b;
-  --badge-keccak256-bg: #e5e6fb;
-  --badge-keccak256-text: #0a15a3;
-  --badge-keccak384-bg: #e7e5fb;
-  --badge-keccak384-text: #1c0aa3;
-  --badge-keccak512-bg: #ebe5fb;
-  --badge-keccak512-text: #390aa3;
+  --badge-keccak224-bg: #c6d4f8;
+  --badge-keccak224-text: #0a2888;
+  --badge-keccak256-bg: #caccf8;
+  --badge-keccak256-text: #1210a0;
+  --badge-keccak384-bg: #d4c8f8;
+  --badge-keccak384-text: #2a0aa8;
+  --badge-keccak512-bg: #ddc4f8;
+  --badge-keccak512-text: #4208a8;
 
   /* RIPEMD family */
   --badge-ripemd128-bg: #efe5fb;

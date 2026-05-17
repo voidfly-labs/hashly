@@ -1,22 +1,22 @@
 :root {
   --badge-min-width: 82px;
 
-  /* Algorithm badge palette — 6-hue spectral spread, light theme.
-         Full rainbow coverage (~48° apart):
-           BLAKE2b-256 → amber        (~35°)
-           BLAKE2b-512 → yellow-green (~83°)
-           BLAKE2s-128 → green        (~131°)
-           BLAKE2s-256 → teal         (~179°)
-           BLAKE3-256  → blue         (~227°) — most popular, inherits accent family
-           BLAKE3-512  → violet       (~275°) — widest digest */
-  --badge-blake2b256-bg: #fef3e2;
-  --badge-blake2b256-text: #995500;
-  --badge-blake2b512-bg: #f0f9e2;
-  --badge-blake2b512-text: #4a7a10;
-  --badge-blake2s128-bg: #e4f9e6;
-  --badge-blake2s128-text: #0a7830;
-  --badge-blake2s256-bg: #e4f7f9;
-  --badge-blake2s256-text: #0a6478;
+  /* Algorithm badge palette — 6-hue rainbow spread, light theme.
+         Rainbow order (R→G→B→V, smallest digest first):
+           BLAKE2b-256 → rose-pink  (~320°)
+           BLAKE2b-512 → amber      (~35°)
+           BLAKE2s-128 → green-teal (~150°)
+           BLAKE2s-256 → cyan       (~190°)
+           BLAKE3-256  → blue       (~220°) — inherits accent family
+           BLAKE3-512  → violet     (~270°) — widest digest */
+  --badge-blake2b256-bg: #fce8f3;
+  --badge-blake2b256-text: #9c1b6a;
+  --badge-blake2b512-bg: #fef3e2;
+  --badge-blake2b512-text: #995500;
+  --badge-blake2s128-bg: #e1f5ee;
+  --badge-blake2s128-text: #0b7055;
+  --badge-blake2s256-bg: #e0f3f9;
+  --badge-blake2s256-text: #0a6882;
   --badge-blake3256-bg: #ddeafc;
   --badge-blake3256-text: var(--accent-dim);
   --badge-blake3512-bg: #eee8fa;
@@ -25,14 +25,14 @@
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-blake2b256-bg: rgba(255, 180, 60, 0.13);
-  --badge-blake2b256-text: #ffb84d;
-  --badge-blake2b512-bg: rgba(150, 220, 40, 0.13);
-  --badge-blake2b512-text: #a8e060;
-  --badge-blake2s128-bg: rgba(40, 210, 100, 0.13);
-  --badge-blake2s128-text: #60e8a0;
-  --badge-blake2s256-bg: rgba(40, 200, 215, 0.13);
-  --badge-blake2s256-text: #60d8e8;
+  --badge-blake2b256-bg: rgba(255, 80, 180, 0.13);
+  --badge-blake2b256-text: #ff80d0;
+  --badge-blake2b512-bg: rgba(255, 180, 60, 0.13);
+  --badge-blake2b512-text: #ffb84d;
+  --badge-blake2s128-bg: rgba(14, 200, 140, 0.13);
+  --badge-blake2s128-text: #34d9a8;
+  --badge-blake2s256-bg: rgba(10, 190, 230, 0.13);
+  --badge-blake2s256-text: #40ccee;
   --badge-blake3256-bg: var(--accent-surface);
   --badge-blake3256-text: var(--accent);
   --badge-blake3512-bg: rgba(160, 90, 255, 0.14);

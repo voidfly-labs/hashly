@@ -57,6 +57,13 @@
        Identical position/behaviour to .file-drop__clear; shares visual
        styles via the grouped selector with .history-popover__close and
        .file-drop__clear defined further below. */
+.text-input__wrap .hint {
+  position: absolute;
+  bottom: 3px;
+  left: 10px;
+  z-index: 1;
+}
+
 .text-input__clear {
   position: absolute;
   top: 8px;

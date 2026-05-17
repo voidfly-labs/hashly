@@ -1,30 +1,30 @@
 :root {
   --badge-min-width: 75px;
 
-  /* Algorithm badge palette — 4-hue spectral spread, light theme.
-         Full rainbow coverage:
-           Keccak-224 → amber-orange (~35°)  — smallest digest
-           Keccak-256 → blue         (~220°) — most popular, inherits accent family
-           Keccak-384 → indigo       (~250°)
-           Keccak-512 → violet       (~280°) — widest digest */
-  --badge-keccak224-bg: #fef3e2;
-  --badge-keccak224-text: #995500;
-  --badge-keccak256-bg: #ddeafc;
-  --badge-keccak256-text: var(--accent-dim);
-  --badge-keccak384-bg: #e6e8fb;
-  --badge-keccak384-text: #3040c0;
+  /* Algorithm badge palette — 4-hue rainbow spread, light theme.
+         Rainbow order (R→G→B→V, smallest digest first):
+           Keccak-224 → rose-pink  (~320°) — smallest digest
+           Keccak-256 → green-teal (~150°)
+           Keccak-384 → blue       (~220°) — inherits accent family
+           Keccak-512 → violet     (~270°) — widest digest */
+  --badge-keccak224-bg: #fce8f3;
+  --badge-keccak224-text: #9c1b6a;
+  --badge-keccak256-bg: #e1f5ee;
+  --badge-keccak256-text: #0b7055;
+  --badge-keccak384-bg: #ddeafc;
+  --badge-keccak384-text: var(--accent-dim);
   --badge-keccak512-bg: #eee8fa;
   --badge-keccak512-text: #6428b4;
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-keccak224-bg: rgba(255, 180, 60, 0.13);
-  --badge-keccak224-text: #ffb84d;
-  --badge-keccak256-bg: var(--accent-surface);
-  --badge-keccak256-text: var(--accent);
-  --badge-keccak384-bg: rgba(80, 100, 255, 0.14);
-  --badge-keccak384-text: #8898ff;
+  --badge-keccak224-bg: rgba(255, 80, 180, 0.13);
+  --badge-keccak224-text: #ff80d0;
+  --badge-keccak256-bg: rgba(14, 200, 140, 0.13);
+  --badge-keccak256-text: #34d9a8;
+  --badge-keccak384-bg: var(--accent-surface);
+  --badge-keccak384-text: var(--accent);
   --badge-keccak512-bg: rgba(160, 90, 255, 0.14);
   --badge-keccak512-text: #c090ff;
 }

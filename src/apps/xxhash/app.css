@@ -2,15 +2,15 @@
   --badge-min-width: 54px;
 
   /* Algorithm badge palette — 4-hue rainbow spread, light theme.
-         Spectral progression matches algo order (32-bit → 128-bit):
-           XXH32  → amber       (~35°)  — smallest / 1st-gen 32-bit
-           XXH64  → green-teal  (~150°) — most deployed / 1st-gen default
-           XXH3   → blue        (~220°) — modern 2nd-gen 64-bit
-           XXH128 → violet      (~285°) — widest digest / 2nd-gen */
-  --badge-xxhash32-bg: #fef3e2;
-  --badge-xxhash32-text: #995500;
-  --badge-xxhash64-bg: #e2f5ee;
-  --badge-xxhash64-text: #0c7055;
+         Rainbow order (R→G→B→V, smallest digest first):
+           XXH32  → rose-pink  (~320°) — smallest / 1st-gen 32-bit
+           XXH64  → green-teal (~150°) — most deployed / 1st-gen default
+           XXH3   → blue       (~220°) — modern 2nd-gen 64-bit, inherits accent
+           XXH128 → violet     (~270°) — widest digest / 2nd-gen */
+  --badge-xxhash32-bg: #fce8f3;
+  --badge-xxhash32-text: #9c1b6a;
+  --badge-xxhash64-bg: #e1f5ee;
+  --badge-xxhash64-text: #0b7055;
   --badge-xxhash3-bg: #ddeafc;
   --badge-xxhash3-text: var(--accent-dim);
   --badge-xxhash128-bg: #eee8fa;
@@ -19,8 +19,8 @@
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-xxhash32-bg: rgba(255, 180, 60, 0.13);
-  --badge-xxhash32-text: #ffb84d;
+  --badge-xxhash32-bg: rgba(255, 80, 180, 0.13);
+  --badge-xxhash32-text: #ff80d0;
   --badge-xxhash64-bg: rgba(14, 200, 140, 0.13);
   --badge-xxhash64-text: #34d9a8;
   --badge-xxhash3-bg: var(--accent-surface);

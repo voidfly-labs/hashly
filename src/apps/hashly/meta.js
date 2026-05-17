@@ -9,7 +9,6 @@ export default {
   author: 'Hashly',
   brandUrl: 'https://www.hashly.org',
   brandTitleHtml: '<span>Hash</span>ly',
-  footerLabel: 'Hashly',
   skipLinkText: 'Skip to hash calculator',
   mainAriaLabel: 'Multi-algorithm hash calculator',
   pageH1Html: '<span>Online Hash</span> Calculator',

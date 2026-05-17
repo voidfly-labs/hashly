@@ -1,30 +1,30 @@
 :root {
   --badge-min-width: 75px;
 
-  /* Algorithm badge palette — 4-hue spectral spread, light theme.
-         Full rainbow coverage including green:
-           RIPEMD-128 → green-teal  (~150°)  — compact / legacy
-           RIPEMD-160 → blue        (~220°)  — most popular, inherits accent family
-           RIPEMD-256 → indigo      (~250°)
-           RIPEMD-320 → violet      (~280°)  — widest digest */
-  --badge-ripemd128-bg: #e1f5ee;
-  --badge-ripemd128-text: #0b7055;
-  --badge-ripemd160-bg: #ddeafc;
-  --badge-ripemd160-text: var(--accent-dim);
-  --badge-ripemd256-bg: #e6e8fb;
-  --badge-ripemd256-text: #3040c0;
+  /* Algorithm badge palette — 4-hue rainbow spread, light theme.
+         Rainbow order (R→G→B→V, smallest digest first):
+           RIPEMD-128 → rose-pink   (~320°)  — compact / legacy
+           RIPEMD-160 → green-teal  (~150°)  — most popular
+           RIPEMD-256 → blue        (~220°)  — inherits accent family
+           RIPEMD-320 → violet      (~270°)  — widest digest */
+  --badge-ripemd128-bg: #fce8f3;
+  --badge-ripemd128-text: #9c1b6a;
+  --badge-ripemd160-bg: #e1f5ee;
+  --badge-ripemd160-text: #0b7055;
+  --badge-ripemd256-bg: #ddeafc;
+  --badge-ripemd256-text: var(--accent-dim);
   --badge-ripemd320-bg: #eee8fa;
   --badge-ripemd320-text: #6428b4;
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-ripemd128-bg: rgba(14, 200, 140, 0.13);
-  --badge-ripemd128-text: #34d9a8;
-  --badge-ripemd160-bg: var(--accent-surface);
-  --badge-ripemd160-text: var(--accent);
-  --badge-ripemd256-bg: rgba(80, 100, 255, 0.14);
-  --badge-ripemd256-text: #8898ff;
+  --badge-ripemd128-bg: rgba(255, 80, 180, 0.13);
+  --badge-ripemd128-text: #ff80d0;
+  --badge-ripemd160-bg: rgba(14, 200, 140, 0.13);
+  --badge-ripemd160-text: #34d9a8;
+  --badge-ripemd256-bg: var(--accent-surface);
+  --badge-ripemd256-text: var(--accent);
   --badge-ripemd320-bg: rgba(160, 90, 255, 0.14);
   --badge-ripemd320-text: #c090ff;
 }

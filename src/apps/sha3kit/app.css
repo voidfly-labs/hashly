@@ -1,32 +1,32 @@
 :root {
   --badge-min-width: 64px;
 
-  /* Algorithm badge palette — 4-hue spectral spread, light theme.
-         Full rainbow coverage:
-           SHA3-224 → amber-orange (~35°)  — smallest digest
-           SHA3-256 → blue         (~220°) — most popular, inherits accent family
-           SHA3-384 → violet       (~270°)
-           SHA3-512 → rose-pink    (~320°) — widest digest */
-  --badge-sha3224-bg: #fef3e2;
-  --badge-sha3224-text: #995500;
-  --badge-sha3256-bg: #ddeafc;
-  --badge-sha3256-text: var(--accent-dim);
-  --badge-sha3384-bg: #eee8fa;
-  --badge-sha3384-text: #6428b4;
-  --badge-sha3512-bg: #fce8f3;
-  --badge-sha3512-text: #9c1b6a;
+  /* Algorithm badge palette — 4-hue rainbow spread, light theme.
+         Rainbow order (R→G→B→V, smallest digest first):
+           SHA3-224 → rose-pink  (~320°) — smallest digest
+           SHA3-256 → green-teal (~150°)
+           SHA3-384 → blue       (~220°) — inherits accent family
+           SHA3-512 → violet     (~270°) — widest digest */
+  --badge-sha3224-bg: #fce8f3;
+  --badge-sha3224-text: #9c1b6a;
+  --badge-sha3256-bg: #e1f5ee;
+  --badge-sha3256-text: #0b7055;
+  --badge-sha3384-bg: #ddeafc;
+  --badge-sha3384-text: var(--accent-dim);
+  --badge-sha3512-bg: #eee8fa;
+  --badge-sha3512-text: #6428b4;
 }
 
 [data-theme='dark'] {
   /* Dark-mode badge palette — semi-transparent tinted bg, bright accessible text */
-  --badge-sha3224-bg: rgba(255, 180, 60, 0.13);
-  --badge-sha3224-text: #ffb84d;
-  --badge-sha3256-bg: var(--accent-surface);
-  --badge-sha3256-text: var(--accent);
-  --badge-sha3384-bg: rgba(160, 90, 255, 0.14);
-  --badge-sha3384-text: #c090ff;
-  --badge-sha3512-bg: rgba(255, 80, 180, 0.13);
-  --badge-sha3512-text: #ff80d0;
+  --badge-sha3224-bg: rgba(255, 80, 180, 0.13);
+  --badge-sha3224-text: #ff80d0;
+  --badge-sha3256-bg: rgba(14, 200, 140, 0.13);
+  --badge-sha3256-text: #34d9a8;
+  --badge-sha3384-bg: var(--accent-surface);
+  --badge-sha3384-text: var(--accent);
+  --badge-sha3512-bg: rgba(160, 90, 255, 0.14);
+  --badge-sha3512-text: #c090ff;
 }
 
 .history-table__algo {
