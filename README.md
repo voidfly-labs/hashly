@@ -20,7 +20,7 @@ history, permalinks, and file downloads.
 | `blakekit/` | blake3.app  | BLAKE2b, BLAKE2s, BLAKE3               |
 | `crckit/`   | crckit.com  | 23 CRC variants (CRC-8 through CRC-82) |
 | `hashly/`   | hashly.org  | All 30 non-CRC algorithms (aggregator) |
-| `keccak/`   | keccak.app  | Keccak-224/256/384/512                 |
+| `keccakkit/` | keccak.app  | Keccak-224/256/384/512                 |
 | `md5kit/`   | md5kit.com  | MD2, MD4, MD5                          |
 | `ripemd/`   | ripemd.com  | RIPEMD-128/160/256/320                 |
 | `sha2kit/`  | sha256.app  | SHA-1, SHA-224/256/384/512             |
