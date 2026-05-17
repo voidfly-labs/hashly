@@ -12,7 +12,7 @@ import { Format } from '@core/utils/format.js';
 import { initApp } from '@core/init/app.js';
 
 const APP_CONFIG = {
-  appName: 'xxhash',
+  appName: 'xxhashkit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase(),
   defaultDisabledAlgos: [],

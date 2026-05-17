@@ -1,7 +1,7 @@
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "xxHash.dev",
+  "name": "xxHashKit",
   "url": "https://www.xxhash.dev/",
   "description": "Browser-based xxHash calculator supporting xxHash32, xxHash64, xxHash3, and xxHash128. All computation is local — no data is transmitted.",
   "headline": "xxHash64 Hash Calculator",
@@ -11,7 +11,7 @@
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
   "author": {
     "@type": "Organization",
-    "name": "xxHash.dev",
+    "name": "xxHashKit",
     "url": "https://www.xxhash.dev/"
   }
 }

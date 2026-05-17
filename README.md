@@ -25,7 +25,7 @@ history, permalinks, and file downloads.
 | `ripemd/`   | ripemd.com  | RIPEMD-128/160/256/320                 |
 | `sha2kit/`  | sha256.app  | SHA-1, SHA-224/256/384/512             |
 | `sha3kit/`  | sha3kit.com | SHA3-224/256/384/512                   |
-| `xxhash/`   | xxhash.dev  | XXH3/32/64/128                         |
+| `xxhashkit/` | xxhash.dev  | XXH3/32/64/128                         |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
 

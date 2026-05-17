@@ -44,7 +44,7 @@
     },
     {
       "@type": "Question",
-      "name": "How does xxHash.dev protect my data?",
+      "name": "How does xxHashKit protect my data?",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "All hashing runs entirely inside your browser using hash-wasm by Daninet, a WebAssembly-accelerated library. No text, file content, or hash output is ever transmitted to any server."
