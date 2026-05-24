@@ -155,12 +155,38 @@
 }
 
 .footer__version {
+  display: inline-flex;
+  align-items: center;
   opacity: 0.6;
   font-size: 10.5px;
   letter-spacing: 0.4px;
 }
 
-@media (max-width: 710px) {
+.footer__version-icon {
+  width: 11px;
+  height: 11px;
+  margin-right: 4px;
+}
+
+.footer__bar .footer__report {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent);
+  opacity: 0.85;
+  transition: opacity 0.15s;
+}
+
+.footer__bar .footer__report:hover {
+  opacity: 1;
+}
+
+.footer__report-icon {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 740px) {
   /* Footer: reduce inner padding and collapse grid to 2-up below brand */
   .footer__inner {
     padding: 22px 16px 18px;
