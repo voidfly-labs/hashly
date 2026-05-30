@@ -24,9 +24,10 @@
   align-items: center;
   flex-shrink: 0;
   transition:
-    color 0.15s,
-    border-color 0.15s,
-    box-shadow 0.15s;
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .toggle-all-btn:hover {
@@ -35,9 +36,13 @@
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
+.toggle-all-btn:active {
+  transform: scale(0.9);
+}
+
 .toggle-all-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   fill: currentColor;
 }
 
@@ -66,9 +71,10 @@
   align-items: center;
   flex-shrink: 0;
   transition:
-    color 0.15s,
-    border-color 0.15s,
-    box-shadow 0.15s;
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .history-btn:hover,
@@ -78,9 +84,13 @@
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
+.history-btn:active {
+  transform: scale(0.9);
+}
+
 .history-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   fill: currentColor;
 }
 
@@ -95,9 +105,10 @@
   align-items: center;
   flex-shrink: 0;
   transition:
-    color 0.15s,
-    border-color 0.15s,
-    box-shadow 0.15s;
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
 }
 
 .permalink-btn:hover {
@@ -106,9 +117,13 @@
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
+.permalink-btn:active {
+  transform: scale(0.9);
+}
+
 .permalink-btn svg {
-  width: 14px;
-  height: 14px;
+  width: 17px;
+  height: 17px;
   fill: currentColor;
 }
 
@@ -223,8 +238,8 @@
 .history-popover__close svg,
 .file-drop__clear svg,
 .text-input__clear svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   fill: currentColor;
 }
 

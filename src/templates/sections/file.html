@@ -3,7 +3,7 @@
   <div class="section__label-row">
     <h2 class="section__label" id="section-file-heading">
       <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-file"></use>
+        <use href="/src/assets/images/icons.svg#icon-docs"></use>
       </svg>
       File
       <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
@@ -21,8 +21,7 @@
       id="fileHistoryBtn"
       aria-label="Show file <%= sectionNoun %> history"
       aria-expanded="false"
-      aria-controls="fileHistoryPopover"
-    >
+      aria-controls="fileHistoryPopover">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-history"></use></svg>
     </button>
     <div class="history-popover" id="fileHistoryPopover">
@@ -45,8 +44,7 @@
           class="file-drop__input"
           type="file"
           id="fileInput"
-          aria-label="Upload file for <%= sectionNoun %> calculation"
-        />
+          aria-label="Upload file for <%= sectionNoun %> calculation" />
         <button class="file-drop__clear" id="fileDropClear" aria-label="Remove selected file" type="button">
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
         </button>

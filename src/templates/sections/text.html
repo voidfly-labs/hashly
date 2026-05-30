@@ -2,8 +2,8 @@
 <section class="section" id="text" aria-labelledby="section-text-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-text-heading">
-      <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-edit"></use>
+      <svg class="section__label-icon section__label-icon--stylus" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-stylus-note"></use>
       </svg>
       Text
       <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
@@ -30,8 +30,7 @@
       id="textHistoryBtn"
       aria-label="Show text <%= sectionNoun %> history"
       aria-expanded="false"
-      aria-controls="textHistoryPopover"
-    >
+      aria-controls="textHistoryPopover">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-history"></use></svg>
     </button>
     <div class="history-popover" id="textHistoryPopover">
@@ -54,8 +53,7 @@
         id="textInput"
         placeholder="Start typing or paste text…"
         spellcheck="false"
-        aria-label="Text input for <%= sectionNoun %> calculation"
-      ></textarea>
+        aria-label="Text input for <%= sectionNoun %> calculation"></textarea>
       <button class="text-input__clear" id="textInputClear" aria-label="Clear text input" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
       </button>
