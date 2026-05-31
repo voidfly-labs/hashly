@@ -17,6 +17,7 @@ export default {
   pageH1Html: '<span>RIPEMD-160</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+  sectionNounPlural: 'hashes',
 
   // Accessibility
   skipLinkText: 'Skip to RIPEMD-160 hash calculator',

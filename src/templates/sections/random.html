@@ -4,7 +4,7 @@
     <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
       <use href="/src/assets/images/icons.svg#icon-dice"></use>
     </svg>
-    Random <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>s
+    Random <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %>
   </h2>
 
   <div class="random__controls">
@@ -17,7 +17,7 @@
       class="random__select"
       id="randomAlgo"
       aria-label="Algorithm for random <%= sectionNoun %> generation"></select>
-    <select class="random__select" id="randomCount" aria-label="Number of <%= sectionNoun %>s to generate">
+    <select class="random__select" id="randomCount" aria-label="Number of <%= sectionNounPlural %> to generate">
       <option value="10" selected>10</option>
       <option value="25">25</option>
       <option value="50">50</option>

@@ -114,7 +114,7 @@
   border: 1px solid var(--border);
   color: var(--text-muted);
   cursor: pointer;
-  padding: 7px;
+  padding: 6px;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
@@ -128,8 +128,8 @@
 }
 
 .theme-toggle svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
   display: none;
 }

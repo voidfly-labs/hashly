@@ -16,6 +16,7 @@ export default {
   pageH1Html: '<span>Online Hash</span> Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+  sectionNounPlural: 'hashes',
 
   // Accessibility
   skipLinkText: 'Skip to hash calculator',

@@ -17,6 +17,7 @@ export default {
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',
   pageSubtitle: '// instant checksums — no data leaves your browser',
   sectionNoun: 'checksum',
+  sectionNounPlural: 'checksums',
 
   // Accessibility
   skipLinkText: 'Skip to CRC-32 checksum calculator',

@@ -57,7 +57,7 @@
 .random__item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   padding: 9px 14px;
   font-family: var(--mono);
   font-size: 13px;
@@ -122,8 +122,8 @@
 }
 
 .random__item-btn svg {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   fill: currentColor;
 }
 

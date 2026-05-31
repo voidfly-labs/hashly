@@ -351,13 +351,9 @@
   width: 150px;
 }
 
-.history-table__algo {
-  width: 79px;
-}
-
 /* Action buttons column — mirrors .random__item-actions pattern */
 .history-table__actions {
-  width: 52px;
+  width: 58px;
   padding-left: 4px !important;
   padding-right: 8px !important;
   text-align: right;
@@ -368,6 +364,7 @@
 .history-table__action-btns {
   display: inline-flex;
   gap: 1px;
+  vertical-align: middle;
   opacity: 0;
   transition: opacity 0.15s;
 }
@@ -396,8 +393,8 @@
 }
 
 .history-table__action-btn svg {
-  width: 13px;
-  height: 13px;
+  width: 15px;
+  height: 15px;
   fill: currentColor;
 }
 

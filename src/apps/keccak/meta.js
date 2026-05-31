@@ -17,6 +17,7 @@ export default {
   pageH1Html: '<span>Keccak-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+  sectionNounPlural: 'hashes',
 
   // Accessibility
   skipLinkText: 'Skip to Keccak-256 hash calculator',

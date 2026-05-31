@@ -17,6 +17,7 @@ export default {
   pageH1Html: '<span>MD5</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+  sectionNounPlural: 'hashes',
 
   // Accessibility
   skipLinkText: 'Skip to MD5 hash calculator',

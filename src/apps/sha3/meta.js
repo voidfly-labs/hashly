@@ -17,6 +17,7 @@ export default {
   pageH1Html: '<span>SHA3-256</span> Hash Calculator',
   pageSubtitle: '// instant hashing — no data leaves your browser',
   sectionNoun: 'hash',
+  sectionNounPlural: 'hashes',
 
   // Accessibility
   skipLinkText: 'Skip to SHA3-256 hash calculator',
