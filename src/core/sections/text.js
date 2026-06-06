@@ -213,7 +213,7 @@ export const TextSection = {
   /** Build a result row for one algorithm and append it to the container. */
   _buildRow(algoId) {
     const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const tipText = () => (this.disabledAlgos.has(algoId) ? 'Select' : 'Deselect');
+    const tipText = () => (this.disabledAlgos.has(algoId) ? 'Enable' : 'Disable');
 
     const row = document.createElement('div');
     row.className = 'result';
@@ -247,11 +247,11 @@ export const TextSection = {
     badge.addEventListener('mouseleave', () => Tooltip.hide());
     badge.addEventListener('focus', () => Tooltip.show(badge, tipText()));
     badge.addEventListener('blur', () => Tooltip.hide());
-    badge.addEventListener('click', () => this._toggleAlgo(algoId));
+    badge.addEventListener('click', () => this._toggleAlgo(algoId, { refreshTooltip: true }));
     badge.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        this._toggleAlgo(algoId);
+        this._toggleAlgo(algoId, { refreshTooltip: true });
       }
     });
 
@@ -274,8 +274,8 @@ export const TextSection = {
     });
   },
 
-  _toggleAll() {
-    const allSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+  _toggleAll({ refreshTooltip = false } = {}) {
+    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
 
     _ALGORITHMS.forEach(({ id }) => {
       const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
@@ -283,8 +283,8 @@ export const TextSection = {
       const els = this.rowEls.get(id);
       if (!row || !badge || !els) return;
 
-      if (allSelected) {
-        // Deselect all — update DOM state without triggering onInput per algo
+      if (allEnabled) {
+        // Disable all — update DOM state without triggering onInput per algo
         this.disabledAlgos.add(id);
         badge.classList.add('algo-badge--disabled');
         row.classList.add('result--disabled');
@@ -295,7 +295,7 @@ export const TextSection = {
           btn.disabled = true;
         });
       } else if (this.disabledAlgos.has(id)) {
-        // Select — restore from rawHexMap if available, otherwise let onInput() fill it
+        // Enable — restore from rawHexMap if available, otherwise let onInput() fill it
         this.disabledAlgos.delete(id);
         badge.classList.remove('algo-badge--disabled');
         row.classList.remove('result--disabled');
@@ -303,25 +303,25 @@ export const TextSection = {
       }
     });
 
-    // Single onInput() call covers all newly selected algorithms at once.
-    if (!allSelected) {
+    // Single onInput() call covers all newly enabled algorithms at once.
+    if (!allEnabled) {
       clearTimeout(this._debounceTimer);
       this.onInput();
     }
 
     this._updateToggleAllBtn();
+    if (!refreshTooltip) return;
     const textBtn = document.getElementById('textToggleAllBtn');
-    if (textBtn) {
-      const nowAllSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-      Tooltip.show(textBtn, nowAllSelected ? 'Deselect all' : 'Select all');
-    }
+    if (!textBtn) return;
+    const nowAllEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+    Tooltip.show(textBtn, nowAllEnabled ? 'Disable all' : 'Enable all');
   },
 
   _updateToggleAllBtn() {
     const btn = document.getElementById('textToggleAllBtn');
     if (!btn) return;
-    const allSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-    const allDeselected = _ALGORITHMS.every((a) => this.disabledAlgos.has(a.id));
+    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+    const allDisabled = _ALGORITHMS.every((a) => this.disabledAlgos.has(a.id));
     const iconChecked =
       '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
     const iconIndeterminate =
@@ -329,14 +329,14 @@ export const TextSection = {
     const iconUnchecked =
       '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
     let icon;
-    if (allSelected) icon = iconChecked;
-    else if (allDeselected) icon = iconUnchecked;
+    if (allEnabled) icon = iconChecked;
+    else if (allDisabled) icon = iconUnchecked;
     else icon = iconIndeterminate;
     btn.querySelector('svg').innerHTML = icon;
-    btn.setAttribute('aria-label', allSelected ? 'Deselect all text algorithms' : 'Select all text algorithms');
+    btn.setAttribute('aria-label', allEnabled ? 'Disable all text algorithms' : 'Enable all text algorithms');
   },
 
-  _toggleAlgo(algoId) {
+  _toggleAlgo(algoId, { refreshTooltip = false } = {}) {
     const row = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
     const badge = row.querySelector('.algo-badge');
     if (this.disabledAlgos.has(algoId)) {
@@ -359,9 +359,12 @@ export const TextSection = {
         btn.disabled = true;
       });
     }
-    // Refresh the tooltip to reflect the new state while it may still be visible.
-    const nowDisabled = this.disabledAlgos.has(algoId);
-    Tooltip.show(badge, nowDisabled ? 'Select' : 'Deselect');
+    // Refresh the tooltip to reflect the new state while it may still be visible —
+    // only for a direct click on this badge, not when driven by AlgoSpotlight.
+    if (refreshTooltip) {
+      const nowDisabled = this.disabledAlgos.has(algoId);
+      Tooltip.show(badge, nowDisabled ? 'Enable' : 'Disable');
+    }
     this._updateToggleAllBtn();
   },
 

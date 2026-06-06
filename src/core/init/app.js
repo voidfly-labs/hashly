@@ -12,15 +12,15 @@ import { AlgoSpotlight } from '../components/algo-spotlight.js';
 function _initToggleAllBtn(btnId, section, ALGORITHMS) {
   const btn = document.getElementById(btnId);
   if (!btn) return;
-  btn.addEventListener('click', () => section._toggleAll());
+  btn.addEventListener('click', () => section._toggleAll({ refreshTooltip: true }));
   btn.addEventListener('mouseenter', () => {
-    const allSelected = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
-    Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+    const allEnabled = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
+    Tooltip.show(btn, allEnabled ? 'Disable all' : 'Enable all');
   });
   btn.addEventListener('mouseleave', () => Tooltip.hide());
   btn.addEventListener('focus', () => {
-    const allSelected = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
-    Tooltip.show(btn, allSelected ? 'Deselect all' : 'Select all');
+    const allEnabled = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
+    Tooltip.show(btn, allEnabled ? 'Disable all' : 'Enable all');
   });
   btn.addEventListener('blur', () => Tooltip.hide());
 }

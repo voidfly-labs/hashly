@@ -138,7 +138,7 @@ export const FileSection = {
 
   _buildRow(algoId) {
     const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const tipText = () => (this.disabledAlgos.has(algoId) ? 'Select' : 'Deselect');
+    const tipText = () => (this.disabledAlgos.has(algoId) ? 'Enable' : 'Disable');
 
     const row = document.createElement('div');
     row.className = 'result';
@@ -173,11 +173,11 @@ export const FileSection = {
     badge.addEventListener('mouseleave', () => Tooltip.hide());
     badge.addEventListener('focus', () => Tooltip.show(badge, tipText()));
     badge.addEventListener('blur', () => Tooltip.hide());
-    badge.addEventListener('click', () => this._toggleAlgo(algoId));
+    badge.addEventListener('click', () => this._toggleAlgo(algoId, { refreshTooltip: true }));
     badge.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        this._toggleAlgo(algoId);
+        this._toggleAlgo(algoId, { refreshTooltip: true });
       }
     });
 
@@ -199,8 +199,8 @@ export const FileSection = {
     });
   },
 
-  _toggleAll() {
-    const allSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+  _toggleAll({ refreshTooltip = false } = {}) {
+    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
 
     _ALGORITHMS.forEach(({ id }) => {
       const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
@@ -208,8 +208,8 @@ export const FileSection = {
       const els = this.rowEls.get(id);
       if (!row || !badge || !els) return;
 
-      if (allSelected) {
-        // Deselect all
+      if (allEnabled) {
+        // Disable all
         this.disabledAlgos.add(id);
         badge.classList.add('algo-badge--disabled');
         row.classList.add('result--disabled');
@@ -221,7 +221,7 @@ export const FileSection = {
           btn.disabled = true;
         });
       } else if (this.disabledAlgos.has(id)) {
-        // Select — restore existing hash from rawHexMap if available
+        // Enable — restore existing hash from rawHexMap if available
         this.disabledAlgos.delete(id);
         badge.classList.remove('algo-badge--disabled');
         row.classList.remove('result--disabled');
@@ -240,18 +240,18 @@ export const FileSection = {
     });
 
     this._updateToggleAllBtn();
+    if (!refreshTooltip) return;
     const fileBtn = document.getElementById('fileToggleAllBtn');
-    if (fileBtn) {
-      const nowAllSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-      Tooltip.show(fileBtn, nowAllSelected ? 'Deselect all' : 'Select all');
-    }
+    if (!fileBtn) return;
+    const nowAllEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+    Tooltip.show(fileBtn, nowAllEnabled ? 'Disable all' : 'Enable all');
   },
 
   _updateToggleAllBtn() {
     const btn = document.getElementById('fileToggleAllBtn');
     if (!btn) return;
-    const allSelected = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-    const allDeselected = _ALGORITHMS.every((a) => this.disabledAlgos.has(a.id));
+    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+    const allDisabled = _ALGORITHMS.every((a) => this.disabledAlgos.has(a.id));
     const iconChecked =
       '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
     const iconIndeterminate =
@@ -259,14 +259,14 @@ export const FileSection = {
     const iconUnchecked =
       '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
     let icon;
-    if (allSelected) icon = iconChecked;
-    else if (allDeselected) icon = iconUnchecked;
+    if (allEnabled) icon = iconChecked;
+    else if (allDisabled) icon = iconUnchecked;
     else icon = iconIndeterminate;
     btn.querySelector('svg').innerHTML = icon;
-    btn.setAttribute('aria-label', allSelected ? 'Deselect all file algorithms' : 'Select all file algorithms');
+    btn.setAttribute('aria-label', allEnabled ? 'Disable all file algorithms' : 'Enable all file algorithms');
   },
 
-  _toggleAlgo(algoId) {
+  _toggleAlgo(algoId, { refreshTooltip = false } = {}) {
     const row = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
     const badge = row.querySelector('.algo-badge');
     const els = this.rowEls.get(algoId);
@@ -298,9 +298,12 @@ export const FileSection = {
         btn.disabled = true;
       });
     }
-    // Refresh the tooltip to reflect the new state while it may still be visible.
-    const nowDisabled = this.disabledAlgos.has(algoId);
-    Tooltip.show(badge, nowDisabled ? 'Select' : 'Deselect');
+    // Refresh the tooltip to reflect the new state while it may still be visible —
+    // only for a direct click on this badge, not when driven by AlgoSpotlight.
+    if (refreshTooltip) {
+      const nowDisabled = this.disabledAlgos.has(algoId);
+      Tooltip.show(badge, nowDisabled ? 'Enable' : 'Disable');
+    }
     this._updateToggleAllBtn();
   },
 
@@ -393,8 +396,8 @@ export const FileSection = {
     };
 
     try {
-      const activeAlgos = _ALGORITHMS.filter((a) => !this.disabledAlgos.has(a.id));
-      this.rawHexMap = await _Hasher.fromFileAll(file, onProgress, activeAlgos);
+      const enabledAlgos = _ALGORITHMS.filter((a) => !this.disabledAlgos.has(a.id));
+      this.rawHexMap = await _Hasher.fromFileAll(file, onProgress, enabledAlgos);
       const fmt = this.getSelectedFormat();
       this._currentBatchId = History.nextBatch();
       for (const { id } of _ALGORITHMS) {

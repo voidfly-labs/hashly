@@ -1,23 +1,23 @@
 import { Tooltip } from './tooltip.js';
 
 /** Enable only `algoId` in `section`, disabling every other algorithm. */
-function _selectOnlyInSection(section, algoId, ALGORITHMS) {
+function _enableOnlyInSection(section, algoId, ALGORITHMS) {
   ALGORITHMS.forEach(({ id }) => {
     const shouldDisable = id !== algoId;
     if (section.disabledAlgos.has(id) !== shouldDisable) section._toggleAlgo(id);
   });
 }
 
-/** Re-enable every algorithm in `section` if it isn't already fully selected. */
-function _selectAllInSection(section, ALGORITHMS) {
-  const allSelected = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
-  if (!allSelected) section._toggleAll();
+/** Re-enable every algorithm in `section` if it isn't already fully enabled. */
+function _enableAllInSection(section, ALGORITHMS) {
+  const allEnabled = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
+  if (!allEnabled) section._toggleAll();
 }
 
 /**
  * Header algo badges act as a spotlight control for the Text/File sections:
  * clicking one spotlights it (disabling every other algorithm in both
- * sections), clicking the spotlighted badge again re-selects all of them.
+ * sections), clicking the spotlighted badge again re-enables all of them.
  */
 export const AlgoSpotlight = {
   _state: { spotlightedAlgo: null },
@@ -33,10 +33,10 @@ export const AlgoSpotlight = {
 
   _toggle(algoId, ALGORITHMS, sections, container) {
     if (this._state.spotlightedAlgo === algoId) {
-      sections.forEach((section) => _selectAllInSection(section, ALGORITHMS));
+      sections.forEach((section) => _enableAllInSection(section, ALGORITHMS));
       this._state.spotlightedAlgo = null;
     } else {
-      sections.forEach((section) => _selectOnlyInSection(section, algoId, ALGORITHMS));
+      sections.forEach((section) => _enableOnlyInSection(section, algoId, ALGORITHMS));
       this._state.spotlightedAlgo = algoId;
     }
     this._updateBadgeClasses(container);
@@ -44,7 +44,7 @@ export const AlgoSpotlight = {
 
   _wireBadge(badge, algo, ALGORITHMS, sections, container) {
     const tipText = `${algo.bits}-bit · ${algo.hexLen} hex chars`;
-    badge.setAttribute('aria-label', `${algo.id} — ${tipText} — click to select only this algorithm`);
+    badge.setAttribute('aria-label', `${algo.id} — ${tipText} — click to enable only this algorithm`);
     badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText));
     badge.addEventListener('mouseleave', () => Tooltip.hide());
     badge.addEventListener('focus', () => Tooltip.show(badge, tipText));
