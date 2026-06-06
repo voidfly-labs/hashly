@@ -2,14 +2,14 @@
        FILE DROP
        ========================================================================= */
 .file-drop {
+  position: relative;
+  padding: 32px 24px;
   border: 2px dashed var(--border);
   border-radius: var(--radius);
-  padding: 32px 24px;
   text-align: center;
+  background: var(--surface);
   cursor: pointer;
   transition: all 0.2s;
-  position: relative;
-  background: var(--surface);
 }
 
 .file-drop:hover,
@@ -39,10 +39,10 @@
 .file-drop__input {
   position: absolute;
   inset: 0;
-  opacity: 0;
-  cursor: pointer;
   width: 100%;
   height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .file-drop__icon {
@@ -64,12 +64,12 @@
 }
 
 .file-drop__filename {
+  display: none;
   margin-top: 6px;
+  max-width: calc(100% - 48px);
   font-family: var(--mono);
   font-size: 13px;
   color: var(--accent);
-  display: none;
-  max-width: calc(100% - 48px);
 }
 
 .file-drop__filename--visible {
@@ -80,19 +80,19 @@
 }
 
 .file-drop__filename-name {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  min-width: 0;
 }
 
 .file-drop__filesize {
   flex-shrink: 0;
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 13px;
   color: var(--text-muted);
   opacity: 0.75;
-  white-space: nowrap;
 }
 
 /* Dismiss button — top-right corner of the drop zone.

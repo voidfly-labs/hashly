@@ -2,14 +2,14 @@
        MAIN LAYOUT
        ========================================================================= */
 main {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   flex: 1;
   max-width: 960px;
   width: 100%;
   margin: 0 auto;
   padding: 48px 24px 64px;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
 }
 
 .page-heading {
@@ -17,11 +17,11 @@ main {
 }
 
 .page-heading h1 {
+  margin-bottom: 6px;
   font-family: var(--mono);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -1px;
-  margin-bottom: 6px;
 }
 
 .page-heading h1 span {
@@ -46,14 +46,14 @@ main {
 }
 
 .page-heading__algos .algo-badge {
-  opacity: 0.72;
-  cursor: pointer;
-  line-height: 1.6;
-  -webkit-appearance: none;
-  appearance: none;
   margin: 0;
   border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  line-height: 1.6;
+  opacity: 0.72;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0));
+  cursor: pointer;
   transition:
     opacity 0.15s,
     transform 0.15s,
@@ -62,13 +62,13 @@ main {
 
 .page-heading__algos .algo-badge:hover {
   opacity: 1;
-  transform: translateY(-1px);
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+  transform: translateY(-1px);
 }
 
 .page-heading__algos .algo-badge:active {
-  transform: translateY(0);
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0));
+  transform: translateY(0);
 }
 
 .page-heading__algos .algo-badge:focus-visible {
@@ -101,22 +101,22 @@ main {
 }
 
 .section__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-family: var(--mono);
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--accent-dim);
-  display: flex;
-  align-items: center;
-  gap: 7px;
 }
 
 .section__label-icon {
+  flex-shrink: 0;
   width: 22px;
   height: 22px;
   fill: var(--accent-dim);
-  flex-shrink: 0;
 }
 
 .section__label-icon--stylus {
@@ -125,6 +125,7 @@ main {
 }
 
 .section__label-arrow {
+  flex-shrink: 0;
   width: 15px;
   height: 9px;
   fill: none;
@@ -132,7 +133,6 @@ main {
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
-  flex-shrink: 0;
 }
 
 .section__label::after {

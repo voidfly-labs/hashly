@@ -5,12 +5,12 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(1.8);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 40px;
   display: flex;
   align-items: center;
+  padding: 10px 40px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
   box-shadow: var(--shadow-sm);
   transition:
     background 0.3s,
@@ -32,8 +32,6 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  text-decoration: none;
-  color: inherit;
   /* No visible hover effects — link is invisible by design — but cursor
          remains as pointer so the browser still signals interactivity.
          The negative margin + compensating padding pattern expands the hit
@@ -42,6 +40,8 @@
   margin: -5px;
   padding: 5px;
   border-radius: var(--radius-sm);
+  color: inherit;
+  text-decoration: none;
 }
 
 .header__logo-icon {
@@ -57,9 +57,9 @@
     sans-serif;
   font-weight: 800;
   font-size: 17px;
-  color: var(--text);
   letter-spacing: -0.75px;
   line-height: 1;
+  color: var(--text);
 }
 
 .header__title span {
@@ -67,22 +67,22 @@
 }
 
 .header__nav {
-  display: flex;
-  gap: 2px;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  gap: 2px;
 }
 
 .header__nav-link {
+  padding: 6px 16px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
   font-family: var(--sans);
   font-size: 13.5px;
   font-weight: 500;
   color: var(--text-muted);
   text-decoration: none;
-  padding: 6px 16px;
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
   transition:
     color 0.2s,
     background 0.2s;
@@ -110,14 +110,14 @@
 
 /* Theme toggle */
 .theme-toggle {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
@@ -128,10 +128,10 @@
 }
 
 .theme-toggle svg {
+  display: none;
   width: 18px;
   height: 18px;
   fill: currentColor;
-  display: none;
 }
 
 [data-theme='dark'] .theme-toggle__sun {

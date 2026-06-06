@@ -14,20 +14,20 @@
 
 .tooltip-singleton {
   position: fixed;
-  transform: translateX(-50%) translateY(calc(-100% + 4px));
-  background: var(--text);
-  color: var(--bg);
-  font-size: 11px;
+  z-index: 9999;
   padding: 3px 8px;
   border-radius: 5px;
   white-space: nowrap;
-  pointer-events: none;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--bg);
+  background: var(--text);
   opacity: 0;
+  transform: translateX(-50%) translateY(calc(-100% + 4px));
+  pointer-events: none;
   transition:
     opacity 0.15s,
     transform 0.15s;
-  font-family: var(--sans);
-  z-index: 9999;
 }
 
 .tooltip-singleton--visible {

@@ -75,12 +75,12 @@ Commit messages must follow [Conventional Commits](https://www.conventionalcommi
 
 ## Technologies
 
-- [crypto-api](https://github.com/nf404/crypto-api) — RIPEMD digest implementations
-- [hash-wasm](https://github.com/Daninet/hash-wasm) — WASM-backed digest implementations
+- [crypto-api](https://github.com/nf404/crypto-api) – RIPEMD digest implementations
+- [hash-wasm](https://github.com/Daninet/hash-wasm) – WASM-backed digest implementations
   (MD4/5, SHA-1/2/3, BLAKE2/3, Keccak, XXH)
-- [js-crc](https://github.com/emn178/js-crc) — CRC checksum implementations
-- [Geist](https://vercel.com/font) — main font, all text in the apps
-- [Vite](https://vite.dev) — dev server and bundler
+- [js-crc](https://github.com/emn178/js-crc) – CRC checksum implementations
+- [Geist](https://vercel.com/font) – main font, all text in the apps
+- [Vite](https://vite.dev) – dev server and bundler
 
 ## Feedback
 

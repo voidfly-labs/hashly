@@ -14,15 +14,15 @@
 }
 
 .toggle-all-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
   transition:
     color 0.2s,
     border-color 0.2s,
@@ -61,15 +61,15 @@
 }
 
 .history-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
   transition:
     color 0.2s,
     border-color 0.2s,
@@ -95,15 +95,15 @@
 }
 
 .permalink-btn {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 8px;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
   transition:
     color 0.2s,
     border-color 0.2s,
@@ -143,24 +143,24 @@
 .history-popover {
   position: absolute;
   right: 0;
-  max-width: max(calc(max(100vw, 330px) - 32px), 268px);
   top: calc(100% + 6px);
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(1.8);
+  z-index: 120;
+  max-width: max(calc(max(100vw, 330px) - 32px), 268px);
+  /* No overflow:hidden — tooltips on hash cells must escape the container */
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
   box-shadow: var(--shadow-lg);
-  z-index: 120;
-  /* No overflow:hidden — tooltips on hash cells must escape the container */
   /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
   opacity: 0;
+  visibility: hidden;
   transform: translateY(-4px);
+  pointer-events: none;
   transition:
     opacity 0.18s ease,
     transform 0.18s ease,
     visibility 0.18s;
-  visibility: hidden;
-  pointer-events: none;
 }
 
 [data-theme='dark'] .history-popover {
@@ -169,8 +169,8 @@
 
 .history-popover--visible {
   opacity: 1;
-  transform: translateY(0);
   visibility: visible;
+  transform: translateY(0);
   pointer-events: auto;
 }
 
@@ -180,8 +180,8 @@
   justify-content: space-between;
   padding: 10px 14px;
   border-bottom: 1px solid var(--border);
-  background: var(--accent-surface);
   border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--accent-surface);
 }
 
 .history-popover__title {
@@ -203,18 +203,18 @@
 .history-popover__close,
 .file-drop__clear,
 .text-input__clear {
-  background: none;
-  border: none;
-  padding: 2px;
-  color: var(--text-muted);
-  cursor: pointer;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  padding: 2px;
+  border: none;
   border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
   transition:
     color 0.15s,
     background 0.15s;
-  flex-shrink: 0;
 }
 
 .history-popover__close {
@@ -245,19 +245,19 @@
 
 /* Matches .btn exactly — same surface, border, sizing, transitions */
 .history-popover__clear {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 5px 11px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
   display: inline-flex;
   align-items: center;
   white-space: nowrap;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
 .history-popover__clear svg {
@@ -267,8 +267,8 @@
 }
 
 .history-popover__clear:hover {
-  border-color: var(--accent-border);
   color: var(--accent);
+  border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
@@ -277,31 +277,31 @@
 }
 
 .history-popover__empty {
+  padding: 20px 14px;
   font-family: var(--mono);
   font-size: 12px;
-  color: var(--text-muted);
   font-style: italic;
   text-align: center;
-  padding: 20px 14px;
+  color: var(--text-muted);
 }
 
 .history-table {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
   font-family: var(--mono);
   font-size: 12px;
-  table-layout: fixed;
 }
 
 .history-table thead th {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
   font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-muted);
-  padding: 7px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
   background: var(--bg);
 }
 
@@ -329,26 +329,26 @@
 }
 
 .history-table__num {
-  color: var(--text-muted);
   width: 35px;
+  color: var(--text-muted);
 }
 
 .history-table__hash {
-  color: var(--text);
-  letter-spacing: 0.3px;
+  position: relative; /* anchor for inline .tooltip */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: 0.3px;
+  color: var(--text);
   cursor: pointer;
   user-select: none;
-  position: relative; /* anchor for inline .tooltip */
 }
 
 .history-table__time {
-  color: var(--text-muted);
-  white-space: nowrap;
   /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
   width: 150px;
+  white-space: nowrap;
+  color: var(--text-muted);
 }
 
 /* Action buttons column — mirrors .random__item-actions pattern */
@@ -356,9 +356,9 @@
   width: 58px;
   padding-left: 4px !important;
   padding-right: 8px !important;
-  text-align: right;
-  white-space: nowrap;
   overflow: visible;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .history-table__action-btns {
@@ -375,16 +375,16 @@
 
 /* Unified with .random__item-btn — identical padding, icon size, hover ring */
 .history-table__action-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 3px;
-  border-radius: 4px;
+  position: relative;
   display: inline-flex;
   align-items: center;
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
   transition: all 0.15s;
-  position: relative;
 }
 
 .history-table__action-btn:hover {
@@ -405,11 +405,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   padding: 7px 14px;
   border-top: 1px solid var(--border);
-  background: var(--accent-surface);
-  gap: 8px;
   border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--accent-surface);
 }
 
 .history-pagination {
@@ -422,23 +422,23 @@
        buttons): surface background, border, hover ring, disabled opacity.
        The fixed 26×26 square replaces the standard .btn padding for icon-only use. */
 .history-pagination__btn {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  width: 26px;
-  height: 26px;
-  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.15s;
   flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
 .history-pagination__btn:hover:not(:disabled) {
-  border-color: var(--accent-border);
   color: var(--accent);
+  border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
@@ -458,11 +458,11 @@
 }
 
 .history-pagination__info {
+  padding: 0 2px;
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 10px;
   color: var(--text-muted);
-  white-space: nowrap;
-  padding: 0 2px;
 }
 
 /* =========================================================================
@@ -473,18 +473,18 @@
 .history-backdrop {
   position: fixed;
   inset: 0;
-  /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
-  background: rgba(0, 0, 0, 0.28);
-  backdrop-filter: blur(3px) brightness(0.85);
   /* z-index above the sticky header (100) so the header is also dimmed/blurred,
          but below the popover (z-index: 120) so the popover stays fully visible. */
   z-index: 110;
+  /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
+  background: rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(3px) brightness(0.85);
   opacity: 0;
   visibility: hidden;
+  pointer-events: none;
   transition:
     opacity 0.2s ease,
     visibility 0.2s ease;
-  pointer-events: none;
 }
 
 .history-backdrop--visible {

@@ -2,26 +2,26 @@
        BUTTONS
        ========================================================================= */
 .btn {
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 5px 11px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  position: relative;
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   white-space: nowrap;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
 }
 
 .btn:hover {
-  border-color: var(--accent-border);
   color: var(--accent);
+  border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
@@ -41,13 +41,13 @@
 }
 
 .btn--primary {
-  background: var(--accent);
   color: #fff;
+  background: var(--accent);
   border-color: var(--accent);
 }
 
 .btn--primary:hover {
-  opacity: 0.88;
   color: #fff;
   box-shadow: 0 4px 16px var(--accent-glow);
+  opacity: 0.88;
 }

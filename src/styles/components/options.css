@@ -8,11 +8,11 @@
 
 .options__segment {
   display: inline-flex;
-  background: rgba(255, 255, 255, 0.72);
-  backdrop-filter: blur(20px) saturate(1.8);
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(1.8);
 }
 
 [data-theme='dark'] .options__segment {
@@ -24,17 +24,17 @@
   align-items: center;
   justify-content: center;
   padding: 5px 11px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
+  user-select: none;
   transition:
     color 0.15s,
     background 0.15s;
-  border-right: 1px solid var(--border);
-  white-space: nowrap;
-  user-select: none;
 }
 
 .options__segment-label:last-child {
@@ -49,16 +49,16 @@
 /* Hidden radio — selection state driven purely by CSS :checked sibling */
 .options__radio {
   position: absolute;
-  opacity: 0;
   width: 0;
   height: 0;
+  opacity: 0;
   pointer-events: none;
 }
 
 .options__radio:checked + .options__segment-label {
+  font-weight: 600;
   color: var(--accent);
   background: var(--accent-muted);
-  font-weight: 600;
 }
 
 /* =========================================================================
@@ -85,19 +85,19 @@
 .options__prefix {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   padding: 5px 9px;
+  border-right: 1px solid var(--border);
+  white-space: nowrap;
+  min-width: 57px;
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: var(--text-muted);
-  justify-content: center;
-  border-right: 1px solid var(--border);
-  user-select: none;
-  white-space: nowrap;
-  min-width: 57px;
   opacity: 0.7;
+  user-select: none;
   cursor: default;
 }
 

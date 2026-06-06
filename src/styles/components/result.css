@@ -8,8 +8,8 @@
   display: grid;
   grid-template-rows: 1fr;
   border-top: 1px solid var(--border);
-  background: var(--accent-surface);
   font-family: var(--mono);
+  background: var(--accent-surface);
   transition:
     grid-template-rows 0.3s ease,
     border-top-width 0.3s ease,
@@ -43,23 +43,23 @@
 }
 
 .result__hash {
-  flex: 1;
-  font-size: 13.5px;
-  color: var(--text);
-  word-break: break-all;
-  user-select: none;
-  letter-spacing: 0.45px;
-  cursor: pointer;
   position: relative; /* anchor for inline .tooltip */
+  flex: 1;
+  word-break: break-all;
+  font-size: 13.5px;
+  letter-spacing: 0.45px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
 }
 
 .result__hash--empty {
-  color: var(--text-muted);
   font-style: italic;
   font-size: 13px;
   letter-spacing: 0;
-  user-select: none;
+  color: var(--text-muted);
   cursor: default;
+  user-select: none;
 }
 
 /* ── Computing / progress state ───────────────────────────────────────────
@@ -69,22 +69,22 @@
        The percentage text is rendered inside the cell — no extra pill element.
     ──────────────────────────────────────────────────────────────────────── */
 .result__hash--computing {
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  line-height: 1.8;
+  color: var(--accent-dim);
   background: linear-gradient(
     to right,
     var(--accent-glow) calc(var(--progress, 0) * 1%),
     transparent calc(var(--progress, 0) * 1%)
   );
-  border-radius: 3px;
-  color: var(--accent-dim);
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
   cursor: default;
   user-select: none;
   transition: background 0.15s linear;
-  padding: 3px 6px;
-  line-height: 1.8;
 }
 
 .result__actions {
@@ -122,8 +122,8 @@
        pale seam — a border's width, unlike its colour, doesn't disappear just
        because you can't see it. */
 .result.result--hidden {
-  background: transparent;
   border-top-width: 0;
+  background: transparent;
 }
 
 /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
@@ -136,8 +136,8 @@
   }
 
   .result__actions {
-    flex-basis: 100%;
     justify-content: flex-end;
+    flex-basis: 100%;
     padding-top: 4px;
   }
 }

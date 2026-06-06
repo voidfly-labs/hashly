@@ -2,11 +2,11 @@
        CARD (shared wrapper)
        ========================================================================= */
 .card {
-  background: var(--surface);
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: var(--surface);
   box-shadow: var(--shadow);
-  overflow: hidden;
   transition:
     box-shadow 0.25s,
     border-color 0.25s;
@@ -28,8 +28,8 @@
 }
 
 .card__body {
-  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 16px;
 }

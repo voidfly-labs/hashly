@@ -16,20 +16,20 @@
 
 /* Thin muted separator between the count/algo selects and the action buttons */
 .random__controls-sep {
+  flex-shrink: 0;
   width: 1px;
   height: 20px;
   background: var(--border);
-  flex-shrink: 0;
 }
 
 .random__select {
-  font-family: var(--mono);
-  font-size: 12px;
   padding: 5px 8px;
-  background: var(--surface-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  font-family: var(--mono);
+  font-size: 12px;
   color: var(--text);
+  background: var(--surface-2);
   cursor: pointer;
   outline: none;
   transition: border-color 0.2s;
@@ -40,11 +40,11 @@
 }
 
 .random__list {
-  background: var(--surface);
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: var(--surface);
   box-shadow: var(--shadow);
-  overflow: hidden;
   transition:
     box-shadow 0.25s,
     border-color 0.25s;
@@ -59,9 +59,9 @@
   align-items: center;
   gap: 10px;
   padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
   font-family: var(--mono);
   font-size: 13px;
-  border-bottom: 1px solid var(--border);
   transition: background 0.15s;
 }
 
@@ -74,22 +74,22 @@
 }
 
 .random__item-index {
-  color: var(--text-muted);
-  font-size: 11px;
   min-width: 26px;
+  font-size: 11px;
+  color: var(--text-muted);
 }
 
 .random__item-hash {
+  position: relative; /* anchor for inline .tooltip */
   flex: 1;
   min-width: 0; /* needed for ellipsis to work inside flex */
-  color: var(--text);
-  user-select: none;
-  letter-spacing: 0.3px;
-  cursor: pointer;
-  position: relative; /* anchor for inline .tooltip */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
 }
 
 .random__item-actions {
@@ -104,16 +104,16 @@
 }
 
 .random__item-btn {
-  background: none;
-  border: 1px solid transparent;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 3px;
-  border-radius: 4px;
+  position: relative;
   display: flex;
   align-items: center;
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
   transition: all 0.15s;
-  position: relative;
 }
 
 .random__item-btn:hover {

@@ -5,14 +5,14 @@
 /* Trigger button */
 .nav-toggle {
   display: none;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
+  align-items: center;
   padding: 7px;
   margin-left: 8px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  align-items: center;
+  color: var(--text-muted);
+  background: transparent;
+  cursor: pointer;
   transition: all 0.2s;
 }
 
@@ -23,10 +23,10 @@
 }
 
 .nav-toggle__icon {
+  display: none;
   width: 16px;
   height: 16px;
   fill: currentColor;
-  display: none;
 }
 
 .nav-toggle__icon--open {
@@ -48,17 +48,17 @@
 
 /* Overlay drawer — hidden on desktop */
 .nav-menu {
-  display: none;
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  display: none;
   flex-direction: column;
   gap: 2px;
   padding: 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
   opacity: 0;
   transform: translateY(-6px);
   pointer-events: none;
