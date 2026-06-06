@@ -41,7 +41,7 @@ const APP_CONFIG = {
   appName: 'hashly',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
-  defaultDisabledAlgos: ['MD2'],
+  defaultHiddenAlgos: ['MD2'],
 };
 
 const ALGORITHMS = [

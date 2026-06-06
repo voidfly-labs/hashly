@@ -42,24 +42,24 @@
     filter 0.15s;
 }
 
-.result--disabled .algo-badge,
-.result--disabled .result__hash {
+.result--hidden .algo-badge,
+.result--hidden .result__hash {
   opacity: 0.4;
   transition: opacity 0.2s;
 }
 
-.result:not(.result--disabled) .algo-badge,
-.result:not(.result--disabled) .result__hash {
+.result:not(.result--hidden) .algo-badge,
+.result:not(.result--hidden) .result__hash {
   transition: opacity 0.2s;
 }
 
-.result--disabled .result__hash {
+.result--hidden .result__hash {
   cursor: default;
   color: var(--text-muted);
   font-style: italic;
 }
 
-.result--disabled .result__actions {
+.result--hidden .result__actions {
   opacity: 0;
   visibility: hidden;
   transition:
@@ -67,7 +67,7 @@
     visibility 0.2s;
 }
 
-.result:not(.result--disabled) .result__actions {
+.result:not(.result--hidden) .result__actions {
   opacity: 1;
   visibility: visible;
   transition:

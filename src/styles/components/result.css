@@ -1,14 +1,45 @@
 /* =========================================================================
        RESULT BAR (hash output attached to input card)
        ========================================================================= */
+/* Outer row: the collapsible grid track. Hiding an algorithm (however
+       that happens — its own badge, "show/hide all", or the header
+       spotlight) shrinks this track to 0fr, animating the row shut. */
 .result {
+  display: grid;
+  grid-template-rows: 1fr;
   border-top: 1px solid var(--border);
   background: var(--accent-surface);
-  padding: 7px 14px;
+  font-family: var(--mono);
+  transition:
+    grid-template-rows 0.3s ease,
+    border-top-width 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.result--hidden {
+  grid-template-rows: 0fr;
+}
+
+/* Single grid item — overflow: hidden is what lets the row shrink past its
+       content's intrinsic height (grid items otherwise refuse to shrink below
+       min-content unless overflow is non-visible). Carries the layout/padding
+       that used to live on .result itself.
+       padding-block is transitioned separately from the (fixed) horizontal
+       padding: padding never compresses on its own as a box shrinks, so
+       without this the row would bottom out at 14px (7px top + 7px bottom)
+       instead of reaching zero. */
+.result__inner {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-family: var(--mono);
+  padding-block: 7px;
+  padding-inline: 14px;
+  overflow: hidden;
+  transition: padding-block 0.3s ease;
+}
+
+.result--hidden .result__inner {
+  padding-block: 0;
 }
 
 .result__hash {
@@ -82,11 +113,24 @@
   border-top: 1px solid var(--border);
 }
 
+/* Overrides both the odd/even stripe and the adjacent-sibling border above
+       (same specificity as each, later in source — must come after both to
+       win the cascade tie for every disabled row, not just the first child).
+       border-top-width (not just -color) must go to 0: a transparent-coloured
+       border still reserves its 1px of space, and with the background also
+       transparent that 1px lets the card's own background show through as a
+       pale seam — a border's width, unlike its colour, doesn't disappear just
+       because you can't see it. */
+.result.result--hidden {
+  background: transparent;
+  border-top-width: 0;
+}
+
 /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
 
 @media (max-width: 600px) {
   /* Result bar: buttons wrap onto their own row */
-  .result {
+  .result__inner {
     flex-wrap: wrap;
     gap: 8px 12px;
   }

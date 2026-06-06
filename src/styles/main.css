@@ -11,6 +11,7 @@
 /* Components */
 @import './components/card.css';
 @import './components/result.css';
+@import './components/result-hidden.css';
 @import './components/algo-badge.css';
 @import './components/button.css';
 @import './components/hint.css';

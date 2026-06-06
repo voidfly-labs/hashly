@@ -1,0 +1,42 @@
+/* =========================================================================
+       HIDDEN-ALGORITHMS SUMMARY
+       — One combined row per results list (not one per hidden algorithm),
+         shown whenever at least one algorithm is disabled. See
+         core/components/hidden-summary.js.
+       ========================================================================= */
+.result-hidden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: none;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  font-size: 12px;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  padding: 9px 14px;
+  cursor: pointer;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+
+.result-hidden[hidden] {
+  display: none;
+}
+
+.result-hidden:hover {
+  color: var(--accent);
+  background: var(--accent-muted);
+}
+
+.result-hidden__icon {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+  flex-shrink: 0;
+}

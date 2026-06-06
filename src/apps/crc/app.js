@@ -30,7 +30,7 @@ const APP_CONFIG = {
   appName: 'crckit',
   fileNoun: 'checksum',
   slugify: (algo) => algo.toLowerCase().replace(/[^a-z0-9]/g, ''),
-  defaultDisabledAlgos: [],
+  defaultHiddenAlgos: [],
 };
 
 const ALGORITHMS = [

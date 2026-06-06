@@ -14,13 +14,13 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
   if (!btn) return;
   btn.addEventListener('click', () => section._toggleAll({ refreshTooltip: true }));
   btn.addEventListener('mouseenter', () => {
-    const allEnabled = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
-    Tooltip.show(btn, allEnabled ? 'Disable all' : 'Enable all');
+    const allVisible = ALGORITHMS.every((a) => !section.hiddenAlgos.has(a.id));
+    Tooltip.show(btn, allVisible ? 'Hide all' : 'Show all');
   });
   btn.addEventListener('mouseleave', () => Tooltip.hide());
   btn.addEventListener('focus', () => {
-    const allEnabled = ALGORITHMS.every((a) => !section.disabledAlgos.has(a.id));
-    Tooltip.show(btn, allEnabled ? 'Disable all' : 'Enable all');
+    const allVisible = ALGORITHMS.every((a) => !section.hiddenAlgos.has(a.id));
+    Tooltip.show(btn, allVisible ? 'Hide all' : 'Show all');
   });
   btn.addEventListener('blur', () => Tooltip.hide());
 }

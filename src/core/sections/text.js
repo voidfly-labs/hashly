@@ -4,6 +4,8 @@ import { Clipboard } from '@core/utils/clipboard.js';
 import { Hint } from '@core/components/hint.js';
 import { Tooltip } from '@core/components/tooltip.js';
 import { History } from '@core/components/history.js';
+import { createHiddenSummary } from '@core/components/hidden-summary.js';
+import { AlgoSpotlight } from '@core/components/algo-spotlight.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -18,7 +20,7 @@ export const TextSection = {
   rawHexMap: new Map(),
   // rowEls: Map<algoId, { hash, download, copy }> — live DOM references.
   rowEls: new Map(),
-  disabledAlgos: new Set(),
+  hiddenAlgos: new Set(),
   // Shared batchId for all algorithms in the current computation.
   _currentBatchId: null,
 
@@ -42,8 +44,13 @@ export const TextSection = {
 
     // Build one result row per algorithm (least to most complex = ALGORITHMS order).
     _ALGORITHMS.forEach(({ id }) => this._buildRow(id));
-    // Sync button icon with initial disabledAlgos state.
+    this._hiddenSummary = createHiddenSummary({
+      resultsEl: this._resultsEl,
+      onShowAll: () => this._toggleAll(),
+    });
+    // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
     this._updateToggleAllBtn();
+    this._hiddenSummary.update(this.hiddenAlgos.size);
 
     this._updateCounter('');
 
@@ -213,23 +220,25 @@ export const TextSection = {
   /** Build a result row for one algorithm and append it to the container. */
   _buildRow(algoId) {
     const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const tipText = () => (this.disabledAlgos.has(algoId) ? 'Enable' : 'Disable');
+    const tipText = () => (this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
 
     const row = document.createElement('div');
     row.className = 'result';
     row.dataset.algo = algoId;
     row.innerHTML = `
-          <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
-          <span class="result__hash result__hash--empty" id="textHash-${safeId}">awaiting input…<span class="tooltip">Copied!</span></span>
-          <div class="result__actions">
-            <button class="btn" id="textDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-              <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-              Download<span class="tooltip">Exported</span>
-            </button>
-            <button class="btn" id="textCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
-              <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-              Copy<span class="tooltip">Copied!</span>
-            </button>
+          <div class="result__inner">
+            <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
+            <span class="result__hash result__hash--empty" id="textHash-${safeId}">awaiting input…<span class="tooltip">Copied!</span></span>
+            <div class="result__actions">
+              <button class="btn" id="textDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Download<span class="tooltip">Exported</span>
+              </button>
+              <button class="btn" id="textCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
+                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                Copy<span class="tooltip">Copied!</span>
+              </button>
+            </div>
           </div>`;
 
     this._resultsEl.appendChild(row);
@@ -255,10 +264,10 @@ export const TextSection = {
       }
     });
 
-    // Apply initial disabled state if set before _buildRow is called.
-    if (this.disabledAlgos.has(algoId)) {
-      badge.classList.add('algo-badge--disabled');
-      row.classList.add('result--disabled');
+    // Apply initial hidden state if set before _buildRow is called.
+    if (this.hiddenAlgos.has(algoId)) {
+      badge.classList.add('algo-badge--hidden');
+      row.classList.add('result--hidden');
       badge.setAttribute('aria-checked', 'false');
       this._setHashText(els, 'disabled');
     }
@@ -274,8 +283,8 @@ export const TextSection = {
     });
   },
 
-  _toggleAll({ refreshTooltip = false } = {}) {
-    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
+  _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
+    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
 
     _ALGORITHMS.forEach(({ id }) => {
       const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
@@ -283,45 +292,47 @@ export const TextSection = {
       const els = this.rowEls.get(id);
       if (!row || !badge || !els) return;
 
-      if (allEnabled) {
-        // Disable all — update DOM state without triggering onInput per algo
-        this.disabledAlgos.add(id);
-        badge.classList.add('algo-badge--disabled');
-        row.classList.add('result--disabled');
+      if (allVisible) {
+        // Hide all — update DOM state without triggering onInput per algo
+        this.hiddenAlgos.add(id);
+        badge.classList.add('algo-badge--hidden');
+        row.classList.add('result--hidden');
         badge.setAttribute('aria-checked', 'false');
         this._setHashText(els, 'disabled');
         els.hash.classList.add('result__hash--empty');
         [els.download, els.copy].forEach((btn) => {
           btn.disabled = true;
         });
-      } else if (this.disabledAlgos.has(id)) {
-        // Enable — restore from rawHexMap if available, otherwise let onInput() fill it
-        this.disabledAlgos.delete(id);
-        badge.classList.remove('algo-badge--disabled');
-        row.classList.remove('result--disabled');
+      } else if (this.hiddenAlgos.has(id)) {
+        // Show — restore from rawHexMap if available, otherwise let onInput() fill it
+        this.hiddenAlgos.delete(id);
+        badge.classList.remove('algo-badge--hidden');
+        row.classList.remove('result--hidden');
         badge.setAttribute('aria-checked', 'true');
       }
     });
 
-    // Single onInput() call covers all newly enabled algorithms at once.
-    if (!allEnabled) {
+    // Single onInput() call covers all newly visible algorithms at once.
+    if (!allVisible) {
       clearTimeout(this._debounceTimer);
       this.onInput();
     }
 
     this._updateToggleAllBtn();
+    this._hiddenSummary.update(this.hiddenAlgos.size);
+    if (resetSpotlight) AlgoSpotlight.reset();
     if (!refreshTooltip) return;
     const textBtn = document.getElementById('textToggleAllBtn');
     if (!textBtn) return;
-    const nowAllEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-    Tooltip.show(textBtn, nowAllEnabled ? 'Disable all' : 'Enable all');
+    const nowAllVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
+    Tooltip.show(textBtn, nowAllVisible ? 'Hide all' : 'Show all');
   },
 
   _updateToggleAllBtn() {
     const btn = document.getElementById('textToggleAllBtn');
     if (!btn) return;
-    const allEnabled = _ALGORITHMS.every((a) => !this.disabledAlgos.has(a.id));
-    const allDisabled = _ALGORITHMS.every((a) => this.disabledAlgos.has(a.id));
+    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
+    const allHidden = _ALGORITHMS.every((a) => this.hiddenAlgos.has(a.id));
     const iconChecked =
       '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
     const iconIndeterminate =
@@ -329,28 +340,28 @@ export const TextSection = {
     const iconUnchecked =
       '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
     let icon;
-    if (allEnabled) icon = iconChecked;
-    else if (allDisabled) icon = iconUnchecked;
+    if (allVisible) icon = iconChecked;
+    else if (allHidden) icon = iconUnchecked;
     else icon = iconIndeterminate;
     btn.querySelector('svg').innerHTML = icon;
-    btn.setAttribute('aria-label', allEnabled ? 'Disable all text algorithms' : 'Enable all text algorithms');
+    btn.setAttribute('aria-label', allVisible ? 'Hide all text algorithms' : 'Show all text algorithms');
   },
 
-  _toggleAlgo(algoId, { refreshTooltip = false } = {}) {
+  _toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
     const row = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
     const badge = row.querySelector('.algo-badge');
-    if (this.disabledAlgos.has(algoId)) {
-      this.disabledAlgos.delete(algoId);
-      badge.classList.remove('algo-badge--disabled');
-      row.classList.remove('result--disabled');
+    if (this.hiddenAlgos.has(algoId)) {
+      this.hiddenAlgos.delete(algoId);
+      badge.classList.remove('algo-badge--hidden');
+      row.classList.remove('result--hidden');
       badge.setAttribute('aria-checked', 'true');
       // Re-hash with current input if any
       clearTimeout(this._debounceTimer);
       this.onInput();
     } else {
-      this.disabledAlgos.add(algoId);
-      badge.classList.add('algo-badge--disabled');
-      row.classList.add('result--disabled');
+      this.hiddenAlgos.add(algoId);
+      badge.classList.add('algo-badge--hidden');
+      row.classList.add('result--hidden');
       badge.setAttribute('aria-checked', 'false');
       const els = this.rowEls.get(algoId);
       this._setHashText(els, 'disabled');
@@ -362,10 +373,12 @@ export const TextSection = {
     // Refresh the tooltip to reflect the new state while it may still be visible —
     // only for a direct click on this badge, not when driven by AlgoSpotlight.
     if (refreshTooltip) {
-      const nowDisabled = this.disabledAlgos.has(algoId);
-      Tooltip.show(badge, nowDisabled ? 'Enable' : 'Disable');
+      const nowHidden = this.hiddenAlgos.has(algoId);
+      Tooltip.show(badge, nowHidden ? 'Show' : 'Hide');
     }
     this._updateToggleAllBtn();
+    this._hiddenSummary.update(this.hiddenAlgos.size);
+    if (resetSpotlight) AlgoSpotlight.reset();
   },
 
   // ── Hash text helpers ──────────────────────────────────────────────────
@@ -394,7 +407,7 @@ export const TextSection = {
   /** Re-render all rows from the stored raw hex values (format change). */
   _reformatAll() {
     for (const { id } of _ALGORITHMS) {
-      if (this.disabledAlgos.has(id)) continue;
+      if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);
       if (!hex) continue;
       const els = this.rowEls.get(id);
@@ -411,7 +424,7 @@ export const TextSection = {
     // using a disabled state — it has no meaningful "empty" affordance.
     this._inputClear.classList.toggle('text-input__clear--visible', enabled);
     for (const [id, els] of this.rowEls.entries()) {
-      if (this.disabledAlgos.has(id)) continue;
+      if (this.hiddenAlgos.has(id)) continue;
       [els.download, els.copy].forEach((btn) => {
         btn.disabled = !enabled;
       });
@@ -478,7 +491,7 @@ export const TextSection = {
     if (!raw) {
       this.rawHexMap.clear();
       for (const { id } of _ALGORITHMS) {
-        if (this.disabledAlgos.has(id)) continue;
+        if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
         this._setHashText(els, 'awaiting input…');
         els.hash.classList.add('result__hash--empty');
@@ -494,7 +507,7 @@ export const TextSection = {
     const fmt = this.getSelectedFormat();
     this._currentBatchId = History.nextBatch();
     for (const { id } of _ALGORITHMS) {
-      if (this.disabledAlgos.has(id)) continue;
+      if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);
       const hash = Format.applyFormat(hex, fmt);
       const els = this.rowEls.get(id);

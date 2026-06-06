@@ -7,7 +7,7 @@ const APP_CONFIG = {
   appName: 'md5kit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase(),
-  defaultDisabledAlgos: ['MD2'],
+  defaultHiddenAlgos: ['MD2'],
 };
 
 const ALGORITHMS = [

@@ -17,7 +17,7 @@ const APP_CONFIG = {
   appName: 'sha2kit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
-  defaultDisabledAlgos: [],
+  defaultHiddenAlgos: [],
 };
 
 const ALGORITHMS = [

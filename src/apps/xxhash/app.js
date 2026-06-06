@@ -15,7 +15,7 @@ const APP_CONFIG = {
   appName: 'xxhashkit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase(),
-  defaultDisabledAlgos: [],
+  defaultHiddenAlgos: [],
 };
 
 const ALGORITHMS = [

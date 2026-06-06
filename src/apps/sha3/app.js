@@ -6,7 +6,7 @@ const APP_CONFIG = {
   appName: 'sha3kit',
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
-  defaultDisabledAlgos: [],
+  defaultHiddenAlgos: [],
 };
 
 const ALGORITHMS = [
