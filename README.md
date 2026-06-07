@@ -15,17 +15,17 @@ Hashly is a suite of nine standalone hash-calculator apps.
 Each app focuses on a specific family of algorithms, with a clean UI and helpful features like
 history, permalinks, and file downloads.
 
-| App         | Domain      | Algorithms                             |
-| ----------- | ----------- | -------------------------------------- |
-| `blakekit`  | blake3.app  | BLAKE2b, BLAKE2s, BLAKE3               |
-| `crckit`    | crckit.com  | 23 CRC variants (CRC-8 through CRC-82) |
-| `hashly`    | hashly.org  | All 30 non-CRC algorithms (aggregator) |
-| `keccakkit` | keccak.app  | Keccak-224/256/384/512                 |
-| `md5kit`    | md5kit.com  | MD2, MD4, MD5                          |
-| `ripemdkit` | ripemd.com  | RIPEMD-128/160/256/320                 |
-| `sha2kit`   | sha256.app  | SHA-1, SHA-224/256/384/512             |
-| `sha3kit`   | sha3kit.com | SHA3-224/256/384/512                   |
-| `xxhashkit` | xxhash.dev  | XXH3/32/64/128                         |
+| App         | Domain     | Algorithms                             |
+| ----------- | ---------- | -------------------------------------- |
+| `blakekit`  | blake3.app | BLAKE2b, BLAKE2s, BLAKE3               |
+| `crckit`    | crc32.app  | 23 CRC variants (CRC-8 through CRC-82) |
+| `hashly`    | hashly.org | All 30 non-CRC algorithms (aggregator) |
+| `keccakkit` | keccak.app | Keccak-224/256/384/512                 |
+| `md5kit`    | md5kit.com | MD2, MD4, MD5                          |
+| `ripemdkit` | ripemd.com | RIPEMD-128/160/256/320                 |
+| `sha2kit`   | sha256.app | SHA-1, SHA-224/256/384/512             |
+| `sha3kit`   | sha3.app   | SHA3-224/256/384/512                   |
+| `xxhashkit` | xxhash.dev | XXH3/32/64/128                         |
 
 Each app is a fully self-contained SPA. No server, no tracking, no data leaves the browser.
 

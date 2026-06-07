@@ -7,7 +7,7 @@ export default {
   footerLabel: 'MD4/5',
 
   // SEO
-  title: 'MD5 Hash Calculator | MD5Kit',
+  title: 'MD5 Hash Calculator',
   description:
     'Calculate MD2, MD4, and MD5 hashes in your browser. Text and file input, hex/Base64/binary output. No uploads, no tracking.',
   canonicalUrl: 'https://www.md5kit.com/',

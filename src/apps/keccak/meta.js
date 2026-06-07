@@ -7,7 +7,7 @@ export default {
   footerLabel: 'Keccak',
 
   // SEO
-  title: 'Keccak-256 Hash Calculator | KeccakKit',
+  title: 'Keccak-256 Hash Calculator',
   description:
     'Calculate Keccak-224, Keccak-256, Keccak-384, and Keccak-512 hashes in your browser. Keccak-256 powers Ethereum. No uploads, no tracking.',
   canonicalUrl: 'https://www.keccak.app/',

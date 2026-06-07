@@ -2,16 +2,16 @@ export default {
   // Brand
   siteName: 'SHA3Kit',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.sha3kit.com',
+  brandUrl: 'https://www.sha3.app',
   brandTitleHtml: '<span>SHA3</span>Kit',
   footerLabel: 'SHA-3',
 
   // SEO
-  title: 'SHA3-256 Hash Calculator | SHA3Kit',
+  title: 'SHA3-256 Hash Calculator',
   description:
     'Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.sha3kit.com/',
-  ogImage: 'https://www.sha3kit.com/og-image.png',
+  canonicalUrl: 'https://www.sha3.app/',
+  ogImage: 'https://www.sha3.app/og-image.png',
 
   // Page
   pageH1Html: '<span>SHA3-256</span> Hash Calculator',
@@ -29,18 +29,18 @@ export default {
   // Build
   srcDir: 'sha3',
   legal: {
-    domain: 'sha3kit.com',
+    domain: 'sha3.app',
     libraries: [{ name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' }],
     privacy: {
       title: 'Privacy Policy | SHA3Kit',
       description:
         'Privacy policy for SHA3Kit by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.sha3kit.com/privacy',
+      canonicalUrl: 'https://www.sha3.app/privacy',
     },
     terms: {
       title: 'Terms of Service | SHA3Kit',
       description: 'Terms of service for SHA3Kit by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.sha3kit.com/terms',
+      canonicalUrl: 'https://www.sha3.app/terms',
     },
   },
 };

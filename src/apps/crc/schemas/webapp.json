@@ -2,7 +2,7 @@
   "@context": "https://schema.org",
   "@type": "WebApplication",
   "name": "CRCKit",
-  "url": "https://www.crckit.com/",
+  "url": "https://www.crc32.app/",
   "description": "Browser-based CRC checksum calculator supporting CRC-8 (1-Wire), CRC-8 (DVB-S2), CRC-8 (SMBus), CRC-16, CRC-24 (OpenPGP), CRC-24 (BLE), CRC-24 (Intlkn), CRC-32, CRC-32C, CRC-32 (JamCRC), CRC-32 (BZIP2), CRC-64 (ECMA), CRC-82 (DARC), and more. All computation is local — no data is transmitted.",
   "headline": "CRC-32 Checksum Calculator",
   "featureList": "Text checksum, File checksum, Hex output, Base64 output, Binary output, Checksum history, Random checksum generation",

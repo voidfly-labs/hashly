@@ -7,7 +7,7 @@ export default {
   footerLabel: 'RIPEMD',
 
   // SEO
-  title: 'RIPEMD-160 Hash Calculator | RIPEMDKit',
+  title: 'RIPEMD-160 Hash Calculator',
   description:
     'Calculate RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320 hashes in your browser. Used in Bitcoin and OpenPGP. No uploads, no tracking.',
   canonicalUrl: 'https://www.ripemd.com/',

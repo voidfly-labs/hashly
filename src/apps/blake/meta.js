@@ -7,7 +7,7 @@ export default {
   footerLabel: 'BLAKE2/3',
 
   // SEO
-  title: 'BLAKE3 Hash Calculator | BLAKEKit',
+  title: 'BLAKE3 Hash Calculator',
   description:
     'Calculate BLAKE2b, BLAKE2s, and BLAKE3 hashes in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.blake3.app/',

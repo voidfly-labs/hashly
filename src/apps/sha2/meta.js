@@ -7,7 +7,7 @@ export default {
   footerLabel: 'SHA-1/2',
 
   // SEO
-  title: 'SHA-256 Hash Calculator | SHA2Kit',
+  title: 'SHA-256 Hash Calculator',
   description:
     'Calculate SHA-224, SHA-256, SHA-384, SHA-512, and SHA-1 hashes in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.sha256.app/',

@@ -7,7 +7,7 @@ export default {
   footerLabel: 'xxHash',
 
   // SEO
-  title: 'xxHash64 Hash Calculator | xxHashKit',
+  title: 'xxHash64 Hash Calculator',
   description:
     'Calculate xxHash32, xxHash64, xxHash3, and xxHash128 checksums in your browser. Instant non-cryptographic hashing — no uploads, no tracking.',
   canonicalUrl: 'https://www.xxhash.dev/',
