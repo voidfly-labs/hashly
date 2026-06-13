@@ -18,7 +18,7 @@
   font-style: italic;
   letter-spacing: 0.3px;
   color: var(--text-muted);
-  background: none;
+  background: var(--bg);
   cursor: pointer;
   transition:
     color 0.15s,

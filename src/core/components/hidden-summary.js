@@ -11,7 +11,9 @@ export function createHiddenSummary({ resultsEl, onShowAll }) {
   btn.hidden = true;
   btn.innerHTML = `
         <svg class="result-hidden__icon" viewBox="0 0 24 24" aria-hidden="true">
-          <use href="/src/assets/images/icons.svg#icon-more"></use>
+          <circle cx="12" cy="5" r="2"/>
+          <circle cx="12" cy="12" r="2"/>
+          <circle cx="12" cy="19" r="2"/>
         </svg>
         <span class="result-hidden__label"></span>`;
   btn.addEventListener('click', onShowAll);

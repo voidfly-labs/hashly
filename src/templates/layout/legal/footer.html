@@ -57,16 +57,25 @@
     <div class="footer__bar">
       <span
         >© <span id="footerYear"></span>&ensp;<a
-          href="https://github.com/voidfly-labs"
+          href="https://www.github.com/voidfly-labs"
           target="_blank"
           rel="noopener noreferrer"
           >Voidfly Labs</a
+        >&ensp;·<!--
+        -->&ensp;<span class="footer__version" data-build-date="<%= buildDate %>">
+          <svg class="footer__version-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <use href="/src/assets/images/icons.svg#icon-tag"></use></svg
+          >v<%= version %></span
         >
-        · <span class="footer__version" data-build-date="<%= buildDate %>">v<%= version %></span></span
-      >
+      </span>
       <span><a href="/privacy">Privacy Policy</a>&ensp;·&ensp;<a href="/terms">Terms of Service</a></span>
       <div class="footer__bar-right">
-        <a href="mailto:report@voidfly.com">report an issue</a>
+        <a class="footer__report" href="mailto:report@voidfly.com">
+          <svg class="footer__report-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <use href="/src/assets/images/icons.svg#icon-bug"></use>
+          </svg>
+          <span class="footer__report-label">Report issue</span>
+        </a>
       </div>
     </div>
   </div>

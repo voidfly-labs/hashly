@@ -1,13 +1,16 @@
-import { Theme } from '../theme/manager.js';
-import { NavMenu } from '../components/nav-menu.js';
-import { FaqSection } from '../sections/faq.js';
+import { AlgoSpotlight } from '../components/algo-spotlight.js';
 import { History } from '../components/history.js';
-import { TextSection } from '../sections/text.js';
+import { NavMenu } from '../components/nav-menu.js';
+import { Permalink } from '../components/permalink.js';
+import { initReportTooltip } from '../components/report.js';
+import { initSocialTooltips } from '../components/social.js';
+import { Tooltip } from '../components/tooltip.js';
+import { initVersionTooltip } from '../components/version.js';
+import { FaqSection } from '../sections/faq.js';
 import { FileSection } from '../sections/file.js';
 import { RandomSection } from '../sections/random.js';
-import { Permalink } from '../components/permalink.js';
-import { Tooltip } from '../components/tooltip.js';
-import { AlgoSpotlight } from '../components/algo-spotlight.js';
+import { TextSection } from '../sections/text.js';
+import { Theme } from '../theme/manager.js';
 
 function _initToggleAllBtn(btnId, section, ALGORITHMS) {
   const btn = document.getElementById(btnId);
@@ -45,14 +48,8 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-    const versionEl = document.querySelector('.footer__version[data-build-date]');
-    if (versionEl) {
-      const tip = `Built on ${versionEl.dataset.buildDate}`;
-      versionEl.addEventListener('mouseenter', () => Tooltip.show(versionEl, tip));
-      versionEl.addEventListener('mouseleave', () => Tooltip.hide());
-      versionEl.addEventListener('click', () => Tooltip.show(versionEl, tip));
-      versionEl.addEventListener('focus', () => Tooltip.show(versionEl, tip));
-      versionEl.addEventListener('blur', () => Tooltip.hide());
-    }
+    initReportTooltip();
+    initSocialTooltips();
+    initVersionTooltip();
   });
 }
