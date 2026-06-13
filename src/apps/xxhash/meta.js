@@ -3,7 +3,7 @@ export default {
   siteName: 'xxHashKit',
   author: 'Voidfly Labs',
   brandUrl: 'https://www.xxhash.dev',
-  brandTitleHtml: '<span>xx</span>HashKit',
+  brandTitleHtml: '<span>xxHash</span>Kit',
   footerLabel: 'xxHash',
 
   // SEO

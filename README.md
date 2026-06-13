@@ -16,7 +16,7 @@ Each app focuses on a specific family of algorithms, with a clean UI and helpful
 history, permalinks, and file downloads.
 
 | App         | Domain     | Algorithms                             |
-| ----------- | ---------- | -------------------------------------- |
+|-------------|------------|----------------------------------------|
 | `blakekit`  | blake3.app | BLAKE2b, BLAKE2s, BLAKE3               |
 | `crckit`    | crc32.app  | 23 CRC variants (CRC-8 through CRC-82) |
 | `hashly`    | hashly.org | All 30 non-CRC algorithms (aggregator) |

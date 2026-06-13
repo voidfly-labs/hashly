@@ -1,0 +1,97 @@
+/* =========================================================================
+       SECTION COLLAPSE
+       — Turns every section heading into a disclosure toggle. The .section__toggle
+         button and its chevron are injected at runtime by
+         core/components/section-collapse.js (no template changes); this file
+         only styles the resulting markup. Body collapse reuses the
+         grid-template-rows technique from result.css — unlike .result, no
+         padding lives directly on the collapsing element, so there's no
+         padding-block pitfall to work around here.
+       ========================================================================= */
+/* width: 100% — the whole row (including the decorative fill line, moved
+       here from .section__label::after so it's part of the clickable area)
+       is one toggle target. order puts the line between the heading content
+       (default order: 0) and the chevron. */
+.section__toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  padding: 0;
+  border: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  background: none;
+  cursor: pointer;
+}
+
+.section__toggle::after {
+  content: '';
+  order: 1;
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Single Material "keyboard_arrow_down" glyph, rotated rather than swapped
+       for a smooth animation (same transform + 0.2s ease as the rest of the
+       app's icon transitions, e.g. .toggle-all-btn:active, .algo-badge:hover)
+       — up/down is 180° of the same glyph, so rotation reads identically to
+       swapping between the two official icons. Coloured like the other
+       end-of-row icons (muted, not the heading's own accent-dim) since it's
+       a utility affordance, not label content. */
+.section__toggle-chevron {
+  order: 2;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--text-muted);
+  fill: currentColor;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}
+
+.section--collapsed .section__toggle-chevron {
+  transform: rotate(0deg);
+}
+
+.section__body {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.section--collapsed .section__body {
+  grid-template-rows: 0fr;
+}
+
+.section {
+  transition:
+    margin-top 0.3s ease,
+    margin-bottom 0.3s ease;
+}
+
+.section--collapsed:has(+ .section--collapsed) {
+  margin-bottom: -10px;
+}
+.section--collapsed + .section--collapsed {
+  margin-top: -10px;
+}
+.section--collapsed:not(:has(+ .section--collapsed)) {
+  margin-bottom: -20px;
+}
+.section:not(.section--collapsed) + .section--collapsed {
+  margin-top: -20px;
+}
+
+/* Single grid item — overflow: hidden lets the wrapper shrink past its
+       content's intrinsic height, same as .result__inner. Carries the
+       display/gap that used to live directly on .section for these children. */
+.section__body-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow: hidden;
+}

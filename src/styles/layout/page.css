@@ -140,13 +140,6 @@ main {
   stroke-linejoin: round;
 }
 
-.section__label::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
 @media (max-width: 600px) {
   main {
     padding: 32px 16px 48px;

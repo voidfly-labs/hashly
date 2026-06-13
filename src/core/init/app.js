@@ -3,6 +3,7 @@ import { History } from '../components/history.js';
 import { NavMenu } from '../components/nav-menu.js';
 import { Permalink } from '../components/permalink.js';
 import { initReportTooltip } from '../components/report.js';
+import { initSectionCollapse } from '../components/section-collapse.js';
 import { initSocialTooltips } from '../components/social.js';
 import { Tooltip } from '../components/tooltip.js';
 import { initVersionTooltip } from '../components/version.js';
@@ -44,6 +45,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
     RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
     AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection]);
+    initSectionCollapse();
 
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();

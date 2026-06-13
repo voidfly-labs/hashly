@@ -1,27 +1,28 @@
 /* Base */
-@import './base/tokens.css';
 @import './base/reset.css';
+@import './base/tokens.css';
 @import './base/typography.css';
 
 /* Layout */
+@import './layout/footer.css';
 @import './layout/header.css';
 @import './layout/page.css';
-@import './layout/footer.css';
 
 /* Components */
-@import './components/card.css';
-@import './components/result.css';
-@import './components/result-hidden.css';
 @import './components/algo-badge.css';
 @import './components/button.css';
+@import './components/card.css';
 @import './components/hint.css';
-@import './components/tooltip.css';
-@import './components/options.css';
 @import './components/history.css';
 @import './components/nav-menu.css';
+@import './components/options.css';
+@import './components/result-hidden.css';
+@import './components/result.css';
+@import './components/section-collapse.css';
+@import './components/tooltip.css';
 
 /* Sections */
-@import './sections/text.css';
+@import './sections/faq.css';
 @import './sections/file.css';
 @import './sections/random.css';
-@import './sections/faq.css';
+@import './sections/text.css';
