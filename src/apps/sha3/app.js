@@ -1,6 +1,7 @@
-import { sha3, createSHA3 } from 'hash-wasm';
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+import { createSHA3, sha3 } from 'hash-wasm';
+
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'sha3kit',

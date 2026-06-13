@@ -33,9 +33,9 @@ export default defineConfig({
   root: '.',
   resolve: {
     alias: {
-      '@assets': resolve('./src/assets'),
-      '@core': resolve('./src/core'),
-      '@styles': resolve('./src/styles'),
+      '~assets': resolve('./src/assets'),
+      '~core': resolve('./src/core'),
+      '~styles': resolve('./src/styles'),
     },
   },
   optimizeDeps: {

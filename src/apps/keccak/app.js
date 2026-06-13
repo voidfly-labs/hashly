@@ -1,6 +1,7 @@
-import { keccak, createKeccak } from 'hash-wasm';
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+import { createKeccak, keccak } from 'hash-wasm';
+
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'keccakkit',

@@ -1,41 +1,42 @@
+import CryptoApi from 'crypto-api/src/crypto-api.mjs';
 import {
-  md4,
-  md5,
-  createMD4,
-  createMD5,
-  sha1,
-  sha224,
-  sha256,
-  sha384,
-  sha512,
-  createSHA1,
-  createSHA224,
-  createSHA256,
-  createSHA384,
-  createSHA512,
-  keccak,
-  createKeccak,
-  sha3,
-  createSHA3,
   blake2b,
   blake2s,
   blake3,
   createBLAKE2b,
   createBLAKE2s,
   createBLAKE3,
-  xxhash32,
-  xxhash64,
-  xxhash3,
-  xxhash128,
+  createKeccak,
+  createMD4,
+  createMD5,
+  createSHA1,
+  createSHA3,
+  createSHA224,
+  createSHA256,
+  createSHA384,
+  createSHA512,
+  createXXHash3,
   createXXHash32,
   createXXHash64,
-  createXXHash3,
   createXXHash128,
+  keccak,
+  md4,
+  md5,
+  sha1,
+  sha3,
+  sha224,
+  sha256,
+  sha384,
+  sha512,
+  xxhash3,
+  xxhash32,
+  xxhash64,
+  xxhash128,
 } from 'hash-wasm';
-import { md2 } from '@core/algos/md2.js';
-import CryptoApi from 'crypto-api/src/crypto-api.mjs';
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+
+import { md2 } from '~core/algos/md2.js';
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'hashly',

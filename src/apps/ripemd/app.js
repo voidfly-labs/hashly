@@ -1,6 +1,7 @@
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
 import CryptoApi from 'crypto-api/src/crypto-api.mjs';
+
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'ripemdkit',

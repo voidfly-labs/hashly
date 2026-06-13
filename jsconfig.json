@@ -2,9 +2,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@core/*": ["src/core/*"],
-      "@styles/*": ["src/styles/*"],
-      "@assets/*": ["src/assets/*"]
+      "~core/*": ["src/core/*"],
+      "~styles/*": ["src/styles/*"],
+      "~assets/*": ["src/assets/*"]
     },
     "target": "ES2022",
     "module": "ESNext",

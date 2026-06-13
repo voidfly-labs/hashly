@@ -1,6 +1,7 @@
 import js from '@eslint/js';
-import globals from 'globals';
+import importSort from 'eslint-plugin-simple-import-sort';
 import sonarjs from 'eslint-plugin-sonarjs';
+import globals from 'globals';
 
 const browserRules = {
   ...js.configs.recommended.rules,
@@ -29,10 +30,15 @@ export default [
       sourceType: 'module',
       globals: globals.browser,
     },
-    plugins: { sonarjs },
+    plugins: {
+      sonarjs,
+      'simple-import-sort': importSort,
+    },
     rules: {
       ...browserRules,
       ...sonarjs.configs.recommended.rules,
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
     },
   },
 ];

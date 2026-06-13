@@ -1,6 +1,6 @@
-import { Clipboard } from '@core/utils/clipboard.js';
-import { Download } from '@core/utils/download.js';
-import { Tooltip } from '@core/components/tooltip.js';
+import { Tooltip } from '~core/components/tooltip.js';
+import { Clipboard } from '~core/utils/clipboard.js';
+import { Download } from '~core/utils/download.js';
 
 let _APP_CONFIG, _ALGORITHMS, _DEFAULT_ALGO, _Hasher;
 

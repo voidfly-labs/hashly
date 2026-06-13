@@ -1,5 +1,6 @@
-import { TextSection } from '@core/sections/text.js';
-import { Clipboard } from '@core/utils/clipboard.js';
+import { TextSection } from '~core/sections/text.js';
+import { Clipboard } from '~core/utils/clipboard.js';
+
 import { Tooltip } from './tooltip.js';
 
 export const Permalink = {

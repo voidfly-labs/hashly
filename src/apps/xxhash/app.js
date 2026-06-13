@@ -1,15 +1,16 @@
 import {
-  xxhash32,
-  xxhash64,
-  xxhash3,
-  xxhash128,
+  createXXHash3,
   createXXHash32,
   createXXHash64,
-  createXXHash3,
   createXXHash128,
+  xxhash3,
+  xxhash32,
+  xxhash64,
+  xxhash128,
 } from 'hash-wasm';
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'xxhashkit',

@@ -1,13 +1,12 @@
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
+
 import {
-  crc16,
-  crc32,
-  crc_8_maxim_dow,
   crc_8_dvb_s2,
+  crc_8_maxim_dow,
   crc_8_smbus,
-  crc_16_ibm_3740,
   crc_16_dnp,
+  crc_16_ibm_3740,
   crc_16_kermit,
   crc_16_modbus,
   crc_16_usb,
@@ -15,15 +14,17 @@ import {
   crc_24_ble,
   crc_24_interlaken,
   crc_24_openpgp,
-  crc_32c,
   crc_32_bzip2,
   crc_32_jamcrc,
   crc_32_mpeg_2,
+  crc_32c,
   crc_64_ecma_182,
   crc_64_nvme,
   crc_64_redis,
   crc_64_xz,
   crc_82_darc,
+  crc16,
+  crc32,
 } from './algos/crc-fns.js';
 
 const APP_CONFIG = {

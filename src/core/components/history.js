@@ -1,5 +1,6 @@
-import { Clipboard } from '@core/utils/clipboard.js';
-import { Download } from '@core/utils/download.js';
+import { Clipboard } from '~core/utils/clipboard.js';
+import { Download } from '~core/utils/download.js';
+
 import { Tooltip } from './tooltip.js';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;

@@ -1,17 +1,18 @@
 import {
-  sha1,
-  sha224,
-  sha256,
-  sha384,
-  sha512,
   createSHA1,
   createSHA224,
   createSHA256,
   createSHA384,
   createSHA512,
+  sha1,
+  sha224,
+  sha256,
+  sha384,
+  sha512,
 } from 'hash-wasm';
-import { Format } from '@core/utils/format.js';
-import { initApp } from '@core/init/app.js';
+
+import { initApp } from '~core/init/app.js';
+import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'sha2kit',

@@ -1,10 +1,10 @@
-import { Format } from '@core/utils/format.js';
-import { Download } from '@core/utils/download.js';
-import { Clipboard } from '@core/utils/clipboard.js';
-import { Tooltip } from '@core/components/tooltip.js';
-import { History } from '@core/components/history.js';
-import { createHiddenSummary } from '@core/components/hidden-summary.js';
-import { AlgoSpotlight } from '@core/components/algo-spotlight.js';
+import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { createHiddenSummary } from '~core/components/hidden-summary.js';
+import { History } from '~core/components/history.js';
+import { Tooltip } from '~core/components/tooltip.js';
+import { Clipboard } from '~core/utils/clipboard.js';
+import { Download } from '~core/utils/download.js';
+import { Format } from '~core/utils/format.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
