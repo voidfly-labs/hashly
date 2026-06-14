@@ -12,6 +12,7 @@
 @import './components/algo-badge.css';
 @import './components/button.css';
 @import './components/card.css';
+@import './components/help.css';
 @import './components/hint.css';
 @import './components/history.css';
 @import './components/nav-menu.css';
@@ -24,5 +25,6 @@
 /* Sections */
 @import './sections/faq.css';
 @import './sections/file.css';
+@import './sections/quick-select.css';
 @import './sections/random.css';
 @import './sections/text.css';

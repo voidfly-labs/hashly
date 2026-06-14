@@ -29,8 +29,6 @@
 
 .section__toggle::after {
   content: '';
-  position: relative;
-  top: 1px;
   order: 1;
   flex: 1;
   height: 1px;
@@ -73,17 +71,16 @@
   transition: margin-bottom 0.3s ease;
 }
 
-/* -20px/-16px (not a flat value) cancels out the 4px difference between
-   .section--with-actions' 14px header-to-body gap and the 10px default —
-   that gap still occupies space after a collapsed (0-height) body, so
-   without this split the two section types would collapse to different
-   footprints again. */
 .section--collapsed {
-  margin-bottom: -16px;
+  margin-bottom: 24px;
 }
 
 .section--with-actions.section--collapsed {
-  margin-bottom: -20px;
+  margin-bottom: 20px;
+}
+
+#quick-select-section:not(.section--collapsed) {
+  margin-bottom: 20px;
 }
 
 /* Single grid item — overflow: hidden lets the wrapper shrink past its
@@ -93,5 +90,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  margin-bottom: 1px;
   overflow: hidden;
 }

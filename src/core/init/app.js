@@ -1,4 +1,5 @@
 import { AlgoSpotlight } from '../components/algo-spotlight.js';
+import { initHelpAction } from '../components/help.js';
 import { History } from '../components/history.js';
 import { NavMenu } from '../components/nav-menu.js';
 import { Permalink } from '../components/permalink.js';
@@ -46,6 +47,12 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
     AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection]);
     initSectionCollapse();
+    initHelpAction('quickSelectHelpBtn', [
+      'Type text or drop a file – all algorithms run instantly',
+      '•  Click an algorithm to select it, click again to deselect',
+      '•  Click the "History" button to see recent outputs',
+      '•  Click the "Permalink" button to share a link to this page',
+    ]);
 
     const yearEl = document.getElementById('footerYear');
     if (yearEl) yearEl.textContent = new Date().getFullYear();

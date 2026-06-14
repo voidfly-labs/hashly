@@ -1,15 +1,15 @@
 <!-- ── FILE ── -->
-<section class="section section--with-actions" id="file" aria-labelledby="section-file-heading">
+<section class="section section--with-actions" id="file-section" aria-labelledby="section-file-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-file-heading">
       <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-docs"></use>
       </svg>
-      File
-      <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-arrow-right"></use>
-      </svg>
-      <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>
+      <span class="section__label-text">
+        File<!--
+        --><svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-arrow-right"></use></svg><!--
+        --><%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>
+      </span>
     </h2>
     <button class="toggle-all-btn" id="fileToggleAllBtn" aria-label="Hide all file algorithms">
       <svg viewBox="0 0 24 24" aria-hidden="true">

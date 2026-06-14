@@ -1,5 +1,5 @@
-import { Tooltip } from './tooltip.js';
 import { Storage } from '../services/storage.js';
+import { Tooltip } from './tooltip.js';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.
  *  resetSpotlight: false — these calls originate from AlgoSpotlight itself,

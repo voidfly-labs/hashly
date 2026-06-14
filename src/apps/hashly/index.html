@@ -6,7 +6,7 @@
     <div class="history-backdrop" id="historyBackdrop" aria-hidden="true"></div>
 
     <!-- Skip navigation for accessibility (also crawlable anchor text) -->
-    <a class="skip-link" href="#text"><%= skipLinkText %></a>
+    <a class="skip-link" href="#text-section"><%= skipLinkText %></a>
 
     <%- include('/src/templates/layout/header.html') %>
 
@@ -16,11 +16,15 @@
       <div class="page-heading">
         <h1><%- pageH1Html %></h1>
         <p class="page-heading__subtitle"><%= pageSubtitle %></p>
-        <div class="page-heading__algos" id="algoBadges" aria-label="Supported algorithms"></div>
       </div>
 
-      <%- include('/src/templates/sections/text.html') %> <%- include('/src/templates/sections/file.html') %> <%-
-      include('/src/templates/sections/random.html') %>
+      <%- include('/src/templates/sections/quick-select.html') %>
+      <!-- -->
+      <%- include('/src/templates/sections/text.html') %>
+      <!-- -->
+      <%- include('/src/templates/sections/file.html') %>
+      <!-- -->
+      <%- include('/src/templates/sections/random.html') %>
 
       <!-- ── ABOUT & FAQ ── -->
       <%- include('/src/apps/hashly/sections/faq.html') %>

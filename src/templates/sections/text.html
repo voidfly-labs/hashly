@@ -1,15 +1,17 @@
 <!-- ── TEXT ── -->
-<section class="section section--with-actions" id="text" aria-labelledby="section-text-heading">
+<section class="section section--with-actions" id="text-section" aria-labelledby="section-text-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-text-heading">
       <svg class="section__label-icon section__label-icon--stylus" viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-stylus-note"></use>
       </svg>
-      Text
-      <svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-arrow-right"></use>
-      </svg>
-      <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>
+      <span class="section__label-text"
+        >Text<!--
+      --><svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-arrow-right"></use></svg
+        ><!--
+        --><%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %></span
+      >
     </h2>
     <button class="toggle-all-btn" id="textToggleAllBtn" aria-label="Hide all text algorithms">
       <svg viewBox="0 0 24 24" aria-hidden="true">

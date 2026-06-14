@@ -1,0 +1,59 @@
+/* =========================================================================
+   QUICK SELECT
+   — Header algo badges, living in their own collapsible section rather
+     than the page heading. Reuses the existing .algo-badge vocabulary for
+     visual consistency with the result rows; opacity slightly reduced so
+     the row reads as supporting metadata rather than competing for
+     attention.
+   ========================================================================= */
+.quick-select__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--badge-min-width), 1fr));
+  gap: 6px;
+  padding: 4px 2px 4px;
+}
+
+.quick-select__grid .algo-badge {
+  margin: 0;
+  border: none;
+  -webkit-appearance: none;
+  appearance: none;
+  line-height: 1.6;
+  opacity: 0.72;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0));
+  cursor: pointer;
+  transition:
+    opacity 0.15s,
+    transform 0.15s,
+    filter 0.15s;
+}
+
+.quick-select__grid .algo-badge:hover {
+  opacity: 1;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));
+  transform: translateY(-1px);
+}
+
+.quick-select__grid .algo-badge:active {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0));
+  transform: translateY(0);
+}
+
+.quick-select__grid .algo-badge:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Spotlight mode: clicking a badge shows only that algorithm in the Text and
+   File sections; clicking it again re-shows all of them. */
+.quick-select__grid .algo-badge--hidden {
+  opacity: 0.4;
+}
+
+.quick-select__grid .algo-badge--active {
+  opacity: 1;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, currentColor 40%, transparent),
+    0 0 0 2px var(--accent);
+}

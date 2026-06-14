@@ -1,10 +1,12 @@
 <!-- ── RANDOM ── -->
-<section class="section" id="random" aria-labelledby="section-random-heading">
+<section class="section" id="random-section" aria-labelledby="section-random-heading">
   <h2 class="section__label" id="section-random-heading">
     <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
       <use href="/src/assets/images/icons.svg#icon-dice"></use>
     </svg>
-    Random <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %>
+    <span class="section__label-text">
+      Random <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %>
+    </span>
   </h2>
 
   <div class="random__controls">
