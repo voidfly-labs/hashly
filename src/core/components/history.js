@@ -40,6 +40,14 @@ export const History = {
       this._stores[ns] = [];
     }
     this._pages[ns] = 0;
+    // _batchCounter isn't persisted — only the entries are — so on a fresh
+    // page load it would otherwise restart at 0 and immediately collide with
+    // batchIds already stored from a previous session, scrambling the sort
+    // (colliding batchIds fall through to the algo-order tiebreak instead of
+    // recency). Resume it above whatever's already on record instead.
+    for (const { batchId } of this._stores[ns]) {
+      if (batchId > this._batchCounter) this._batchCounter = batchId;
+    }
   },
 
   save(ns) {

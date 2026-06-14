@@ -285,6 +285,13 @@ export const TextSection = {
 
   _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
     const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
+    // Every algorithm restored by this single "show all" click shares one
+    // fresh batchId — same "one user action, one batch" rule as onInput() —
+    // rather than reusing the stale batchId from whenever they were first
+    // computed. History.record() always stamps a fresh ts regardless, and a
+    // stale batchId would then sort these entries among their old batch-mates
+    // by algo order instead of by their (fresh) real time.
+    const restoreBatchId = allVisible ? null : History.nextBatch();
 
     _ALGORITHMS.forEach(({ id }) => {
       const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
@@ -304,19 +311,28 @@ export const TextSection = {
           btn.disabled = true;
         });
       } else if (this.hiddenAlgos.has(id)) {
-        // Show — restore from rawHexMap if available, otherwise let onInput() fill it
+        // Show — restore the already-computed hash (fromTextAll hashes every
+        // algorithm regardless of hidden state, see onInput()) instead of
+        // re-hashing, which would re-record every *other* visible algorithm
+        // into history under a fresh batchId even though only this one
+        // changed visibility.
         this.hiddenAlgos.delete(id);
         badge.classList.remove('algo-badge--hidden');
         row.classList.remove('result--hidden');
         badge.setAttribute('aria-checked', 'true');
+        const hash = this._formattedHash(id);
+        if (hash) {
+          this._setHashText(els, hash);
+          els.hash.classList.remove('result__hash--empty');
+          els.download.disabled = false;
+          els.copy.disabled = false;
+          History.record('text', hash, id, restoreBatchId);
+        } else {
+          this._setHashText(els, 'awaiting input…');
+          els.hash.classList.add('result__hash--empty');
+        }
       }
     });
-
-    // Single onInput() call covers all newly visible algorithms at once.
-    if (!allVisible) {
-      clearTimeout(this._debounceTimer);
-      this.onInput();
-    }
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
@@ -355,9 +371,24 @@ export const TextSection = {
       badge.classList.remove('algo-badge--hidden');
       row.classList.remove('result--hidden');
       badge.setAttribute('aria-checked', 'true');
-      // Re-hash with current input if any
-      clearTimeout(this._debounceTimer);
-      this.onInput();
+      // Restore the already-computed hash instead of re-hashing — see the
+      // matching comment in _toggleAll for why a full onInput() here would
+      // wrongly re-record every other visible algorithm too. Give it a fresh
+      // batchId (not the stale original one) so it sorts by its own real
+      // time instead of by algo order among its old batch-mates — see the
+      // matching comment in _toggleAll.
+      const els = this.rowEls.get(algoId);
+      const hash = this._formattedHash(algoId);
+      if (hash) {
+        this._setHashText(els, hash);
+        els.hash.classList.remove('result__hash--empty');
+        els.download.disabled = false;
+        els.copy.disabled = false;
+        History.record('text', hash, algoId, History.nextBatch());
+      } else {
+        this._setHashText(els, 'awaiting input…');
+        els.hash.classList.add('result__hash--empty');
+      }
     } else {
       this.hiddenAlgos.add(algoId);
       badge.classList.add('algo-badge--hidden');

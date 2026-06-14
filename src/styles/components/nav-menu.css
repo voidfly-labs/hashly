@@ -6,7 +6,7 @@
 .nav-toggle {
   display: none;
   align-items: center;
-  padding: 7px;
+  padding: 6px;
   margin-left: 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -24,8 +24,8 @@
 
 .nav-toggle__icon {
   display: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 

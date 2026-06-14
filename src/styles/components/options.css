@@ -89,7 +89,7 @@
   padding: 5px 9px;
   border-right: 1px solid var(--border);
   white-space: nowrap;
-  min-width: 57px;
+  min-width: 62px;
   font-family: var(--mono);
   font-size: 11px;
   font-weight: 500;
@@ -118,18 +118,6 @@
 
   .options__segment-label {
     flex: 1;
-  }
-}
-
-@media (max-width: 600px) {
-  /* Format pickers: chips share space equally at narrow widths */
-  .options__group,
-  .options,
-  .options__segment {
-    width: 100%;
-  }
-
-  .options__segment-label {
-    flex: 1;
+    min-width: 0;
   }
 }

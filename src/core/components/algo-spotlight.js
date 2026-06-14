@@ -1,4 +1,5 @@
 import { Tooltip } from './tooltip.js';
+import { Storage } from '../services/storage.js';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.
  *  resetSpotlight: false — these calls originate from AlgoSpotlight itself,
@@ -20,15 +21,20 @@ function _showAllInSection(section, ALGORITHMS) {
  * Header algo badges act as a spotlight control for the Text/File sections:
  * clicking one spotlights it (hiding every other algorithm in both
  * sections), clicking the spotlighted badge again re-shows all of them.
+ * The choice is remembered in localStorage and restored on the next visit.
  *
  * Any manual show/hide elsewhere (a row's own badge, "show/hide all", the
  * hidden-algorithms summary) clears the spotlight via reset() — once the
  * user hand-picks a combination the spotlight didn't set up, the
  * highlighted header badge no longer reflects what's actually visible.
+ * reset() is also where the persisted choice is cleared, so a stale
+ * spotlight never resurfaces after a manual override — including
+ * un-spotlighting via _toggle() itself, which routes through reset() too.
  */
 export const AlgoSpotlight = {
   _state: { spotlightedAlgo: null },
   _container: null,
+  _SPOTLIGHT_KEY: 'spotlight-algo',
 
   _updateBadgeClasses() {
     this._container.querySelectorAll('.algo-badge').forEach((badge) => {
@@ -45,18 +51,27 @@ export const AlgoSpotlight = {
   reset() {
     if (this._state.spotlightedAlgo === null) return;
     this._state.spotlightedAlgo = null;
+    Storage.remove(this._SPOTLIGHT_KEY);
+    this._updateBadgeClasses();
+  },
+
+  /** Spotlight algoId: hide every other algorithm, remember the choice,
+   *  update badge classes. Shared by a direct click and by restoring a
+   *  persisted choice on init. */
+  _apply(algoId, ALGORITHMS, sections) {
+    sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
+    this._state.spotlightedAlgo = algoId;
+    Storage.write(this._SPOTLIGHT_KEY, algoId);
     this._updateBadgeClasses();
   },
 
   _toggle(algoId, ALGORITHMS, sections) {
     if (this._state.spotlightedAlgo === algoId) {
       sections.forEach((section) => _showAllInSection(section, ALGORITHMS));
-      this._state.spotlightedAlgo = null;
-    } else {
-      sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
-      this._state.spotlightedAlgo = algoId;
+      this.reset();
+      return;
     }
-    this._updateBadgeClasses();
+    this._apply(algoId, ALGORITHMS, sections);
   },
 
   _wireBadge(badge, algo, ALGORITHMS, sections) {
@@ -79,5 +94,10 @@ export const AlgoSpotlight = {
       const algo = ALGORITHMS.find((a) => a.id === badge.dataset.algo);
       this._wireBadge(badge, algo, ALGORITHMS, sections);
     });
+
+    const persisted = Storage.read(this._SPOTLIGHT_KEY);
+    if (persisted && ALGORITHMS.some((a) => a.id === persisted)) {
+      this._apply(persisted, ALGORITHMS, sections);
+    }
   },
 };
