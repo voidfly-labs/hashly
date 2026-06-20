@@ -1,4 +1,6 @@
-import CryptoApi from 'crypto-api/src/crypto-api.mjs';
+import { fromArrayBuffer } from 'crypto-api/src/encoder/array-buffer';
+import { toHex } from 'crypto-api/src/encoder/hex';
+import Ripemd from 'crypto-api/src/hasher/ripemd';
 
 import { initApp } from '~core/init/app.js';
 import { Format } from '~core/utils/format.js';
@@ -11,27 +13,25 @@ const APP_CONFIG = {
 };
 
 const ALGORITHMS = [
-  { id: 'RIPEMD-128', cryptoApiId: 'ripemd128', bits: 128, hexLen: 32 },
-  { id: 'RIPEMD-160', cryptoApiId: 'ripemd160', bits: 160, hexLen: 40 },
-  { id: 'RIPEMD-256', cryptoApiId: 'ripemd256', bits: 256, hexLen: 64 },
-  { id: 'RIPEMD-320', cryptoApiId: 'ripemd320', bits: 320, hexLen: 80 },
+  { id: 'RIPEMD-128', bits: 128, hexLen: 32 },
+  { id: 'RIPEMD-160', bits: 160, hexLen: 40 },
+  { id: 'RIPEMD-256', bits: 256, hexLen: 64 },
+  { id: 'RIPEMD-320', bits: 320, hexLen: 80 },
 ];
 
 const DEFAULT_ALGO = 'RIPEMD-160';
 const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
 const Hasher = {
-  _call(cryptoApiId, encodedData) {
-    const hasher = CryptoApi.getHasher(cryptoApiId);
+  _call(bits, encodedData) {
+    const hasher = new Ripemd({ length: bits });
     hasher.update(encodedData);
-    return CryptoApi.encoder.toHex(hasher.finalize());
+    return toHex(hasher.finalize());
   },
 
   async fromTextAll(text, inputFmt = 'utf-8') {
-    const encoded = CryptoApi.encoder.fromArrayBuffer(Format.textToBytes(text, inputFmt).buffer);
-    const results = await Promise.all(
-      ALGORITHMS.map(async ({ id, cryptoApiId }) => [id, this._call(cryptoApiId, encoded)]),
-    );
+    const encoded = fromArrayBuffer(Format.textToBytes(text, inputFmt).buffer);
+    const results = await Promise.all(ALGORITHMS.map(async ({ id, bits }) => [id, this._call(bits, encoded)]));
     return new Map(results);
   },
 
@@ -39,9 +39,9 @@ const Hasher = {
     const totalSize = file.size;
     const CHUNK_SIZE = Math.min(32 * 1024 * 1024, Math.max(150 * 1024, Math.floor(totalSize / 100)));
 
-    const hashers = algos.map(({ id, cryptoApiId }) => ({
+    const hashers = algos.map(({ id, bits }) => ({
       id,
-      instance: CryptoApi.getHasher(cryptoApiId),
+      instance: new Ripemd({ length: bits }),
     }));
 
     await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
@@ -51,7 +51,7 @@ const Hasher = {
     while (offset < totalSize) {
       const slice = file.slice(offset, offset + CHUNK_SIZE);
       const buffer = await slice.arrayBuffer();
-      const encoded = CryptoApi.encoder.fromArrayBuffer(buffer);
+      const encoded = fromArrayBuffer(buffer);
 
       for (const { instance } of hashers) instance.update(encoded);
 
@@ -65,7 +65,7 @@ const Hasher = {
       }
     }
 
-    return new Map(hashers.map(({ id, instance }) => [id, CryptoApi.encoder.toHex(instance.finalize())]));
+    return new Map(hashers.map(({ id, instance }) => [id, toHex(instance.finalize())]));
   },
 
   generateRandom(algoId) {

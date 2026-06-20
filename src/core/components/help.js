@@ -10,4 +10,7 @@ export function initHelpAction(buttonId, lines) {
   const trigger = () => Tooltip.showXl(btn, text, DURATION_MS);
   btn.addEventListener('mouseenter', trigger);
   btn.addEventListener('click', trigger);
+  document.addEventListener('click', (e) => {
+    if (!btn.contains(e.target)) Tooltip.hide();
+  });
 }

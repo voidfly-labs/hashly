@@ -1,4 +1,6 @@
+import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { Tooltip } from '~core/components/tooltip.js';
+import { Storage } from '~core/services/storage.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 
@@ -23,9 +25,14 @@ export const RandomSection = {
       downloadAll: document.getElementById('randomDownloadAll'),
     };
 
+    // Default to whatever algorithm is spotlighted via the header Quick
+    // Select badges, if any, rather than always DEFAULT_ALGO.
+    const spotlighted = Storage.read(AlgoSpotlight._SPOTLIGHT_KEY);
+    const initialAlgo = ALGORITHMS.some((a) => a.id === spotlighted) ? spotlighted : _DEFAULT_ALGO;
+
     // Populate algorithm options from ALGORITHMS (single source of truth)
     this.elements.algo.innerHTML = _ALGORITHMS
-      .map(({ id }) => `<option value="${id}"${id === _DEFAULT_ALGO ? ' selected' : ''}>${id}</option>`)
+      .map(({ id }) => `<option value="${id}"${id === initialAlgo ? ' selected' : ''}>${id}</option>`)
       .join('');
 
     this.elements.regenerate.addEventListener('click', () => this.generate());
@@ -41,6 +48,16 @@ export const RandomSection = {
       this.handleItemAction(btn);
     });
 
+    this.generate();
+  },
+
+  /** Called by AlgoSpotlight whenever the header Quick Select badges
+   *  spotlight/un-spotlight an algorithm — algoId is null on un-spotlight,
+   *  in which case Random falls back to the app's default. */
+  applySpotlight(algoId) {
+    const target = algoId && _ALGORITHMS.some((a) => a.id === algoId) ? algoId : _DEFAULT_ALGO;
+    if (this.elements.algo.value === target) return;
+    this.elements.algo.value = target;
     this.generate();
   },
 

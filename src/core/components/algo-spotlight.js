@@ -35,6 +35,7 @@ export const AlgoSpotlight = {
   _state: { spotlightedAlgo: null },
   _container: null,
   _SPOTLIGHT_KEY: 'spotlight-algo',
+  _onChange: null,
 
   _updateBadgeClasses() {
     this._container.querySelectorAll('.algo-badge').forEach((badge) => {
@@ -53,6 +54,7 @@ export const AlgoSpotlight = {
     this._state.spotlightedAlgo = null;
     Storage.remove(this._SPOTLIGHT_KEY);
     this._updateBadgeClasses();
+    this._onChange?.(null);
   },
 
   /** Spotlight algoId: hide every other algorithm, remember the choice,
@@ -63,6 +65,7 @@ export const AlgoSpotlight = {
     this._state.spotlightedAlgo = algoId;
     Storage.write(this._SPOTLIGHT_KEY, algoId);
     this._updateBadgeClasses();
+    this._onChange?.(algoId);
   },
 
   _toggle(algoId, ALGORITHMS, sections) {
@@ -84,7 +87,8 @@ export const AlgoSpotlight = {
     badge.addEventListener('click', () => this._toggle(algo.id, ALGORITHMS, sections));
   },
 
-  init(ALGORITHMS, sections) {
+  init(ALGORITHMS, sections, { onChange } = {}) {
+    this._onChange = onChange ?? null;
     this._container = document.getElementById('algoBadges');
     if (!this._container) return;
     this._container.innerHTML = ALGORITHMS.map(

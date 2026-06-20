@@ -1,4 +1,6 @@
-import CryptoApi from 'crypto-api/src/crypto-api.mjs';
+import { fromArrayBuffer } from 'crypto-api/src/encoder/array-buffer';
+import { toHex } from 'crypto-api/src/encoder/hex';
+import Ripemd from 'crypto-api/src/hasher/ripemd';
 import {
   blake2b,
   blake2s,
@@ -74,10 +76,10 @@ const ALGORITHMS = [
   { id: 'Keccak-384', type: 'wasm-keccak', bits: 384, hexLen: 96 },
   { id: 'Keccak-512', type: 'wasm-keccak', bits: 512, hexLen: 128 },
   // RIPEMD family
-  { id: 'RIPEMD-128', type: 'ripemd', cryptoApiId: 'ripemd128', bits: 128, hexLen: 32 },
-  { id: 'RIPEMD-160', type: 'ripemd', cryptoApiId: 'ripemd160', bits: 160, hexLen: 40 },
-  { id: 'RIPEMD-256', type: 'ripemd', cryptoApiId: 'ripemd256', bits: 256, hexLen: 64 },
-  { id: 'RIPEMD-320', type: 'ripemd', cryptoApiId: 'ripemd320', bits: 320, hexLen: 80 },
+  { id: 'RIPEMD-128', type: 'ripemd', bits: 128, hexLen: 32 },
+  { id: 'RIPEMD-160', type: 'ripemd', bits: 160, hexLen: 40 },
+  { id: 'RIPEMD-256', type: 'ripemd', bits: 256, hexLen: 64 },
+  { id: 'RIPEMD-320', type: 'ripemd', bits: 320, hexLen: 80 },
   // xxHash family
   { id: 'XXH32', type: 'wasm', fn: xxhash32, createFn: createXXHash32, bits: 32, hexLen: 8 },
   { id: 'XXH64', type: 'wasm', fn: xxhash64, createFn: createXXHash64, bits: 64, hexLen: 16 },
@@ -143,9 +145,9 @@ const Hasher = (() => {
             hash = await blake3(data, algo.bits);
           } else {
             // ripemd — crypto-api expects a binary string, not Uint8Array
-            const hasher = CryptoApi.getHasher(algo.cryptoApiId);
-            hasher.update(CryptoApi.encoder.fromArrayBuffer(data.buffer));
-            hash = CryptoApi.encoder.toHex(hasher.finalize());
+            const hasher = new Ripemd({ length: algo.bits });
+            hasher.update(fromArrayBuffer(data.buffer));
+            hash = toHex(hasher.finalize());
           }
           return [algo.id, hash];
         }),
@@ -181,7 +183,7 @@ const Hasher = (() => {
             instance.init();
           } else {
             // ripemd
-            instance = CryptoApi.getHasher(algo.cryptoApiId);
+            instance = new Ripemd({ length: algo.bits });
           }
           return { algo, instance };
         }),
@@ -195,7 +197,7 @@ const Hasher = (() => {
         const slice = file.slice(offset, offset + CHUNK_SIZE);
         const buffer = await slice.arrayBuffer();
         const chunk = new Uint8Array(buffer);
-        const encodedChunk = CryptoApi.encoder.fromArrayBuffer(buffer);
+        const encodedChunk = fromArrayBuffer(buffer);
 
         for (const { algo, instance } of hashers) {
           if (algo.type === 'ripemd') {
@@ -219,7 +221,7 @@ const Hasher = (() => {
         hashers.map(({ algo, instance }) => {
           let hash;
           if (algo.type === 'ripemd') {
-            hash = CryptoApi.encoder.toHex(instance.finalize());
+            hash = toHex(instance.finalize());
           } else if (algo.type === 'md2') {
             hash = instance.hex();
           } else {

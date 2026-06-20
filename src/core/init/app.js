@@ -45,7 +45,9 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
     _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
     RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
-    AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection]);
+    AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {
+      onChange: (algoId) => RandomSection.applySpotlight(algoId),
+    });
     initSectionCollapse();
     initHelpAction('quickSelectHelpBtn', [
       'Type text or drop a file – all algorithms run instantly',
