@@ -66,7 +66,7 @@
   background: var(--badge-blake3512-bg);
 }
 
-@media (max-width: 370px) {
+@media (max-width: 381px) {
   .history-table__hash {
     display: none;
   }

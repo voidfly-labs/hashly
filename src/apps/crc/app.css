@@ -197,7 +197,7 @@
   background: var(--badge-crc82darc-bg);
 }
 
-@media (max-width: 397px) {
+@media (max-width: 415px) {
   .history-table__hash {
     display: none;
   }

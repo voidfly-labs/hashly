@@ -48,7 +48,7 @@
   background: var(--badge-ripemd320-bg);
 }
 
-@media (max-width: 359px) {
+@media (max-width: 372px) {
   .history-table__hash {
     display: none;
   }

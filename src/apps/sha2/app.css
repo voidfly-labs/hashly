@@ -57,7 +57,7 @@
   background: var(--badge-sha512-bg);
 }
 
-@media (max-width: 341px) {
+@media (max-width: 355px) {
   .history-table__hash {
     display: none;
   }

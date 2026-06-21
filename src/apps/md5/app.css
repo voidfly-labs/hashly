@@ -39,7 +39,7 @@
   background: var(--badge-md5-bg);
 }
 
-@media (max-width: 323px) {
+@media (max-width: 335px) {
   .history-table__hash {
     display: none;
   }

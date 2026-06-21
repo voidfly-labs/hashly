@@ -300,7 +300,7 @@
   background: var(--badge-xxh128-bg);
 }
 
-@media (max-width: 359px) {
+@media (max-width: 380px) {
   .history-table__hash {
     display: none;
   }
