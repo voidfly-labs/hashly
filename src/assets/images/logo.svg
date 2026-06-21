@@ -20,53 +20,33 @@
       <stop offset="50%" stop-color="white" stop-opacity="0.35"/>
       <stop offset="60%" stop-color="white" stop-opacity="0"/>
       <animateTransform attributeName="gradientTransform" type="translate"
-                        values="0 0; 400 230; 400 230"
-                        keyTimes="0; 0.4; 1"
-                        dur="3s" repeatCount="indefinite"/>
+                        begin="pulse.begin" fill="remove"
+                        values="0 0; 400 230"
+                        keyTimes="0; 1"
+                        dur="1.2s"/>
     </linearGradient>
   </defs>
-
-  <style>
-    /* Layer breathing animation */
-    @keyframes decompose {
-      0%, 30% {
-        transform: translateY(0);
-      }
-      50%, 70% {
-        transform: translateY(var(--delta-y));
-      }
-      90%, 100% {
-        transform: translateY(0);
-      }
-    }
-
-    .layer {
-      animation: decompose 4s ease-in-out infinite;
-      will-change: transform;
-    }
-
-    .layer-top {
-      --delta-y: -25px
-    }
-
-    .layer-bottom {
-      --delta-y: 25px;
-    }
-  </style>
 
   <!-- Isometric layer stack -->
   <g id="layers">
     <!-- Bottom layer -->
-    <g class="layer layer-bottom">
+    <g>
       <g filter="url(#glow-blur)">
         <polygon points="18.75,126.25 100,170 181.25,126.25 100,82.5" fill="#6B8AFF" opacity=".3"/>
         <polygon points="18.75,126.25 100,170 100,182.5 18.75,138.75" fill="#4361EE" opacity=".4"/>
         <polygon points="100,170 181.25,126.25 181.25,138.75 100,182.5" fill="#3651D4" opacity=".35"/>
         <polygon points="18.75,126.25 100,170 181.25,126.25 100,82.5" fill="url(#shimmer-face)" opacity=".3"/>
       </g>
+      <animateTransform attributeName="transform" type="translate"
+                        begin="pulse.begin" fill="remove"
+                        calcMode="spline"
+                        values="0 0; 0 0; 0 25; 0 25; 0 0; 0 0"
+                        keyTimes="0; 0.3; 0.5; 0.7; 0.9; 1"
+                        keySplines="0 0 1 1; 0.42 0 0.58 1; 0 0 1 1; 0.42 0 0.58 1; 0 0 1 1"
+                        dur="4s"/>
     </g>
     <!-- Middle layer -->
-    <g class="layer">
+    <g>
       <g filter="url(#glow-blur)">
         <polygon points="18.75,107.5 100,151.25 181.25,107.5 100,63.75" fill="#6B8AFF" opacity=".6"/>
         <polygon points="18.75,107.5 100,151.25 100,163.75 18.75,120" fill="#4361EE" opacity=".7"/>
@@ -75,13 +55,20 @@
       </g>
     </g>
     <!-- Top layer -->
-    <g class="layer layer-top">
+    <g>
       <g filter="url(#glow-blur)">
         <polygon points="18.75,88.75 100,132.5 181.25,88.75 100,45" fill="#6B8AFF"/>
         <polygon points="18.75,88.75 100,132.5 100,145 18.75,101.25" fill="#4361EE"/>
         <polygon points="100,132.5 181.25,88.75 181.25,101.25 100,145" fill="#3651D4"/>
         <polygon points="18.75,88.75 100,132.5 181.25,88.75 100,45" fill="url(#shimmer-face)"/>
       </g>
+      <animateTransform id="pulse" attributeName="transform" type="translate"
+                        begin="1s; pulse.end+26s" fill="remove"
+                        calcMode="spline"
+                        values="0 0; 0 0; 0 -25; 0 -25; 0 0; 0 0"
+                        keyTimes="0; 0.3; 0.5; 0.7; 0.9; 1"
+                        keySplines="0 0 1 1; 0.42 0 0.58 1; 0 0 1 1; 0.42 0 0.58 1; 0 0 1 1"
+                        dur="4s"/>
     </g>
   </g>
 </svg>

@@ -162,6 +162,7 @@
   font-size: 10.5px;
   letter-spacing: 0.4px;
   opacity: 0.6;
+  cursor: pointer;
 }
 
 .footer__version-icon {

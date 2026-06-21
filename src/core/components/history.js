@@ -144,7 +144,7 @@ export const History = {
     const tbody = slice
       .map(
         (e, i) => `
-          <tr>
+          <tr class="history-table__row" data-action="copy-history" data-hash="${e.hash}">
             <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
             <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? _DEFAULT_ALGO}">${e.algo ?? _DEFAULT_ALGO}</span></td>
             <td class="history-table__hash" title="${e.hash}"
@@ -324,7 +324,9 @@ export const History = {
       if (action === 'copy-history') {
         e.stopPropagation();
         await Clipboard.copy(hash);
-        Tooltip.flash(target);
+        // Anchor the flash to the hash cell regardless of where in the row was
+        // clicked, so it doesn't center over the full row width.
+        Tooltip.flash(target.querySelector('.history-table__hash') ?? target);
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;

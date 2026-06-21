@@ -50,7 +50,8 @@
 
 @media (max-width: 362px) {
   .history-table__hash {
-    display: none;
+    width: 0;
+    padding: 0 !important;
   }
   .history-table__time {
     width: auto;

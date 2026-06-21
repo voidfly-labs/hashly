@@ -1,6 +1,6 @@
 import { Tooltip } from './tooltip.js';
 
-const DURATION_MS = 15000;
+const DURATION_MS = 10000;
 
 /** Wire a .help-btn's hover/click to a fixed-duration tooltip. */
 export function initHelpAction(buttonId, lines) {
@@ -10,7 +10,4 @@ export function initHelpAction(buttonId, lines) {
   const trigger = () => Tooltip.showXl(btn, text, DURATION_MS);
   btn.addEventListener('mouseenter', trigger);
   btn.addEventListener('click', trigger);
-  document.addEventListener('click', (e) => {
-    if (!btn.contains(e.target)) Tooltip.hide();
-  });
 }

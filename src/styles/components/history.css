@@ -41,8 +41,8 @@
 }
 
 .toggle-all-btn svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
@@ -89,8 +89,8 @@
 }
 
 .history-btn svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
@@ -122,8 +122,8 @@
 }
 
 .permalink-btn svg {
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
@@ -207,7 +207,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 2px;
+  padding: 3px;
   border: none;
   border-radius: var(--radius-sm);
   color: var(--text-muted);
@@ -328,6 +328,10 @@
 
 .history-table tbody tr:hover td {
   background: var(--accent-muted);
+}
+
+.history-table__row {
+  cursor: pointer;
 }
 
 .history-table__num {
