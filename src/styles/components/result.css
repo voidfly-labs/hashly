@@ -10,10 +10,15 @@
   border-top: 1px solid var(--border);
   font-family: var(--mono);
   background: var(--accent-surface);
+  cursor: pointer;
   transition:
     grid-template-rows 0.3s ease,
     border-top-width 0.3s ease,
     background-color 0.3s ease;
+}
+
+.result:has(.result__hash--empty) {
+  cursor: default;
 }
 
 .result--hidden {

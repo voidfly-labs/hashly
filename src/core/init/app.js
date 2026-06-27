@@ -51,9 +51,9 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     initSectionCollapse();
     initHelpAction('quickSelectHelpBtn', [
       'Start typing or drop a file – all algorithms run instantly',
-      '•  Toggle algorithms on/off by clicking them',
-      '•  See "History" for recent outputs',
-      '•  Click "Permalink" for a sharable a link',
+      '•  Toggle algorithms on/off by clicking on them',
+      '•  Browse "History" for recent outputs',
+      '•  Click "Permalink" for a shareable link',
     ]);
 
     const yearEl = document.getElementById('footerYear');

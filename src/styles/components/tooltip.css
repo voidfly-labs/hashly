@@ -35,8 +35,13 @@
   transform: translateY(calc(-100% - 6px));
 }
 
-/* Wider block of text (Tooltip.showXl). */
 .tooltip-singleton--xl {
-  width: min(300px, calc(100vw - 24px));
+  width: 288px;
   text-align: left;
+}
+
+@media (max-width: 630px) {
+  .tooltip-singleton {
+    font-size: 12px;
+  }
 }

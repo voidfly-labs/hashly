@@ -82,6 +82,8 @@ export const RandomSection = {
     this.hashes.forEach(({ hash, algo }, index) => {
       const item = document.createElement('div');
       item.className = 'random__item';
+      item.dataset.action = 'copy';
+      item.dataset.hash = hash;
       item.innerHTML = `
             <span class="random__item-index">${String(index + 1).padStart(padWidth, '0')}</span>
             <span class="random__item-hash" data-action="copy" data-hash="${hash}">${hash}<span class="tooltip">Copied!</span></span>

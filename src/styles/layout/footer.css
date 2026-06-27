@@ -29,7 +29,7 @@
 .footer__brand {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   margin-bottom: 10px;
   padding-right: 5px;
   border-radius: var(--radius-sm);

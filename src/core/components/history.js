@@ -324,8 +324,6 @@ export const History = {
       if (action === 'copy-history') {
         e.stopPropagation();
         await Clipboard.copy(hash);
-        // Anchor the flash to the hash cell regardless of where in the row was
-        // clicked, so it doesn't center over the full row width.
         Tooltip.flash(target.querySelector('.history-table__hash') ?? target);
       } else if (action === 'download-history') {
         e.stopPropagation();

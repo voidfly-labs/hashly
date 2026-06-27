@@ -200,7 +200,8 @@ export const FileSection = {
 
     els.download.addEventListener('click', () => this._onDownload(algoId));
     els.copy.addEventListener('click', () => this._onCopy(algoId));
-    els.hash.addEventListener('click', () => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('.algo-badge, .result__actions')) return;
       const hash = this._formattedHash(algoId);
       if (!hash) return;
       Clipboard.copy(hash);

@@ -63,7 +63,7 @@
         <polygon points="18.75,88.75 100,132.5 181.25,88.75 100,45" fill="url(#shimmer-face)"/>
       </g>
       <animateTransform id="pulse" attributeName="transform" type="translate"
-                        begin="1s; pulse.end+26s" fill="remove"
+                        begin="1s; pulse.end+11s" fill="remove"
                         calcMode="spline"
                         values="0 0; 0 0; 0 -25; 0 -25; 0 0; 0 0"
                         keyTimes="0; 0.3; 0.5; 0.7; 0.9; 1"

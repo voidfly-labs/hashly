@@ -145,7 +145,7 @@
   inset: 0;
   margin: auto;
   z-index: 120;
-  width: min(912px, calc(max(100vw, 330px) - 32px));
+  width: min(912px, calc(100vw - 48px));
   height: fit-content;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -165,6 +165,12 @@
 
 [data-theme='dark'] .history-popover {
   background: rgba(28, 32, 48, 0.78);
+}
+
+@media (max-width: 630px) {
+  .history-popover {
+    width: calc(max(100vw, 320px) - 32px);
+  }
 }
 
 .history-popover--visible {
@@ -263,8 +269,8 @@
 }
 
 .history-popover__clear svg {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   fill: currentColor;
 }
 
@@ -327,7 +333,7 @@
 }
 
 .history-table tbody tr:hover td {
-  background: var(--accent-muted);
+  background: var(--accent-surface);
 }
 
 .history-table__row {
@@ -421,19 +427,20 @@
 .history-pagination {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
 /* Pagination buttons adopt the same visual language as .btn (result section
        buttons): surface background, border, hover ring, disabled opacity.
-       The fixed 26×26 square replaces the standard .btn padding for icon-only use. */
+       The fixed 28×28 square (matching .history-popover__clear's height)
+       replaces the standard .btn padding for icon-only use. */
 .history-pagination__btn {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   color: var(--text-muted);
@@ -458,8 +465,8 @@
 }
 
 .history-pagination__btn svg {
-  width: 15px;
-  height: 15px;
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 
@@ -467,7 +474,8 @@
   padding: 0 2px;
   white-space: nowrap;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
+  line-height: 28px;
   color: var(--text-muted);
 }
 

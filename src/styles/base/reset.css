@@ -17,7 +17,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  min-width: 330px;
+  min-width: 320px;
   font-family: var(--sans);
   font-size: 15px;
   line-height: 1.6;
