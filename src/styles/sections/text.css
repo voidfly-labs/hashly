@@ -75,3 +75,9 @@
 .text-input__clear--visible {
   display: flex;
 }
+
+@media (max-width: 630px) {
+  .text-input__counter {
+    font-size: 11px;
+  }
+}

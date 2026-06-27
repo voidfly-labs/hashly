@@ -127,12 +127,12 @@
   fill: currentColor;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 650px) {
   .random__controls-sep {
     display: none;
   }
 
-  #randomAlgo {
+  #random-algo {
     flex: 1;
     min-width: 0;
   }
@@ -144,6 +144,18 @@
   .random__actions .btn {
     flex: 1;
     justify-content: center;
+  }
+
+  .random__actions .btn,
+  #random-regenerate {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+@media (max-width: 630px) {
+  .random__select {
+    height: 35px;
   }
 }
 

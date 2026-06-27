@@ -80,3 +80,9 @@
 .random__item-badge {
   cursor: default;
 }
+
+@media (max-width: 630px) {
+  .algo-badge {
+    padding: 5px 5px;
+  }
+}

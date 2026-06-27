@@ -40,3 +40,10 @@
   flex-shrink: 0;
   fill: currentColor;
 }
+
+@media (max-width: 630px) {
+  .result-hidden {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+}

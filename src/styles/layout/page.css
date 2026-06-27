@@ -110,7 +110,7 @@ main > .section:last-child {
   text-overflow: ellipsis;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 630px) {
   main {
     padding: 32px 16px 48px;
   }

@@ -128,7 +128,7 @@
 
 /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
 
-@media (max-width: 600px) {
+@media (max-width: 630px) {
   /* Result bar: buttons wrap onto their own row */
   .result__inner {
     flex-wrap: wrap;

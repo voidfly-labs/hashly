@@ -141,12 +141,12 @@
        HISTORY POPOVER
        ========================================================================= */
 .history-popover {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 6px);
+  position: fixed;
+  inset: 0;
+  margin: auto;
   z-index: 120;
-  max-width: max(calc(max(100vw, 330px) - 32px), 268px);
-  /* No overflow:hidden — tooltips on hash cells must escape the container */
+  width: min(912px, calc(max(100vw, 330px) - 32px));
+  height: fit-content;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.72);

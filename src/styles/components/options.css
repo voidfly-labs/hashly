@@ -23,11 +23,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 11px;
+  padding: 7px 11px;
   border-right: 1px solid var(--border);
   white-space: nowrap;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
   color: var(--text-muted);
   cursor: pointer;
@@ -86,12 +86,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 9px;
+  padding: 7px 9px;
   border-right: 1px solid var(--border);
   white-space: nowrap;
   min-width: 62px;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -109,15 +109,22 @@
 
 /* Closes the blindspot: fires before the groups naturally wrap (~686px),
        ensuring full-width expansion kicks in at the same time as the wrap. */
-@media (max-width: 620px) {
+@media (max-width: 630px) {
   .options__group,
   .options,
   .options__segment {
     width: 100%;
   }
 
+  .options__prefix {
+    padding-top:    9px;
+    padding-bottom: 9px;
+  }
+
   .options__segment-label {
     flex: 1;
     min-width: 0;
+    padding-top: 9px;
+    padding-bottom: 9px;
   }
 }

@@ -155,13 +155,13 @@ export const FileSection = {
             <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
             <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
             <div class="result__actions">
-              <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                Download<span class="tooltip">Exported</span>
-              </button>
               <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
                 <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                 Copy<span class="tooltip">Copied!</span>
+              </button>
+              <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                Download<span class="tooltip">Exported</span>
               </button>
             </div>
           </div>`;

@@ -17,12 +17,12 @@ export const RandomSection = {
     _Hasher = Hasher;
 
     this.elements = {
-      list: document.getElementById('randomList'),
-      regenerate: document.getElementById('randomRegenerate'),
-      count: document.getElementById('randomCount'),
-      algo: document.getElementById('randomAlgo'),
-      copyAll: document.getElementById('randomCopyAll'),
-      downloadAll: document.getElementById('randomDownloadAll'),
+      list: document.getElementById('random-list'),
+      regenerate: document.getElementById('random-regenerate'),
+      count: document.getElementById('random-count'),
+      algo: document.getElementById('random-algo'),
+      copyAll: document.getElementById('random-copy-all'),
+      downloadAll: document.getElementById('random-download-all'),
     };
 
     // Default to whatever algorithm is spotlighted via the header Quick
