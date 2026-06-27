@@ -5,8 +5,9 @@ import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'keccakkit',
+  requiresWasm: true,
   fileNoun: 'hash',
-  slugify: (algo) => algo.toLowerCase().replaceAll('-', ''),
+  slugify: (algo) => algo.toLowerCase().replace(/-/g, ''),
   defaultHiddenAlgos: [],
 };
 

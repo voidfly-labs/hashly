@@ -7,6 +7,7 @@ import { initReportTooltip } from '../components/report.js';
 import { initSectionCollapse } from '../components/section-collapse.js';
 import { initSocialTooltips } from '../components/social.js';
 import { Tooltip } from '../components/tooltip.js';
+import { checkWasmSupport } from '../components/unsupported-banner.js';
 import { initVersionTooltip } from '../components/version.js';
 import { FaqSection } from '../sections/faq.js';
 import { FileSection } from '../sections/file.js';
@@ -32,6 +33,7 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
 
 export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher }) {
   document.addEventListener('DOMContentLoaded', () => {
+    checkWasmSupport(APP_CONFIG);
     History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
     Theme.init();
     NavMenu.init();

@@ -335,7 +335,7 @@ export const History = {
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;
-        const ext = algo.toLowerCase().replaceAll('-', '');
+        const ext = algo.toLowerCase().replace(/-/g, '');
         const storedFilename = target.dataset.filename ?? '';
         // Mirror FileSection._onDownload: if a source filename was recorded,
         // use <basename>.<ext>; otherwise fall back to the timestamped default.

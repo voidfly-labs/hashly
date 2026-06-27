@@ -460,7 +460,7 @@ export const FileSection = {
     const base = this.currentFileName
       ? this.currentFileName.replace(/\.[^.]+$/, '')
       : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-    const ext = algoId.toLowerCase().replaceAll('-', '');
+    const ext = algoId.toLowerCase().replace(/-/g, '');
     const filename = `${base}.${ext}`;
     Download.trigger(hash, filename);
     const btn = this.rowEls.get(algoId).download;

@@ -10,6 +10,8 @@ import { generateSitemap } from './scripts/vite-plugins/generate-sitemap.js';
 import { generateRobotsTxt } from './scripts/vite-plugins/generate-robots.js';
 import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
 
+const BROWSER_TARGETS = ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14'];
+
 const buildDate = new Date().toISOString().slice(0, 10);
 const { version } = JSON.parse(readFileSync('./package.json', 'utf8'));
 
@@ -45,6 +47,8 @@ export default defineConfig({
     exclude: ['crypto-api'],
   },
   build: {
+    target: BROWSER_TARGETS,
+    cssTarget: BROWSER_TARGETS,
     rollupOptions: {
       input: {
         main: `src/apps/${srcDir}/index.html`,

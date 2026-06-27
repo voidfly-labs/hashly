@@ -2,8 +2,7 @@
        CARD (shared wrapper)
        ========================================================================= */
 .card {
-  overflow: clip;
-  overflow-clip-margin: 8px;
+  overflow: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--surface);

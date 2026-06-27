@@ -14,6 +14,7 @@ import { Format } from '~core/utils/format.js';
 
 const APP_CONFIG = {
   appName: 'xxhashkit',
+  requiresWasm: true,
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase(),
   defaultHiddenAlgos: [],

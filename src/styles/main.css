@@ -21,6 +21,7 @@
 @import './components/result.css';
 @import './components/section-collapse.css';
 @import './components/tooltip.css';
+@import './components/unsupported-banner.css';
 
 /* Sections */
 @import './sections/faq.css';

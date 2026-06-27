@@ -1,23 +1,30 @@
-(function () {
-  var meta = document.querySelector('meta[name="theme-storage-key"]');
-  var STORAGE_KEY = meta ? meta.getAttribute('content') : 'hashly-theme';
-  var saved = localStorage.getItem(STORAGE_KEY);
-  var theme;
-  if (saved) {
-    theme = saved;
-  } else if (window.matchMedia) {
-    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  } else {
-    var h = new Date().getHours();
-    theme = h >= 6 && h < 21 ? 'light' : 'dark';
-  }
-  document.documentElement.dataset.theme = theme;
-  // Live-sync with OS when no manual preference is stored.
-  if (!saved && window.matchMedia) {
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
-      if (!localStorage.getItem(STORAGE_KEY)) {
-        document.documentElement.dataset.theme = e.matches ? 'dark' : 'light';
-      }
-    });
-  }
+(() => {
+  const meta = document.querySelector('meta[name="theme-storage-key"]');
+  const KEY = meta?.content || 'hashly-theme';
+  const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
+
+  // Storage can throw (blocked site data, sandboxed iframe) — treat as "no saved theme".
+  const readSaved = () => {
+    try {
+      const v = localStorage.getItem(KEY);
+      return v === 'light' || v === 'dark' ? v : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const systemTheme = () => {
+    if (mq) return mq.matches ? 'dark' : 'light';
+    // No matchMedia: fall back to time of day.
+    const h = new Date().getHours();
+    return h >= 6 && h < 21 ? 'light' : 'dark';
+  };
+
+  const apply = () => {
+    document.documentElement.dataset.theme = readSaved() ?? systemTheme();
+  };
+
+  apply();
+  // Live-sync with the OS; apply() defers to a saved preference if one exists.
+  mq?.addEventListener('change', apply);
 })();
