@@ -6,6 +6,9 @@ import { APPS_META } from './scripts/apps-meta.js';
 import { LEGAL_UPDATED_ON, getLegalUpdatedLabel, getVendorNotice } from './scripts/legal.js';
 import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
 import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
+import { generateSitemap } from './scripts/vite-plugins/generate-sitemap.js';
+import { generateRobotsTxt } from './scripts/vite-plugins/generate-robots.js';
+import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
 
 const buildDate = new Date().toISOString().slice(0, 10);
 const { version } = JSON.parse(readFileSync('./package.json', 'utf8'));
@@ -81,5 +84,8 @@ export default defineConfig({
       ],
     }),
     injectFontPreloads(),
+    generateManifest(injectData),
+    generateRobotsTxt(injectData),
+    generateSitemap(injectData),
   ],
 });
