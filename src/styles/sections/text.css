@@ -5,8 +5,14 @@
        mirroring the .file-drop pattern exactly. */
 .text-input__wrap {
   position: relative;
-  border: 2px solid transparent;
-  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  padding: 1px;
+  /* Bottom corners square, not rounded — the wrap sits flush against
+       #textResults below (no gap, by design; see result.css) so a rounded
+       bottom edge would get visibly clipped by that row's square corner
+       whenever the border is actually visible (focus, drag). */
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: border-color 0.15s;
 }
 
 .text-input__textarea {

@@ -1,3 +1,4 @@
+import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 
@@ -153,11 +154,13 @@ export const History = {
             <td class="history-table__actions">
               <div class="history-table__action-btns">
                 <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy hash">
-                  <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                   <span class="tooltip">Copied!</span>
                 </button>
                 <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? _DEFAULT_ALGO}" data-filename="${e.filename ?? ''}" aria-label="Download hash">
-                  <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                   <span class="tooltip">Exported</span>
                 </button>
               </div>
@@ -320,11 +323,15 @@ export const History = {
       if (!target) return;
 
       const { action, hash } = target.dataset;
+      // Only the icon button itself has an icon to morph — a click on the
+      // row or hash cell also routes here via delegation (see markup above).
+      const isIconBtn = target.classList.contains('history-table__action-btn');
 
       if (action === 'copy-history') {
         e.stopPropagation();
         await Clipboard.copy(hash);
         Tooltip.flash(target.querySelector('.history-table__hash') ?? target);
+        if (isIconBtn) Checkmark.flash(target);
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;
@@ -337,6 +344,7 @@ export const History = {
           : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
         Download.trigger(hash, `${base}.${ext}`);
         Tooltip.flash(target);
+        if (isIconBtn) Checkmark.flash(target);
       }
     });
   },

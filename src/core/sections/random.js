@@ -1,6 +1,7 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Storage } from '~core/services/storage.js';
+import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 
@@ -95,7 +96,8 @@ export const RandomSection = {
                 data-hash="${hash}"
                 aria-label="Copy hash"
               >
-                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                 <span class="tooltip">Copied!</span>
               </button>
               <button
@@ -106,7 +108,8 @@ export const RandomSection = {
                 data-index="${index + 1}"
                 aria-label="Download hash"
               >
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                 <span class="tooltip">Exported</span>
               </button>
             </div>`;
@@ -135,10 +138,14 @@ export const RandomSection = {
   handleItemAction(button) {
     const action = button.dataset.action;
     const hash = button.dataset.hash;
+    // Only the icon button itself has an icon to morph — a click on the
+    // hash text or elsewhere in the row also routes here via delegation.
+    const isIconBtn = button.classList.contains('random__item-btn');
 
     if (action === 'copy') {
       Clipboard.copy(hash);
       Tooltip.flash(button);
+      if (isIconBtn) Checkmark.flash(button);
     } else if (action === 'download') {
       const index = button.dataset.index;
       const algo = button.dataset.algo ?? _DEFAULT_ALGO;
@@ -146,6 +153,7 @@ export const RandomSection = {
       const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
       Download.trigger(csvData, filename, 'text/csv');
       Tooltip.flash(button);
+      if (isIconBtn) Checkmark.flash(button);
     }
   },
 
@@ -153,6 +161,7 @@ export const RandomSection = {
     const text = this.hashes.map(({ hash }) => hash).join('\n');
     await Clipboard.copy(text);
     Tooltip.flash(this.elements.copyAll);
+    Checkmark.flash(this.elements.copyAll);
   },
 
   onDownloadAll() {
@@ -161,5 +170,6 @@ export const RandomSection = {
     const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
     Download.trigger(csvData, filename, 'text/csv');
     Tooltip.flash(this.elements.downloadAll);
+    Checkmark.flash(this.elements.downloadAll);
   },
 };

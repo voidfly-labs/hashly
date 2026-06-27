@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { Tooltip } from '~core/components/tooltip.js';
+import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
@@ -85,8 +86,7 @@ export const FileSection = {
       _dragDepth++;
       if (_dragDepth === 1) {
         this._drop.classList.add('file-drop--page-drag');
-        // Scroll the drop zone into view so users can see where to drop
-        this._drop.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        this._drop.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });
 
@@ -156,11 +156,13 @@ export const FileSection = {
             <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
             <div class="result__actions">
               <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
-                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                 Copy<span class="tooltip">Copied!</span>
               </button>
               <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
                 Download<span class="tooltip">Exported</span>
               </button>
             </div>
@@ -461,13 +463,17 @@ export const FileSection = {
     const ext = algoId.toLowerCase().replaceAll('-', '');
     const filename = `${base}.${ext}`;
     Download.trigger(hash, filename);
-    Tooltip.flash(this.rowEls.get(algoId).download);
+    const btn = this.rowEls.get(algoId).download;
+    Tooltip.flash(btn);
+    Checkmark.flash(btn);
   },
 
   async _onCopy(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
     await Clipboard.copy(hash);
-    Tooltip.flash(this.rowEls.get(algoId).copy);
+    const btn = this.rowEls.get(algoId).copy;
+    Tooltip.flash(btn);
+    Checkmark.flash(btn);
   },
 };

@@ -85,11 +85,14 @@
   color: var(--text-muted);
   opacity: 0.55;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.15s ease;
 }
 
 .footer__social-icon:hover {
   opacity: 1;
+  transform: scale(1.08);
 }
 
 .footer__social-icon:first-child {

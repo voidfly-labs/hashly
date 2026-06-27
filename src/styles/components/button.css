@@ -40,6 +40,25 @@
   fill: currentColor;
 }
 
+/* Checkmark-morph: pairs an .icon-action / .icon-check svg, toggled by
+   .btn--done (see checkmark.js). */
+.icon-check {
+  display: none;
+}
+
+.btn--done {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.btn--done .icon-action {
+  display: none;
+}
+
+.btn--done .icon-check {
+  display: block;
+}
+
 .btn--primary {
   color: #fff;
   background: var(--accent);
