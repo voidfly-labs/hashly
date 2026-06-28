@@ -39,10 +39,25 @@
   transform: translateY(0);
 }
 
+/* Keyboard focus ring — same 2px accent ring as the selected (--active) state.
+   Plain :focus works everywhere; the :not(:focus-visible) rule then hides it
+   for mouse clicks. Browsers without :focus-visible (Safari < 15.4,
+   Firefox < 85) drop that rule and keep the ring. --active is excluded from
+   the reset so a clicked, selected badge keeps its ring. The transparent
+   outline stays visible in forced-colors mode, which strips box-shadow.
+   opacity lives in its own :focus-visible rule so a mouse-clicked badge
+   still honours --hidden's dimming. */
+.quick-select__grid .algo-badge:focus {
+  box-shadow: 0 0 0 2px var(--accent);
+  outline: 2px solid transparent;
+}
+
+.quick-select__grid .algo-badge:focus:not(:focus-visible):not(.algo-badge--active) {
+  box-shadow: none;
+}
+
 .quick-select__grid .algo-badge:focus-visible {
   opacity: 1;
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
 }
 
 /* Spotlight mode: clicking a badge shows only that algorithm in the Text and
@@ -53,7 +68,5 @@
 
 .quick-select__grid .algo-badge--active {
   opacity: 1;
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, currentColor 40%, transparent),
-    0 0 0 2px var(--accent);
+  box-shadow: 0 0 0 2px var(--accent);
 }

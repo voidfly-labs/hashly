@@ -6,6 +6,7 @@
          keeping the palette in one place (design tokens above).
        ========================================================================= */
 .algo-badge {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -22,10 +23,21 @@
   /* Fallback to accent colours for any unrecognised algo */
   color: var(--accent-dim);
   background: var(--accent-muted);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, currentColor 40%, transparent);
   opacity: 0.82;
   user-select: none;
   transition: opacity 0.15s;
+}
+
+/* 1px ring in the badge's text colour at 40% alpha. A pseudo-element keeps
+       currentColor semi-transparent without color-mix() (Firefox 113+). */
+.algo-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px currentColor;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 /* Brighten badge when its containing row is hovered */

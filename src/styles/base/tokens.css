@@ -15,6 +15,8 @@
                                      popover header/footer). */
   --accent-glow: rgba(67, 97, 238, 0.14);
   --accent-border: rgba(67, 97, 238, 0.3);
+  --accent-strong: rgba(67, 97, 238, 0.7); /* --accent at 70% alpha */
+  --scrollbar-thumb: rgba(107, 123, 140, 0.65); /* --text-muted at 65% alpha */
   --text: #1a1d23;
   --text-muted: #6b7b8c;
   --text-hint: #a16500;
@@ -51,6 +53,8 @@
                                                        as the popover surface is opaque */
   --accent-glow: rgba(107, 138, 255, 0.16);
   --accent-border: rgba(107, 138, 255, 0.32);
+  --accent-strong: rgba(107, 138, 255, 0.7); /* --accent at 70% alpha */
+  --scrollbar-thumb: rgba(122, 133, 160, 0.55); /* --text-muted at 55% alpha */
   --text: #e2e6ef;
   --text-muted: #7a85a0;
   --text-hint: #e0a030;

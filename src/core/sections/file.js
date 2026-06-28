@@ -1,6 +1,7 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
+import { setHashEmpty } from '~core/components/result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
@@ -122,6 +123,9 @@ export const FileSection = {
       }
     });
 
+    this._dropClear.addEventListener('mouseenter', () => this._drop.classList.add('file-drop--clear-hover'));
+    this._dropClear.addEventListener('mouseleave', () => this._drop.classList.remove('file-drop--clear-hover'));
+
     this._dropClear.addEventListener('click', (e) => {
       e.stopPropagation();
       this.onClear();
@@ -148,7 +152,7 @@ export const FileSection = {
     const tipText = () => (this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
 
     const row = document.createElement('div');
-    row.className = 'result';
+    row.className = 'result result--empty';
     row.dataset.algo = algoId;
     row.innerHTML = `
           <div class="result__inner">
@@ -228,7 +232,7 @@ export const FileSection = {
         badge.setAttribute('aria-checked', 'false');
         this._clearComputingState(els);
         this._setHashText(els, 'disabled');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
         [els.download, els.copy].forEach((btn) => {
           btn.disabled = true;
         });
@@ -241,12 +245,12 @@ export const FileSection = {
         const existingHash = this._formattedHash(id);
         if (existingHash) {
           this._setHashText(els, existingHash);
-          els.hash.classList.remove('result__hash--empty');
+          setHashEmpty(els.hash, false);
           els.download.disabled = false;
           els.copy.disabled = false;
         } else {
           this._setHashText(els, 'no file selected');
-          els.hash.classList.add('result__hash--empty');
+          setHashEmpty(els.hash, true);
         }
       }
     });
@@ -293,12 +297,12 @@ export const FileSection = {
       const existingHash = this._formattedHash(algoId);
       if (existingHash) {
         this._setHashText(els, existingHash);
-        els.hash.classList.remove('result__hash--empty');
+        setHashEmpty(els.hash, false);
         els.download.disabled = false;
         els.copy.disabled = false;
       } else {
         this._setHashText(els, 'no file selected');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
       }
     } else {
       this.hiddenAlgos.add(algoId);
@@ -307,7 +311,7 @@ export const FileSection = {
       badge.setAttribute('aria-checked', 'false');
       this._clearComputingState(els);
       this._setHashText(els, 'disabled');
-      els.hash.classList.add('result__hash--empty');
+      setHashEmpty(els.hash, true);
       [els.download, els.copy].forEach((btn) => {
         btn.disabled = true;
       });
@@ -339,7 +343,7 @@ export const FileSection = {
     els.hash.style.setProperty('--progress', pct);
     els.hash.textContent = `${pct}%`;
     els.hash.classList.add('result__hash--computing');
-    els.hash.classList.remove('result__hash--empty');
+    setHashEmpty(els.hash, false);
   },
 
   /** Exit computing state: remove progress bar styling. */
@@ -432,7 +436,7 @@ export const FileSection = {
         const els = this.rowEls.get(id);
         this._clearComputingState(els);
         this._setHashText(els, 'error reading file');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
       }
     }
   },
@@ -445,11 +449,13 @@ export const FileSection = {
     this._fileSize.textContent = '';
     this._fileName.classList.remove('file-drop__filename--visible');
     this._dropClear.classList.remove('file-drop__clear--visible');
+    // The button may hide under the pointer without firing mouseleave.
+    this._drop.classList.remove('file-drop--clear-hover');
     for (const { id } of _ALGORITHMS) {
       const els = this.rowEls.get(id);
       this._clearComputingState(els);
       this._setHashText(els, this.hiddenAlgos.has(id) ? 'disabled' : 'no file selected');
-      els.hash.classList.add('result__hash--empty');
+      setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);
   },

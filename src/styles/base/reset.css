@@ -60,13 +60,37 @@ body::before {
 /* =========================================================================
        SCROLLBAR
        ========================================================================= */
+/* 10px hit area; the thumb is inset by a transparent border so it reads as
+       a slim 6px bar at rest and grows to 8px on hover. The border + padding-box
+       clip is the standard way to inset a WebKit scrollbar thumb.
+       WebKit-only: hover/drag states don't exist in Firefox, which ignores these. */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
+  height: 10px;
 }
-::-webkit-scrollbar-track {
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  background: var(--border);
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background: var(--scrollbar-thumb);
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  border-width: 1px;
+  background: var(--text-muted);
+  background-clip: padding-box;
+}
+
+/* Firefox ignores ::-webkit-scrollbar, so give it the standard properties.
+       Gated so Chrome 121+/Safari 18.2+ (which would otherwise switch to these
+       and drop the WebKit rules above) keep the custom look. Thin + themed
+       thumb only: Firefox has no hover/drag state or custom radius. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
 }

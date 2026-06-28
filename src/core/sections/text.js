@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { Hint } from '~core/components/hint.js';
 import { History } from '~core/components/history.js';
+import { setHashEmpty } from '~core/components/result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
@@ -222,7 +223,7 @@ export const TextSection = {
     const tipText = () => (this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
 
     const row = document.createElement('div');
-    row.className = 'result';
+    row.className = 'result result--empty';
     row.dataset.algo = algoId;
     row.innerHTML = `
           <div class="result__inner">
@@ -308,7 +309,7 @@ export const TextSection = {
         row.classList.add('result--hidden');
         badge.setAttribute('aria-checked', 'false');
         this._setHashText(els, 'disabled');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
         [els.download, els.copy].forEach((btn) => {
           btn.disabled = true;
         });
@@ -325,13 +326,13 @@ export const TextSection = {
         const hash = this._formattedHash(id);
         if (hash) {
           this._setHashText(els, hash);
-          els.hash.classList.remove('result__hash--empty');
+          setHashEmpty(els.hash, false);
           els.download.disabled = false;
           els.copy.disabled = false;
           History.record('text', hash, id, restoreBatchId);
         } else {
           this._setHashText(els, 'awaiting input…');
-          els.hash.classList.add('result__hash--empty');
+          setHashEmpty(els.hash, true);
         }
       }
     });
@@ -383,13 +384,13 @@ export const TextSection = {
       const hash = this._formattedHash(algoId);
       if (hash) {
         this._setHashText(els, hash);
-        els.hash.classList.remove('result__hash--empty');
+        setHashEmpty(els.hash, false);
         els.download.disabled = false;
         els.copy.disabled = false;
         History.record('text', hash, algoId, History.nextBatch());
       } else {
         this._setHashText(els, 'awaiting input…');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
       }
     } else {
       this.hiddenAlgos.add(algoId);
@@ -398,7 +399,7 @@ export const TextSection = {
       badge.setAttribute('aria-checked', 'false');
       const els = this.rowEls.get(algoId);
       this._setHashText(els, 'disabled');
-      els.hash.classList.add('result__hash--empty');
+      setHashEmpty(els.hash, true);
       [els.download, els.copy].forEach((btn) => {
         btn.disabled = true;
       });
@@ -527,7 +528,7 @@ export const TextSection = {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
         this._setHashText(els, 'awaiting input…');
-        els.hash.classList.add('result__hash--empty');
+        setHashEmpty(els.hash, true);
       }
       this._setAllActionsEnabled(false);
       return;
@@ -545,7 +546,7 @@ export const TextSection = {
       const hash = Format.applyFormat(hex, fmt);
       const els = this.rowEls.get(id);
       this._setHashText(els, hash);
-      els.hash.classList.remove('result__hash--empty');
+      setHashEmpty(els.hash, false);
       History.record('text', hash, id, this._currentBatchId);
     }
     this._setAllActionsEnabled(true);

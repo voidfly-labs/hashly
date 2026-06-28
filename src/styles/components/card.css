@@ -18,7 +18,7 @@
 }
 
 .text-input__wrap:focus-within {
-  border-color: color-mix(in srgb, var(--accent) 70%, transparent);
+  border-color: var(--accent-strong);
   box-shadow: 0 0 6px 1px var(--accent-glow);
 }
 

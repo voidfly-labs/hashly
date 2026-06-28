@@ -28,10 +28,12 @@
 }
 
 /* When the cursor is over the clear button, suppress the drop-zone hover
-       state so only the button's own :hover styles apply. :has() is supported
-       in all modern browsers and is the correct CSS-only solution — it avoids
-       pointer-event hacks or additional wrapper elements. */
-.file-drop:has(.file-drop__clear:hover) {
+       state so only the button's own :hover styles apply. The class is toggled
+       from JS (FileSection) because a parent can't react to a child's :hover
+       without :has(), which older browsers lack. The selector matches the
+       specificity of the former :has() rule (0,3,0) so it still beats
+       .file-drop:hover and .file-drop--page-drag. */
+.file-drop.file-drop--clear-hover:hover {
   border-color: var(--border);
   background: var(--surface);
 }
