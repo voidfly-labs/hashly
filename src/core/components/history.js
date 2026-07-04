@@ -1,6 +1,7 @@
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
+import { iconHref } from '~core/utils/icon.js';
 
 import { Tooltip } from './tooltip.js';
 
@@ -155,12 +156,12 @@ export const History = {
               <div class="history-table__action-btns">
                 <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy hash">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
+                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Copied!</span>
                 </button>
                 <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? _DEFAULT_ALGO}" data-filename="${e.filename ?? ''}" aria-label="Download hash">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
+                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Exported</span>
                 </button>
               </div>

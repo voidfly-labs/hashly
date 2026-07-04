@@ -7,6 +7,7 @@ import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
+import { iconHref } from '~core/utils/icon.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -160,13 +161,13 @@ export const FileSection = {
             <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
             <div class="result__actions">
               <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
+                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('copy')}"></use></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                 Copy<span class="tooltip">Copied!</span>
               </button>
               <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
+                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                 Download<span class="tooltip">Exported</span>
               </button>
             </div>
