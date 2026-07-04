@@ -87,3 +87,11 @@
     font-size: 11px;
   }
 }
+
+/* iOS WebKit zooms the page on focus when a text field is under 16px and never
+   zooms back out. -webkit-touch-callout is only implemented there. */
+@supports (-webkit-touch-callout: none) {
+  .text-input__textarea {
+    font-size: 16px;
+  }
+}

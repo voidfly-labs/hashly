@@ -161,6 +161,13 @@
   }
 }
 
+/* Same iOS WebKit focus-zoom workaround as .text-input__textarea. */
+@supports (-webkit-touch-callout: none) {
+  .random__select {
+    font-size: 16px;
+  }
+}
+
 /* Touch devices have no hover — always show action buttons and history
        table actions so they remain reachable regardless of viewport width.
        @media (hover: none) targets the input mechanism, not the screen size,

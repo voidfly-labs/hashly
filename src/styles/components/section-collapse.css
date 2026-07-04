@@ -80,16 +80,30 @@
 }
 
 #quick-select-section:not(.section--collapsed) {
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 /* Single grid item — overflow: hidden lets the wrapper shrink past its
        content's intrinsic height, same as .result__inner. Carries the
        display/gap that used to live directly on .section for these children. */
 .section__body-inner {
+  /* Shadow gutter — overflow/contain clip at the padding box, so padding on
+       every side lets content paint box-shadows, focus rings and glows up to
+       this far outside its own box. The matching negative margin cancels it
+       out, leaving layout unchanged. Keep ≤ the smallest page inline padding
+       (16px). Collapsed, the padding box would still show a sliver of
+       content, so the body is hidden once the collapse finishes. */
+  --shadow-gutter: 4px;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  margin: calc(-1 * var(--shadow-gutter));
+  padding: var(--shadow-gutter);
   overflow: hidden;
   contain: paint;
+}
+
+.section--collapsed .section__body-inner {
+  visibility: hidden;
+  transition: visibility 0s 0.3s;
 }

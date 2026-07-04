@@ -10,7 +10,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--badge-min-width), 1fr));
   gap: 6px;
-  padding: 4px 2px 4px;
 }
 
 .quick-select__grid .algo-badge {

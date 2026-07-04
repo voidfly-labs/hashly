@@ -12,6 +12,20 @@
     border-color 0.25s;
 }
 
+/* Opt-out of corner clipping for cards whose contents need to paint outside
+       the card (e.g. the text input's focus glow). The card's edge children
+       round their own corners instead: the first with a radius matching the
+       card's inner curve (--radius minus the 1px border), the last (.card__results)
+       by clipping itself. */
+.card--unclipped {
+  overflow: visible;
+}
+
+.card__results {
+  overflow: hidden;
+  border-radius: 0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px);
+}
+
 .card:focus-within,
 .card:hover {
   box-shadow: var(--shadow-md);
@@ -19,7 +33,17 @@
 
 .text-input__wrap:focus-within {
   border-color: var(--accent-strong);
-  box-shadow: 0 0 6px 1px var(--accent-glow);
+  box-shadow: 0 0 0 2px var(--accent-muted);
+}
+
+/* Mobile keeps the earlier effect: lighter-blue 1px outer ring plus soft glow
+       around the stronger inner border. */
+@media (max-width: 630px) {
+  .text-input__wrap:focus-within {
+    box-shadow:
+      0 0 0 1px var(--accent-border),
+      0 0 6px 1px var(--accent-glow);
+  }
 }
 
 /* Text drag-and-drop affordance — mirrors file-drop--page-drag.
