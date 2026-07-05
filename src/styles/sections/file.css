@@ -104,12 +104,26 @@
        so any positive value suffices) so click events reach this button first. */
 .file-drop__clear {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
+  padding: 5px;
   z-index: 1;
   display: none; /* hidden until a file is loaded */
 }
 
 .file-drop__clear--visible {
   display: flex;
+}
+
+@media (max-width: 630px) {
+  .file-drop__clear {
+    top: 3px;
+    right: 3px;
+    padding: 6px;
+  }
+
+  .file-drop__clear svg {
+    width: 20px;
+    height: 20px;
+  }
 }

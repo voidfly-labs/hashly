@@ -42,13 +42,15 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
     TextSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
     Permalink.init();
-    if (Permalink.restoreFromUrl()) TextSection.onInput();
+    const permalink = Permalink.restoreFromUrl();
+    if (permalink) TextSection.onInput();
     FileSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
     _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
     _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
     RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
     AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {
       onChange: (algoId) => RandomSection.applySpotlight(algoId),
+      permalink,
     });
     initSectionCollapse();
     initHelpAction('quickSelectHelpBtn', [

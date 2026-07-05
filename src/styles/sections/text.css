@@ -72,10 +72,25 @@
 
 .text-input__clear {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 6px;
+  right: 6px;
+  padding: 5px;
   z-index: 1;
   display: none; /* hidden until input has content */
+}
+
+.text-input__paste {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 5px;
+  z-index: 1;
+  display: flex;
+}
+
+/* Same corner slot as the clear button: paste while empty, clear once there is content. */
+.text-input__clear--visible + .text-input__paste {
+  display: none;
 }
 
 .text-input__clear--visible {
@@ -85,6 +100,20 @@
 @media (max-width: 630px) {
   .text-input__counter {
     font-size: 11px;
+  }
+
+  /* Larger tap target; top/right shrink so the icon stays at the same corner offset. */
+  .text-input__clear,
+  .text-input__paste {
+    top: 3px;
+    right: 3px;
+    padding: 6px;
+  }
+
+  .text-input__clear svg,
+  .text-input__paste svg {
+    width: 20px;
+    height: 20px;
   }
 }
 

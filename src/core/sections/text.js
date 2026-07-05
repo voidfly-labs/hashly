@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { Hint } from '~core/components/hint.js';
 import { History } from '~core/components/history.js';
+import { initPasteButton } from '~core/components/paste-button.js';
 import { setHashEmpty } from '~core/components/result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
@@ -16,6 +17,13 @@ const _FORMAT_HINTS = {
   hex: 'hex only · 0–9, a–f',
   base64: 'base64 only · a–z, 0–9, +/=',
   binary: 'binary only · 0, 1, <space>',
+};
+
+const _PLACEHOLDERS = {
+  'utf-8': 'Start typing or paste text…',
+  hex: 'Start typing or paste hex…',
+  base64: 'Start typing or paste Base64…',
+  binary: 'Start typing or paste binary…',
 };
 
 export const TextSection = {
@@ -101,21 +109,31 @@ export const TextSection = {
 
     // Switching input format clears the textarea and updates the placeholder
     // to guide what valid input looks like for the new encoding.
-    const placeholders = {
-      'utf-8': 'Start typing or paste text…',
-      hex: 'Start typing or paste hex…',
-      base64: 'Start typing or paste Base64…',
-      binary: 'Start typing or paste binary…',
-    };
     document.querySelectorAll('input[name="textInputFormat"]').forEach((radio) =>
       radio.addEventListener('change', () => {
         this.onClear();
-        this._input.placeholder = placeholders[radio.value] ?? placeholders['utf-8'];
+        this.refreshPlaceholder();
       }),
     );
 
     // Inline ✕ button in the textarea corner — mirrors file-drop__clear behaviour.
     this._inputClear.addEventListener('click', () => this.onClear());
+
+    initPasteButton(document.getElementById('textPasteBtn'), {
+      onText: (text) => this.insertText(text),
+      onDenied: () => {
+        this._input.focus();
+        Hint.show(this._formatHint, 'paste blocked · use Ctrl/⌘+V');
+      },
+    });
+
+    // Typed input is filtered per keystroke; do the same for native paste.
+    // UTF-8 accepts everything, so the browser's own paste (and undo) is kept.
+    this._input.addEventListener('paste', (e) => {
+      if (this.getSelectedInputFormat() === 'utf-8') return;
+      e.preventDefault();
+      this.insertText(e.clipboardData.getData('text/plain'));
+    });
 
     // ── Text drag-and-drop ─────────────────────────────────────────────
     // Accept text/plain snippets dragged from other windows/documents.
@@ -192,23 +210,7 @@ export const TextSection = {
       this._card.classList.remove('card--text-drag');
 
       const raw = e.dataTransfer.getData('text/plain');
-      if (!raw) return;
-
-      const inputFmt = this.getSelectedInputFormat();
-      const filtered = this._filterTextForFormat(raw, inputFmt);
-
-      // Insert at caret position if the textarea has a selection/cursor,
-      // otherwise append to end.
-      const ta = this._input;
-      const start = ta.selectionStart ?? ta.value.length;
-      const end = ta.selectionEnd ?? ta.value.length;
-      ta.value = ta.value.slice(0, start) + filtered + ta.value.slice(end);
-      const newPos = start + filtered.length;
-      ta.setSelectionRange(newPos, newPos);
-      ta.focus();
-
-      clearTimeout(this._debounceTimer);
-      this.onInput();
+      if (raw) this.insertText(raw);
     });
 
     document
@@ -517,6 +519,29 @@ export const TextSection = {
       default:
         return text; // utf-8: no filtering
     }
+  },
+
+  /** Insert `raw` at the caret (replacing any selection), filtered for the
+   *  selected input format, and recompute. */
+  insertText(raw) {
+    const fmt = this.getSelectedInputFormat();
+    const filtered = this._filterTextForFormat(raw, fmt);
+    if (filtered.length < raw.length) Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
+
+    const ta = this._input;
+    const start = ta.selectionStart ?? ta.value.length;
+    const end = ta.selectionEnd ?? ta.value.length;
+    ta.value = ta.value.slice(0, start) + filtered + ta.value.slice(end);
+    ta.setSelectionRange(start + filtered.length, start + filtered.length);
+    ta.focus();
+
+    clearTimeout(this._debounceTimer);
+    this.onInput();
+  },
+
+  /** Needed after setting the radio in code, which fires no change event. */
+  refreshPlaceholder() {
+    this._input.placeholder = _PLACEHOLDERS[this.getSelectedInputFormat()] ?? _PLACEHOLDERS['utf-8'];
   },
 
   async onInput() {

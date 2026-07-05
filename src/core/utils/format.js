@@ -73,4 +73,12 @@ export const Format = {
         return hex;
     }
   },
+
+  /** "CRC-32 (MPEG-2)" → "crc-32-mpeg-2". Distinct algorithm ids must stay distinct as slugs. */
+  slug(id) {
+    return id
+      .toLowerCase()
+      .replaceAll(/[^a-z0-9]+/g, '-')
+      .replaceAll(/^-|-$/g, '');
+  },
 };

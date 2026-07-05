@@ -209,7 +209,8 @@
        none and is revealed by the --visible modifier). */
 .history-popover__close,
 .file-drop__clear,
-.text-input__clear {
+.text-input__clear,
+.text-input__paste {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
@@ -231,20 +232,23 @@
 
 .history-popover__close:hover,
 .file-drop__clear:hover,
-.text-input__clear:hover {
+.text-input__clear:hover,
+.text-input__paste:hover {
   color: var(--text);
   background: var(--surface-2);
 }
 
 .history-popover__close:active,
 .file-drop__clear:active,
-.text-input__clear:active {
+.text-input__clear:active,
+.text-input__paste:active {
   transform: scale(0.9);
 }
 
 .history-popover__close svg,
 .file-drop__clear svg,
-.text-input__clear svg {
+.text-input__clear svg,
+.text-input__paste svg {
   width: 16px;
   height: 16px;
   fill: currentColor;

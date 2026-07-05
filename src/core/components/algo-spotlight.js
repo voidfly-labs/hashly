@@ -1,4 +1,5 @@
 import { Storage } from '../services/storage.js';
+import { Format } from '../utils/format.js';
 import { Tooltip } from './tooltip.js';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.
@@ -57,13 +58,17 @@ export const AlgoSpotlight = {
     this._onChange?.(null);
   },
 
-  /** Spotlight algoId: hide every other algorithm, remember the choice,
-   *  update badge classes. Shared by a direct click and by restoring a
-   *  persisted choice on init. */
-  _apply(algoId, ALGORITHMS, sections) {
+  getSpotlighted() {
+    return this._state.spotlightedAlgo;
+  },
+
+  /** Spotlight algoId: hide every other algorithm, remember the choice (unless
+   *  persist is false), update badge classes. Shared by a direct click and by
+   *  restoring a persisted or permalink choice on init. */
+  _apply(algoId, ALGORITHMS, sections, { persist = true } = {}) {
     sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
     this._state.spotlightedAlgo = algoId;
-    Storage.write(this._SPOTLIGHT_KEY, algoId);
+    if (persist) Storage.write(this._SPOTLIGHT_KEY, algoId);
     this._updateBadgeClasses();
     this._onChange?.(algoId);
   },
@@ -87,7 +92,14 @@ export const AlgoSpotlight = {
     badge.addEventListener('click', () => this._toggle(algo.id, ALGORITHMS, sections));
   },
 
-  init(ALGORITHMS, sections, { onChange } = {}) {
+  /** A permalink overrides the persisted spotlight; a missing or unknown algorithm shows the default view. */
+  _applyPermalink(slug, ALGORITHMS, sections) {
+    const target = slug && ALGORITHMS.find((a) => Format.slug(a.id) === Format.slug(slug));
+    if (target) this._apply(target.id, ALGORITHMS, sections, { persist: false });
+    else this._onChange?.(null);
+  },
+
+  init(ALGORITHMS, sections, { onChange, permalink = null } = {}) {
     this._onChange = onChange ?? null;
     this._container = document.getElementById('algoBadges');
     if (!this._container) return;
@@ -98,6 +110,11 @@ export const AlgoSpotlight = {
       const algo = ALGORITHMS.find((a) => a.id === badge.dataset.algo);
       this._wireBadge(badge, algo, ALGORITHMS, sections);
     });
+
+    if (permalink) {
+      this._applyPermalink(permalink.algorithm, ALGORITHMS, sections);
+      return;
+    }
 
     const persisted = Storage.read(this._SPOTLIGHT_KEY);
     if (persisted && ALGORITHMS.some((a) => a.id === persisted)) {
