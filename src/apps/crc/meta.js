@@ -15,12 +15,12 @@ export default {
 
   // Page
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',
-  pageSubtitle: '// instant checksums — no data leaves your browser',
+  pageSubtitle: 'Instant checksums – no data leaves your browser',
   sectionNoun: 'checksum',
   sectionNounPlural: 'checksums',
 
   // Accessibility
-  skipLinkText: 'Skip to CRC-32 checksum calculator',
+  skipLinkText: 'Skip to text input',
   mainAriaLabel: 'CRC-32 checksum calculator',
 
   // Runtime

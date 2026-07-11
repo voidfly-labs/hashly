@@ -18,6 +18,7 @@ export const Permalink = {
     const outputFmt = TextSection.getSelectedFormat();
     const url = new URL(window.location.href);
     url.search = '';
+    url.hash = '';
     if (algorithm) url.searchParams.set('algorithm', Format.slug(algorithm));
     url.searchParams.set('text', text);
     if (inputFmt !== this._INPUT_DEFAULT) url.searchParams.set('input', inputFmt);

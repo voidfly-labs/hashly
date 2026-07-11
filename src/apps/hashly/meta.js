@@ -14,12 +14,12 @@ export default {
 
   // Page
   pageH1Html: '<span>Online Hash</span> Calculator',
-  pageSubtitle: '// instant hashing — no data leaves your browser',
+  pageSubtitle: 'Instant hashing – no data leaves your browser',
   sectionNoun: 'hash',
   sectionNounPlural: 'hashes',
 
   // Accessibility
-  skipLinkText: 'Skip to hash calculator',
+  skipLinkText: 'Skip to text input',
   mainAriaLabel: 'Multi-algorithm hash calculator',
 
   // Runtime

@@ -67,6 +67,11 @@ main > .section:last-child {
   color: var(--accent-dim);
 }
 
+/* --accent-dim is 4.31:1 on the dark background; --accent clears AA. */
+[data-theme='dark'] .section__label {
+  color: var(--accent);
+}
+
 .section__label-icon {
   flex-shrink: 0;
   width: 22px;

@@ -100,6 +100,15 @@
   background: var(--accent-muted);
 }
 
+.header__nav-link--active {
+  color: var(--accent-dim);
+  background: var(--accent-muted);
+}
+
+[data-theme='dark'] .header__nav-link--active {
+  color: var(--accent);
+}
+
 .header__nav-link + .header__nav-link {
   position: relative;
 }

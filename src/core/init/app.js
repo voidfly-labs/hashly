@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '../components/algo-spotlight.js';
 import { initHelpAction } from '../components/help.js';
 import { History } from '../components/history.js';
 import { NavMenu } from '../components/nav-menu.js';
+import { NavSpy } from '../components/nav-spy.js';
 import { Permalink } from '../components/permalink.js';
 import { initReportTooltip } from '../components/report.js';
 import { initSectionCollapse } from '../components/section-collapse.js';
@@ -37,6 +38,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
     Theme.init();
     NavMenu.init();
+    NavSpy.init();
     FaqSection.init();
     History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
     History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');

@@ -28,6 +28,7 @@
   color: var(--text);
   background: transparent;
   outline: none;
+  scroll-margin-top: 80px; /* keep clear of the sticky header when targeted by the skip link */
 }
 
 .text-input__textarea::placeholder {

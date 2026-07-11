@@ -15,12 +15,12 @@ export default {
 
   // Page
   pageH1Html: '<span>SHA-256</span> Hash Calculator',
-  pageSubtitle: '// instant hashing — no data leaves your browser',
+  pageSubtitle: 'Instant hashing – no data leaves your browser',
   sectionNoun: 'hash',
   sectionNounPlural: 'hashes',
 
   // Accessibility
-  skipLinkText: 'Skip to SHA hash calculator',
+  skipLinkText: 'Skip to text input',
   mainAriaLabel: 'SHA-256 hash calculator',
 
   // Runtime

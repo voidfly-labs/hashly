@@ -10,7 +10,8 @@
  *
  *  No persistence — every section always starts expanded on load. If the
  *  user navigates to a section via its #anchor (header nav, footer links)
- *  while it's collapsed, it auto-expands so they don't land on an
+ *  while it's collapsed (or to an element inside it, like the skip link's
+ *  textarea), it auto-expands so they don't land on an
  *  apparently-empty section. */
 // Material Icons "keyboard_arrow_down" — rotated 180° for the expanded
 // (pointing up) state rather than swapped for a separate "keyboard_arrow_up"
@@ -84,8 +85,13 @@ export function initSectionCollapse() {
   });
 
   const expandFromHash = () => {
-    const entry = entries.get(location.hash.slice(1));
-    if (entry) _setCollapsed(entry, false);
+    const target = document.getElementById(location.hash.slice(1));
+    const entry = entries.get(target?.closest('.section')?.id);
+    if (!entry) return;
+    const wasCollapsed = entry.section.classList.contains('section--collapsed');
+    _setCollapsed(entry, false);
+    // The browser's own focus attempt hit an inert target; retry once the expand animation settles.
+    if (wasCollapsed && target !== entry.section) setTimeout(() => target.focus(), 300);
   };
   window.addEventListener('hashchange', expandFromHash);
   expandFromHash();

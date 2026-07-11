@@ -5,8 +5,11 @@
     <!-- Backdrop overlay for history popovers (UX focus effect) -->
     <div class="history-backdrop" id="historyBackdrop" aria-hidden="true"></div>
 
-    <!-- Skip navigation for accessibility (also crawlable anchor text) -->
-    <a class="skip-link" href="#text-section"><%= skipLinkText %></a>
+    <!-- Skip navigation for accessibility -->
+    <a class="skip-link" href="#textInput">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-arrow-down"></use></svg>
+      <%= skipLinkText %>
+    </a>
 
     <%- include('/src/templates/layout/header.html') %>
 
