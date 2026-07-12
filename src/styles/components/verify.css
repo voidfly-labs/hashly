@@ -6,10 +6,33 @@
 /* The field is a .card (unclipped) around an .input-wrap, exactly like the text
        input, so the shared focus ring lands on a real card border and stacks with
        the card's focus shadow the same way. The verdict colours that border. */
+/* The caption is .options__prefix (see options.css) stripped down to its text:
+       its tint and right divider are painted by the wrap (see
+       `.verify__field .input-wrap`) so they run flush to the field's edge. Being a
+       label, it hints that clicking it focuses the field, and it picks up the
+       accent while the field has focus. */
+.verify__prefix {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--prefix-w);
+  border-right: none;
+  padding-top: 0; /* the wrap paints the tint, so the cell needn't be tall; its text is what aligns */
+  padding-bottom: 0;
+  font-size: 12px;
+  opacity: 1;
+  cursor: text;
+  transition: color 0.15s;
+}
+
+.input-wrap:focus-within .verify__prefix {
+  color: var(--accent);
+}
+
 .verify__input {
   display: block;
-  width: 100%;
-  height: 38px;
+  flex: 1;
+  min-width: 0;
+  height: 34px;
   padding: 0 72px 0 11px; /* room for the Upload and Paste buttons */
   border: none;
   font-family: var(--mono);
@@ -36,8 +59,26 @@
   box-shadow: var(--shadow);
 }
 
+/* Caption tint + right divider as a hard-stopped gradient on the wrap itself, so
+       it sits under the wrap's focus border (a child would paint over it) and runs
+       flush to the field's edge. `border-box` origin puts x=0 at the wrap's outer
+       edge; the caption starts 2px in (wrap border + padding), --prefix-w wide,
+       its last 1px being the divider. */
+.verify__field {
+  --prefix-w: 64px;
+}
+
 .verify__field .input-wrap {
+  display: flex; /* caption cell + input on one row */
+  align-items: baseline; /* the caption shares the input text's baseline, in every browser */
   border-radius: var(--radius-sm);
+  background: linear-gradient(
+    to right,
+    var(--accent-surface) calc(var(--prefix-w) + 1px),
+    var(--border) calc(var(--prefix-w) + 1px) calc(var(--prefix-w) + 2px),
+    transparent 0
+  );
+  background-origin: border-box;
 }
 
 /* Verdict ring — the focus ring's recipe (2px edge + glow, lighter on desktop)
@@ -75,7 +116,7 @@
 .verify__paste,
 .verify__file {
   position: absolute;
-  top: 7px;
+  top: 5px;
   right: 7px;
   padding: 5px;
 }
@@ -204,7 +245,7 @@
   .verify__clear,
   .verify__paste,
   .verify__file {
-    top: 4px;
+    top: 2px;
     right: 4px;
     padding: 6px;
   }

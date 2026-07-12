@@ -10,6 +10,7 @@
 
 /* Components */
 @import './components/algo-badge.css';
+@import './components/back-to-top.css';
 @import './components/button.css';
 @import './components/card.css';
 @import './components/help.css';

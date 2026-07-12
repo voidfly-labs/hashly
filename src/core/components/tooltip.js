@@ -82,15 +82,17 @@ export const Tooltip = (() => {
      *  On touch/pen input the tooltip auto-dismisses after 1400 ms so it
      *  doesn't linger with no hover-leave to clear it. Pass duration to
      *  force an auto-dismiss after that many ms regardless of pointer type
-     *  (e.g. a click-triggered tooltip with no hover-leave to rely on). */
-    show(anchorElement, text, duration) {
+     *  (e.g. a click-triggered tooltip with no hover-leave to rely on).
+     *  align: 'end' right-aligns the tooltip to the anchor instead of centering it,
+     *  for anchors against the right edge of the viewport. */
+    show(anchorElement, text, duration, { align = 'center' } = {}) {
       _ensureEl();
       clearTimeout(hideTimer);
       el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--visible');
       el.textContent = text;
       // eslint-disable-next-line sonarjs/void-use
       void el.offsetWidth;
-      _position(anchorElement);
+      (align === 'end' ? _positionXl : _position)(anchorElement);
       el.classList.add('tooltip-singleton--visible');
       if (duration) {
         hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), duration);

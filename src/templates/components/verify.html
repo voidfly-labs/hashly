@@ -3,12 +3,14 @@
   <!-- Same chrome as the text input (card around an .input-wrap) so the focus ring renders identically -->
   <div class="card card--unclipped verify__field">
     <div class="input-wrap">
+      <!-- Persistent caption, reusing the format options' prefix cell; clicking it focuses the field -->
+      <label class="options__prefix verify__prefix" for="fileVerifyInput">Verify</label>
       <input
         class="verify__input"
         id="fileVerifyInput"
         type="text"
-        placeholder="Paste a reference hash to verify (hex or Base64)…"
-        data-placeholder-mobile="Paste a hash to verify (hex or Base64)…"
+        placeholder="Paste a reference hash (hex or Base64)…"
+        data-placeholder-mobile="Paste hex or Base64…"
         spellcheck="false"
         autocomplete="off"
         autocapitalize="off"

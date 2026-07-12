@@ -1,0 +1,121 @@
+/* =========================================================================
+       BACK TO TOP
+       Floating button, shown while scrolling past a threshold and faded out when idle
+       (see back-to-top.js).
+       ========================================================================= */
+.back-to-top {
+  position: fixed;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  z-index: 90; /* below the sticky header (100) and the history backdrop (110) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px; /* same size and corners as .theme-toggle */
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.72); /* same frosted glass as .header */
+  backdrop-filter: blur(20px) saturate(1.8);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+
+  /* Hidden state: visibility (delayed until the fade ends) takes it out of the
+     tab order and the accessibility tree. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.9);
+  transition:
+    opacity 0.2s,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    visibility 0s 0.25s,
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+[data-theme='dark'] .back-to-top {
+  background: rgba(28, 32, 48, 0.78);
+}
+
+.back-to-top--visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+
+.back-to-top svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  transition: transform 0.2s;
+}
+
+.back-to-top:hover,
+.back-to-top:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 3px var(--accent-muted);
+}
+
+.back-to-top:focus-visible {
+  outline: none;
+  box-shadow:
+    var(--shadow-md),
+    0 0 0 3px var(--accent-glow);
+}
+
+.back-to-top:hover svg {
+  transform: translateY(-2px);
+}
+
+.back-to-top:active {
+  transform: scale(0.92);
+}
+
+/* Below this width the button no longer fits in the gutter beside the 960px content
+   column, so it rests on top of the footer (--back-to-top-lift is set by back-to-top.js). */
+@media (max-width: 1125px) {
+  .back-to-top {
+    bottom: calc(max(24px, env(safe-area-inset-bottom)) + var(--back-to-top-lift, 0px));
+  }
+}
+
+@media (max-width: 630px) {
+  .back-to-top {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--back-to-top-lift, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transform: none;
+    transition:
+      opacity 0.1s,
+      visibility 0s 0.1s;
+  }
+
+  .back-to-top--visible {
+    transition-delay: 0s;
+  }
+
+  .back-to-top svg {
+    transition: none;
+  }
+
+  .back-to-top:hover svg {
+    transform: none;
+  }
+}
+
+@media print {
+  .back-to-top {
+    display: none;
+  }
+}
