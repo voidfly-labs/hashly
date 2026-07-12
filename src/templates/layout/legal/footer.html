@@ -49,7 +49,9 @@
       <div>
         <span class="footer__col-heading">More Tools</span>
         <% moreToolsLinks.forEach(function(link) { %>
-        <a class="footer__link" href="<%= link.href %>" target="_blank" rel="noopener noreferrer"><%= link.text %></a>
+        <a class="footer__link" href="<%= link.href %>" target="_blank" rel="nofollow noopener noreferrer"
+          ><%= link.text %></a
+        >
         <% }); %>
       </div>
     </div>

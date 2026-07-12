@@ -1,0 +1,6 @@
+<%
+  const banner = (message) =>
+    `<div class="warning-banner" role="alert"><svg class="warning-banner__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-warning"></use></svg><span>${message}</span></div>`;
+%>
+<noscript><%- banner('JavaScript is blocked or unsupported in this browser (settings, extension, old browser). Hashing is disabled.') %></noscript>
+<template id="wasmWarningTemplate"><%- banner('WebAssembly is blocked or unsupported in this browser (CSP, lockdown mode, old browser). Hashing is disabled.') %></template>
