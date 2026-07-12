@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
+import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
@@ -424,6 +425,7 @@ export const FileSection = {
     this._dropClear.classList.add('file-drop__clear--visible');
 
     this._verify.setDigests(null);
+    const title = TabTitle.track();
 
     // Enter computing state: hash cell becomes the progress bar at 0%.
     for (const { id } of _ALGORITHMS) {
@@ -433,6 +435,7 @@ export const FileSection = {
     this._setAllActionsEnabled(false);
 
     const onProgress = (ratio) => {
+      title.progress(ratio);
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
@@ -458,7 +461,9 @@ export const FileSection = {
       }
       this._setAllActionsEnabled(true);
       this._verify.setDigests(this.rawHexMap);
+      title.done();
     } catch {
+      title.fail();
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
@@ -470,6 +475,7 @@ export const FileSection = {
   },
 
   onClear() {
+    TabTitle.reset();
     this.rawHexMap.clear();
     this.currentFileName = '';
     this._input.value = '';

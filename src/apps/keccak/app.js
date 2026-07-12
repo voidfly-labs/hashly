@@ -2,6 +2,7 @@ import { createKeccak, keccak } from 'hash-wasm';
 
 import { initApp } from '~core/init/app.js';
 import { Format } from '~core/utils/format.js';
+import { yieldToPaint } from '~core/utils/paint.js';
 
 const APP_CONFIG = {
   appName: 'keccakkit',
@@ -45,7 +46,7 @@ const Hasher = (() => {
 
       for (const { instance } of hashers) instance.init();
 
-      await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+      await yieldToPaint();
 
       let offset = 0;
       let lastPaint = performance.now();
@@ -61,7 +62,7 @@ const Hasher = (() => {
 
         const now = performance.now();
         if (offset < totalSize && now - lastPaint >= 100) {
-          await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+          await yieldToPaint();
           lastPaint = performance.now();
         }
       }

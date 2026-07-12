@@ -5,6 +5,7 @@ import { initHelpAction } from '~core/components/help.js';
 import { History } from '~core/components/history.js';
 import { Permalink } from '~core/components/permalink.js';
 import { initSectionCollapse } from '~core/components/section-collapse.js';
+import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { checkWasmSupport } from '~core/components/warning-banner.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
@@ -42,6 +43,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     NavMenu.init();
     NavSpy.init();
     BackToTop.init();
+    TabTitle.init();
     FaqSection.init();
     History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
     History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');

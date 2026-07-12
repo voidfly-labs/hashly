@@ -13,6 +13,7 @@ import {
 
 import { initApp } from '~core/init/app.js';
 import { Format } from '~core/utils/format.js';
+import { yieldToPaint } from '~core/utils/paint.js';
 
 const APP_CONFIG = {
   appName: 'sha2kit',
@@ -46,7 +47,7 @@ const Hasher = {
 
     const hashers = await Promise.all(algos.map(async ({ id, createFn }) => ({ id, instance: await createFn() })));
 
-    await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+    await yieldToPaint();
 
     let offset = 0;
     let lastPaint = performance.now();
@@ -62,7 +63,7 @@ const Hasher = {
 
       const now = performance.now();
       if (offset < totalSize && now - lastPaint >= 100) {
-        await new Promise((resolve) => requestAnimationFrame(() => setTimeout(resolve, 0)));
+        await yieldToPaint();
         lastPaint = performance.now();
       }
     }
