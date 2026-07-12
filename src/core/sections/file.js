@@ -1,4 +1,5 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
@@ -215,6 +216,7 @@ export const FileSection = {
     els.copy.addEventListener('click', () => this._onCopy(algoId));
     row.addEventListener('click', (e) => {
       if (e.target.closest('.algo-badge, .result__actions')) return;
+      if (HashSelect.isSelectClick(e)) return; // Ctrl/⌘ is for selecting part of the hash
       const hash = this._formattedHash(algoId);
       if (!hash) return;
       Clipboard.copy(hash);

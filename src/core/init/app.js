@@ -1,6 +1,7 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { BackToTop } from '~core/components/back-to-top.js';
 import { initGlobalPaste } from '~core/components/global-paste.js';
+import { HashSelect } from '~core/components/hash-select.js';
 import { initHelpAction } from '~core/components/help.js';
 import { History } from '~core/components/history.js';
 import { Permalink } from '~core/components/permalink.js';
@@ -55,6 +56,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
     _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
     _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
     RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
+    HashSelect.init();
     initGlobalPaste({
       onText: (text) => TextSection.pasteText(text),
       onFile: (file) => FileSection.pasteFile(file),

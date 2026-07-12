@@ -58,6 +58,12 @@
   user-select: none;
 }
 
+/* Hold Ctrl/⌘ (see core/components/hash-select.js) to select part of a hash. */
+.hash-select .result__hash:not(.result__hash--empty):not(.result__hash--computing) {
+  cursor: text;
+  user-select: text;
+}
+
 .result__hash--empty {
   font-style: italic;
   font-size: 13px;

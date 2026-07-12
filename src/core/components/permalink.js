@@ -40,7 +40,8 @@ export const Permalink = {
     if (inRadio) inRadio.checked = true;
     if (outRadio) outRadio.checked = true;
     TextSection.refreshPlaceholder();
-    history.replaceState(null, '', window.location.pathname);
+    // Drop the permalink's query from the URL, but keep any #hash (a FAQ tab).
+    history.replaceState(null, '', window.location.pathname + window.location.hash);
     return { algorithm };
   },
 
