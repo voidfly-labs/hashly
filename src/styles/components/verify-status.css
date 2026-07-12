@@ -1,0 +1,138 @@
+/* =========================================================================
+       VERIFY STATUS NOTICE
+       — The tinted notice under the reference-hash field: tone (data-tone),
+         icon, text and an optional hint line. See core/components/verify-status.js
+         and templates/components/verify-status.html.
+       ========================================================================= */
+/* Status line — tinted notice with a verdict marker bar on the left. Its track
+       collapses to 0fr while empty (same trick as .result), so typing doesn't
+       make the card jump. The notice's own top margin sits inside the track, so
+       it is clipped away with it when closed and the card's bottom padding is the
+       same open or closed. */
+.verify__status-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.verify__status-wrap--open {
+  grid-template-rows: 1fr;
+}
+
+.verify__status-inner {
+  overflow: hidden;
+}
+
+.verify__status {
+  --tone: var(--accent);
+  --tone-text: var(--text);
+  --tone-surface: var(--accent-surface);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px; /* tighter than the card's --gap: the notice belongs to the field above it */
+  padding: 9px 12px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tone-text);
+  background: var(--tone-surface);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.verify__status-wrap--open .verify__status {
+  opacity: 1;
+  transform: none;
+}
+
+.verify__status[data-tone='match'] {
+  --tone: var(--success);
+  --tone-text: var(--success);
+  --tone-surface: var(--success-surface);
+}
+
+.verify__status[data-tone='mismatch'] {
+  --tone: var(--danger);
+  --tone-text: var(--danger);
+  --tone-surface: var(--danger-surface);
+}
+
+.verify__status[data-tone='warn'] {
+  --tone: var(--warning);
+  --tone-text: var(--warning);
+  --tone-surface: var(--warning-surface);
+}
+
+/* Verdict marker: a straight full-height bar, clipped by the notice's rounded
+       corners (overflow: hidden). An inset box-shadow or border-left would curve
+       around those corners and taper into a crescent instead. */
+.verify__status::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--tone);
+}
+
+/* All four icons live in the template (JS-built <use> paths aren't rewritten
+       by Vite); data-tone decides which one shows. The row centres the icon on the
+       whole notice, so it stays centred when the text wraps or a hint is added. */
+.verify__status-icon {
+  display: none;
+  flex-shrink: 0;
+  width: 19px;
+  height: 19px;
+  color: var(--tone);
+  fill: currentColor;
+}
+
+.verify__status[data-tone='info'] .verify__status-icon--info,
+.verify__status[data-tone='warn'] .verify__status-icon--warn,
+.verify__status[data-tone='match'] .verify__status-icon--match,
+.verify__status[data-tone='mismatch'] .verify__status-icon--mismatch {
+  display: block;
+}
+
+.verify__status-body {
+  min-width: 0;
+}
+
+.verify__status-text,
+.verify__status-hint {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.verify__status-lead {
+  font-weight: 700;
+}
+
+.verify__status-hint {
+  margin-top: 2px;
+  font-size: 12.5px;
+  opacity: 0.8;
+}
+
+.verify__status-hint[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .verify__status {
+    transform: none;
+    transition: none;
+  }
+
+  .verify__status-wrap {
+    transition: none;
+  }
+}

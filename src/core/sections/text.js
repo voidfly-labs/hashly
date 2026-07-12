@@ -120,7 +120,8 @@ export const TextSection = {
     this._inputClear.addEventListener('click', () => this.onClear());
 
     initPasteButton(document.getElementById('textPasteBtn'), {
-      onText: (text) => this.insertText(text),
+      // Don't focus the textarea: on mobile that would raise the keyboard just for a paste.
+      onText: (text) => this.insertText(text, { focus: false }),
       onDenied: () => {
         this._input.focus();
         Hint.show(this._formatHint, 'paste blocked · use Ctrl/⌘+V');
@@ -523,7 +524,7 @@ export const TextSection = {
 
   /** Insert `raw` at the caret (replacing any selection), filtered for the
    *  selected input format, and recompute. */
-  insertText(raw) {
+  insertText(raw, { focus = true } = {}) {
     const fmt = this.getSelectedInputFormat();
     const filtered = this._filterTextForFormat(raw, fmt);
     if (filtered.length < raw.length) Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
@@ -533,7 +534,7 @@ export const TextSection = {
     const end = ta.selectionEnd ?? ta.value.length;
     ta.value = ta.value.slice(0, start) + filtered + ta.value.slice(end);
     ta.setSelectionRange(start + filtered.length, start + filtered.length);
-    ta.focus();
+    if (focus) ta.focus();
 
     clearTimeout(this._debounceTimer);
     this.onInput();

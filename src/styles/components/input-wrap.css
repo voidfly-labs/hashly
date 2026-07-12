@@ -1,0 +1,31 @@
+/* =========================================================================
+       INPUT WRAP
+       — Shared focus ring for a bare input/textarea. The wrap's 1px border
+         (transparent until focused) plus 1px padding always sum to 2px, so
+         the field's content never shifts when the ring appears. Used by the
+         text input and the reference-hash input, which both sit flush in a
+         card so the ring lands on the card's own border.
+       ========================================================================= */
+.input-wrap {
+  position: relative; /* anchor for the dismiss button */
+  border: 1px solid transparent;
+  padding: 1px;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+  /* Exposed as a variable so a state (e.g. a verdict) can keep it on focus. */
+  --focus-ring: 0 0 0 2px var(--accent-muted);
+}
+
+.input-wrap:focus-within {
+  border-color: var(--accent-strong);
+  box-shadow: var(--focus-ring);
+}
+
+/* Mobile keeps the earlier effect: lighter-blue 1px outer ring plus soft glow
+       around the stronger inner border. */
+@media (max-width: 630px) {
+  .input-wrap {
+    --focus-ring: 0 0 0 1px var(--accent-ring), 0 0 4px 1px var(--accent-glow);
+  }
+}

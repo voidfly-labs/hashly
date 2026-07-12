@@ -3,6 +3,7 @@ import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
 import { Tooltip } from '~core/components/tooltip.js';
+import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
@@ -14,7 +15,7 @@ let _APP_CONFIG, _ALGORITHMS, _Hasher;
 export const FileSection = {
   // rawHexMap: Map<algoId, hex>
   rawHexMap: new Map(),
-  // rowEls: Map<algoId, { hash, download, copy }>
+  // rowEls: Map<algoId, { row, hash, download, copy }>
   rowEls: new Map(),
   hiddenAlgos: new Set(),
   currentFileName: '',
@@ -38,6 +39,13 @@ export const FileSection = {
 
     // Build one result row per algorithm.
     _ALGORITHMS.forEach(({ id }) => this._buildRow(id));
+    this._verify = createVerify({
+      getFileName: () => this.currentFileName,
+      root: document.getElementById('fileVerify'),
+      algorithms: _ALGORITHMS,
+      getRow: (id) => this.rowEls.get(id).row,
+      isHidden: (id) => this.hiddenAlgos.has(id),
+    });
     this._hiddenSummary = createHiddenSummary({
       resultsEl: this._resultsEl,
       onShowAll: () => this._toggleAll(),
@@ -157,7 +165,7 @@ export const FileSection = {
     row.dataset.algo = algoId;
     row.innerHTML = `
           <div class="result__inner">
-            <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
+            <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}<span class="result__status" aria-hidden="true" hidden><svg class="result__status-icon" viewBox="0 0 24 24"><use href=""></use></svg></span></span>
             <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
             <div class="result__actions">
               <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
@@ -176,6 +184,7 @@ export const FileSection = {
     this._resultsEl.appendChild(row);
 
     const els = {
+      row,
       hash: row.querySelector(`#fileHash-${safeId}`),
       download: row.querySelector(`#fileDownload-${safeId}`),
       copy: row.querySelector(`#fileCopy-${safeId}`),
@@ -258,6 +267,7 @@ export const FileSection = {
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._verify.refresh();
     if (resetSpotlight) AlgoSpotlight.reset();
     if (!refreshTooltip) return;
     const fileBtn = document.getElementById('fileToggleAllBtn');
@@ -325,6 +335,7 @@ export const FileSection = {
     }
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._verify.refresh();
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
@@ -372,6 +383,8 @@ export const FileSection = {
       this._setHashText(els, hash);
       if (record) History.record('file', hash, id, this._currentBatchId, this.currentFileName);
     }
+    // Rewriting the text drops any marks showing where a hash differs from the reference.
+    this._verify.refresh();
   },
 
   _setAllActionsEnabled(enabled) {
@@ -398,6 +411,8 @@ export const FileSection = {
     this._fileSize.textContent = ` · ${this._formatFileSize(file.size)}`;
     this._fileName.classList.add('file-drop__filename--visible');
     this._dropClear.classList.add('file-drop__clear--visible');
+
+    this._verify.setDigests(null);
 
     // Enter computing state: hash cell becomes the progress bar at 0%.
     for (const { id } of _ALGORITHMS) {
@@ -431,6 +446,7 @@ export const FileSection = {
         History.record('file', hash, id, this._currentBatchId, this.currentFileName);
       }
       this._setAllActionsEnabled(true);
+      this._verify.setDigests(this.rawHexMap);
     } catch {
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
@@ -459,6 +475,8 @@ export const FileSection = {
       setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);
+    this._verify.setDigests(null);
+    this._verify.clear();
   },
 
   _onDownload(algoId) {

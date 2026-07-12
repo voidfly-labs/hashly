@@ -1,18 +1,26 @@
 /* =========================================================================
        TEXT INPUT
        ========================================================================= */
-/* Wrapper gives us a positioning context for the dismiss button,
-       mirroring the .file-drop pattern exactly. */
+/* The focus ring, border + padding and dismiss-button anchor come from
+       .input-wrap (components/input-wrap.css). */
 .text-input__wrap {
-  position: relative;
-  border: 1px solid transparent;
-  padding: 1px;
   /* Bottom corners square, not rounded — the wrap sits flush against
        #textResults below (no gap, by design; see result.css) so a rounded
        bottom edge would get visibly clipped by that row's square corner
        whenever the border is actually visible (focus, drag). */
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
-  transition: border-color 0.15s;
+}
+
+/* Text drag-and-drop affordance — mirrors file-drop--page-drag.
+       Border and background are scoped to the textarea wrapper so only
+       the input area is highlighted, not the full card. border + padding
+       always sum to 2px across every state of the wrap, so switching
+       between them never shifts its content. */
+.card--text-drag .text-input__wrap {
+  border: 2px dashed var(--accent);
+  padding: 0;
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .text-input__textarea {
