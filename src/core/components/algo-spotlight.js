@@ -1,5 +1,6 @@
-import { Storage } from '../services/storage.js';
-import { Format } from '../utils/format.js';
+import { Storage } from '~core/services/storage.js';
+import { Format } from '~core/utils/format.js';
+
 import { Tooltip } from './tooltip.js';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.

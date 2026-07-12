@@ -1,10 +1,11 @@
-import { initPasteButton } from '~core/components/paste-button.js';
-import { initReferenceFileButton } from '~core/components/reference-file-button.js';
-import { initResponsivePlaceholder } from '~core/components/responsive-placeholder.js';
-import { setVerifyState } from '~core/components/result.js';
-import { createVerifyStatus } from '~core/components/verify-status.js';
 import { parseReference } from '~core/utils/reference.js';
 import { availableSizes, describeVerifyState } from '~core/utils/verify-status.js';
+
+import { initPasteButton } from './paste-button.js';
+import { initReferenceFileButton } from './reference-file-button.js';
+import { initResponsivePlaceholder } from './responsive-placeholder.js';
+import { setVerifyState } from './result.js';
+import { createVerifyStatus } from './verify-status.js';
 
 /** Reference-hash field for a results list. The reference's size says which
  *  algorithms it can belong to, so only same-size rows are judged — a SHA-256

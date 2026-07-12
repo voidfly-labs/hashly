@@ -1,4 +1,4 @@
-import { Tooltip } from './tooltip.js';
+import { Tooltip } from '~core/components/tooltip.js';
 
 /** Wire the footer's build-date tooltip on `.footer__version[data-build-date]`.
  *  Shared by the main app init and the legal-page init — both render the same

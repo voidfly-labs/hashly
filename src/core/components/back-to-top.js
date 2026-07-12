@@ -1,4 +1,5 @@
-import { iconHref } from '../utils/icon.js';
+import { iconHref } from '~core/utils/icon.js';
+
 import { Tooltip } from './tooltip.js';
 
 /** Floating "back to top" button. Scrolling past a threshold shows it; it fades out

@@ -1,8 +1,8 @@
-import { NavMenu } from '../components/nav-menu.js';
-import { initReportTooltip } from '../components/report.js';
-import { initSocialTooltips } from '../components/social.js';
-import { initVersionTooltip } from '../components/version.js';
-import { Theme } from '../theme/manager.js';
+import { initReportTooltip } from '~core/layout/footer/report.js';
+import { initSocialTooltips } from '~core/layout/footer/social.js';
+import { initVersionTooltip } from '~core/layout/footer/version.js';
+import { NavMenu } from '~core/layout/nav/nav-menu.js';
+import { Theme } from '~core/theme/manager.js';
 
 function initLegal() {
   Theme.init();

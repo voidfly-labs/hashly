@@ -1,4 +1,5 @@
-import { Clipboard } from '../utils/clipboard.js';
+import { Clipboard } from '~core/utils/clipboard.js';
+
 import { Tooltip } from './tooltip.js';
 
 /** Wires a paste button: onText gets the clipboard text, onDenied runs if the

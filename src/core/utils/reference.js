@@ -1,4 +1,4 @@
-import { Format } from '~core/utils/format.js';
+import { Format } from './format.js';
 
 const HEX_RE = /^(?:0x)?[\da-f]+$/i;
 const BASE64_RE = /^[\w+/-]+={0,2}$/;

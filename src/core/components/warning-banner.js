@@ -1,4 +1,4 @@
-import { hasWasmSupport } from '../utils/wasm.js';
+import { hasWasmSupport } from '~core/utils/wasm.js';
 
 /** Shows a blocking notice when the app needs WebAssembly and the browser
  *  can't provide it. Returns true when the app can run. */
