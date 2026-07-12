@@ -524,6 +524,15 @@ export const TextSection = {
 
   /** Insert `raw` at the caret (replacing any selection), filtered for the
    *  selected input format, and recompute. */
+  /** Text pasted outside any field: appended at the end (the textarea may hold a
+   *  stale caret), and the section brought into view since the hashes change there. */
+  pasteText(raw) {
+    const end = this._input.value.length;
+    this._input.setSelectionRange(end, end);
+    this.insertText(raw);
+    this._card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  },
+
   insertText(raw, { focus = true } = {}) {
     const fmt = this.getSelectedInputFormat();
     const filtered = this._filterTextForFormat(raw, fmt);

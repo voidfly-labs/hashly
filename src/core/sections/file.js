@@ -76,9 +76,7 @@ export const FileSection = {
       this._drop.classList.remove('file-drop--active');
       const file = e.dataTransfer.files[0];
       if (file) {
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        this._input.files = dt.files;
+        this._setInputFile(file);
         this.processFile(file);
       }
     });
@@ -125,9 +123,7 @@ export const FileSection = {
       // Drop landed outside the zone: extract the file and process it.
       const file = e.dataTransfer?.files?.[0];
       if (file) {
-        const dt = new DataTransfer();
-        dt.items.add(file);
-        this._input.files = dt.files;
+        this._setInputFile(file);
         this.processFile(file);
       }
     });
@@ -403,6 +399,21 @@ export const FileSection = {
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
     if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
     return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GiB`;
+  },
+
+  /** Mirrors a file that didn't come through the input itself (drop, paste) into it. */
+  _setInputFile(file) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    this._input.files = dt.files;
+  },
+
+  /** A file pasted outside any field: loaded like a drop, and the section brought
+   *  into view since that's where the hashes appear. */
+  pasteFile(file) {
+    this._setInputFile(file);
+    this._drop.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.processFile(file);
   },
 
   async processFile(file) {
