@@ -104,10 +104,10 @@
 
       <h3>What is the difference between BLAKE2b and BLAKE2s?</h3>
       <p>
-        BLAKE2b is optimised for 64-bit platforms. It operates on 64-bit words, uses 10 rounds, and supports output
-        sizes from 1 to 512 bits. BLAKE2s is optimised for 32-bit and embedded platforms. It operates on 32-bit words,
-        uses 10 rounds, and supports output sizes from 1 to 256 bits. On a modern 64-bit CPU, BLAKE2b is significantly
-        faster; on microcontrollers and other 32-bit hardware, BLAKE2s is the correct choice.
+        BLAKE2b is optimised for 64-bit platforms. It operates on 64-bit words, uses 12 rounds, and supports digests of
+        1 to 64 bytes (8 to 512 bits). BLAKE2s is optimised for 32-bit and embedded platforms. It operates on 32-bit
+        words, uses 10 rounds, and supports digests of 1 to 32 bytes (8 to 256 bits). On a modern 64-bit CPU, BLAKE2b is
+        significantly faster; on microcontrollers and other 32-bit hardware, BLAKE2s is the correct choice.
       </p>
 
       <h3>BLAKE2 variant comparison</h3>
@@ -127,7 +127,7 @@
             <td class="info-table__algo" data-label="Algorithm">BLAKE2b-256</td>
             <td data-label="Digest">256 bit · 64 hex</td>
             <td data-label="Word size">64-bit</td>
-            <td data-label="Rounds">10</td>
+            <td data-label="Rounds">12</td>
             <td class="info-table__status--secure" data-label="Status">Secure</td>
             <td data-label="Common use">SHA-256 drop-in replacement, high-throughput integrity checks</td>
           </tr>
@@ -135,7 +135,7 @@
             <td class="info-table__algo" data-label="Algorithm">BLAKE2b-512</td>
             <td data-label="Digest">512 bit · 128 hex</td>
             <td data-label="Word size">64-bit</td>
-            <td data-label="Rounds">10</td>
+            <td data-label="Rounds">12</td>
             <td class="info-table__status--secure" data-label="Status">Secure</td>
             <td data-label="Common use">High-security contexts, archival hashing, wide digest requirement</td>
           </tr>
@@ -185,8 +185,8 @@
       <p>
         The core differences are architecture and speed. BLAKE2 uses a sequential compression function; BLAKE3 builds a
         Merkle tree over input chunks that can be processed in parallel, unlocking substantial throughput gains on
-        modern hardware. BLAKE3 also reduces the round count from 10 to 7 per chunk, relying on parallelism rather than
-        per-byte work for security margin. Additionally, BLAKE3 is an
+        modern hardware. BLAKE3 also reduces the round count from 10 (BLAKE2s) or 12 (BLAKE2b) to 7 per chunk, relying
+        on parallelism rather than per-byte work for security margin. Additionally, BLAKE3 is an
         <a href="https://en.wikipedia.org/wiki/Extendable-output_function" target="_blank" rel="noopener noreferrer"
           >XOF (extensible output function)</a
         >

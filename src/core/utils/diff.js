@@ -28,7 +28,7 @@ export function diffHex(reference, digest) {
   for (let i = 0; i < a.length; i++) {
     const differs = a[i] !== b[i];
     if (differs) differing++;
-    const last = runs.at(-1);
+    const last = runs[runs.length - 1];
     if (last?.differs === differs) last.length++;
     else runs.push({ length: 1, differs });
   }

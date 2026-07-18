@@ -39,7 +39,7 @@
       "name": "How does MD5Kit protect my data?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "All hashing runs entirely inside your browser. MD4 and MD5 use hash-wasm (a WebAssembly library loaded from CDN), and MD2 uses a custom inlined RFC 1319 implementation. No text, file content, or hash output is ever transmitted to any server."
+        "text": "All hashing runs entirely inside your browser. MD4 and MD5 use hash-wasm (a WebAssembly library bundled with this page), and MD2 uses a custom inlined RFC 1319 implementation. No text, file content, or hash output is ever transmitted to any server."
       }
     }
   ]

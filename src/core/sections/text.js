@@ -112,7 +112,10 @@ export const TextSection = {
     // to guide what valid input looks like for the new encoding.
     document.querySelectorAll('input[name="textInputFormat"]').forEach((radio) =>
       radio.addEventListener('change', () => {
-        this.onClear();
+        // Don't focus the textarea: it's usually scrolled out of view above these radios,
+        // focusing it would scroll there, and it would pull focus off the radio group
+        // mid-arrow-key navigation.
+        this.onClear({ focus: false });
         this.refreshPlaceholder();
       }),
     );
@@ -590,11 +593,11 @@ export const TextSection = {
     this._setAllActionsEnabled(true);
   },
 
-  onClear() {
+  onClear({ focus = true } = {}) {
     clearTimeout(this._debounceTimer);
     this._input.value = '';
     this.onInput();
-    this._input.focus();
+    if (focus) this._input.focus();
   },
 
   _onDownload(algoId) {

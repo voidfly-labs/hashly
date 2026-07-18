@@ -212,14 +212,14 @@
             <td data-label="Polynomial">0x8005</td>
             <td data-label="Init">0x0000</td>
             <td class="info-table__status--common" data-label="Reflected">Yes</td>
-            <td data-label="Common use">USB, floppy disk, general purpose</td>
+            <td data-label="Common use">ARC and LHA archives, general purpose</td>
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-16 (CCITT)</td>
             <td data-label="Polynomial">0x1021</td>
             <td data-label="Init">0xFFFF</td>
             <td class="info-table__status--niche" data-label="Reflected">No</td>
-            <td data-label="Common use">X.25, HDLC, Bluetooth</td>
+            <td data-label="Common use">AUTOSAR</td>
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-16 (Modbus)</td>
@@ -233,14 +233,14 @@
             <td data-label="Polynomial">0x1021</td>
             <td data-label="Init">0x0000</td>
             <td class="info-table__status--common" data-label="Reflected">Yes</td>
-            <td data-label="Common use">Kermit file-transfer protocol</td>
+            <td data-label="Common use">Kermit file-transfer protocol, Bluetooth</td>
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-16 (XMODEM)</td>
             <td data-label="Polynomial">0x1021</td>
             <td data-label="Init">0x0000</td>
             <td class="info-table__status--niche" data-label="Reflected">No</td>
-            <td data-label="Common use">XMODEM and YMODEM transfer protocols</td>
+            <td data-label="Common use">XMODEM and YMODEM transfer protocols, Redis Cluster key slots</td>
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-16 (USB)</td>
@@ -429,7 +429,7 @@
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-64 (NVMe)</td>
-            <td data-label="Polynomial">0xAD93D23594C935A9</td>
+            <td data-label="Polynomial">0xAD93D23594C93659</td>
             <td class="info-table__status--common" data-label="Reflected">Yes</td>
             <td data-label="Common use">NVMe storage protocol, command integrity</td>
           </tr>
@@ -437,7 +437,7 @@
             <td class="info-table__algo" data-label="Variant">CRC-64 (Redis)</td>
             <td data-label="Polynomial">0xAD93D23594C935A9</td>
             <td class="info-table__status--common" data-label="Reflected">Yes</td>
-            <td data-label="Common use">Redis cluster slot hashing, key routing</td>
+            <td data-label="Common use">Redis RDB and DUMP checksums</td>
           </tr>
           <tr>
             <td class="info-table__algo" data-label="Variant">CRC-64 (XZ)</td>
@@ -453,11 +453,12 @@
         Use the variant your protocol or storage system mandates — mixing them produces silently wrong checksums. CRC-64
         (ECMA) and CRC-64 (XZ) both use the ECMA polynomial but differ in bit reflection: ECMA processes data without
         reflection while XZ uses the reflected form, so they produce different outputs from the same input. CRC-64
-        (NVMe) and CRC-64 (Redis) share the Jones polynomial in reflected form; Redis sets its initial value and final
-        XOR to zero for hash-table consistency. Reach for CRC-64 in place of CRC-32 when protecting large datasets —
-        multi-gigabyte files, database tables, tape archives — where the one-in-four-billion collision probability of
-        CRC-32 becomes a real operational risk over millions of objects. For individual files or network framing, CRC-32
-        is almost always sufficient.
+        (Redis) uses the Jones polynomial 0xAD93D23594C935A9 in reflected form, with an initial value and final XOR of
+        zero. CRC-64 (NVMe) uses a different polynomial, 0xAD93D23594C93659, also reflected, with an all-ones initial
+        value and final XOR. Reach for CRC-64 in place of CRC-32 when protecting large datasets — multi-gigabyte files,
+        database tables, tape archives — where the one-in-four-billion collision probability of CRC-32 becomes a real
+        operational risk over millions of objects. For individual files or network framing, CRC-32 is almost always
+        sufficient.
       </p>
     </div>
 
@@ -483,7 +484,7 @@
       <h3>How does CRC-82 compare to other wide CRCs?</h3>
       <p>
         Its 82-bit width sits between the common 64-bit and 128-bit extremes, giving it a theoretical undetected-error
-        probability of about one in 4.8 sextillion — stronger than CRC-64 but achieved at the cost of a non-standard
+        probability of about one in 4.8 septillion — stronger than CRC-64 but achieved at the cost of a non-standard
         output size that requires BigInt arithmetic in software implementations. Outside of DARC and its direct
         derivatives, you are unlikely to encounter CRC-82 in practice; CRC-64 covers most use cases that outgrow CRC-32.
       </p>
