@@ -1,6 +1,6 @@
 import { initApp } from '~core/init/app.js';
+import { forEachChunk } from '~core/utils/file-chunks.js';
 import { Format } from '~core/utils/format.js';
-import { yieldToPaint } from '~core/utils/paint.js';
 
 import {
   crc_8_dvb_s2,
@@ -76,31 +76,16 @@ const Hasher = {
     return new Map(algos.map(({ id, fn, hexLen }) => [id, fn(data).padStart(hexLen, '0')]));
   },
 
-  async fromFileAll(file, onProgress, algos = ALGORITHMS) {
-    const totalSize = file.size;
-    const CHUNK_SIZE = Math.min(32 * 1024 * 1024, Math.max(150 * 1024, Math.floor(totalSize / 100)));
-
+  async fromFileAll(file, onProgress, algos = ALGORITHMS, signal) {
     const instances = algos.map(({ id, fn, hexLen }) => ({ id, hexLen, instance: fn.create() }));
 
-    await yieldToPaint();
-
-    let offset = 0;
-    let lastPaint = performance.now();
-    while (offset < totalSize) {
-      const slice = file.slice(offset, offset + CHUNK_SIZE);
-      const buffer = await slice.arrayBuffer();
-
-      for (const { instance } of instances) instance.update(buffer);
-
-      offset += buffer.byteLength;
-      onProgress?.(Math.min(offset / totalSize, 1));
-
-      const now = performance.now();
-      if (offset < totalSize && now - lastPaint >= 100) {
-        await yieldToPaint();
-        lastPaint = performance.now();
-      }
-    }
+    await forEachChunk(
+      file,
+      (buffer) => {
+        for (const { instance } of instances) instance.update(buffer);
+      },
+      { onProgress, signal },
+    );
 
     return new Map(instances.map(({ id, hexLen, instance }) => [id, instance.hex().padStart(hexLen, '0')]));
   },

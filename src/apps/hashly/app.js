@@ -38,8 +38,8 @@ import {
 
 import { md2 } from '~core/algos/md2.js';
 import { initApp } from '~core/init/app.js';
+import { forEachChunk } from '~core/utils/file-chunks.js';
 import { Format } from '~core/utils/format.js';
-import { yieldToPaint } from '~core/utils/paint.js';
 
 const APP_CONFIG = {
   appName: 'hashly',
@@ -157,10 +157,7 @@ const Hasher = (() => {
       return new Map(results);
     },
 
-    async fromFileAll(file, onProgress, algos = ALGORITHMS) {
-      const totalSize = file.size;
-      const CHUNK_SIZE = Math.min(32 * 1024 * 1024, Math.max(150 * 1024, Math.floor(totalSize / 100)));
-
+    async fromFileAll(file, onProgress, algos = ALGORITHMS, signal) {
       const hashers = await Promise.all(
         algos.map(async (algo) => {
           let instance;
@@ -191,33 +188,22 @@ const Hasher = (() => {
         }),
       );
 
-      await yieldToPaint();
+      await forEachChunk(
+        file,
+        (buffer) => {
+          const chunk = new Uint8Array(buffer);
+          const encodedChunk = fromArrayBuffer(buffer);
 
-      let offset = 0;
-      let lastPaint = performance.now();
-      while (offset < totalSize) {
-        const slice = file.slice(offset, offset + CHUNK_SIZE);
-        const buffer = await slice.arrayBuffer();
-        const chunk = new Uint8Array(buffer);
-        const encodedChunk = fromArrayBuffer(buffer);
-
-        for (const { algo, instance } of hashers) {
-          if (algo.type === 'ripemd') {
-            instance.update(encodedChunk);
-          } else {
-            instance.update(chunk);
+          for (const { algo, instance } of hashers) {
+            if (algo.type === 'ripemd') {
+              instance.update(encodedChunk);
+            } else {
+              instance.update(chunk);
+            }
           }
-        }
-
-        offset += buffer.byteLength;
-        onProgress?.(Math.min(offset / totalSize, 1));
-
-        const now = performance.now();
-        if (offset < totalSize && now - lastPaint >= 100) {
-          await yieldToPaint();
-          lastPaint = performance.now();
-        }
-      }
+        },
+        { onProgress, signal },
+      );
 
       return new Map(
         hashers.map(({ algo, instance }) => {

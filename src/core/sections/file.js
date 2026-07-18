@@ -21,6 +21,8 @@ export const FileSection = {
   rowEls: new Map(),
   hiddenAlgos: new Set(),
   currentFileName: '',
+  // Cancels the file being hashed, if any (clearing it, or dropping another over it).
+  _abort: null,
   // Shared batchId for all algorithms in the current file computation.
   _currentBatchId: null,
 
@@ -420,6 +422,11 @@ export const FileSection = {
   },
 
   async processFile(file) {
+    // A file still hashing is abandoned, not left to finish over this one.
+    this._abort?.abort();
+    const controller = new AbortController();
+    this._abort = controller;
+
     this.currentFileName = file.name;
     this._fileNameText.textContent = file.name;
     this._fileSize.textContent = ` · ${this._formatFileSize(file.size)}`;
@@ -449,7 +456,9 @@ export const FileSection = {
 
     try {
       const visibleAlgos = _ALGORITHMS.filter((a) => !this.hiddenAlgos.has(a.id));
-      this.rawHexMap = await _Hasher.fromFileAll(file, onProgress, visibleAlgos);
+      const hexMap = await _Hasher.fromFileAll(file, onProgress, visibleAlgos, controller.signal);
+      if (controller.signal.aborted) return; // cleared or replaced just as it finished
+      this.rawHexMap = hexMap;
       const fmt = this.getSelectedFormat();
       this._currentBatchId = History.nextBatch();
       for (const { id } of _ALGORITHMS) {
@@ -465,6 +474,7 @@ export const FileSection = {
       this._verify.setDigests(this.rawHexMap);
       title.done();
     } catch {
+      if (controller.signal.aborted) return; // cancelled: the UI already shows what replaced it
       title.fail();
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
@@ -477,6 +487,8 @@ export const FileSection = {
   },
 
   onClear() {
+    this._abort?.abort();
+    this._abort = null;
     TabTitle.reset();
     this.rawHexMap.clear();
     this.currentFileName = '';
