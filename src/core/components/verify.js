@@ -3,6 +3,7 @@ import { availableSizes, describeVerifyState } from '~core/utils/verify-status.j
 
 import { initPasteButton } from './paste-button.js';
 import { initReferenceFileButton } from './reference-file-button.js';
+import { initReferenceFileDrop } from './reference-file-drop.js';
 import { initResponsivePlaceholder } from './responsive-placeholder.js';
 import { setVerifyState } from './result.js';
 import { createVerifyStatus } from './verify-status.js';
@@ -105,7 +106,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
 
   // Upload button: reads a file's text into the field (a lone hash, or a checksum
   // list, from which the hashed file's own line is picked). Same no-focus rule as paste.
-  initReferenceFileButton(root.querySelector('.verify__file'), root.querySelector('.verify__file-input'), {
+  const reference = {
     getFileName,
     onText(line) {
       input.value = line;
@@ -114,7 +115,9 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     onRejected(message) {
       _showStatus({ text: message, kind: 'warn' });
     },
-  });
+  };
+  initReferenceFileButton(root.querySelector('.verify__file'), root.querySelector('.verify__file-input'), reference);
+  initReferenceFileDrop(root.querySelector('.verify__field'), reference);
 
   function clear() {
     input.value = '';

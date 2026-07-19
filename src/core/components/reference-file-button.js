@@ -1,4 +1,4 @@
-import { MAX_REFERENCE_BYTES, pickReferenceLine } from '~core/utils/reference-file.js';
+import { readReferenceFile } from '~core/utils/reference-file.js';
 
 import { Tooltip } from './tooltip.js';
 
@@ -17,20 +17,9 @@ export function initReferenceFileButton(btn, fileInput, { getFileName, onText, o
     fileInput.value = '';
     if (!file) return;
 
-    if (file.size > MAX_REFERENCE_BYTES) {
-      onRejected(`File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)`);
-      return;
-    }
-    let text;
-    try {
-      text = await file.text();
-    } catch {
-      onRejected("Couldn't read that file");
-      return;
-    }
-    const line = pickReferenceLine(text, getFileName());
-    if (line) onText(line);
-    else onRejected('That file has no hash in it');
+    const { line, error } = await readReferenceFile(file, getFileName());
+    if (error) onRejected(error);
+    else onText(line);
   });
 
   btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'Upload'));

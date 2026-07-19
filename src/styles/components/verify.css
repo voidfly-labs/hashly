@@ -68,6 +68,14 @@
   --prefix-w: 64px;
 }
 
+/* A file is being dragged over the field: same highlight as the main drop zone's
+   drag state (.file-drop--page-drag in sections/file.css). */
+.verify__field.verify__field--drop {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
 .verify__field .input-wrap {
   display: flex; /* caption cell + input on one row */
   align-items: baseline; /* the caption shares the input text's baseline, in every browser */

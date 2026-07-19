@@ -46,3 +46,19 @@ export function pickReferenceLine(text, fileName = '') {
   const entry = (wanted && entries.find((e) => e.name === wanted)) || entries[0];
   return entry.line.slice(0, MAX_LINE_LENGTH);
 }
+
+/** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the
+ *  reference to use, or `{ error }` with a message for the user when it can't be used. */
+export async function readReferenceFile(file, fileName = '') {
+  if (file.size > MAX_REFERENCE_BYTES) {
+    return { error: `File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
+  }
+  let text;
+  try {
+    text = await file.text();
+  } catch {
+    return { error: "Couldn't read that file" };
+  }
+  const line = pickReferenceLine(text, fileName);
+  return line ? { line } : { error: 'That file has no hash in it' };
+}
