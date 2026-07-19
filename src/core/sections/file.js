@@ -7,6 +7,7 @@ import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
+import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
@@ -513,12 +514,16 @@ export const FileSection = {
   _onDownload(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    const base = this.currentFileName
-      ? this.currentFileName.replace(/\.[^.]+$/, '')
-      : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-    const ext = algoId.toLowerCase().replace(/-/g, '');
-    const filename = `${base}.${ext}`;
-    Download.trigger(hash, filename);
+    const checksumFile = toChecksumFile(hash, algoId, this.currentFileName);
+    if (checksumFile) {
+      Download.trigger(checksumFile.content, checksumFile.filename);
+    } else {
+      // Base64/binary output: no checksum-file format exists for it, so write the digest alone.
+      const base = this.currentFileName
+        ? this.currentFileName.replace(/\.[^.]+$/, '')
+        : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
+      Download.trigger(hash, `${base}.${algoId.toLowerCase().replace(/-/g, '')}`);
+    }
     const btn = this.rowEls.get(algoId).download;
     Tooltip.flash(btn);
     Checkmark.flash(btn);

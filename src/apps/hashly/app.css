@@ -7,77 +7,85 @@
   --badge-md2-bg: #f9e9e6;
   --badge-md2-text: #631809;
   --badge-md4-bg: #f9ede6;
-  --badge-md4-text: #632a09;
-  --badge-md5-bg: #f9f1e6;
-  --badge-md5-text: #633c09;
+  --badge-md4-text: #632809;
+  --badge-md5-bg: #f9f0e6;
+  --badge-md5-text: #633809;
 
   /* SHA-1 */
-  --badge-sha1-bg: #f9f5e6;
-  --badge-sha1-text: #634e09;
+  --badge-sha1-bg: #f9f4e6;
+  --badge-sha1-text: #634909;
 
   /* SHA-2 family */
-  --badge-sha224-bg: #f9f9e6;
-  --badge-sha224-text: #636009;
-  --badge-sha256-bg: #f6f9e6;
-  --badge-sha256-text: #546309;
-  --badge-sha384-bg: #f2f9e6;
-  --badge-sha384-text: #426309;
-  --badge-sha512-bg: #eef9e6;
-  --badge-sha512-text: #306309;
+  --badge-sha224-bg: #f9f7e6;
+  --badge-sha224-text: #635909;
+  --badge-sha256-bg: #f8f9e6;
+  --badge-sha256-text: #5c6309;
+  --badge-sha384-bg: #f4f9e6;
+  --badge-sha384-text: #4b6309;
+  --badge-sha512-bg: #f1f9e6;
+  --badge-sha512-text: #3b6309;
 
   /* SHA-3 family */
-  --badge-sha3224-bg: #eaf9e6;
-  --badge-sha3224-text: #1e6309;
-  --badge-sha3256-bg: #e7f9e6;
-  --badge-sha3256-text: #0c6309;
-  --badge-sha3384-bg: #e6f9e9;
-  --badge-sha3384-text: #096318;
-  --badge-sha3512-bg: #e6f9ed;
-  --badge-sha3512-text: #09632a;
+  --badge-sha3224-bg: #edf9e6;
+  --badge-sha3224-text: #2b6309;
+  --badge-sha3256-bg: #eaf9e6;
+  --badge-sha3256-text: #1a6309;
+  --badge-sha3384-bg: #e6f9e6;
+  --badge-sha3384-text: #0a6309;
+  --badge-sha3512-bg: #e6f9e9;
+  --badge-sha3512-text: #096318;
 
   /* BLAKE family */
-  --badge-blake2b256-bg: #e6f9f1;
-  --badge-blake2b256-text: #09633c;
-  --badge-blake2b512-bg: #e6f9f5;
-  --badge-blake2b512-text: #09634e;
-  --badge-blake2s128-bg: #e6f9f9;
-  --badge-blake2s128-text: #096360;
-  --badge-blake2s256-bg: #e6f6f9;
-  --badge-blake2s256-text: #095463;
-  --badge-blake3256-bg: #e6f2f9;
-  --badge-blake3256-text: #094263;
-  --badge-blake3512-bg: #e6eef9;
-  --badge-blake3512-text: #093063;
+  --badge-blake2b256-bg: #e6f9ed;
+  --badge-blake2b256-text: #096328;
+  --badge-blake2b512-bg: #e6f9f0;
+  --badge-blake2b512-text: #096338;
+  --badge-blake2s128-bg: #e6f9f4;
+  --badge-blake2s128-text: #096349;
+  --badge-blake2s256-bg: #e6f9f7;
+  --badge-blake2s256-text: #096359;
+  --badge-blake3256-bg: #e6f8f9;
+  --badge-blake3256-text: #095c63;
+  --badge-blake3512-bg: #e6f4f9;
+  --badge-blake3512-text: #094b63;
 
   /* Keccak family */
-  --badge-keccak224-bg: #e6eaf9;
-  --badge-keccak224-text: #091e63;
-  --badge-keccak256-bg: #e6e7f9;
-  --badge-keccak256-text: #090c63;
-  --badge-keccak384-bg: #e9e6f9;
-  --badge-keccak384-text: #180963;
-  --badge-keccak512-bg: #ede6f9;
-  --badge-keccak512-text: #2a0963;
+  --badge-keccak224-bg: #e6f1f9;
+  --badge-keccak224-text: #093b63;
+  --badge-keccak256-bg: #e6edf9;
+  --badge-keccak256-text: #092b63;
+  --badge-keccak384-bg: #e6eaf9;
+  --badge-keccak384-text: #091a63;
+  --badge-keccak512-bg: #e6e6f9;
+  --badge-keccak512-text: #090a63;
 
   /* RIPEMD family */
-  --badge-ripemd128-bg: #f1e6f9;
-  --badge-ripemd128-text: #3c0963;
-  --badge-ripemd160-bg: #f5e6f9;
-  --badge-ripemd160-text: #4e0963;
-  --badge-ripemd256-bg: #f9e6f9;
-  --badge-ripemd256-text: #600963;
-  --badge-ripemd320-bg: #f9e6f6;
-  --badge-ripemd320-text: #630954;
+  --badge-ripemd128-bg: #e9e6f9;
+  --badge-ripemd128-text: #180963;
+  --badge-ripemd160-bg: #ede6f9;
+  --badge-ripemd160-text: #280963;
+  --badge-ripemd256-bg: #f0e6f9;
+  --badge-ripemd256-text: #380963;
+  --badge-ripemd320-bg: #f4e6f9;
+  --badge-ripemd320-text: #490963;
 
   /* xxHash family */
-  --badge-xxh32-bg: #f9e6f2;
-  --badge-xxh32-text: #630942;
-  --badge-xxh64-bg: #f9e6ee;
-  --badge-xxh64-text: #630930;
-  --badge-xxh3-bg: #f9e6ea;
-  --badge-xxh3-text: #63091e;
-  --badge-xxh128-bg: #f9e6e7;
-  --badge-xxh128-text: #63090c;
+  --badge-xxh32-bg: #f7e6f9;
+  --badge-xxh32-text: #590963;
+  --badge-xxh64-bg: #f9e6f8;
+  --badge-xxh64-text: #63095c;
+  --badge-xxh3-bg: #f9e6f4;
+  --badge-xxh3-text: #63094b;
+  --badge-xxh128-bg: #f9e6f1;
+  --badge-xxh128-text: #63093b;
+
+  /* Other */
+  --badge-adler32-bg: #f9e6ed;
+  --badge-adler32-text: #63092b;
+  --badge-sm3-bg: #f9e6ea;
+  --badge-sm3-text: #63091a;
+  --badge-whirlpool-bg: #f9e6e6;
+  --badge-whirlpool-text: #63090a;
 }
 
 [data-theme='dark'] {
@@ -86,78 +94,86 @@
   /* MDx family */
   --badge-md2-bg: rgba(250, 80, 46, 0.14);
   --badge-md2-text: #f68e79;
-  --badge-md4-bg: rgba(250, 121, 46, 0.14);
-  --badge-md4-text: #f6a779;
-  --badge-md5-bg: rgba(250, 161, 46, 0.14);
-  --badge-md5-text: #f6c079;
+  --badge-md4-bg: rgba(250, 117, 46, 0.14);
+  --badge-md4-text: #f6a579;
+  --badge-md5-bg: rgba(250, 154, 46, 0.14);
+  --badge-md5-text: #f6bb79;
 
   /* SHA-1 */
-  --badge-sha1-bg: rgba(250, 202, 46, 0.14);
-  --badge-sha1-text: #f6d979;
+  --badge-sha1-bg: rgba(250, 191, 46, 0.14);
+  --badge-sha1-text: #f6d279;
 
   /* SHA-2 family */
-  --badge-sha224-bg: rgba(250, 243, 46, 0.14);
-  --badge-sha224-text: #f6f279;
-  --badge-sha256-bg: rgba(216, 250, 46, 0.14);
-  --badge-sha256-text: #e1f679;
-  --badge-sha384-bg: rgba(175, 250, 46, 0.14);
-  --badge-sha384-text: #c8f679;
-  --badge-sha512-bg: rgba(134, 250, 46, 0.14);
-  --badge-sha512-text: #aff679;
+  --badge-sha224-bg: rgba(250, 228, 46, 0.14);
+  --badge-sha224-text: #f6e979;
+  --badge-sha256-bg: rgba(234, 250, 46, 0.14);
+  --badge-sha256-text: #ecf679;
+  --badge-sha384-bg: rgba(197, 250, 46, 0.14);
+  --badge-sha384-text: #d6f679;
+  --badge-sha512-bg: rgba(160, 250, 46, 0.14);
+  --badge-sha512-text: #bff679;
 
   /* SHA-3 family */
-  --badge-sha3224-bg: rgba(94, 250, 46, 0.14);
-  --badge-sha3224-text: #96f679;
-  --badge-sha3256-bg: rgba(53, 250, 46, 0.14);
-  --badge-sha3256-text: #7ef679;
-  --badge-sha3384-bg: rgba(46, 250, 80, 0.14);
-  --badge-sha3384-text: #79f68e;
-  --badge-sha3512-bg: rgba(46, 250, 121, 0.14);
-  --badge-sha3512-text: #79f6a7;
+  --badge-sha3224-bg: rgba(123, 250, 46, 0.14);
+  --badge-sha3224-text: #a9f679;
+  --badge-sha3256-bg: rgba(86, 250, 46, 0.14);
+  --badge-sha3256-text: #92f679;
+  --badge-sha3384-bg: rgba(49, 250, 46, 0.14);
+  --badge-sha3384-text: #7bf679;
+  --badge-sha3512-bg: rgba(46, 250, 80, 0.14);
+  --badge-sha3512-text: #79f68e;
 
   /* BLAKE family */
-  --badge-blake2b256-bg: rgba(46, 250, 161, 0.14);
-  --badge-blake2b256-text: #79f6c0;
-  --badge-blake2b512-bg: rgba(46, 250, 202, 0.14);
-  --badge-blake2b512-text: #79f6d9;
-  --badge-blake2s128-bg: rgba(46, 250, 243, 0.14);
-  --badge-blake2s128-text: #79f6f2;
-  --badge-blake2s256-bg: rgba(46, 216, 250, 0.14);
-  --badge-blake2s256-text: #79e1f6;
-  --badge-blake3256-bg: rgba(46, 175, 250, 0.14);
-  --badge-blake3256-text: #79c8f6;
-  --badge-blake3512-bg: rgba(46, 134, 250, 0.14);
-  --badge-blake3512-text: #79aff6;
+  --badge-blake2b256-bg: rgba(46, 250, 117, 0.14);
+  --badge-blake2b256-text: #79f6a5;
+  --badge-blake2b512-bg: rgba(46, 250, 154, 0.14);
+  --badge-blake2b512-text: #79f6bb;
+  --badge-blake2s128-bg: rgba(46, 250, 191, 0.14);
+  --badge-blake2s128-text: #79f6d2;
+  --badge-blake2s256-bg: rgba(46, 250, 228, 0.14);
+  --badge-blake2s256-text: #79f6e9;
+  --badge-blake3256-bg: rgba(46, 234, 250, 0.14);
+  --badge-blake3256-text: #79ecf6;
+  --badge-blake3512-bg: rgba(46, 197, 250, 0.14);
+  --badge-blake3512-text: #79d6f6;
 
   /* Keccak family */
-  --badge-keccak224-bg: rgba(46, 94, 250, 0.14);
-  --badge-keccak224-text: #7996f6;
-  --badge-keccak256-bg: rgba(46, 53, 250, 0.14);
-  --badge-keccak256-text: #797ef6;
-  --badge-keccak384-bg: rgba(80, 46, 250, 0.14);
-  --badge-keccak384-text: #8e79f6;
-  --badge-keccak512-bg: rgba(121, 46, 250, 0.14);
-  --badge-keccak512-text: #a779f6;
+  --badge-keccak224-bg: rgba(46, 160, 250, 0.14);
+  --badge-keccak224-text: #79bff6;
+  --badge-keccak256-bg: rgba(46, 123, 250, 0.14);
+  --badge-keccak256-text: #79a9f6;
+  --badge-keccak384-bg: rgba(46, 86, 250, 0.14);
+  --badge-keccak384-text: #7992f6;
+  --badge-keccak512-bg: rgba(46, 49, 250, 0.14);
+  --badge-keccak512-text: #797bf6;
 
   /* RIPEMD family */
-  --badge-ripemd128-bg: rgba(161, 46, 250, 0.14);
-  --badge-ripemd128-text: #c079f6;
-  --badge-ripemd160-bg: rgba(202, 46, 250, 0.14);
-  --badge-ripemd160-text: #d979f6;
-  --badge-ripemd256-bg: rgba(243, 46, 250, 0.14);
-  --badge-ripemd256-text: #f279f6;
-  --badge-ripemd320-bg: rgba(250, 46, 216, 0.14);
-  --badge-ripemd320-text: #f679e1;
+  --badge-ripemd128-bg: rgba(80, 46, 250, 0.14);
+  --badge-ripemd128-text: #8e79f6;
+  --badge-ripemd160-bg: rgba(117, 46, 250, 0.14);
+  --badge-ripemd160-text: #a579f6;
+  --badge-ripemd256-bg: rgba(154, 46, 250, 0.14);
+  --badge-ripemd256-text: #bb79f6;
+  --badge-ripemd320-bg: rgba(191, 46, 250, 0.14);
+  --badge-ripemd320-text: #d279f6;
 
   /* xxHash family */
-  --badge-xxh32-bg: rgba(250, 46, 175, 0.14);
-  --badge-xxh32-text: #f679c8;
-  --badge-xxh64-bg: rgba(250, 46, 134, 0.14);
-  --badge-xxh64-text: #f679af;
-  --badge-xxh3-bg: rgba(250, 46, 94, 0.14);
-  --badge-xxh3-text: #f67996;
-  --badge-xxh128-bg: rgba(250, 46, 53, 0.14);
-  --badge-xxh128-text: #f6797e;
+  --badge-xxh32-bg: rgba(228, 46, 250, 0.14);
+  --badge-xxh32-text: #e979f6;
+  --badge-xxh64-bg: rgba(250, 46, 234, 0.14);
+  --badge-xxh64-text: #f679ec;
+  --badge-xxh3-bg: rgba(250, 46, 197, 0.14);
+  --badge-xxh3-text: #f679d6;
+  --badge-xxh128-bg: rgba(250, 46, 160, 0.14);
+  --badge-xxh128-text: #f679bf;
+
+  /* Other */
+  --badge-adler32-bg: rgba(250, 46, 123, 0.14);
+  --badge-adler32-text: #f679a9;
+  --badge-sm3-bg: rgba(250, 46, 86, 0.14);
+  --badge-sm3-text: #f67992;
+  --badge-whirlpool-bg: rgba(250, 46, 49, 0.14);
+  --badge-whirlpool-text: #f6797b;
 }
 
 .history-table__algo {
@@ -298,6 +314,20 @@
 .algo-badge[data-algo='XXH128'] {
   color: var(--badge-xxh128-text);
   background: var(--badge-xxh128-bg);
+}
+
+/* Other */
+.algo-badge[data-algo='Adler-32'] {
+  color: var(--badge-adler32-text);
+  background: var(--badge-adler32-bg);
+}
+.algo-badge[data-algo='SM3'] {
+  color: var(--badge-sm3-text);
+  background: var(--badge-sm3-bg);
+}
+.algo-badge[data-algo='Whirlpool'] {
+  color: var(--badge-whirlpool-text);
+  background: var(--badge-whirlpool-bg);
 }
 
 @media (max-width: 380px) {

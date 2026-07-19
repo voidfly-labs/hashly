@@ -91,7 +91,7 @@ function printBlock(title, entries) {
   console.log('}');
 }
 
-// ── hashly (30 algos, full wheel from 10°, step 12°) ─────────────────────────
+// ── hashly (33 algos, full wheel from 10°, step 10.91°) ──────────────────────
 printBlock(
   'hashly',
   wheelEntries(10, [
@@ -125,6 +125,9 @@ printBlock(
     'xxh64',
     'xxh3',
     'xxh128',
+    'adler32',
+    'sm3',
+    'whirlpool',
   ]),
 );
 

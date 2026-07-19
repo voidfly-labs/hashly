@@ -2,9 +2,11 @@ import { fromArrayBuffer } from 'crypto-api/src/encoder/array-buffer';
 import { toHex } from 'crypto-api/src/encoder/hex';
 import Ripemd from 'crypto-api/src/hasher/ripemd';
 import {
+  adler32,
   blake2b,
   blake2s,
   blake3,
+  createAdler32,
   createBLAKE2b,
   createBLAKE2s,
   createBLAKE3,
@@ -17,6 +19,8 @@ import {
   createSHA256,
   createSHA384,
   createSHA512,
+  createSM3,
+  createWhirlpool,
   createXXHash3,
   createXXHash32,
   createXXHash64,
@@ -30,6 +34,8 @@ import {
   sha256,
   sha384,
   sha512,
+  sm3,
+  whirlpool,
   xxhash3,
   xxhash32,
   xxhash64,
@@ -46,7 +52,7 @@ const APP_CONFIG = {
   requiresWasm: true,
   fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replace(/-/g, ''),
-  defaultHiddenAlgos: ['MD2'],
+  defaultHiddenAlgos: ['MD2', 'Adler-32', 'SM3', 'Whirlpool'],
 };
 
 const ALGORITHMS = [
@@ -87,6 +93,10 @@ const ALGORITHMS = [
   { id: 'XXH64', type: 'wasm', fn: xxhash64, createFn: createXXHash64, bits: 64, hexLen: 16 },
   { id: 'XXH3', type: 'wasm', fn: xxhash3, createFn: createXXHash3, bits: 64, hexLen: 16 },
   { id: 'XXH128', type: 'wasm', fn: xxhash128, createFn: createXXHash128, bits: 128, hexLen: 32 },
+  // Other (rarely needed; hidden by default for files, see defaultHiddenAlgos)
+  { id: 'Adler-32', type: 'wasm', fn: adler32, createFn: createAdler32, bits: 32, hexLen: 8 },
+  { id: 'SM3', type: 'wasm', fn: sm3, createFn: createSM3, bits: 256, hexLen: 64 },
+  { id: 'Whirlpool', type: 'wasm', fn: whirlpool, createFn: createWhirlpool, bits: 512, hexLen: 128 },
 ];
 
 const DEFAULT_ALGO = 'SHA-256';

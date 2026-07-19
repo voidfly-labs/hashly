@@ -1,4 +1,5 @@
 import { Checkmark } from '~core/utils/checkmark.js';
+import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { iconHref } from '~core/utils/icon.js';
@@ -336,14 +337,19 @@ export const History = {
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;
-        const ext = algo.toLowerCase().replace(/-/g, '');
         const storedFilename = target.dataset.filename ?? '';
-        // Mirror FileSection._onDownload: if a source filename was recorded,
-        // use <basename>.<ext>; otherwise fall back to the timestamped default.
-        const base = storedFilename
-          ? storedFilename.replace(/\.[^.]+$/, '')
-          : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-        Download.trigger(hash, `${base}.${ext}`);
+        // Mirror FileSection._onDownload: a hex digest of a named file is written as a
+        // checksum file; anything else is the digest alone, named <basename>.<ext> or,
+        // without a recorded source filename, the timestamped default.
+        const checksumFile = toChecksumFile(hash, algo, storedFilename);
+        if (checksumFile) {
+          Download.trigger(checksumFile.content, checksumFile.filename);
+        } else {
+          const base = storedFilename
+            ? storedFilename.replace(/\.[^.]+$/, '')
+            : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
+          Download.trigger(hash, `${base}.${algo.toLowerCase().replace(/-/g, '')}`);
+        }
         Tooltip.flash(target);
         if (isIconBtn) Checkmark.flash(target);
       }
