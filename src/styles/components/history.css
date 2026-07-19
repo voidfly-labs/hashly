@@ -171,6 +171,20 @@
   .history-popover {
     width: calc(max(100vw, 320px) - 32px);
   }
+
+  /* Larger touch target: 40px (was 32px) */
+  .toggle-all-btn,
+  .history-btn,
+  .permalink-btn {
+    padding: 9px;
+  }
+
+  .toggle-all-btn svg,
+  .history-btn svg,
+  .permalink-btn svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .history-popover--visible {

@@ -41,7 +41,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     if (isHidden(id)) return 'hiddenFit';
     if (!digests) return 'fit';
     const digest = digests.get(id)?.toLowerCase();
-    if (!digest) return null;
+    if (!digest) return 'unhashed'; // it was hidden when the file was hashed, so never computed
     return digest === ref.hex ? 'match' : 'mismatch';
   }
 
@@ -49,12 +49,13 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     const ref = parseReference(input.value);
     clearBtn.classList.toggle('verify__clear--visible', input.value !== '');
 
-    const result = { ref, matched: [], compared: [], hiddenFits: [], fits: [] };
+    const result = { ref, matched: [], compared: [], hiddenFits: [], unhashed: [], fits: [] };
     const kinds = new Map();
     for (const { id, hexLen } of algorithms) {
       const kind = _classify(ref, id, hexLen);
       kinds.set(id, kind);
       if (kind === 'hiddenFit') result.hiddenFits.push(id);
+      else if (kind === 'unhashed') result.unhashed.push(id);
       else if (kind === 'fit') result.fits.push(id);
       else if (kind) {
         result.compared.push(id);

@@ -17,6 +17,7 @@
   align-items: center;
   gap: 7px;
   width: 100%;
+  min-height: 32px; /* tap target as tall as the header icon buttons */
   padding: 0;
   border: none;
   font: inherit;
@@ -55,6 +56,12 @@
 
 .section--collapsed .section__toggle-chevron {
   transform: rotate(0deg);
+}
+
+@media (max-width: 630px) {
+  .section__toggle {
+    min-height: 40px;
+  }
 }
 
 .section__body {

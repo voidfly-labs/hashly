@@ -531,6 +531,20 @@ export const TextSection = {
    *  selected input format, and recompute. */
   /** Text pasted outside any field: appended at the end (the textarea may hold a
    *  stale caret), and the section brought into view since the hashes change there. */
+  /** The first character typed elsewhere on the page (see components/type-to-focus.js).
+   *  Goes through insertText so the input-format filter applies, then scrolls up to the
+   *  input only if it isn't already on screen. */
+  typeText(char) {
+    const end = this._input.value.length;
+    this._input.setSelectionRange(end, end);
+    this.insertText(char, { focus: false });
+    this._input.focus({ preventScroll: true });
+    const { top, bottom } = this._input.getBoundingClientRect();
+    if (top < 0 || bottom > window.innerHeight) {
+      this._card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  },
+
   pasteText(raw) {
     const end = this._input.value.length;
     this._input.setSelectionRange(end, end);

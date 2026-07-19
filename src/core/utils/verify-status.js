@@ -23,7 +23,7 @@ export function availableSizes(algorithms) {
  *  Returns `{ text, lead?, hint?, kind? }` (`lead`: the verdict word to emphasise), or `{}` when there is nothing to say (empty
  *  field). `kind` is 'match' | 'mismatch' | 'warn'; undefined is a neutral note.
  *  `sizesHint` is `availableSizes(...)`, shown when no algorithm fits the length. */
-export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFits, fits, sizesHint }) {
+export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFits, unhashed = [], fits, sizesHint }) {
   if (!hasInput) return {};
   if (!ref) return { text: 'Not a valid hash – expected hex or Base64', kind: 'warn' };
 
@@ -31,9 +31,18 @@ export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFi
   if (compared.length) {
     // Hidden algorithms aren't computed, so a mismatch might just mean the reference is for one of them.
     const skipped = hiddenFits.length ? ` · not compared (hidden): ${listNames(hiddenFits)}` : '';
-    return { text: `No match – compared with ${listNames(compared)}${skipped}`, lead: 'No match', kind: 'mismatch' };
+    const missing = unhashed.length ? ` · not compared (unhashed): ${listNames(unhashed)}` : '';
+    return {
+      text: `No match – compared with ${listNames(compared)}${skipped}${missing}`,
+      lead: 'No match',
+      kind: 'mismatch',
+    };
   }
   if (fits.length) return { text: `Fits ${listNames(fits)} – compared once a file is hashed` };
+  // The length fits, but these were hidden when the file was hashed, so there is no digest to compare.
+  if (unhashed.length) {
+    return { text: `Fits ${listNames(unhashed)} – not compared (unhashed)` };
+  }
   if (hiddenFits.length) return { text: `Fits ${listNames(hiddenFits)} – currently hidden` };
   return {
     text: `${ref.hex.length * 4}-bit hash – no algorithm matches this length`,

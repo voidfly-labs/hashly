@@ -8,6 +8,7 @@ import { Permalink } from '~core/components/permalink.js';
 import { initSectionCollapse } from '~core/components/section-collapse.js';
 import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
+import { initTypeToFocus } from '~core/components/type-to-focus.js';
 import { checkWasmSupport } from '~core/components/warning-banner.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
 import { initSocialTooltips } from '~core/layout/footer/social.js';
@@ -61,6 +62,7 @@ export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hash
       onText: (text) => TextSection.pasteText(text),
       onFile: (file) => FileSection.pasteFile(file),
     });
+    initTypeToFocus({ onType: (char) => TextSection.typeText(char) });
     AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {
       onChange: (algoId) => RandomSection.applySpotlight(algoId),
       permalink,

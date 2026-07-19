@@ -88,8 +88,15 @@
 
 @media (max-width: 630px) {
   .back-to-top {
+    width: 40px;
+    height: 40px;
     right: max(16px, env(safe-area-inset-right));
     bottom: calc(max(16px, env(safe-area-inset-bottom)) + var(--back-to-top-lift, 0px));
+  }
+
+  .back-to-top svg {
+    width: 20px;
+    height: 20px;
   }
 }
 

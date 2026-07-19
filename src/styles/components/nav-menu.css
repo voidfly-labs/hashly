@@ -70,6 +70,12 @@
 @media (max-width: 630px) {
   .nav-toggle {
     display: flex;
+    padding: 9px; /* 40px touch target (was 32px) */
+  }
+
+  .nav-toggle__icon {
+    width: 20px;
+    height: 20px;
   }
 
   .nav-menu {

@@ -1,13 +1,4 @@
-const NON_TEXT_INPUTS = new Set(['button', 'checkbox', 'color', 'file', 'image', 'radio', 'range', 'reset', 'submit']);
-
-/** True when a paste at `el` lands in a field that takes text, which has its own
- *  paste handling. Radios, checkboxes and buttons don't count: they keep focus
- *  after a click, and a paste with one focused should still reach the page. */
-function _takesText(el) {
-  if (!(el instanceof Element)) return false;
-  if (el.isContentEditable || el.tagName === 'TEXTAREA') return true;
-  return el.tagName === 'INPUT' && !NON_TEXT_INPUTS.has(el.type);
-}
+import { takesText } from '~core/utils/text-field.js';
 
 /** Paste anywhere on the page: text goes to `onText(text)`, a file or image to
  *  `onFile(file)`. Pastes into a text field are left alone.
@@ -18,7 +9,7 @@ function _takesText(el) {
 export function initGlobalPaste({ onText, onFile }) {
   document.addEventListener('paste', (e) => {
     const data = e.clipboardData;
-    if (!data || e.defaultPrevented || _takesText(e.target)) return;
+    if (!data || e.defaultPrevented || takesText(e.target)) return;
 
     const text = data.getData('text/plain');
     const file = data.files[0];

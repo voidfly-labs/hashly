@@ -36,3 +36,14 @@
   height: 18px;
   fill: currentColor;
 }
+
+@media (max-width: 630px) {
+  .help-btn {
+    padding: 9px; /* 40px touch target (was 32px) */
+  }
+
+  .help-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}
