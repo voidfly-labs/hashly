@@ -13,6 +13,7 @@
 @import './components/back-to-top.css';
 @import './components/button.css';
 @import './components/card.css';
+@import './components/file-stats.css';
 @import './components/help.css';
 @import './components/hint.css';
 @import './components/history.css';
@@ -22,6 +23,7 @@
 @import './components/result-hidden.css';
 @import './components/result.css';
 @import './components/section-collapse.css';
+@import './components/text-counter.css';
 @import './components/tooltip.css';
 @import './components/warning-banner.css';
 @import './components/verify-status.css';

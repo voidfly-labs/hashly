@@ -53,11 +53,15 @@
         <svg class="file-drop__icon" viewBox="0 0 24 24">
           <use href="/src/assets/images/icons.svg#icon-upload"></use>
         </svg>
-        <div class="file-drop__text">Drop a file here or <strong>browse</strong></div>
+        <div class="file-drop__text">
+          <span class="file-drop__prompt-desktop">Drop a file here or <strong>browse</strong></span>
+          <span class="file-drop__prompt-mobile">Tap to <strong>choose a file</strong></span>
+        </div>
         <div class="file-drop__filename" id="fileName">
           <span id="fileNameText" class="file-drop__filename-name"></span>
           <span class="file-drop__filesize" id="fileSize"></span>
         </div>
+        <%- include('/src/templates/components/file-stats.html') %>
       </div>
 
       <%- include('/src/templates/components/verify.html') %>

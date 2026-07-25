@@ -13,6 +13,7 @@ import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
+import { createRunStats } from '~core/utils/run-stats.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -42,6 +43,8 @@ export const FileSection = {
     this._fileName = document.getElementById('fileName');
     this._fileNameText = document.getElementById('fileNameText');
     this._fileSize = document.getElementById('fileSize');
+    this._stats = document.getElementById('fileStats');
+    this._statsText = document.getElementById('fileStatsText');
     this._resultsEl = document.getElementById('fileResults');
 
     // Build one result row per algorithm.
@@ -447,6 +450,9 @@ export const FileSection = {
 
     this._verify.setDigests(null);
     const title = TabTitle.track();
+    const stats = createRunStats(file.size);
+    this._stats.classList.add('file-drop__stats--visible');
+    this._setStats('Hashing…', 'busy');
 
     // Enter computing state: hash cell becomes the progress bar at 0%.
     for (const { id } of _ALGORITHMS) {
@@ -457,6 +463,8 @@ export const FileSection = {
 
     const onProgress = (ratio) => {
       title.progress(ratio);
+      const line = stats.update(ratio);
+      if (line) this._setStats(line, 'busy');
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
@@ -484,14 +492,23 @@ export const FileSection = {
       this._setAllActionsEnabled(true);
       this._verify.setDigests(this.rawHexMap);
       title.done();
+      this._setStats(stats.summary(), 'done');
     } catch {
       if (controller.signal.aborted) return; // cancelled: the UI already shows what replaced it
       title.fail();
+      this._setStats('Hashing failed', 'error');
       this._showReadError();
     } finally {
       // Only this run's own record: a newer run may already have replaced it.
       if (this._run?.controller === controller) this._run = null;
     }
+  },
+
+  /** The status row under the file name. `state` picks its icon: 'busy' (spinner),
+   *  'done' (✓) or 'error' (✕); none for an empty row. */
+  _setStats(text, state = '') {
+    this._statsText.textContent = text;
+    this._stats.dataset.state = state;
   },
 
   /** The visible rows could not be computed: say so where the digests would be. */
@@ -514,12 +531,15 @@ export const FileSection = {
     run.controller.abort();
     this._run = null;
     TabTitle.reset();
+    this._setStats('Hashing stopped', 'error');
   },
 
   onClear() {
     this._run?.controller.abort();
     this._run = null;
     TabTitle.reset();
+    this._stats.classList.remove('file-drop__stats--visible');
+    this._setStats('');
     this.rawHexMap.clear();
     this.currentFileName = '';
     this._input.value = '';

@@ -31,6 +31,7 @@
   --danger-glow: rgba(194, 42, 55, 0.14);
   --warning: var(--text-hint);
   --warning-surface: #fdf4e1;
+  --warning-border: rgba(161, 101, 0, 0.3); /* --warning at 30% alpha */
   --shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.024);
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.048), 0 1px 3px rgba(0, 0, 0, 0.032);
   --shadow-md: 0 3px 14px rgba(0, 0, 0, 0.056), 0 1px 4px rgba(0, 0, 0, 0.032);
@@ -80,6 +81,7 @@
   --danger-glow: rgba(255, 107, 120, 0.16);
   --warning: var(--text-hint);
   --warning-surface: rgba(224, 160, 48, 0.1);
+  --warning-border: rgba(224, 160, 48, 0.3); /* --warning at 30% alpha */
   --shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.12);
   --shadow: 0 2px 12px rgba(0, 0, 0, 0.24), 0 1px 3px rgba(0, 0, 0, 0.16);
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.28), 0 1px 4px rgba(0, 0, 0, 0.18);

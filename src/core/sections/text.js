@@ -1,4 +1,5 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { createCounterNotes } from '~core/components/counter-notes.js';
 import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { Hint } from '~core/components/hint.js';
@@ -12,6 +13,7 @@ import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
+import { textNotes } from '~core/utils/text-notes.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -53,6 +55,7 @@ export const TextSection = {
     this._counter = document.getElementById('textCounter');
     this._counterChars = document.getElementById('textCounterChars');
     this._counterBytes = document.getElementById('textCounterBytes');
+    this._counterNotes = createCounterNotes(document.getElementById('textCounterNotes'));
     this._formatHint = document.getElementById('textFormatHint');
 
     // Build one result row per algorithm (least to most complex = ALGORITHMS order).
@@ -518,6 +521,10 @@ export const TextSection = {
       }
     }
     this._counterBytes.textContent = bytes === 1 ? '1 byte' : `${bytes.toLocaleString()} bytes`;
+
+    // Things that silently change a UTF-8 hash (hidden characters, padding, a trailing newline).
+    // The other formats ignore whitespace, so there is nothing to point out there.
+    this._counterNotes.set(fmt === 'utf-8' ? textNotes(text) : []);
   },
 
   /** Strip characters from `text` that are illegal for the given input format.

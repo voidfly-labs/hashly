@@ -1,9 +1,23 @@
 /* =========================================================================
        FILE DROP
        ========================================================================= */
+/* The zone never changes size: it is a centred column with a fixed minimum height, tall
+       enough for all four rows (icon, prompt, file name, status). Loading a file only adds
+       rows to the column, so the content shifts up a little instead of the box growing.
+       Typography follows three roles, with one 5px rhythm between rows:
+         accent  = what you act on or what the subject is  (browse, the file name)
+         muted   = everything descriptive                   (prompt, size, status)
+         state    = the status row's icon: accent spinner, green ✓, red ✕
+       13px for the prompt and file line, 12px for the status row. */
 .file-drop {
   position: relative;
-  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 142px;
+  padding: 16px 24px;
   border: 2px dashed var(--border);
   border-radius: var(--radius);
   text-align: center;
@@ -48,6 +62,8 @@
 }
 
 .file-drop__icon {
+  display: block;
+  flex-shrink: 0;
   width: 28px;
   height: 28px;
   fill: var(--text-muted);
@@ -55,9 +71,16 @@
 }
 
 .file-drop__text {
-  font-family: var(--mono);
-  font-size: 13px;
+  font-family: var(--sans);
+  font-size: 14px;
   color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Dropping needs a pointer and a second window, so on mobile the prompt is a tap. Both
+       variants are in the markup; display: none also hides the unused one from assistive tech. */
+.file-drop__prompt-mobile {
+  display: none;
 }
 
 .file-drop__text strong {
@@ -67,11 +90,11 @@
 
 .file-drop__filename {
   display: none;
-  margin-top: 6px;
-  max-width: calc(100% - 48px);
-  font-family: var(--mono);
-  font-size: 13px;
+  max-width: 100%;
+  font-family: var(--sans);
+  font-size: 14px;
   color: var(--accent);
+  line-height: 1.4;
 }
 
 .file-drop__filename--visible {
@@ -90,11 +113,11 @@
 
 .file-drop__filesize {
   flex-shrink: 0;
-  white-space: nowrap;
-  font-family: var(--mono);
-  font-size: 13px;
+  white-space: pre; /* keeps the text's leading space (a flex row would collapse it), so " · " is symmetric in any font */
+  font-family: var(--sans);
+  font-size: 14px;
   color: var(--text-muted);
-  opacity: 0.75;
+  line-height: 1.4;
 }
 
 /* Dismiss button — top-right corner of the drop zone.
@@ -116,6 +139,19 @@
 }
 
 @media (max-width: 630px) {
+  .file-drop__prompt-desktop {
+    display: none;
+  }
+
+  .file-drop__prompt-mobile {
+    display: inline;
+  }
+
+  .file-drop {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
   .file-drop__clear {
     top: 3px;
     right: 3px;
