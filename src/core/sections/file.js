@@ -3,6 +3,7 @@ import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
+import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
 import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
@@ -22,8 +23,9 @@ export const FileSection = {
   rowEls: new Map(),
   hiddenAlgos: new Set(),
   currentFileName: '',
-  // Cancels the file being hashed, if any (clearing it, or dropping another over it).
-  _abort: null,
+  // The file being hashed, if any: { controller, ids }, where `ids` are the algorithms it
+  // computes. Aborted by clearing the file, dropping another over it, or hiding all of `ids`.
+  _run: null,
   // Shared batchId for all algorithms in the current file computation.
   _currentBatchId: null,
 
@@ -58,6 +60,10 @@ export const FileSection = {
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+
+    // Put back the visitor's saved output format and hidden algorithms (and keep saving them).
+    rememberRadioGroup('fileFormat', 'fileOutputFormat');
+    restoreHiddenAlgos(this, 'fileHidden', _ALGORITHMS);
 
     this._input.addEventListener('change', (e) => {
       if (e.target.files.length) {
@@ -269,7 +275,9 @@ export const FileSection = {
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    saveHiddenAlgos(this, 'fileHidden');
     this._verify.refresh();
+    this._cancelIfIdle();
     if (resetSpotlight) AlgoSpotlight.reset();
     if (!refreshTooltip) return;
     const fileBtn = document.getElementById('fileToggleAllBtn');
@@ -337,7 +345,9 @@ export const FileSection = {
     }
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    saveHiddenAlgos(this, 'fileHidden');
     this._verify.refresh();
+    this._cancelIfIdle();
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
@@ -424,9 +434,10 @@ export const FileSection = {
 
   async processFile(file) {
     // A file still hashing is abandoned, not left to finish over this one.
-    this._abort?.abort();
+    this._run?.controller.abort();
     const controller = new AbortController();
-    this._abort = controller;
+    const visibleAlgos = _ALGORITHMS.filter((a) => !this.hiddenAlgos.has(a.id));
+    this._run = { controller, ids: new Set(visibleAlgos.map((a) => a.id)) };
 
     this.currentFileName = file.name;
     this._fileNameText.textContent = file.name;
@@ -456,7 +467,6 @@ export const FileSection = {
     };
 
     try {
-      const visibleAlgos = _ALGORITHMS.filter((a) => !this.hiddenAlgos.has(a.id));
       const hexMap = await _Hasher.fromFileAll(file, onProgress, visibleAlgos, controller.signal);
       if (controller.signal.aborted) return; // cleared or replaced just as it finished
       this.rawHexMap = hexMap;
@@ -477,19 +487,38 @@ export const FileSection = {
     } catch {
       if (controller.signal.aborted) return; // cancelled: the UI already shows what replaced it
       title.fail();
-      for (const { id } of _ALGORITHMS) {
-        if (this.hiddenAlgos.has(id)) continue;
-        const els = this.rowEls.get(id);
-        this._clearComputingState(els);
-        this._setHashText(els, 'error reading file');
-        setHashEmpty(els.hash, true);
-      }
+      this._showReadError();
+    } finally {
+      // Only this run's own record: a newer run may already have replaced it.
+      if (this._run?.controller === controller) this._run = null;
     }
   },
 
+  /** The visible rows could not be computed: say so where the digests would be. */
+  _showReadError() {
+    for (const { id } of _ALGORITHMS) {
+      if (this.hiddenAlgos.has(id)) continue;
+      const els = this.rowEls.get(id);
+      this._clearComputingState(els);
+      this._setHashText(els, 'error reading file');
+      setHashEmpty(els.hash, true);
+    }
+  },
+
+  /** Hiding the last algorithm a running pass was computing leaves nothing for it
+   *  to produce, so stop it instead of letting it read the rest of the file for
+   *  results nobody can see. */
+  _cancelIfIdle() {
+    const run = this._run;
+    if (!run || ![...run.ids].every((id) => this.hiddenAlgos.has(id))) return;
+    run.controller.abort();
+    this._run = null;
+    TabTitle.reset();
+  },
+
   onClear() {
-    this._abort?.abort();
-    this._abort = null;
+    this._run?.controller.abort();
+    this._run = null;
     TabTitle.reset();
     this.rawHexMap.clear();
     this.currentFileName = '';

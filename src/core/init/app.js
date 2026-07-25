@@ -19,6 +19,7 @@ import { FaqSection } from '~core/sections/faq.js';
 import { FileSection } from '~core/sections/file.js';
 import { RandomSection } from '~core/sections/random.js';
 import { TextSection } from '~core/sections/text.js';
+import { Preferences } from '~core/services/preferences.js';
 import { Theme } from '~core/theme/manager.js';
 
 function _initToggleAllBtn(btnId, section, ALGORITHMS) {
@@ -40,6 +41,8 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
 export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher }) {
   document.addEventListener('DOMContentLoaded', () => {
     checkWasmSupport(APP_CONFIG);
+    // A permalink fully determines the view, so saved settings aren't applied to it.
+    Preferences.init({ appName: APP_CONFIG.appName, restore: !Permalink.isPermalink() });
     History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
     Theme.init();
     NavMenu.init();

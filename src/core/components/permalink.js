@@ -26,11 +26,17 @@ export const Permalink = {
     return url.toString();
   },
 
+  /** True when the URL carries any permalink param. */
+  isPermalink() {
+    const params = new URLSearchParams(window.location.search);
+    return this._PARAMS.some((name) => params.has(name));
+  },
+
   /** Returns null if the URL has no permalink params, else { algorithm } (raw slug or null)
    *  for the caller to apply once algorithms exist. */
   restoreFromUrl() {
+    if (!this.isPermalink()) return null;
     const params = new URLSearchParams(window.location.search);
-    if (!this._PARAMS.some((name) => params.has(name))) return null;
     const algorithm = params.get('algorithm');
     if (params.has('text')) document.getElementById('textInput').value = params.get('text');
     const inputFmt = params.get('input') || this._INPUT_DEFAULT;

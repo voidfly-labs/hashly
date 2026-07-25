@@ -1,4 +1,4 @@
-export const LEGAL_UPDATED_ON = '2026-05-01';
+export const LEGAL_UPDATED_ON = '2026-10-04';
 
 export function getLegalUpdatedLabel() {
   return new Intl.DateTimeFormat('en-US', {

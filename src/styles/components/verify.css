@@ -270,22 +270,22 @@
     height: 20px;
   }
 
-  /* Verdict dot, 2px larger on mobile. Same top/right anchors, so it grows
-     inward over the badge; the halo and glyph scale with it. */
+  /* Verdict dot, 3px larger on mobile. Same top/right anchors, so it grows
+     inward over the badge; the halo (dot + 2px each side) and glyph scale with it. */
   .result__status {
-    width: 16px;
-    height: 16px;
+    width: 17px;
+    height: 17px;
   }
 
   .result__status-icon {
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
   }
 
   [data-theme='dark'] .result--match .algo-badge::before,
   [data-theme='dark'] .result--mismatch .algo-badge::before {
-    width: 20px;
-    height: 20px;
+    width: 21px;
+    height: 21px;
   }
 }
 

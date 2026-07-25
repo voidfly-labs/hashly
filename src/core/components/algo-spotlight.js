@@ -1,3 +1,4 @@
+import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
 import { Format } from '~core/utils/format.js';
 
@@ -67,7 +68,10 @@ export const AlgoSpotlight = {
    *  persist is false), update badge classes. Shared by a direct click and by
    *  restoring a persisted or permalink choice on init. */
   _apply(algoId, ALGORITHMS, sections, { persist = true } = {}) {
-    sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
+    const hideOthers = () => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
+    // persist: false is a permalink's view, which isn't the visitor's own to save.
+    if (persist) hideOthers();
+    else Preferences.silently(hideOthers);
     this._state.spotlightedAlgo = algoId;
     if (persist) Storage.write(this._SPOTLIGHT_KEY, algoId);
     this._updateBadgeClasses();

@@ -1,5 +1,6 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { Tooltip } from '~core/components/tooltip.js';
+import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
@@ -29,17 +30,27 @@ export const RandomSection = {
 
     // Default to whatever algorithm is spotlighted via the header Quick
     // Select badges, if any, rather than always DEFAULT_ALGO.
+    // Otherwise to the algorithm the visitor last picked here, then to DEFAULT_ALGO.
     const spotlighted = Storage.read(AlgoSpotlight._SPOTLIGHT_KEY);
-    const initialAlgo = ALGORITHMS.some((a) => a.id === spotlighted) ? spotlighted : _DEFAULT_ALGO;
+    const initialAlgo = ALGORITHMS.some((a) => a.id === spotlighted) ? spotlighted : this._savedAlgo();
 
     // Populate algorithm options from ALGORITHMS (single source of truth)
     this.elements.algo.innerHTML = _ALGORITHMS
       .map(({ id }) => `<option value="${id}"${id === initialAlgo ? ' selected' : ''}>${id}</option>`)
       .join('');
 
+    const savedCount = Preferences.get('randomCount');
+    if ([...this.elements.count.options].some((o) => o.value === savedCount)) this.elements.count.value = savedCount;
+
     this.elements.regenerate.addEventListener('click', () => this.generate());
-    this.elements.count.addEventListener('change', () => this.generate());
-    this.elements.algo.addEventListener('change', () => this.generate());
+    this.elements.count.addEventListener('change', () => {
+      Preferences.set('randomCount', this.elements.count.value);
+      this.generate();
+    });
+    this.elements.algo.addEventListener('change', () => {
+      Preferences.set('randomAlgo', this.elements.algo.value);
+      this.generate();
+    });
     this.elements.copyAll.addEventListener('click', () => this.onCopyAll());
     this.elements.downloadAll.addEventListener('click', () => this.onDownloadAll());
 
@@ -53,11 +64,17 @@ export const RandomSection = {
     this.generate();
   },
 
+  /** The algorithm the visitor last picked in the select, if it still exists, else the default. */
+  _savedAlgo() {
+    const saved = Preferences.get('randomAlgo');
+    return _ALGORITHMS.some((a) => a.id === saved) ? saved : _DEFAULT_ALGO;
+  },
+
   /** Called by AlgoSpotlight whenever the header Quick Select badges
    *  spotlight/un-spotlight an algorithm — algoId is null on un-spotlight,
    *  in which case Random falls back to the app's default. */
   applySpotlight(algoId) {
-    const target = algoId && _ALGORITHMS.some((a) => a.id === algoId) ? algoId : _DEFAULT_ALGO;
+    const target = algoId && _ALGORITHMS.some((a) => a.id === algoId) ? algoId : this._savedAlgo();
     if (this.elements.algo.value === target) return;
     this.elements.algo.value = target;
     this.generate();

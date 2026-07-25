@@ -32,16 +32,21 @@
           </p>
 
           <h3>Browser storage</h3>
-          <p>This tool stores two things locally in your browser using local storage:</p>
+          <p>This tool stores a few things locally in your browser using local storage:</p>
           <ul>
             <li><strong>Theme preference</strong> — whether you have chosen light or dark mode.</li>
             <li>
+              <strong>Display preferences</strong> — your chosen algorithm, input and output formats, hidden algorithms,
+              and random generator settings.
+            </li>
+            <li>
               <strong>Hash history</strong> — a log of recent hashes you have computed, including the hash value, the
-              algorithm used, the timestamp, and (for file hashes) the filename. This data never leaves your device.
+              algorithm used, the timestamp, and (for file hashes) the filename.
             </li>
           </ul>
           <p>
-            You can clear this data at any time by clearing your browser's site data for
+            None of this data ever leaves your device. You can clear it at any time by clearing your browser's site data
+            for
             <a href="<%= brandUrl %>"><%= legal.domain %></a>.
           </p>
 

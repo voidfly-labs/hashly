@@ -5,6 +5,7 @@ import { Hint } from '~core/components/hint.js';
 import { History } from '~core/components/history.js';
 import { initPasteButton } from '~core/components/paste-button.js';
 import { setHashEmpty } from '~core/components/result.js';
+import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
@@ -63,6 +64,12 @@ export const TextSection = {
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+
+    // Put back the visitor's saved formats and hidden algorithms (and keep saving them).
+    rememberRadioGroup('textInputFormat', 'textInputFormat');
+    rememberRadioGroup('textFormat', 'textOutputFormat');
+    this.refreshPlaceholder();
+    restoreHiddenAlgos(this, 'textHidden', _ALGORITHMS);
 
     this._updateCounter('');
 
@@ -348,6 +355,7 @@ export const TextSection = {
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    saveHiddenAlgos(this, 'textHidden');
     if (resetSpotlight) AlgoSpotlight.reset();
     if (!refreshTooltip) return;
     const textBtn = document.getElementById('textToggleAllBtn');
@@ -421,6 +429,7 @@ export const TextSection = {
     }
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    saveHiddenAlgos(this, 'textHidden');
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
