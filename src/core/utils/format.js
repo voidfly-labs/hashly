@@ -1,4 +1,5 @@
 const _encoder = new TextEncoder();
+const HTML_ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
 
 export const Format = {
   base64ToBytes(b64) {
@@ -72,6 +73,12 @@ export const Format = {
       default:
         return hex;
     }
+  },
+
+  /** Makes a value safe to interpolate into markup, in text or in a quoted attribute. For values
+   *  this code didn't produce: file names, anything read back from storage. */
+  escapeHtml(value) {
+    return String(value ?? '').replaceAll(/[&<>"']/g, (c) => HTML_ESCAPES[c]);
   },
 
   /** "CRC-32 (MPEG-2)" → "crc-32-mpeg-2". Distinct algorithm ids must stay distinct as slugs. */

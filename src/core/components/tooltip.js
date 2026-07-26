@@ -1,3 +1,6 @@
+// How long a tooltip opened by a tap stays up: there's no mouseleave to close it on a touch screen.
+export const TAP_TOOLTIP_MS = 3000;
+
 // Singleton <div> appended to <body> so it escapes all stacking contexts
 // (including transformed ancestors like the history popover).
 // All .tooltip spans in markup are kept for semantic grouping but are hidden;
@@ -64,7 +67,7 @@ export const Tooltip = (() => {
       // Derive label: passed explicitly, or from the child .tooltip span's text
       const label = text ?? anchorElement.querySelector('.tooltip')?.textContent ?? 'Copied!';
 
-      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--visible');
+      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--wrap', 'tooltip-singleton--visible');
       el.textContent = label;
 
       // Force a reflow so the transition fires even if already visible
@@ -84,11 +87,17 @@ export const Tooltip = (() => {
      *  force an auto-dismiss after that many ms regardless of pointer type
      *  (e.g. a click-triggered tooltip with no hover-leave to rely on).
      *  align: 'end' right-aligns the tooltip to the anchor instead of centering it,
-     *  for anchors against the right edge of the viewport. */
-    show(anchorElement, text, duration, { align = 'center' } = {}) {
+     *  for anchors against the right edge of the viewport.
+     *  wrap: for long text or several lines (newlines are kept): the tooltip gets a maximum
+     *  width and wraps inside it, instead of growing into one long line. */
+    show(anchorElement, text, duration, { align = 'center', wrap = false } = {}) {
       _ensureEl();
       clearTimeout(hideTimer);
-      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--visible');
+      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--wrap', 'tooltip-singleton--visible');
+      el.classList.toggle('tooltip-singleton--wrap', wrap);
+      // The box is measured with whatever `left` the previous tooltip left behind, which would
+      // squeeze wrapping text into the space to its right.
+      if (wrap) el.style.left = '0px';
       el.textContent = text;
       // eslint-disable-next-line sonarjs/void-use
       void el.offsetWidth;
@@ -106,7 +115,7 @@ export const Tooltip = (() => {
     showXl(anchorElement, text, duration) {
       _ensureEl();
       clearTimeout(hideTimer);
-      el.classList.remove('tooltip-singleton--visible');
+      el.classList.remove('tooltip-singleton--wrap', 'tooltip-singleton--visible');
       el.classList.add('tooltip-singleton--xl');
       el.textContent = text;
       // eslint-disable-next-line sonarjs/void-use

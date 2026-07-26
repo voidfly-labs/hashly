@@ -1,9 +1,14 @@
+import { createBatchSources } from '~core/services/batch-sources.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { Clipboard } from '~core/utils/clipboard.js';
+import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
+import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
+import { slideIn } from '~core/utils/slide-in.js';
 
+import { initHistoryRows } from './history-rows.js';
 import { Tooltip } from './tooltip.js';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
@@ -14,7 +19,15 @@ export const History = {
   MAX: 1000,
   PAGE_SIZE: 10,
   _stores: { text: [], file: [] },
+  // What was hashed, per batch (see services/batch-sources.js). Only text needs it: a file
+  // entry carries its own file name.
+  _sources: {},
+  // The rows currently rendered per ns, so a row's index (data-i) leads back to its entry.
+  _view: {},
   _pages: { text: 0, file: 0 }, // current 0-based page index per ns
+  // The tallest the body has been since the popover opened, per ns: it keeps that height, so the
+  // popover doesn't shrink and grow as pages with fewer rows come and go.
+  _tallest: {},
   // Monotonically-increasing batch counter: all algorithms hashed from the
   // same user action share one batchId, allowing per-batch algo sorting.
   _batchCounter: 0,
@@ -36,6 +49,8 @@ export const History = {
   },
 
   load(ns) {
+    this._sources[ns] = createBatchSources(`${_APP_CONFIG.appName}-history-source-${ns}`);
+    this._sources[ns].load();
     try {
       const raw = localStorage.getItem(this._key(ns));
       this._stores[ns] = raw ? JSON.parse(raw) : [];
@@ -75,6 +90,8 @@ export const History = {
       filename: filename || '',
     });
     if (entries.length > this.MAX) entries.length = this.MAX;
+    // A batch's description goes when its last entry does (trimmed, or replaced by a re-hash).
+    this._sources[ns].keepOnly(new Set(entries.map((e) => e.batchId)));
     // New entry goes to page 0
     this._pages[ns] = 0;
     this.save(ns);
@@ -82,12 +99,37 @@ export const History = {
 
   clear(ns) {
     this._stores[ns] = [];
+    this._sources[ns].clear();
     this._pages[ns] = 0;
     this.save(ns);
   },
 
   entries(ns) {
     return this._stores[ns];
+  },
+
+  /** Records what was hashed in a batch (call once per batch, before its entries). */
+  setSource(ns, batchId, description) {
+    this._sources[ns].set(batchId, description);
+  },
+
+  /** What an entry was made from: its file name, or the text description of its batch ('' if unknown). */
+  sourceOf(ns, entry) {
+    return ns === 'file' ? (entry.filename ?? '') : this._sources[ns].get(entry.batchId);
+  },
+
+  /** The hover text of a rendered row: what it was made from ('' if unknown, so no tooltip). */
+  _rowTip(ns, row) {
+    const entry = this._view[ns]?.[Number(row.dataset.i)];
+    return entry ? this.sourceOf(ns, entry) : '';
+  },
+
+  /** Copies a rendered row's hash, confirming on its hash cell. */
+  async _copyRow(ns, row) {
+    const entry = this._view[ns]?.[Number(row.dataset.i)];
+    if (!entry) return;
+    await Clipboard.copy(entry.hash);
+    Tooltip.flash(row.querySelector('.history-table__hash'));
   },
 
   // ── Rendering ────────────────────────────────────────────────────────────
@@ -101,6 +143,34 @@ export const History = {
     );
   },
 
+  // Sort: primary = batchId descending (newest calculation first),
+  // secondary = algo index ascending (SHA-1 → SHA-256 → … within a batch).
+  // Entries without a batchId (legacy localStorage data) fall back to ts.
+  _sorted(ns) {
+    return this.entries(ns)
+      .slice()
+      .sort((a, b) => {
+        const bA = a.batchId ?? -a.ts;
+        const bB = b.batchId ?? -b.ts;
+        if (bB !== bA) return bB - bA;
+        return (_ALGO_ORDER.get(a.algo) ?? 999) - (_ALGO_ORDER.get(b.algo) ?? 999);
+      });
+  },
+
+  /** Downloads the whole history (not just the visible page) in the order the popover shows it. */
+  exportCsv(ns) {
+    // What was hashed comes before the hash: the file name, or (text) the stored description.
+    const rows = this._sorted(ns).map((e) => [
+      this._formatTs(e.ts),
+      e.algo ?? _DEFAULT_ALGO,
+      this.sourceOf(ns, e),
+      e.hash,
+    ]);
+    const csv = toCsv(['time', 'algorithm', ns === 'file' ? 'filename' : 'text', 'hash'], rows);
+    const date = this._formatTs(Date.now()).slice(0, 10);
+    Download.trigger(csv, `${_APP_CONFIG.appName}-${ns}-history_${date}.csv`, 'text/csv;charset=utf-8');
+  },
+
   renderBody(ns, bodyEl) {
     const entries = this.entries(ns);
     const total = entries.length;
@@ -110,17 +180,10 @@ export const History = {
     const page = this._pages[ns];
     const start = page * this.PAGE_SIZE;
 
-    // Sort: primary = batchId descending (newest calculation first),
-    // secondary = algo index ascending (SHA-1 → SHA-256 → … within a batch).
-    // Entries without a batchId (legacy localStorage data) fall back to ts.
-    const sorted = entries.slice().sort((a, b) => {
-      const bA = a.batchId ?? -a.ts;
-      const bB = b.batchId ?? -b.ts;
-      if (bB !== bA) return bB - bA;
-      return (_ALGO_ORDER.get(a.algo) ?? 999) - (_ALGO_ORDER.get(b.algo) ?? 999);
-    });
+    const sorted = this._sorted(ns);
 
     const slice = sorted.slice(start, start + this.PAGE_SIZE);
+    this._view[ns] = slice;
 
     // ── Table ──
     if (!slice.length) {
@@ -145,30 +208,32 @@ export const History = {
     }
 
     const tbody = slice
-      .map(
-        (e, i) => `
-          <tr class="history-table__row" data-action="copy-history" data-hash="${e.hash}">
+      .map((e, i) => {
+        // Everything below comes back out of storage, and the file name is the user's or a stranger's.
+        const hash = Format.escapeHtml(e.hash);
+        const algo = Format.escapeHtml(e.algo ?? _DEFAULT_ALGO);
+        return `
+          <tr class="history-table__row" data-i="${i}">
             <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
-            <td class="history-table__algo"><span class="algo-badge" data-algo="${e.algo ?? _DEFAULT_ALGO}">${e.algo ?? _DEFAULT_ALGO}</span></td>
-            <td class="history-table__hash" title="${e.hash}"
-                data-action="copy-history" data-hash="${e.hash}">${e.hash}<span class="tooltip">Copied!</span></td>
+            <td class="history-table__algo"><span class="algo-badge" data-algo="${algo}">${algo}</span></td>
+            <td class="history-table__hash">${hash}<span class="tooltip">Copied!</span></td>
             <td class="history-table__time"><span dir="ltr">${this._formatTs(e.ts)}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">
-                <button class="history-table__action-btn" data-action="copy-history" data-hash="${e.hash}" aria-label="Copy hash">
+                <button class="history-table__action-btn" data-action="copy-history" data-hash="${hash}" aria-label="Copy hash">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                   <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Copied!</span>
                 </button>
-                <button class="history-table__action-btn" data-action="download-history" data-hash="${e.hash}" data-algo="${e.algo ?? _DEFAULT_ALGO}" data-filename="${e.filename ?? ''}" aria-label="Download hash">
+                <button class="history-table__action-btn" data-action="download-history" data-hash="${hash}" data-algo="${algo}" data-filename="${Format.escapeHtml(e.filename)}" aria-label="Download hash">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                   <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Exported</span>
                 </button>
               </div>
             </td>
-          </tr>`,
-      )
+          </tr>`;
+      })
       .join('');
 
     bodyEl.innerHTML = `
@@ -220,10 +285,18 @@ export const History = {
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
             </button>
           </div>
-          <button class="history-popover__clear" data-history-clear="${ns}">
+          <div class="history-popover__footer-actions">
+            <button class="history-popover__export" data-history-export aria-label="Export as CSV" type="button" ${total ? '' : 'disabled'}>
+              <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
+              <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
+              <span class="history-popover__export-label">Export<span class="history-popover__export-suffix"> CSV</span></span>
+              <span class="tooltip">Exported</span>
+            </button>
+            <button class="history-popover__clear" data-history-clear="${ns}">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             Clear
-          </button>`;
+            </button>
+          </div>`;
     popover.appendChild(footer);
   },
 
@@ -238,9 +311,19 @@ export const History = {
     const popover = document.getElementById(popoverId);
     const body = document.getElementById(bodyId);
 
+    // What was hashed, on hover (the body is re-rendered often; this listens on it once).
+    const resetHover = initHistoryRows(
+      body,
+      (row) => this._rowTip(ns, row),
+      (row) => this._copyRow(ns, row),
+    );
+
     // Render body + footer and re-wire footer controls (footer is fully replaced each call)
     const refresh = () => {
+      resetHover();
+      body.style.minHeight = `${this._tallest[ns] ?? 0}px`;
       this.renderBody(ns, body);
+      this._tallest[ns] = Math.max(this._tallest[ns] ?? 0, body.offsetHeight);
       this._renderFooter(ns, popover);
       // Re-wire hover tooltips on the newly-rendered action buttons
       body.querySelectorAll('.history-table__action-btn[data-action]').forEach((btn) => {
@@ -253,9 +336,19 @@ export const History = {
         pbtn.addEventListener('click', (e) => {
           e.stopPropagation();
           const pages = Math.max(1, Math.ceil(this.entries(ns).length / this.PAGE_SIZE));
-          this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + Number.parseInt(pbtn.dataset.dir, 10), pages - 1));
+          const dir = Number.parseInt(pbtn.dataset.dir, 10);
+          this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + dir, pages - 1));
           refresh();
+          slideIn(body.querySelector('.history-table'), dir);
         });
+      });
+
+      const exportBtn = popover.querySelector('[data-history-export]');
+      exportBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.exportCsv(ns);
+        Tooltip.flash(exportBtn);
+        Checkmark.flash(exportBtn);
       });
 
       const clearBtn = popover.querySelector('[data-history-clear]');
@@ -263,6 +356,7 @@ export const History = {
         clearBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           this.clear(ns);
+          this._tallest[ns] = 0;
           refresh();
         });
       }
@@ -278,6 +372,7 @@ export const History = {
     btn.addEventListener('mouseleave', () => Tooltip.hide());
 
     const open = () => {
+      this._tallest[ns] = 0;
       refresh();
       popover.classList.add('history-popover--visible');
       btn.setAttribute('aria-expanded', 'true');
@@ -319,21 +414,18 @@ export const History = {
       }
     });
 
-    // Delegated actions on hash cells and action buttons — wired once, works across re-renders
+    // Delegated actions on the action buttons — wired once, works across re-renders
     body.addEventListener('click', async (e) => {
       const target = e.target.closest('[data-action]');
       if (!target) return;
 
       const { action, hash } = target.dataset;
-      // Only the icon button itself has an icon to morph — a click on the
-      // row or hash cell also routes here via delegation (see markup above).
-      const isIconBtn = target.classList.contains('history-table__action-btn');
 
       if (action === 'copy-history') {
         e.stopPropagation();
         await Clipboard.copy(hash);
-        Tooltip.flash(target.querySelector('.history-table__hash') ?? target);
-        if (isIconBtn) Checkmark.flash(target);
+        Tooltip.flash(target);
+        Checkmark.flash(target);
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;
@@ -351,7 +443,7 @@ export const History = {
           Download.trigger(hash, `${base}.${algo.toLowerCase().replace(/-/g, '')}`);
         }
         Tooltip.flash(target);
-        if (isIconBtn) Checkmark.flash(target);
+        Checkmark.flash(target);
       }
     });
   },

@@ -281,6 +281,7 @@
 }
 
 /* Matches .btn exactly — same surface, border, sizing, transitions */
+.history-popover__export,
 .history-popover__clear {
   display: inline-flex;
   align-items: center;
@@ -298,20 +299,58 @@
   transition: all 0.15s;
 }
 
+.history-popover__export svg,
 .history-popover__clear svg {
   width: 16px;
   height: 16px;
   fill: currentColor;
 }
 
+.history-popover__export:hover:not(:disabled),
 .history-popover__clear:hover {
   color: var(--accent);
   border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
+.history-popover__export:active:not(:disabled),
 .history-popover__clear:active {
   transform: scale(0.96);
+}
+
+.history-popover__footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The done state of the checkmark morph (button.css) loses to the base colours above on order */
+.history-popover__export.btn--done {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.history-popover__export:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 630px) {
+  .history-popover__export-suffix {
+    display: none;
+  }
+}
+
+/* Under 360px there is no room for the label: a square icon button */
+@media (max-width: 359px) {
+  .history-popover__export {
+    gap: 0;
+    padding: 5px;
+  }
+
+  .history-popover__export-label {
+    display: none;
+  }
 }
 
 .history-popover__empty {
@@ -321,6 +360,13 @@
   font-style: italic;
   text-align: center;
   color: var(--text-muted);
+}
+
+/* Clips the page that slides in (see utils/slide-in.js), and is the opaque surface it fades
+   up from: without one the translucent popover shows through and the fade flashes its gray. */
+.history-popover__body {
+  overflow: hidden;
+  background: var(--surface);
 }
 
 .history-table {
@@ -382,7 +428,6 @@
   white-space: nowrap;
   letter-spacing: 0.3px;
   color: var(--text);
-  cursor: pointer;
   user-select: none;
 }
 

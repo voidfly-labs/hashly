@@ -1,7 +1,4 @@
-import { Tooltip } from './tooltip.js';
-
-// How long a tapped note's tooltip stays up: there's no mouseleave to close it on a touch screen.
-const TAP_TOOLTIP_MS = 3000;
+import { TAP_TOOLTIP_MS, Tooltip } from './tooltip.js';
 
 /** Renders short notes (`[{ label, tip }]`, see utils/text-notes.js) after a counter's
  *  figures, each as a small pill with its `tip` as a tooltip on hover or tap.

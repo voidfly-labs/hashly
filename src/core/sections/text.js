@@ -14,6 +14,7 @@ import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
 import { textNotes } from '~core/utils/text-notes.js';
+import { textPreview } from '~core/utils/text-preview.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -38,6 +39,8 @@ export const TextSection = {
   hiddenAlgos: new Set(),
   // Shared batchId for all algorithms in the current computation.
   _currentBatchId: null,
+  // What the current results were hashed from, as the history describes it (see utils/text-preview.js).
+  _sourceDescription: '',
 
   // ── Debounced input handler ────────────────────────────────────────────
   // Debouncing prevents stale-result races when fromTextAll resolves
@@ -407,7 +410,9 @@ export const TextSection = {
         setHashEmpty(els.hash, false);
         els.download.disabled = false;
         els.copy.disabled = false;
-        History.record('text', hash, algoId, History.nextBatch());
+        const batchId = History.nextBatch();
+        History.setSource('text', batchId, this._sourceDescription);
+        History.record('text', hash, algoId, batchId);
       } else {
         this._setHashText(els, 'awaiting input…');
         setHashEmpty(els.hash, true);
@@ -611,6 +616,10 @@ export const TextSection = {
 
     const fmt = this.getSelectedFormat();
     this._currentBatchId = History.nextBatch();
+    // Taken from `raw`, not the field, which may have moved on while hashing. Kept for the
+    // algorithms toggled on later, which hash the same input in a batch of their own.
+    this._sourceDescription = textPreview(raw, inputFmt);
+    History.setSource('text', this._currentBatchId, this._sourceDescription);
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);

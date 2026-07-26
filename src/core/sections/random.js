@@ -4,6 +4,7 @@ import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
+import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
 import { iconHref } from '~core/utils/icon.js';
 
@@ -167,12 +168,16 @@ export const RandomSection = {
     } else if (action === 'download') {
       const index = button.dataset.index;
       const algo = button.dataset.algo ?? _DEFAULT_ALGO;
-      const csvData = `id,algorithm,hash\n${index},${algo},${hash}`;
-      const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
-      Download.trigger(csvData, filename, 'text/csv');
+      this._downloadCsv([[index, algo, hash]]);
       Tooltip.flash(button);
       if (isIconBtn) Checkmark.flash(button);
     }
+  },
+
+  /** Downloads `rows` ([id, algorithm, hash]) as a timestamped CSV file. */
+  _downloadCsv(rows) {
+    const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
+    Download.trigger(toCsv(['id', 'algorithm', 'hash'], rows), filename, 'text/csv;charset=utf-8');
   },
 
   async onCopyAll() {
@@ -183,10 +188,7 @@ export const RandomSection = {
   },
 
   onDownloadAll() {
-    const rows = this.hashes.map(({ hash, algo }, i) => `${i + 1},${algo},${hash}`);
-    const csvData = `id,algorithm,hash\n${rows.join('\n')}`;
-    const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
-    Download.trigger(csvData, filename, 'text/csv');
+    this._downloadCsv(this.hashes.map(({ hash, algo }, i) => [i + 1, algo, hash]));
     Tooltip.flash(this.elements.downloadAll);
     Checkmark.flash(this.elements.downloadAll);
   },
