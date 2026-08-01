@@ -170,10 +170,17 @@ printBlock(
 printBlock('sha3', hueEntries(['sha3224', 'sha3256', 'sha3384', 'sha3512'], ROSE_GREEN_BLUE_VIOLET));
 printBlock(
   'blake',
-  hueEntries(
-    ['blake2b256', 'blake2b512', 'blake2s128', 'blake2s256', 'blake3256', 'blake3512'],
-    [HUE.rose, HUE.amber, HUE.green, HUE.cyan, HUE.blue, HUE.violet],
-  ),
+  wheelEntries(10, [
+    'blake2b160',
+    'blake2b256',
+    'blake2b384',
+    'blake2b512',
+    'blake2s128',
+    'blake2s224',
+    'blake2s256',
+    'blake3256',
+    'blake3512',
+  ]),
 );
 printBlock('keccak', hueEntries(['keccak224', 'keccak256', 'keccak384', 'keccak512'], ROSE_GREEN_BLUE_VIOLET));
 printBlock('ripemd', hueEntries(['ripemd128', 'ripemd160', 'ripemd256', 'ripemd320'], ROSE_GREEN_BLUE_VIOLET));

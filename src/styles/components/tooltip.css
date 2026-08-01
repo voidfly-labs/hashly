@@ -40,13 +40,6 @@
   text-align: left;
 }
 
-/* Long text, e.g. what a history row was made from: up to a fixed width, then it wraps. */
-.tooltip-singleton--wrap {
-  max-width: 320px;
-  text-align: left;
-  overflow-wrap: anywhere;
-}
-
 @media (max-width: 630px) {
   .tooltip-singleton {
     font-size: 12px;

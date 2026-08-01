@@ -4,11 +4,11 @@ import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
-import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
 import { slideIn } from '~core/utils/slide-in.js';
 
 import { initHistoryRows } from './history-rows.js';
+import { renderHistoryTable } from './history-table.js';
 import { Tooltip } from './tooltip.js';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
@@ -118,12 +118,6 @@ export const History = {
     return ns === 'file' ? (entry.filename ?? '') : this._sources[ns].get(entry.batchId);
   },
 
-  /** The hover text of a rendered row: what it was made from ('' if unknown, so no tooltip). */
-  _rowTip(ns, row) {
-    const entry = this._view[ns]?.[Number(row.dataset.i)];
-    return entry ? this.sourceOf(ns, entry) : '';
-  },
-
   /** Copies a rendered row's hash, confirming on its hash cell. */
   async _copyRow(ns, row) {
     const entry = this._view[ns]?.[Number(row.dataset.i)];
@@ -185,70 +179,13 @@ export const History = {
     const slice = sorted.slice(start, start + this.PAGE_SIZE);
     this._view[ns] = slice;
 
-    // ── Table ──
-    if (!slice.length) {
-      bodyEl.innerHTML = `
-            <table class="history-table" aria-label="Hash history">
-              <thead>
-                <tr>
-                  <th class="history-table__num">#</th>
-                  <th class="history-table__algo">Algo</th>
-                  <th class="history-table__hash">Hash</th>
-                  <th class="history-table__time">Time</th>
-                  <th class="history-table__actions"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="5" class="history-popover__empty">No hashes yet.</td>
-                </tr>
-              </tbody>
-            </table>`;
-      return;
-    }
-
-    const tbody = slice
-      .map((e, i) => {
-        // Everything below comes back out of storage, and the file name is the user's or a stranger's.
-        const hash = Format.escapeHtml(e.hash);
-        const algo = Format.escapeHtml(e.algo ?? _DEFAULT_ALGO);
-        return `
-          <tr class="history-table__row" data-i="${i}">
-            <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
-            <td class="history-table__algo"><span class="algo-badge" data-algo="${algo}">${algo}</span></td>
-            <td class="history-table__hash">${hash}<span class="tooltip">Copied!</span></td>
-            <td class="history-table__time"><span dir="ltr">${this._formatTs(e.ts)}</span></td>
-            <td class="history-table__actions">
-              <div class="history-table__action-btns">
-                <button class="history-table__action-btn" data-action="copy-history" data-hash="${hash}" aria-label="Copy hash">
-                  <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                  <span class="tooltip">Copied!</span>
-                </button>
-                <button class="history-table__action-btn" data-action="download-history" data-hash="${hash}" data-algo="${algo}" data-filename="${Format.escapeHtml(e.filename)}" aria-label="Download hash">
-                  <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                  <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                  <span class="tooltip">Exported</span>
-                </button>
-              </div>
-            </td>
-          </tr>`;
-      })
-      .join('');
-
-    bodyEl.innerHTML = `
-          <table class="history-table" aria-label="Hash history">
-            <thead>
-              <tr>
-                <th class="history-table__num">#</th>
-                <th class="history-table__algo">Algo</th>
-                <th class="history-table__hash">Hash</th>
-                <th class="history-table__time">Time</th>
-                <th class="history-table__actions"></th>
-              </tr>
-            </thead>
-            <tbody>${tbody}</tbody>
-          </table>`;
+    bodyEl.innerHTML = renderHistoryTable(slice, {
+      start,
+      defaultAlgo: _DEFAULT_ALGO,
+      formatTs: (ts) => this._formatTs(ts),
+      sourceOf: (e) => this.sourceOf(ns, e),
+      sourceIsFile: ns === 'file',
+    });
   },
 
   // Renders the footer with pagination + clear button and wires events.
@@ -311,16 +248,11 @@ export const History = {
     const popover = document.getElementById(popoverId);
     const body = document.getElementById(bodyId);
 
-    // What was hashed, on hover (the body is re-rendered often; this listens on it once).
-    const resetHover = initHistoryRows(
-      body,
-      (row) => this._rowTip(ns, row),
-      (row) => this._copyRow(ns, row),
-    );
+    // The body is re-rendered often; this listens on it once.
+    initHistoryRows(body, (row) => this._copyRow(ns, row));
 
     // Render body + footer and re-wire footer controls (footer is fully replaced each call)
     const refresh = () => {
-      resetHover();
       body.style.minHeight = `${this._tallest[ns] ?? 0}px`;
       this.renderBody(ns, body);
       this._tallest[ns] = Math.max(this._tallest[ns] ?? 0, body.offsetHeight);

@@ -369,122 +369,6 @@
   background: var(--surface);
 }
 
-.history-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-family: var(--mono);
-  font-size: 12px;
-}
-
-.history-table thead th {
-  padding: 7px 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--border);
-  font-size: 10px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--text-muted);
-  background: var(--bg);
-}
-
-[data-theme='dark'] .history-table thead th {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.history-table tbody td {
-  padding: 7px 12px;
-  vertical-align: middle;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-}
-
-[data-theme='dark'] .history-table tbody td {
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.history-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.history-table tbody tr:hover td {
-  background: var(--accent-surface);
-}
-
-.history-table__row {
-  cursor: pointer;
-}
-
-.history-table__num {
-  width: 35px;
-  color: var(--text-muted);
-}
-
-.history-table__hash {
-  position: relative; /* anchor for inline .tooltip */
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  letter-spacing: 0.3px;
-  color: var(--text);
-  user-select: none;
-}
-
-.history-table__time {
-  /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
-  width: 150px;
-  white-space: nowrap;
-  color: var(--text-muted);
-}
-
-/* Action buttons column — mirrors .random__item-actions pattern */
-.history-table__actions {
-  width: 58px;
-  padding-left: 4px !important;
-  padding-right: 8px !important;
-  overflow: visible;
-  white-space: nowrap;
-  text-align: right;
-}
-
-.history-table__action-btns {
-  display: inline-flex;
-  gap: 1px;
-  vertical-align: middle;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.history-table tbody tr:hover .history-table__action-btns {
-  opacity: 1;
-}
-
-/* Unified with .random__item-btn — identical padding, icon size, hover ring */
-.history-table__action-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  padding: 3px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: var(--text-muted);
-  background: none;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.history-table__action-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-}
-
-.history-table__action-btn svg {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
-}
-
 /* =========================================================================
        HISTORY PAGINATION
        ========================================================================= */
@@ -586,12 +470,13 @@
   background: rgba(0, 0, 0, 0.45);
 }
 
-/* Touch devices have no hover — always show action buttons and history
-       table actions so they remain reachable regardless of viewport width.
-       @media (hover: none) targets the input mechanism, not the screen size,
-       which is the correct semantic here. */
-@media (hover: none) {
-  .history-table__action-btns {
-    opacity: 1;
+/* Phones: ten stacked history rows are taller than the screen, so the popover keeps to it and
+   its body scrolls. */
+@media (max-width: 630px) {
+  .history-popover__body {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: calc(100vh - 150px);
+    max-height: calc(100dvh - 150px);
   }
 }
