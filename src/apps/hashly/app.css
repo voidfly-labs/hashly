@@ -329,16 +329,3 @@
   color: var(--badge-whirlpool-text);
   background: var(--badge-whirlpool-bg);
 }
-
-@media (max-width: 380px) {
-  .history-table__hash {
-    width: 0;
-    padding: 0 !important;
-  }
-  .history-table__time {
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: rtl;
-  }
-}

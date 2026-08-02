@@ -1,0 +1,116 @@
+/* =========================================================================
+       HISTORY SEARCH
+       — The search row of a history popover (see components/history-search.js),
+         between its header and its table.
+       ========================================================================= */
+.history-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  transition: box-shadow 0.15s;
+}
+
+.history-search[hidden] {
+  display: none;
+}
+
+.history-search:focus-within {
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+/* The state of a search: the accent while it has matches, red (as on the reference hash
+   field's mismatch) when nothing matches. It keeps its colour while the field is focused.
+   Only the red tints the row. With matches it stays the field's own surface: the accent tint
+   would be the popover header's, and the two would merge into one band. */
+.history-search[data-state='match'] {
+  --verdict: var(--accent);
+  --verdict-surface: var(--surface);
+}
+
+.history-search[data-state='none'] {
+  --verdict: var(--danger);
+  --verdict-surface: var(--danger-surface);
+}
+
+.history-search[data-state] {
+  background: var(--verdict-surface);
+  box-shadow: inset 0 -2px 0 var(--verdict);
+}
+
+.history-search[data-state] .history-search__icon {
+  fill: var(--verdict);
+}
+
+.history-search[data-state] .history-search__count {
+  color: var(--verdict);
+}
+
+.history-search__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  fill: var(--text-muted);
+}
+
+.history-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 0;
+  border: none;
+  border-radius: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  background: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.history-search__input::placeholder {
+  color: var(--text-muted);
+}
+
+/* The field has its own clear button */
+.history-search__input::-webkit-search-cancel-button,
+.history-search__input::-webkit-search-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.history-search__clear {
+  display: flex;
+}
+
+.history-search__clear[hidden] {
+  display: none;
+}
+
+.history-search__count {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 630px) {
+  .history-search {
+    padding: 2px 12px;
+  }
+
+  .history-search__input {
+    padding: 8px 0;
+  }
+}
+
+/* iOS zooms the page in when a field under 16px is focused, so there (WebKit's touch callout
+   is how to tell it) the field is 16px; everywhere else it stays the size of the text around it. */
+@supports (-webkit-touch-callout: none) {
+  .history-search__input {
+    font-size: 16px;
+  }
+}

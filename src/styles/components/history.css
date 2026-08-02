@@ -147,9 +147,16 @@
   z-index: 120;
   width: min(912px, calc(100vw - 48px));
   height: fit-content;
+  /* Never taller than the screen: a column whose body (the one part that can) gives way and
+     scrolls, whatever the screen's height and whatever the header, search and footer take. */
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 32px);
+  max-height: calc(100dvh - 32px);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
   backdrop-filter: blur(20px) saturate(1.8);
   box-shadow: var(--shadow-lg);
   /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
@@ -192,6 +199,11 @@
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
+  /* Visible at once when opening (so the search field can take focus then); closing still fades out first */
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease,
+    visibility 0s;
 }
 
 .history-popover__header {
@@ -227,7 +239,8 @@
 .text-input__paste,
 .verify__clear,
 .verify__paste,
-.verify__file {
+.verify__file,
+.history-search__clear {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
@@ -253,7 +266,8 @@
 .text-input__paste:hover,
 .verify__clear:hover,
 .verify__paste:hover,
-.verify__file:hover {
+.verify__file:hover,
+.history-search__clear:hover {
   color: var(--text);
   background: var(--surface-2);
 }
@@ -264,7 +278,8 @@
 .text-input__paste:active,
 .verify__clear:active,
 .verify__paste:active,
-.verify__file:active {
+.verify__file:active,
+.history-search__clear:active {
   transform: scale(0.9);
 }
 
@@ -274,7 +289,8 @@
 .text-input__paste svg,
 .verify__clear svg,
 .verify__paste svg,
-.verify__file svg {
+.verify__file svg,
+.history-search__clear svg {
   width: 16px;
   height: 16px;
   fill: currentColor;
@@ -306,15 +322,57 @@
   fill: currentColor;
 }
 
-.history-popover__export:hover:not(:disabled),
-.history-popover__clear:hover {
+.history-popover__export:hover:not(:disabled) {
   color: var(--accent);
   border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
+/* Clear deletes the history, so it is a red button: .btn--primary's recipe (button.css), in red */
+.history-popover__clear {
+  color: #fff;
+  border-color: var(--danger-fill);
+  background: var(--danger-fill);
+}
+
+.history-popover__clear:hover:not(:disabled) {
+  color: #fff;
+  box-shadow: 0 4px 16px var(--danger-glow);
+  opacity: 0.88;
+}
+
+/* "Clear" and "Confirm" (each an icon and a label) share a cell, so the button keeps its width
+   when it is armed, and either face is centred in it */
+.history-popover__clear {
+  display: inline-grid;
+}
+
+.history-popover__clear-face {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.history-popover__clear-face--confirm,
+.history-popover__clear--armed .history-popover__clear-face:first-child {
+  visibility: hidden;
+}
+
+.history-popover__clear--armed .history-popover__clear-face--confirm {
+  visibility: visible;
+}
+
+/* Armed: the next click deletes the history, so the button says so with a ring */
+.history-popover__clear--armed,
+.history-popover__clear--armed:hover:not(:disabled) {
+  box-shadow: 0 0 0 3px var(--danger-ring);
+  opacity: 1;
+}
+
 .history-popover__export:active:not(:disabled),
-.history-popover__clear:active {
+.history-popover__clear:active:not(:disabled) {
   transform: scale(0.96);
 }
 
@@ -330,7 +388,8 @@
   border-color: var(--accent-border);
 }
 
-.history-popover__export:disabled {
+.history-popover__export:disabled,
+.history-popover__clear:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -353,20 +412,20 @@
   }
 }
 
-.history-popover__empty {
-  padding: 20px 14px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-style: italic;
-  text-align: center;
-  color: var(--text-muted);
-}
-
 /* Clips the page that slides in (see utils/slide-in.js), and is the opaque surface it fades
    up from: without one the translucent popover shows through and the fade flashes its gray. */
 .history-popover__body {
-  overflow: hidden;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
   background: var(--surface);
+}
+
+.history-popover__header,
+.history-search,
+.history-popover__footer {
+  flex-shrink: 0;
 }
 
 /* =========================================================================
@@ -451,6 +510,7 @@
   z-index: 110;
   /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
   background: rgba(0, 0, 0, 0.28);
+  -webkit-backdrop-filter: blur(3px) brightness(0.85);
   backdrop-filter: blur(3px) brightness(0.85);
   opacity: 0;
   visibility: hidden;
@@ -468,15 +528,4 @@
 
 [data-theme='dark'] .history-backdrop {
   background: rgba(0, 0, 0, 0.45);
-}
-
-/* Phones: ten stacked history rows are taller than the screen, so the popover keeps to it and
-   its body scrolls. */
-@media (max-width: 630px) {
-  .history-popover__body {
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: calc(100vh - 150px);
-    max-height: calc(100dvh - 150px);
-  }
 }

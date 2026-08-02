@@ -92,16 +92,3 @@
   color: var(--badge-blake3512-text);
   background: var(--badge-blake3512-bg);
 }
-
-@media (max-width: 381px) {
-  .history-table__hash {
-    width: 0;
-    padding: 0 !important;
-  }
-  .history-table__time {
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: rtl;
-  }
-}

@@ -222,15 +222,16 @@
   fill: currentColor;
 }
 
-/* Characters of a near-miss digest that differ from the reference. No horizontal
-       padding: it would widen each marked character and push the rest of the
-       monospace digest out of line with the other rows. The 1px box-shadow gives the
-       block a little bleed without taking up any space. */
+/* Characters of a near-miss digest that differ from the reference: the mark pattern of the
+       history search (a light fill, a firmer edge, the text left as it is), in red. No horizontal
+       padding: it would widen each marked character and push the rest of the monospace digest
+       out of line with the other rows. The 1px shadow is the edge, and gives the block a little
+       bleed without taking up any space. */
 .result__diff {
   border-radius: 2px;
-  color: var(--surface);
-  background: var(--danger);
-  box-shadow: 0 0 0 1px var(--danger);
+  color: inherit;
+  background: var(--mark-diff);
+  box-shadow: 0 0 0 1px var(--mark-diff-edge);
 }
 
 @media (max-width: 630px) {

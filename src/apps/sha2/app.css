@@ -56,16 +56,3 @@
   color: var(--badge-sha512-text);
   background: var(--badge-sha512-bg);
 }
-
-@media (max-width: 355px) {
-  .history-table__hash {
-    width: 0;
-    padding: 0 !important;
-  }
-  .history-table__time {
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: rtl;
-  }
-}

@@ -1,4 +1,5 @@
 import { Format } from '~core/utils/format.js';
+import { findRanges } from '~core/utils/history-filter.js';
 import { iconHref } from '~core/utils/icon.js';
 
 const HEAD = `
@@ -12,24 +13,48 @@ const HEAD = `
     </tr>
   </thead>`;
 
-const EMPTY_ROW = `
-  <tr>
-    <td colspan="5" class="history-popover__empty">No hashes yet.</td>
-  </tr>`;
+/** What a page with no rows shows, instead of a table: no entries yet, or no match for a search. */
+const emptyState = (query) => `
+  <div class="history-empty">
+    <svg class="history-empty__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref(query ? 'search' : 'history')}"></use></svg>
+    <p class="history-empty__text">${query ? `No matches for “${Format.escapeHtml(query)}”` : 'No hashes yet'}</p>${
+      query
+        ? `
+    <button type="button" class="btn history-empty__clear" data-search-clear>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('close')}"></use></svg>
+      Clear search
+    </button>`
+        : ''
+    }
+  </div>`;
+
+/** `text[from, to)` as markup, with the parts inside `ranges` (see findRanges) marked. */
+function mark(text, ranges, from = 0, to = text.length) {
+  let html = '';
+  let at = from;
+  for (const [start, end] of ranges) {
+    const s = Math.max(start, from);
+    const e = Math.min(end, to);
+    if (s >= e) continue;
+    html += `${Format.escapeHtml(text.slice(at, s))}<mark>${Format.escapeHtml(text.slice(s, e))}</mark>`;
+    at = e;
+  }
+  return html + Format.escapeHtml(text.slice(at, to));
+}
 
 // How much of a file name stays visible at its end when the middle is cut: the extension and a bit more.
 const FILE_TAIL_CHARS = 10;
 
-/** The source line of a row. A file name is cut in the middle, not at its end, so its
- *  extension (what identifies the file) stays visible: the line is the name's start, which
- *  shrinks, and its last FILE_TAIL_CHARS characters, which don't. Both are already escaped. */
-function sourceLine(source, { isFile, title = source }) {
+/** The source line of a row ('' for an unknown source). A file name is cut in the middle, not at
+ *  its end, so its extension (what identifies the file) stays visible: the line is the name's
+ *  start, which shrinks, and its last FILE_TAIL_CHARS characters, which don't. */
+function sourceLine(source, terms, isFile) {
   if (!source) return '';
-  if (!isFile) return `<span class="history-table__source" title="${title}">${source}</span>`;
-  const chars = Array.from(source);
-  const head = chars.slice(0, -FILE_TAIL_CHARS).join('');
-  const tail = chars.slice(-FILE_TAIL_CHARS).join('');
-  return `<span class="history-table__source history-table__source--file" title="${title}"><span class="history-table__source-head">${head}</span><span class="history-table__source-tail">${tail}</span></span>`;
+  const title = Format.escapeHtml(source);
+  const ranges = findRanges(source, terms);
+  if (!isFile) return `<span class="history-table__source" title="${title}">${mark(source, ranges)}</span>`;
+  const cut = Array.from(source).slice(0, -FILE_TAIL_CHARS).join('').length;
+  return `<span class="history-table__source history-table__source--file" title="${title}"><span class="history-table__source-head">${mark(source, ranges, 0, cut)}</span><span class="history-table__source-tail">${mark(source, ranges, cut)}</span></span>`;
 }
 
 const table = (rows) => `
@@ -41,11 +66,16 @@ const table = (rows) => `
  *  entries `rows`, which is rows `start`… of the whole history.
  *  `defaultAlgo` names the algorithm of an entry without one, `formatTs(ts)` gives "YYYY-MM-DD
  *  HH:mm:ss" and `sourceOf(entry)` what the entry was made from ('' for unknown), which
- *  `sourceIsFile` says is a file name.
+ *  `sourceIsFile` says is a file name. With a search `query` active, `terms` (see
+ *  utils/history-filter.js) are marked in the hash and the source, and an empty page says
+ *  nothing matched. A page with no rows is not a table but a centred message.
  *
  *  A row's `data-i` is its index in `rows`, which leads a click back to its entry. */
-export function renderHistoryTable(rows, { start, defaultAlgo, formatTs, sourceOf, sourceIsFile = false }) {
-  if (!rows.length) return table(EMPTY_ROW);
+export function renderHistoryTable(
+  rows,
+  { start, defaultAlgo, formatTs, sourceOf, sourceIsFile = false, query = '', terms = [] },
+) {
+  if (!rows.length) return emptyState(query);
 
   return table(
     rows
@@ -53,13 +83,13 @@ export function renderHistoryTable(rows, { start, defaultAlgo, formatTs, sourceO
         // Everything below comes back out of storage, and the file name is the user's or a stranger's.
         const hash = Format.escapeHtml(e.hash);
         const algo = Format.escapeHtml(e.algo ?? defaultAlgo);
-        const source = Format.escapeHtml(sourceOf(e));
+        const source = sourceOf(e);
         const [date, time] = formatTs(e.ts).split(' ');
         return `
           <tr class="history-table__row" data-i="${i}">
             <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
             <td class="history-table__algo"><span class="algo-badge" data-algo="${algo}">${algo}</span></td>
-            <td class="history-table__hash"><span class="history-table__hash-text${source ? '' : ' history-table__hash-text--last'}">${hash}</span>${sourceLine(source, { isFile: sourceIsFile })}<span class="tooltip">Copied!</span></td>
+            <td class="history-table__hash"><span class="history-table__hash-text${source ? '' : ' history-table__hash-text--last'}">${mark(e.hash, findRanges(e.hash, terms))}</span>${sourceLine(source, terms, sourceIsFile)}<span class="tooltip">Copied!</span></td>
             <td class="history-table__time"><span dir="ltr"><span class="history-table__date">${date}</span> ${time}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">

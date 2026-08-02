@@ -196,16 +196,3 @@
   color: var(--badge-crc82darc-text);
   background: var(--badge-crc82darc-bg);
 }
-
-@media (max-width: 415px) {
-  .history-table__hash {
-    width: 0;
-    padding: 0 !important;
-  }
-  .history-table__time {
-    width: auto;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: rtl;
-  }
-}

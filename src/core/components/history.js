@@ -4,12 +4,19 @@ import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { Clipboard } from '~core/utils/clipboard.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
+import { matchesTerms, searchTerms } from '~core/utils/history-filter.js';
 import { iconHref } from '~core/utils/icon.js';
 import { slideIn } from '~core/utils/slide-in.js';
+import { takesText } from '~core/utils/text-field.js';
 
 import { initHistoryRows } from './history-rows.js';
+import { createHistorySearch } from './history-search.js';
 import { renderHistoryTable } from './history-table.js';
 import { Tooltip } from './tooltip.js';
+
+// How long Clear stays armed for its confirming second click.
+const CLEAR_CONFIRM_MS = 4000;
+const ARMED_CLASS = 'history-popover__clear--armed';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
 
@@ -28,6 +35,11 @@ export const History = {
   // The tallest the body has been since the popover opened, per ns: it keeps that height, so the
   // popover doesn't shrink and grow as pages with fewer rows come and go.
   _tallest: {},
+  // Per popover, the function that takes its Clear button out of the "Confirm" state (see initPopover).
+  _disarmClear: {},
+  // The search in each popover: the query as typed, and its words (see utils/history-filter.js).
+  _query: { text: '', file: '' },
+  _terms: { text: [], file: [] },
   // Monotonically-increasing batch counter: all algorithms hashed from the
   // same user action share one batchId, allowing per-batch algo sorting.
   _batchCounter: 0,
@@ -51,6 +63,7 @@ export const History = {
   load(ns) {
     this._sources[ns] = createBatchSources(`${_APP_CONFIG.appName}-history-source-${ns}`);
     this._sources[ns].load();
+    this.setQuery(ns, '');
     try {
       const raw = localStorage.getItem(this._key(ns));
       this._stores[ns] = raw ? JSON.parse(raw) : [];
@@ -108,6 +121,21 @@ export const History = {
     return this._stores[ns];
   },
 
+  /** The entries the popover shows, in its order: all of them, or those matching the search. */
+  _visible(ns) {
+    const sorted = this._sorted(ns);
+    const terms = this._terms[ns];
+    if (!terms.length) return sorted;
+    return sorted.filter((e) => matchesTerms(terms, [e.hash, e.algo ?? _DEFAULT_ALGO, this.sourceOf(ns, e)]));
+  },
+
+  /** Sets the search (an empty `query` ends it) and goes back to the first page. */
+  setQuery(ns, query) {
+    this._query[ns] = query;
+    this._terms[ns] = searchTerms(query);
+    this._pages[ns] = 0;
+  },
+
   /** Records what was hashed in a batch (call once per batch, before its entries). */
   setSource(ns, batchId, description) {
     this._sources[ns].set(batchId, description);
@@ -151,10 +179,10 @@ export const History = {
       });
   },
 
-  /** Downloads the whole history (not just the visible page) in the order the popover shows it. */
+  /** Downloads the whole history, or the matches of a search (not just the visible page), in the order the popover shows it. */
   exportCsv(ns) {
     // What was hashed comes before the hash: the file name, or (text) the stored description.
-    const rows = this._sorted(ns).map((e) => [
+    const rows = this._visible(ns).map((e) => [
       this._formatTs(e.ts),
       e.algo ?? _DEFAULT_ALGO,
       this.sourceOf(ns, e),
@@ -166,25 +194,25 @@ export const History = {
   },
 
   renderBody(ns, bodyEl) {
-    const entries = this.entries(ns);
-    const total = entries.length;
-    const pages = Math.max(1, Math.ceil(total / this.PAGE_SIZE));
+    const visible = this._visible(ns);
+    const pages = Math.max(1, Math.ceil(visible.length / this.PAGE_SIZE));
     // Clamp page in case entries shrank (e.g. after clear)
     this._pages[ns] = Math.min(this._pages[ns], pages - 1);
     const page = this._pages[ns];
     const start = page * this.PAGE_SIZE;
 
-    const sorted = this._sorted(ns);
-
-    const slice = sorted.slice(start, start + this.PAGE_SIZE);
+    const slice = visible.slice(start, start + this.PAGE_SIZE);
     this._view[ns] = slice;
 
+    bodyEl.classList.toggle('history-popover__body--empty', !slice.length);
     bodyEl.innerHTML = renderHistoryTable(slice, {
       start,
       defaultAlgo: _DEFAULT_ALGO,
       formatTs: (ts) => this._formatTs(ts),
       sourceOf: (e) => this.sourceOf(ns, e),
       sourceIsFile: ns === 'file',
+      query: this._query[ns],
+      terms: this._terms[ns],
     });
   },
 
@@ -195,10 +223,11 @@ export const History = {
     const existing = popover.querySelector('.history-popover__footer');
     if (existing) existing.remove();
 
-    const entries = this.entries(ns);
-    const total = entries.length;
+    const total = this._visible(ns).length;
     const pages = Math.max(1, Math.ceil(total / this.PAGE_SIZE));
     const page = this._pages[ns];
+    // Clear deletes the whole history, which is not what a search seems to show.
+    const searching = this._terms[ns].length > 0;
 
     const footer = document.createElement('div');
     footer.className = 'history-popover__footer';
@@ -229,9 +258,11 @@ export const History = {
               <span class="history-popover__export-label">Export<span class="history-popover__export-suffix"> CSV</span></span>
               <span class="tooltip">Exported</span>
             </button>
-            <button class="history-popover__clear" data-history-clear="${ns}">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            Clear
+            <button class="history-popover__clear" data-history-clear="${ns}" ${
+              searching ? 'disabled title="Clear the search to delete the history"' : ''
+            }>
+              <span class="history-popover__clear-face"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>Clear</span>
+              <span class="history-popover__clear-face history-popover__clear-face--confirm"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>Confirm</span>
             </button>
           </div>`;
     popover.appendChild(footer);
@@ -251,12 +282,29 @@ export const History = {
     // The body is re-rendered often; this listens on it once.
     initHistoryRows(body, (row) => this._copyRow(ns, row));
 
+    const search = createHistorySearch({
+      ns,
+      onChange: (query) => {
+        this.setQuery(ns, query);
+        refresh();
+      },
+    });
+    popover.insertBefore(search.el, body);
+
     // Render body + footer and re-wire footer controls (footer is fully replaced each call)
     const refresh = () => {
+      const total = this.entries(ns).length;
+      // A history of one page has nothing to search, so the field is only there for a longer one.
+      if (total <= this.PAGE_SIZE && this._terms[ns].length) {
+        this.setQuery(ns, '');
+        search.reset();
+      }
+      search.update({ shown: total > this.PAGE_SIZE, matched: this._visible(ns).length, total });
       body.style.minHeight = `${this._tallest[ns] ?? 0}px`;
       this.renderBody(ns, body);
-      this._tallest[ns] = Math.max(this._tallest[ns] ?? 0, body.offsetHeight);
       this._renderFooter(ns, popover);
+      // Measured with the footer in place: on a short screen the body is what gives way to it.
+      this._tallest[ns] = Math.max(this._tallest[ns] ?? 0, body.offsetHeight);
       // Re-wire hover tooltips on the newly-rendered action buttons
       body.querySelectorAll('.history-table__action-btn[data-action]').forEach((btn) => {
         const label = btn.dataset.action === 'copy-history' ? 'Copy' : 'Download';
@@ -267,7 +315,7 @@ export const History = {
       popover.querySelectorAll('.history-pagination__btn').forEach((pbtn) => {
         pbtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          const pages = Math.max(1, Math.ceil(this.entries(ns).length / this.PAGE_SIZE));
+          const pages = Math.max(1, Math.ceil(this._visible(ns).length / this.PAGE_SIZE));
           const dir = Number.parseInt(pbtn.dataset.dir, 10);
           this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + dir, pages - 1));
           refresh();
@@ -283,10 +331,28 @@ export const History = {
         Checkmark.flash(exportBtn);
       });
 
+      // Clear takes two clicks: the first arms it ("Confirm"), the second, within a few seconds,
+      // deletes. It disarms on a timeout, on focus leaving it, on Escape and on closing.
       const clearBtn = popover.querySelector('[data-history-clear]');
       if (clearBtn) {
+        let timer = 0;
+        // Returns whether it was armed, which Escape uses to know it has done something.
+        const disarm = () => {
+          clearTimeout(timer);
+          const wasArmed = clearBtn.classList.contains(ARMED_CLASS);
+          clearBtn.classList.remove(ARMED_CLASS);
+          return wasArmed;
+        };
+        this._disarmClear[ns] = disarm;
+        clearBtn.addEventListener('blur', disarm);
         clearBtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          if (!clearBtn.classList.contains(ARMED_CLASS)) {
+            clearBtn.classList.add(ARMED_CLASS);
+            timer = setTimeout(disarm, CLEAR_CONFIRM_MS);
+            return;
+          }
+          disarm();
           this.clear(ns);
           this._tallest[ns] = 0;
           refresh();
@@ -305,12 +371,16 @@ export const History = {
 
     const open = () => {
       this._tallest[ns] = 0;
+      this.setQuery(ns, '');
+      search.reset();
       refresh();
       popover.classList.add('history-popover--visible');
+      search.focus();
       btn.setAttribute('aria-expanded', 'true');
       document.getElementById('historyBackdrop').classList.add('history-backdrop--visible');
     };
     const close = () => {
+      this._disarmClear[ns]?.();
       popover.classList.remove('history-popover--visible');
       btn.setAttribute('aria-expanded', 'false');
       const anyOpen = document.querySelector('.history-popover--visible');
@@ -340,14 +410,41 @@ export const History = {
     });
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && popover.classList.contains('history-popover--visible')) {
+      if (!popover.classList.contains('history-popover--visible')) return;
+      // "/" or Ctrl/⌘+F goes to the search field (when the history is long enough to have one). "/"
+      // is left alone in a field, where it is a character; the browser's own find is only taken
+      // over while there is a field to take its place.
+      const findKey = (e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === 'f';
+      const slashKey = e.key === '/' && !e.ctrlKey && !e.metaKey && !e.altKey && !takesText(e.target);
+      if ((findKey || slashKey) && !search.el.hidden) {
+        e.preventDefault();
+        search.focus(true);
+        return;
+      }
+      if (e.key === 'Escape') {
+        // Escape backs out of the innermost thing first: an armed Clear, then a search, then the popover.
+        if (this._disarmClear[ns]?.()) return;
+        if (search.value()) {
+          search.reset();
+          this.setQuery(ns, '');
+          refresh();
+          return;
+        }
         close();
         btn.focus();
       }
     });
 
-    // Delegated actions on the action buttons — wired once, works across re-renders
+    // Delegated actions (the action buttons, and clearing a search that matched nothing) — wired once, works across re-renders
     body.addEventListener('click', async (e) => {
+      if (e.target.closest('[data-search-clear]')) {
+        e.stopPropagation(); // the re-render detaches the link, which would read as a click outside
+        search.reset();
+        this.setQuery(ns, '');
+        refresh();
+        search.focus();
+        return;
+      }
       const target = e.target.closest('[data-action]');
       if (!target) return;
 
