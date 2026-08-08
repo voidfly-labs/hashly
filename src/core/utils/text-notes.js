@@ -1,3 +1,5 @@
+import { Format } from './format.js';
+
 // Things in a text input that change its hash but are easy to miss. The text is always
 // hashed exactly as it stands; these notes only point at them.
 
@@ -57,4 +59,36 @@ function newlineNote({ newlines }) {
 export function textNotes(text) {
   const found = edges(text);
   return [hiddenNote(text), paddedNote(found), newlineNote(found)].filter(Boolean);
+}
+
+/** The note for hex input that ends in half a byte. */
+function hexNote(text) {
+  const digits = text.replace(/\s+/g, '').length;
+  return digits % 2 ? [{ label: 'odd digit', tip: 'Odd number of hex digits' }] : [];
+}
+
+/** The note for Base64 input whose last character can't be decoded. */
+function base64Note(text) {
+  return Format.withoutDanglingBase64(text) === text ? [] : [{ label: 'incomplete', tip: 'Incomplete Base64' }];
+}
+
+/** The note for binary input with a group of fewer than 8 bits (a byte being typed). */
+function binaryNote(text) {
+  const short = text.split(/\s+/).some((group) => group.length % 8);
+  return short ? [{ label: 'short byte', tip: 'Group has fewer than 8 bits' }] : [];
+}
+
+/** The notes for `text` in its input format (see `textNotes` for UTF-8): what is left out of,
+ *  or read differently from, what was typed in the other formats. */
+export function inputNotes(text, format) {
+  switch (format) {
+    case 'hex':
+      return hexNote(text);
+    case 'base64':
+      return base64Note(text);
+    case 'binary':
+      return binaryNote(text);
+    default:
+      return textNotes(text);
+  }
 }

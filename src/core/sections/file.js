@@ -14,6 +14,7 @@ import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
 import { createRunStats } from '~core/utils/run-stats.js';
+import { takesText } from '~core/utils/text-field.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -126,7 +127,9 @@ export const FileSection = {
     });
 
     document.addEventListener('drop', (e) => {
-      // Always prevent the browser from navigating to the dropped file
+      // Text dropped into a field (the reference hash, the history search) is the field's own to take.
+      if (!e.dataTransfer?.types?.includes('Files') && takesText(e.target)) return;
+      // Prevent the browser from navigating to a dropped file
       e.preventDefault();
       // Reset counter and page-drag highlight unconditionally
       _dragDepth = 0;
@@ -270,7 +273,7 @@ export const FileSection = {
           els.download.disabled = false;
           els.copy.disabled = false;
         } else {
-          this._setHashText(els, 'no file selected');
+          this._setHashText(els, this._emptyText());
           setHashEmpty(els.hash, true);
         }
       }
@@ -325,7 +328,7 @@ export const FileSection = {
         els.download.disabled = false;
         els.copy.disabled = false;
       } else {
-        this._setHashText(els, 'no file selected');
+        this._setHashText(els, this._emptyText());
         setHashEmpty(els.hash, true);
       }
     } else {
@@ -361,6 +364,12 @@ export const FileSection = {
     const tip = els.hash.querySelector('.tooltip');
     els.hash.textContent = text;
     if (tip) els.hash.appendChild(tip);
+  },
+
+  /** What a visible row with no digest says: nothing was chosen, or the file was hashed (or its
+   *  run stopped) without this algorithm, which was hidden at the time. */
+  _emptyText() {
+    return this.currentFileName ? 'not computed' : 'no file selected';
   },
 
   /** Enter computing state: hash cell becomes a left-to-right progress bar.
@@ -448,6 +457,9 @@ export const FileSection = {
     this._fileName.classList.add('file-drop__filename--visible');
     this._dropClear.classList.add('file-drop__clear--visible');
 
+    // The previous file's digests must not outlive it: until this run finishes there are none, so
+    // nothing copies, reformats or records them under the new file's name.
+    this.rawHexMap = new Map();
     this._verify.setDigests(null);
     const title = TabTitle.track();
     const stats = createRunStats(file.size);

@@ -38,14 +38,19 @@ export const Permalink = {
     if (!this.isPermalink()) return null;
     const params = new URLSearchParams(window.location.search);
     const algorithm = params.get('algorithm');
-    if (params.has('text')) document.getElementById('textInput').value = params.get('text');
     const inputFmt = params.get('input') || this._INPUT_DEFAULT;
     const outputFmt = params.get('output') || this._OUTPUT_DEFAULT;
-    const inRadio = document.querySelector(`input[name="textInputFormat"][value="${inputFmt}"]`);
-    const outRadio = document.querySelector(`input[name="textFormat"][value="${outputFmt}"]`);
+    // Matched against the radios' own values: the URL is anyone's, and a stray quote in it
+    // would make a selector built from it throw and take the rest of the page's setup with it.
+    const radioFor = (name, value) =>
+      [...document.querySelectorAll(`input[name="${name}"]`)].find((radio) => radio.value === value);
+    const inRadio = radioFor('textInputFormat', inputFmt);
+    const outRadio = radioFor('textFormat', outputFmt);
     if (inRadio) inRadio.checked = true;
     if (outRadio) outRadio.checked = true;
     TextSection.refreshPlaceholder();
+    // After the radios: what the text may contain depends on the input format.
+    if (params.has('text')) TextSection.setText(params.get('text'));
     // Drop the permalink's query from the URL, but keep any #hash (a FAQ tab).
     history.replaceState(null, '', window.location.pathname + window.location.hash);
     return { algorithm };

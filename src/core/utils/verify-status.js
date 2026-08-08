@@ -10,10 +10,11 @@ export function listNames(ids) {
 }
 
 /** "Available: 128-bit (MD4, MD5) · 160-bit (RIPEMD-160)", or '' when there are
- *  too many sizes to be useful. `algorithms`: [{ id, hexLen }]. */
+ *  too many sizes to be useful. `algorithms`: [{ id, hexLen, bits }]. The real width
+ *  (`bits`) is shown, which is under hexLen * 4 for a CRC-82. */
 export function availableSizes(algorithms) {
   const bySize = new Map();
-  for (const { id, hexLen } of algorithms) bySize.set(hexLen * 4, [...(bySize.get(hexLen * 4) ?? []), id]);
+  for (const { id, hexLen, bits = hexLen * 4 } of algorithms) bySize.set(bits, [...(bySize.get(bits) ?? []), id]);
   if (bySize.size > MAX_HINT_SIZES) return '';
   const parts = [...bySize].sort(([a], [b]) => a - b).map(([bits, ids]) => `${bits}-bit (${listNames(ids)})`);
   return `Available: ${parts.join(' · ')}`;

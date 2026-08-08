@@ -24,7 +24,7 @@ export function findRanges(text, terms) {
   );
   const ranges = [];
   for (const { index, 0: hit } of text.matchAll(pattern)) {
-    const last = ranges.at(-1);
+    const last = ranges[ranges.length - 1];
     if (last && index <= last[1]) last[1] = Math.max(last[1], index + hit.length);
     else ranges.push([index, index + hit.length]);
   }

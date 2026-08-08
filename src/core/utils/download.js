@@ -17,6 +17,7 @@ export const Download = {
     anchor.href = url;
     anchor.download = filename;
     anchor.click();
-    URL.revokeObjectURL(url);
+    // Not at once: Safari and some Firefox versions can cancel a download whose URL is gone.
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   },
 };

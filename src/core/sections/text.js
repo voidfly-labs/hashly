@@ -13,10 +13,16 @@ import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
-import { textNotes } from '~core/utils/text-notes.js';
+import { takesText } from '~core/utils/text-field.js';
+import { inputNotes } from '~core/utils/text-notes.js';
 import { textPreview } from '~core/utils/text-preview.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
+
+// History records what was hashed once the input has been left alone this long (or at once
+// when focus leaves the field, the page is hidden or the field is cleared), not on every
+// keystroke: a typed sentence would otherwise push everything else out of the history.
+const HISTORY_IDLE_MS = 1000;
 
 const _FORMAT_HINTS = {
   hex: 'hex only · 0–9, a–f',
@@ -46,6 +52,11 @@ export const TextSection = {
   // Debouncing prevents stale-result races when fromTextAll resolves
   // out of order on rapid typing, and avoids redundant WASM calls.
   _debounceTimer: null,
+  // Counts onInput() runs, so one that was overtaken while it hashed can tell and drop its result.
+  _inputSeq: 0,
+  // Input that has been hashed and shown but not yet put in the history (see HISTORY_IDLE_MS).
+  _historyPending: false,
+  _historyTimer: null,
 
   init({ APP_CONFIG, ALGORITHMS, Hasher }) {
     _APP_CONFIG = APP_CONFIG;
@@ -83,6 +94,13 @@ export const TextSection = {
       clearTimeout(this._debounceTimer);
       this._debounceTimer = setTimeout(() => this.onInput(), 20);
     });
+
+    // Leaving the field (to copy a hash, say) or the page is when typing is over.
+    this._input.addEventListener('blur', () => this._flushHistory());
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this._flushHistory();
+    });
+    window.addEventListener('pagehide', () => this._flushHistory());
 
     // Input-format validation — discard keystrokes that are illegal for
     // the selected input encoding (Hex / Base64 / Binary).
@@ -186,8 +204,8 @@ export const TextSection = {
     });
 
     document.addEventListener('dragover', (e) => {
-      // Required to allow drops anywhere on the page for text drags
-      if (_hasTextOnly(e.dataTransfer)) e.preventDefault();
+      // Required to allow drops anywhere on the page for text drags (a field takes its own)
+      if (_hasTextOnly(e.dataTransfer) && !takesText(e.target)) e.preventDefault();
     });
 
     document.addEventListener('drop', (e) => {
@@ -195,19 +213,16 @@ export const TextSection = {
       // Reset page-drag state unconditionally (mirrors FileSection)
       _textDragDepth = 0;
       this._card.classList.remove('card--text-drag');
+      // Text dropped into another field (the reference hash, the history search) stays there.
+      if (takesText(e.target)) return;
       // If the drop landed inside the card, the card's own handler already
       // processed it (and called stopPropagation) — nothing left to do.
       if (this._card.contains(e.target)) return;
-      // Drop landed outside the card: extract text and append to textarea.
+      // Drop landed outside the card: it replaces the textarea's content, like a drop on it.
       e.preventDefault();
       const raw = e.dataTransfer.getData('text/plain');
       if (!raw) return;
-      const inputFmt = this.getSelectedInputFormat();
-      const filtered = this._filterTextForFormat(raw, inputFmt);
-      this._input.value += filtered;
-      this._input.focus();
-      clearTimeout(this._debounceTimer);
-      this.onInput();
+      this.insertText(raw, { replace: true });
     });
 
     // ── Card-level drop: cursor-position-aware insertion ────────────────
@@ -228,7 +243,7 @@ export const TextSection = {
       this._card.classList.remove('card--text-drag');
 
       const raw = e.dataTransfer.getData('text/plain');
-      if (raw) this.insertText(raw);
+      if (raw) this.insertText(raw, { replace: true });
     });
 
     document
@@ -317,6 +332,10 @@ export const TextSection = {
     // stale batchId would then sort these entries among their old batch-mates
     // by algo order instead of by their (fresh) real time.
     const restoreBatchId = allVisible ? null : History.nextBatch();
+    // The restored entries are of the same input as the others, so they carry its description too.
+    if (restoreBatchId !== null && this.rawHexMap.size) {
+      History.setSource('text', restoreBatchId, this._sourceDescription);
+    }
 
     _ALGORITHMS.forEach(({ id }) => {
       const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
@@ -470,12 +489,41 @@ export const TextSection = {
       if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);
       if (!hex) continue;
-      const els = this.rowEls.get(id);
-      const hash = Format.applyFormat(hex, this.getSelectedFormat());
-      this._setHashText(els, hash);
-      // Reuse the existing batchId so format changes don't create new history
-      // batches — the batch identity belongs to the computation, not the format.
-      History.record('text', hash, id, this._currentBatchId);
+      this._setHashText(this.rowEls.get(id), Format.applyFormat(hex, this.getSelectedFormat()));
+    }
+    // Reuse the existing batchId so format changes don't create new history batches — the
+    // batch identity belongs to the computation, not the format. This also covers input
+    // still waiting for the history, which is recorded in the new format.
+    this._historyPending = false;
+    clearTimeout(this._historyTimer);
+    this._recordHistory();
+  },
+
+  // ── History ────────────────────────────────────────────────────────────
+
+  /** The current results are to go in the history once the input has been left alone a while. */
+  _queueHistory() {
+    this._historyPending = true;
+    clearTimeout(this._historyTimer);
+    this._historyTimer = setTimeout(() => this._flushHistory(), HISTORY_IDLE_MS);
+  },
+
+  /** Puts waiting input in the history now, if there is any. */
+  _flushHistory() {
+    clearTimeout(this._historyTimer);
+    if (!this._historyPending) return;
+    this._historyPending = false;
+    this._recordHistory();
+  },
+
+  /** Records the shown results (the visible algorithms, in the shown format) as the current batch. */
+  _recordHistory() {
+    if (!this.rawHexMap.size) return;
+    History.setSource('text', this._currentBatchId, this._sourceDescription);
+    for (const { id } of _ALGORITHMS) {
+      if (this.hiddenAlgos.has(id)) continue;
+      const hash = this._formattedHash(id);
+      if (hash) History.record('text', hash, id, this._currentBatchId);
     }
   },
 
@@ -500,36 +548,14 @@ export const TextSection = {
     // Primary label: raw char count (always shown)
     this._counterChars.textContent = chars === 1 ? '1 char' : `${chars.toLocaleString()} chars`;
 
-    // Secondary label: decoded bytes for structured formats, UTF-8 bytes otherwise
-    let bytes;
-    if (!text) {
-      bytes = 0;
-    } else {
-      switch (fmt) {
-        case 'hex':
-          bytes = Math.ceil(text.replace(/\s+/g, '').length / 2);
-          break;
-        case 'base64': {
-          // eslint-disable-next-line sonarjs/slow-regex
-          const stripped = text.replace(/[^A-Za-z0-9+/=]/g, '').replace(/=+$/, '');
-          bytes = Math.ceil((stripped.length * 3) / 4);
-          break;
-        }
-        case 'binary':
-          bytes = text
-            .trim()
-            .split(/\s+/)
-            .filter((g) => g.length > 0).length;
-          break;
-        default:
-          bytes = Format.utf8ByteLength(text);
-      }
-    }
+    // Secondary label: the bytes that get hashed (decoded ones for the structured formats).
+    let bytes = 0;
+    if (text) bytes = fmt === 'utf-8' ? Format.utf8ByteLength(text) : Format.textToBytes(text, fmt).length;
     this._counterBytes.textContent = bytes === 1 ? '1 byte' : `${bytes.toLocaleString()} bytes`;
 
-    // Things that silently change a UTF-8 hash (hidden characters, padding, a trailing newline).
-    // The other formats ignore whitespace, so there is nothing to point out there.
-    this._counterNotes.set(fmt === 'utf-8' ? textNotes(text) : []);
+    // Things that silently change a hash (hidden characters, padding, a trailing newline in UTF-8
+    // text; what is left out of, or read differently from, the other formats).
+    this._counterNotes.set(inputNotes(text, fmt));
   },
 
   /** Strip characters from `text` that are illegal for the given input format.
@@ -548,10 +574,6 @@ export const TextSection = {
     }
   },
 
-  /** Insert `raw` at the caret (replacing any selection), filtered for the
-   *  selected input format, and recompute. */
-  /** Text pasted outside any field: appended at the end (the textarea may hold a
-   *  stale caret), and the section brought into view since the hashes change there. */
   /** The first character typed elsewhere on the page (see components/type-to-focus.js).
    *  Goes through insertText so the input-format filter applies, then scrolls up to the
    *  input only if it isn't already on screen. */
@@ -566,6 +588,8 @@ export const TextSection = {
     }
   },
 
+  /** Text pasted outside any field: appended at the end (the textarea may hold a
+   *  stale caret), and the section brought into view since the hashes change there. */
   pasteText(raw) {
     const end = this._input.value.length;
     this._input.setSelectionRange(end, end);
@@ -573,14 +597,16 @@ export const TextSection = {
     this._card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   },
 
-  insertText(raw, { focus = true } = {}) {
+  /** Insert `raw` at the caret (replacing any selection), filtered for the
+   *  selected input format, and recompute. `replace` swaps the whole content for it instead. */
+  insertText(raw, { focus = true, replace = false } = {}) {
     const fmt = this.getSelectedInputFormat();
     const filtered = this._filterTextForFormat(raw, fmt);
     if (filtered.length < raw.length) Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
 
     const ta = this._input;
-    const start = ta.selectionStart ?? ta.value.length;
-    const end = ta.selectionEnd ?? ta.value.length;
+    const start = replace ? 0 : (ta.selectionStart ?? ta.value.length);
+    const end = replace ? ta.value.length : (ta.selectionEnd ?? ta.value.length);
     ta.value = ta.value.slice(0, start) + filtered + ta.value.slice(end);
     ta.setSelectionRange(start + filtered.length, start + filtered.length);
     if (focus) ta.focus();
@@ -589,17 +615,26 @@ export const TextSection = {
     this.onInput();
   },
 
+  /** Puts `text` in the field for the selected input format, minus what that format can't hold
+   *  (as typing and pasting would), without recomputing: a link may carry anything. */
+  setText(text) {
+    this._input.value = this._filterTextForFormat(text, this.getSelectedInputFormat());
+  },
+
   /** Needed after setting the radio in code, which fires no change event. */
   refreshPlaceholder() {
     this._input.placeholder = _PLACEHOLDERS[this.getSelectedInputFormat()] ?? _PLACEHOLDERS['utf-8'];
   },
 
   async onInput() {
+    const seq = ++this._inputSeq;
     const raw = this._input.value;
     this._updateCounter(raw);
 
     if (!raw) {
       this.rawHexMap.clear();
+      this._historyPending = false;
+      clearTimeout(this._historyTimer);
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
@@ -612,27 +647,50 @@ export const TextSection = {
 
     // Hash with all algorithms simultaneously.
     const inputFmt = this.getSelectedInputFormat();
-    this.rawHexMap = await _Hasher.fromTextAll(raw, inputFmt);
+    let hexMap;
+    try {
+      hexMap = await _Hasher.fromTextAll(raw, inputFmt);
+    } catch {
+      if (seq === this._inputSeq) this._showHashError();
+      return;
+    }
+    // Typing on, or clearing, while this was hashing: that newer input's result is the one to show.
+    if (seq !== this._inputSeq) return;
+    this.rawHexMap = hexMap;
 
     const fmt = this.getSelectedFormat();
     this._currentBatchId = History.nextBatch();
     // Taken from `raw`, not the field, which may have moved on while hashing. Kept for the
     // algorithms toggled on later, which hash the same input in a batch of their own.
     this._sourceDescription = textPreview(raw, inputFmt);
-    History.setSource('text', this._currentBatchId, this._sourceDescription);
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
-      const hex = this.rawHexMap.get(id);
-      const hash = Format.applyFormat(hex, fmt);
+      const hash = Format.applyFormat(this.rawHexMap.get(id), fmt);
       const els = this.rowEls.get(id);
       this._setHashText(els, hash);
       setHashEmpty(els.hash, false);
-      History.record('text', hash, id, this._currentBatchId);
     }
     this._setAllActionsEnabled(true);
+    this._queueHistory();
+  },
+
+  /** The visible rows could not be computed (WebAssembly missing, say): say so where the digests would be. */
+  _showHashError() {
+    this.rawHexMap.clear();
+    this._historyPending = false;
+    clearTimeout(this._historyTimer);
+    for (const { id } of _ALGORITHMS) {
+      if (this.hiddenAlgos.has(id)) continue;
+      const els = this.rowEls.get(id);
+      this._setHashText(els, 'hashing failed');
+      setHashEmpty(els.hash, true);
+    }
+    this._setAllActionsEnabled(false);
   },
 
   onClear({ focus = true } = {}) {
+    // Whatever was typed and is still waiting for the history goes in before it is cleared.
+    this._flushHistory();
     clearTimeout(this._debounceTimer);
     this._input.value = '';
     this.onInput();

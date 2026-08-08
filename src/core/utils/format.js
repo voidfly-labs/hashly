@@ -18,17 +18,33 @@ export const Format = {
     }
   },
 
+  /** Base64 text without a final character that can't be part of any byte: a length of
+   *  1 mod 4 (after the padding) is structurally invalid, so what would otherwise decode to
+   *  nothing keeps its valid prefix. */
+  withoutDanglingBase64(b64) {
+    let end = b64.length;
+    while (end > 0 && b64[end - 1] === '=') end--;
+    return end % 4 === 1 ? b64.slice(0, end - 1) : b64;
+  },
+
   hexToBytes(hex) {
+    // Whole bytes only: a trailing odd digit is half a byte, so it is left out (the input
+    // notes point it out, see utils/text-notes.js).
     const clean = hex.replace(/\s+/g, '');
-    const arr = new Uint8Array(clean.length / 2);
+    const arr = new Uint8Array(clean.length >> 1);
     for (let i = 0; i < arr.length; i++) arr[i] = Number.parseInt(clean.slice(i * 2, i * 2 + 2), 16);
     return arr;
   },
 
   binaryToBytes(bin) {
-    // Accept groups of 8 bits, optionally space-separated
-    const groups = bin.trim().split(/\s+/);
-    return new Uint8Array(groups.map((g) => Number.parseInt(g, 2)));
+    // Whitespace-separated groups of bits, each read as one byte; a group longer than 8
+    // bits is cut into bytes from its left ("0110000101100010" is two bytes, with or
+    // without a space). A shorter group (the last one, while typing) is read as its value.
+    const bytes = [];
+    for (const group of bin.split(/\s+/)) {
+      for (let i = 0; i < group.length; i += 8) bytes.push(Number.parseInt(group.slice(i, i + 8), 2));
+    }
+    return new Uint8Array(bytes);
   },
 
   /** Convert user text to bytes according to the selected input format. */
@@ -37,7 +53,7 @@ export const Format = {
       case 'hex':
         return this.hexToBytes(text);
       case 'base64':
-        return this.base64ToBytes(text);
+        return this.base64ToBytes(this.withoutDanglingBase64(text));
       case 'binary':
         return this.binaryToBytes(text);
       default:

@@ -29,7 +29,7 @@
        content's intrinsic height (grid items otherwise refuse to shrink below
        min-content unless overflow is non-visible). Carries the layout/padding
        that used to live on .result itself.
-       padding-block is transitioned separately from the (fixed) horizontal
+       The vertical padding is transitioned separately from the (fixed) horizontal
        padding: padding never compresses on its own as a box shrinks, so
        without this the row would bottom out at 14px (7px top + 7px bottom)
        instead of reaching zero. */
@@ -37,14 +37,16 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding-block: 7px;
-  padding-inline: 14px;
+  padding: 7px 14px;
   overflow: hidden;
-  transition: padding-block 0.3s ease;
+  transition:
+    padding-top 0.3s ease,
+    padding-bottom 0.3s ease;
 }
 
 .result--hidden .result__inner {
-  padding-block: 0;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .result__hash {

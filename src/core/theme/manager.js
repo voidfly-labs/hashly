@@ -1,3 +1,5 @@
+import { Storage } from '~core/services/storage.js';
+
 export const Theme = {
   init() {
     const meta = document.querySelector('meta[name="theme-storage-key"]');
@@ -16,7 +18,7 @@ export const Theme = {
     toggle.addEventListener('click', () => {
       const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
       document.documentElement.dataset.theme = next;
-      localStorage.setItem(key, next);
+      Storage.write(key, next);
     });
   },
 };

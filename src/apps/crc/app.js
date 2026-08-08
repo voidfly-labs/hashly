@@ -96,9 +96,13 @@ const Hasher = {
     const byteLen = Math.ceil(hexLen / 2);
     const bytes = new Uint8Array(byteLen);
     crypto.getRandomValues(bytes);
-    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
       .join('')
       .slice(0, hexLen);
+    // A width that isn't a multiple of 4 (CRC-82) leaves the top digit with fewer than 4 bits.
+    const topBits = algo ? algo.bits - (hexLen - 1) * 4 : 4;
+    if (topBits >= 4) return hex;
+    return (Number.parseInt(hex[0], 16) & ((1 << topBits) - 1)).toString(16) + hex.slice(1);
   },
 };
 

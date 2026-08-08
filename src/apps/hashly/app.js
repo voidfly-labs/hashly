@@ -202,7 +202,8 @@ const Hasher = (() => {
         file,
         (buffer) => {
           const chunk = new Uint8Array(buffer);
-          const encodedChunk = fromArrayBuffer(buffer);
+          // The binary string crypto-api reads is as large as the chunk: only made when a RIPEMD hasher needs it.
+          const encodedChunk = hashers.some(({ algo }) => algo.type === 'ripemd') ? fromArrayBuffer(buffer) : null;
 
           for (const { algo, instance } of hashers) {
             if (algo.type === 'ripemd') {

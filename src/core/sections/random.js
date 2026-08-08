@@ -177,7 +177,7 @@ export const RandomSection = {
   /** Downloads `rows` ([id, algorithm, hash]) as a timestamped CSV file. */
   _downloadCsv(rows) {
     const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
-    Download.trigger(toCsv(['id', 'algorithm', 'hash'], rows), filename, 'text/csv;charset=utf-8');
+    Download.trigger(toCsv(['id', 'algorithm', 'hash'], rows, { guard: [] }), filename, 'text/csv;charset=utf-8');
   },
 
   async onCopyAll() {

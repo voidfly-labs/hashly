@@ -20,6 +20,21 @@ const ARMED_CLASS = 'history-popover__clear--armed';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
 
+/** Whether something read back from storage can be used as a history entry. `algo` and `batchId`
+ *  may be missing (older entries), but not of the wrong type; `ts` is what the time column and
+ *  the sort of such older entries rest on. */
+function isEntry(e) {
+  return (
+    Boolean(e) &&
+    typeof e.hash === 'string' &&
+    e.hash !== '' &&
+    Number.isFinite(e.ts) &&
+    (e.algo === undefined || typeof e.algo === 'string') &&
+    (e.batchId === undefined || Number.isFinite(e.batchId)) &&
+    (e.filename === undefined || typeof e.filename === 'string')
+  );
+}
+
 // Persisted per section, max 1000 entries, newest first.
 // Pagination: PAGE_SIZE rows per page, controls rendered in popover footer.
 export const History = {
@@ -66,7 +81,9 @@ export const History = {
     this.setQuery(ns, '');
     try {
       const raw = localStorage.getItem(this._key(ns));
-      this._stores[ns] = raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : [];
+      // Anything unreadable is dropped, not repaired: the next save writes back what is left.
+      this._stores[ns] = Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, this.MAX) : [];
     } catch {
       this._stores[ns] = [];
     }
@@ -188,7 +205,8 @@ export const History = {
       this.sourceOf(ns, e),
       e.hash,
     ]);
-    const csv = toCsv(['time', 'algorithm', ns === 'file' ? 'filename' : 'text', 'hash'], rows);
+    // Only the source (a file name, or text) is a stranger's: the hash must stay as it is.
+    const csv = toCsv(['time', 'algorithm', ns === 'file' ? 'filename' : 'text', 'hash'], rows, { guard: [2] });
     const date = this._formatTs(Date.now()).slice(0, 10);
     Download.trigger(csv, `${_APP_CONFIG.appName}-${ns}-history_${date}.csv`, 'text/csv;charset=utf-8');
   },
@@ -360,9 +378,16 @@ export const History = {
       }
     };
 
-    // Expose refresh so record() can call it when the popover is live
+    // Expose refresh so record() can call it when the popover is live. A batch records one entry
+    // per algorithm in a row, so the redraw waits for the next frame and covers them all at once.
+    let refreshQueued = false;
     this._refreshFns[ns] = () => {
-      if (popover.classList.contains('history-popover--visible')) refresh();
+      if (refreshQueued || !popover.classList.contains('history-popover--visible')) return;
+      refreshQueued = true;
+      requestAnimationFrame(() => {
+        refreshQueued = false;
+        if (popover.classList.contains('history-popover--visible')) refresh();
+      });
     };
 
     // Hover tooltip on the history clock button
