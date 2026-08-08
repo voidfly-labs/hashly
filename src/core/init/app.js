@@ -40,49 +40,58 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
 
 export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher }) {
   document.addEventListener('DOMContentLoaded', () => {
-    checkWasmSupport(APP_CONFIG);
+    const canHash = checkWasmSupport(APP_CONFIG);
     // A permalink fully determines the view, so saved settings aren't applied to it.
     Preferences.init({ appName: APP_CONFIG.appName, restore: !Permalink.isPermalink() });
-    History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
     Theme.init();
     NavMenu.init();
     NavSpy.init();
     BackToTop.init();
-    TabTitle.init();
     FaqSection.init();
-    History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
-    History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
-    TextSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
-    Permalink.init();
-    const permalink = Permalink.restoreFromUrl();
-    if (permalink) TextSection.onInput();
-    FileSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
-    _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
-    _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
-    RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
-    HashSelect.init();
-    initGlobalPaste({
-      onText: (text) => TextSection.pasteText(text),
-      onFile: (file) => FileSection.pasteFile(file),
-    });
-    initTypeToFocus({ onType: (char) => TextSection.typeText(char) });
-    AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {
-      onChange: (algoId) => RandomSection.applySpotlight(algoId),
-      permalink,
-    });
+    // The banner says hashing is disabled: the sections that would hash, and what hangs off them
+    // (history, permalinks, quick select, pasting), stay as they are instead of failing row by row.
+    if (canHash) _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher });
     initSectionCollapse();
-    initHelpAction('quickSelectHelpBtn', [
-      'Start typing or drop a file – all algorithms run instantly',
-      '•  Toggle algorithms on/off by clicking on them',
-      '•  Browse "History" for recent outputs',
-      '•  Click "Permalink" for a shareable link',
-    ]);
-
-    const yearEl = document.getElementById('footerYear');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-    initReportTooltip();
-    initSocialTooltips();
-    initVersionTooltip();
+    _initFooter();
   });
+}
+
+function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher }) {
+  History.init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER });
+  TabTitle.init();
+  History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
+  History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
+  TextSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
+  Permalink.init();
+  const permalink = Permalink.restoreFromUrl();
+  if (permalink) TextSection.onInput();
+  FileSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
+  _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
+  _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
+  RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
+  HashSelect.init();
+  initGlobalPaste({
+    onText: (text) => TextSection.pasteText(text),
+    onFile: (file) => FileSection.pasteFile(file),
+  });
+  initTypeToFocus({ onType: (char) => TextSection.typeText(char) });
+  AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {
+    onChange: (algoId) => RandomSection.applySpotlight(algoId),
+    permalink,
+  });
+  initHelpAction('quickSelectHelpBtn', [
+    'Start typing or drop a file – all algorithms run instantly',
+    '•  Toggle algorithms on/off by clicking on them',
+    '•  Browse "History" for recent outputs',
+    '•  Click "Permalink" for a shareable link',
+  ]);
+}
+
+function _initFooter() {
+  const yearEl = document.getElementById('footerYear');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  initReportTooltip();
+  initSocialTooltips();
+  initVersionTooltip();
 }

@@ -54,6 +54,10 @@
   color: var(--danger);
 }
 
+.file-drop__stats-icon--warn {
+  color: var(--warning);
+}
+
 /* In-progress ring: a track with one accent arc, rotated by a transform animation, which
        runs on the compositor and so keeps turning smoothly while the main thread is busy
        hashing. */
@@ -77,9 +81,10 @@
   }
 }
 
-/* One icon per state: running → spinner, finished → ✓, stopped or failed → ✕. */
+/* One icon per state: running → spinner, finished → ✓, stopped or failed → ✕, nothing to do → ⚠. */
 .file-drop__stats[data-state='busy'] .file-drop__stats-spinner,
 .file-drop__stats[data-state='done'] .file-drop__stats-icon--done,
-.file-drop__stats[data-state='error'] .file-drop__stats-icon--error {
+.file-drop__stats[data-state='error'] .file-drop__stats-icon--error,
+.file-drop__stats[data-state='warn'] .file-drop__stats-icon--warn {
   display: block;
 }

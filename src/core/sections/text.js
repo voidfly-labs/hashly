@@ -14,7 +14,7 @@ import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
 import { iconHref } from '~core/utils/icon.js';
 import { takesText } from '~core/utils/text-field.js';
-import { inputNotes } from '~core/utils/text-notes.js';
+import { inputNotes, isValidInput } from '~core/utils/text-notes.js';
 import { textPreview } from '~core/utils/text-preview.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
@@ -23,6 +23,9 @@ let _APP_CONFIG, _ALGORITHMS, _Hasher;
 // when focus leaves the field, the page is hidden or the field is cleared), not on every
 // keystroke: a typed sentence would otherwise push everything else out of the history.
 const HISTORY_IDLE_MS = 1000;
+
+// Every input hashes with all algorithms on the main thread; past this many bytes that freezes the page.
+const MAX_TEXT_BYTES = 1024 * 1024;
 
 const _FORMAT_HINTS = {
   hex: 'hex only · 0–9, a–f',
@@ -115,6 +118,11 @@ export const TextSection = {
 
       const fmt = this.getSelectedInputFormat();
       if (fmt === 'utf-8') return; // no restriction
+      // A line break is no part of any of these formats (and would break Base64 decoding).
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        return;
+      }
       // Allow: control keys, arrows, backspace, delete, tab, Ctrl/Cmd combos
       if (e.key.length > 1 || e.ctrlKey || e.metaKey) return;
       const ch = e.key;
@@ -548,14 +556,19 @@ export const TextSection = {
     // Primary label: raw char count (always shown)
     this._counterChars.textContent = chars === 1 ? '1 char' : `${chars.toLocaleString()} chars`;
 
-    // Secondary label: the bytes that get hashed (decoded ones for the structured formats).
+    // Secondary label: the bytes that get hashed (decoded ones for the structured formats; none for invalid input).
     let bytes = 0;
-    if (text) bytes = fmt === 'utf-8' ? Format.utf8ByteLength(text) : Format.textToBytes(text, fmt).length;
+    if (text && isValidInput(text, fmt)) {
+      bytes = fmt === 'utf-8' ? Format.utf8ByteLength(text) : Format.textToBytes(text, fmt).length;
+    }
     this._counterBytes.textContent = bytes === 1 ? '1 byte' : `${bytes.toLocaleString()} bytes`;
 
     // Things that silently change a hash (hidden characters, padding, a trailing newline in UTF-8
     // text; what is left out of, or read differently from, the other formats).
-    this._counterNotes.set(inputNotes(text, fmt));
+    const notes = inputNotes(text, fmt);
+    if (bytes > MAX_TEXT_BYTES) notes.push({ label: 'too large', tip: 'Over 1 MB, use a file' });
+    this._counterNotes.set(notes);
+    return bytes;
   },
 
   /** Strip characters from `text` that are illegal for the given input format.
@@ -629,7 +642,7 @@ export const TextSection = {
   async onInput() {
     const seq = ++this._inputSeq;
     const raw = this._input.value;
-    this._updateCounter(raw);
+    const bytes = this._updateCounter(raw);
 
     if (!raw) {
       this.rawHexMap.clear();
@@ -647,11 +660,20 @@ export const TextSection = {
 
     // Hash with all algorithms simultaneously.
     const inputFmt = this.getSelectedInputFormat();
+    // Never hash a guess: input that isn't valid in its format would decode to other bytes.
+    if (!isValidInput(raw, inputFmt)) {
+      this._showNoDigests('invalid input');
+      return;
+    }
+    if (bytes > MAX_TEXT_BYTES) {
+      this._showNoDigests('too large');
+      return;
+    }
     let hexMap;
     try {
       hexMap = await _Hasher.fromTextAll(raw, inputFmt);
     } catch {
-      if (seq === this._inputSeq) this._showHashError();
+      if (seq === this._inputSeq) this._showNoDigests('hashing failed');
       return;
     }
     // Typing on, or clearing, while this was hashing: that newer input's result is the one to show.
@@ -674,15 +696,15 @@ export const TextSection = {
     this._queueHistory();
   },
 
-  /** The visible rows could not be computed (WebAssembly missing, say): say so where the digests would be. */
-  _showHashError() {
+  /** The visible rows have no digests (`message` says why: WebAssembly missing, input invalid…): say so where they would be. */
+  _showNoDigests(message) {
     this.rawHexMap.clear();
     this._historyPending = false;
     clearTimeout(this._historyTimer);
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const els = this.rowEls.get(id);
-      this._setHashText(els, 'hashing failed');
+      this._setHashText(els, message);
       setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);

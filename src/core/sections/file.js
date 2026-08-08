@@ -461,6 +461,14 @@ export const FileSection = {
     // nothing copies, reformats or records them under the new file's name.
     this.rawHexMap = new Map();
     this._verify.setDigests(null);
+
+    // Nothing to compute: don't read the whole file for it.
+    if (!visibleAlgos.length) {
+      this._run = null;
+      this._showNothingToHash();
+      return;
+    }
+
     const title = TabTitle.track();
     const stats = createRunStats(file.size);
     this._stats.classList.add('file-drop__stats--visible');
@@ -490,17 +498,8 @@ export const FileSection = {
       const hexMap = await _Hasher.fromFileAll(file, onProgress, visibleAlgos, controller.signal);
       if (controller.signal.aborted) return; // cleared or replaced just as it finished
       this.rawHexMap = hexMap;
-      const fmt = this.getSelectedFormat();
       this._currentBatchId = History.nextBatch();
-      for (const { id } of _ALGORITHMS) {
-        if (this.hiddenAlgos.has(id)) continue;
-        const hex = this.rawHexMap.get(id);
-        const hash = Format.applyFormat(hex, fmt);
-        const els = this.rowEls.get(id);
-        this._clearComputingState(els);
-        this._setHashText(els, hash);
-        History.record('file', hash, id, this._currentBatchId, this.currentFileName);
-      }
+      this._showDigests();
       this._setAllActionsEnabled(true);
       this._verify.setDigests(this.rawHexMap);
       title.done();
@@ -516,8 +515,42 @@ export const FileSection = {
     }
   },
 
+  /** Shows (and records) the digests of the file just hashed, in the selected output format. */
+  _showDigests() {
+    const fmt = this.getSelectedFormat();
+    for (const { id } of _ALGORITHMS) {
+      if (this.hiddenAlgos.has(id)) continue;
+      const els = this.rowEls.get(id);
+      this._clearComputingState(els);
+      const hex = this.rawHexMap.get(id);
+      if (!hex) {
+        // Shown while this ran: it was hidden when the file was hashed, so there is no digest.
+        this._setHashText(els, this._emptyText());
+        setHashEmpty(els.hash, true);
+        continue;
+      }
+      const hash = Format.applyFormat(hex, fmt);
+      this._setHashText(els, hash);
+      History.record('file', hash, id, this._currentBatchId, this.currentFileName);
+    }
+  },
+
+  /** Every algorithm is hidden, so a file was taken but nothing is computed for it. */
+  _showNothingToHash() {
+    TabTitle.reset();
+    this._stats.classList.add('file-drop__stats--visible');
+    this._setStats('Nothing to hash', 'warn');
+    for (const { id } of _ALGORITHMS) {
+      const els = this.rowEls.get(id);
+      this._clearComputingState(els);
+      this._setHashText(els, 'disabled');
+      setHashEmpty(els.hash, true);
+    }
+    this._setAllActionsEnabled(false);
+  },
+
   /** The status row under the file name. `state` picks its icon: 'busy' (spinner),
-   *  'done' (✓) or 'error' (✕); none for an empty row. */
+   *  'done' (✓), 'error' (✕) or 'warn' (⚠); none for an empty row. */
   _setStats(text, state = '') {
     this._statsText.textContent = text;
     this._stats.dataset.state = state;
@@ -575,7 +608,8 @@ export const FileSection = {
   _onDownload(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    const checksumFile = toChecksumFile(hash, algoId, this.currentFileName);
+    const ext = _APP_CONFIG.slugify(algoId);
+    const checksumFile = toChecksumFile(hash, ext, this.currentFileName);
     if (checksumFile) {
       Download.trigger(checksumFile.content, checksumFile.filename);
     } else {
@@ -583,7 +617,7 @@ export const FileSection = {
       const base = this.currentFileName
         ? this.currentFileName.replace(/\.[^.]+$/, '')
         : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-      Download.trigger(hash, `${base}.${algoId.toLowerCase().replace(/-/g, '')}`);
+      Download.trigger(hash, `${base}.${ext}`);
     }
     const btn = this.rowEls.get(algoId).download;
     Tooltip.flash(btn);

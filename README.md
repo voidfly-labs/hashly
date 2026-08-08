@@ -16,7 +16,7 @@ Each app focuses on a specific family of algorithms, with a clean UI and helpful
 history, permalinks, and file downloads.
 
 | App         | Domain     | Algorithms                             |
-| ----------- | ---------- | -------------------------------------- |
+|-------------|------------|----------------------------------------|
 | `blakekit`  | blake3.app | BLAKE2b, BLAKE2s, BLAKE3               |
 | `crckit`    | crc32.app  | 23 CRC variants (CRC-8 through CRC-82) |
 | `hashly`    | hashly.org | All 33 non-CRC algorithms (aggregator) |
@@ -90,3 +90,8 @@ or submit a [pull request](https://github.com/voidfly-labs/hashly/pulls).
 ## License
 
 Released under the [Apache License 2.0](LICENSE).
+
+> [!WARNING]
+> The Hashly names, logos and icons are trademarks of Voidfly LLC and are **not** licensed under Apache-2.0.
+> Unauthorized use, including publishing derived apps under these names or branding, is prohibited.
+> See [TRADEMARKS.md](TRADEMARKS.md).

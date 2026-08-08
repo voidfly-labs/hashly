@@ -196,11 +196,21 @@ export const History = {
       });
   },
 
+  /** ISO 8601 with the UTC offset ("2026-10-05T14:03:09+02:00"): unlike the popover's local time,
+   *  a CSV outlives the machine and timezone it was exported in. */
+  _isoTs(ts) {
+    const d = new Date(ts);
+    const pad = (v) => String(Math.trunc(Math.abs(v))).padStart(2, '0');
+    const offset = -d.getTimezoneOffset();
+    const sign = offset < 0 ? '-' : '+';
+    return `${this._formatTs(ts).replace(' ', 'T')}${sign}${pad(offset / 60)}:${pad(offset % 60)}`;
+  },
+
   /** Downloads the whole history, or the matches of a search (not just the visible page), in the order the popover shows it. */
   exportCsv(ns) {
     // What was hashed comes before the hash: the file name, or (text) the stored description.
     const rows = this._visible(ns).map((e) => [
-      this._formatTs(e.ts),
+      this._isoTs(e.ts),
       e.algo ?? _DEFAULT_ALGO,
       this.sourceOf(ns, e),
       e.hash,
@@ -487,14 +497,15 @@ export const History = {
         // Mirror FileSection._onDownload: a hex digest of a named file is written as a
         // checksum file; anything else is the digest alone, named <basename>.<ext> or,
         // without a recorded source filename, the timestamped default.
-        const checksumFile = toChecksumFile(hash, algo, storedFilename);
+        const ext = _APP_CONFIG.slugify(algo);
+        const checksumFile = toChecksumFile(hash, ext, storedFilename);
         if (checksumFile) {
           Download.trigger(checksumFile.content, checksumFile.filename);
         } else {
           const base = storedFilename
             ? storedFilename.replace(/\.[^.]+$/, '')
             : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-          Download.trigger(hash, `${base}.${algo.toLowerCase().replace(/-/g, '')}`);
+          Download.trigger(hash, `${base}.${ext}`);
         }
         Tooltip.flash(target);
         Checkmark.flash(target);

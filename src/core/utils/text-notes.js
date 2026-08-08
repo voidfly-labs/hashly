@@ -61,6 +61,28 @@ export function textNotes(text) {
   return [hiddenNote(text), paddedNote(found), newlineNote(found)].filter(Boolean);
 }
 
+// What each structured input format may contain. The keyboard, paste and drop are filtered to
+// these, but text can reach the field other ways (a soft keyboard, Enter, autofill), and decoding
+// anything else would silently turn it into other bytes: such input is not hashed at all.
+const VALID_INPUT = {
+  hex: /^[\da-f\s]*$/i,
+  base64: /^[A-Za-z\d+/]*={0,2}$/,
+  binary: /^[01\s]*$/,
+};
+
+/** Whether `text` can be decoded as `format` without guessing: false for characters the format
+ *  doesn't have (or, in Base64, padding anywhere but the end). UTF-8 takes anything. */
+export function isValidInput(text, format) {
+  return VALID_INPUT[format]?.test(text) ?? true;
+}
+
+const FORMAT_NAMES = { hex: 'hex', base64: 'Base64', binary: 'binary' };
+
+/** The note for input that is not valid in its format. */
+function invalidNote(format) {
+  return [{ label: 'invalid', tip: `Not valid ${FORMAT_NAMES[format]}` }];
+}
+
 /** The note for hex input that ends in half a byte. */
 function hexNote(text) {
   const digits = text.replace(/\s+/g, '').length;
@@ -81,6 +103,7 @@ function binaryNote(text) {
 /** The notes for `text` in its input format (see `textNotes` for UTF-8): what is left out of,
  *  or read differently from, what was typed in the other formats. */
 export function inputNotes(text, format) {
+  if (!isValidInput(text, format)) return invalidNote(format);
   switch (format) {
     case 'hex':
       return hexNote(text);

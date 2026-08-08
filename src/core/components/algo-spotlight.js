@@ -14,6 +14,13 @@ function _showOnlyInSection(section, algoId, ALGORITHMS) {
   });
 }
 
+/** Puts `section`'s hidden algorithms back to `hidden` (a Set of ids). */
+function _restoreHidden(section, hidden, ALGORITHMS) {
+  ALGORITHMS.forEach(({ id }) => {
+    if (section.hiddenAlgos.has(id) !== hidden.has(id)) section._toggleAlgo(id, { resetSpotlight: false });
+  });
+}
+
 /** Re-show every algorithm in `section` if it isn't already fully visible. */
 function _showAllInSection(section, ALGORITHMS) {
   const allVisible = ALGORITHMS.every((a) => !section.hiddenAlgos.has(a.id));
@@ -23,7 +30,8 @@ function _showAllInSection(section, ALGORITHMS) {
 /**
  * Header algo badges act as a spotlight control for the Text/File sections:
  * clicking one spotlights it (hiding every other algorithm in both
- * sections), clicking the spotlighted badge again re-shows all of them.
+ * sections), clicking the spotlighted badge again puts back what each section
+ * had hidden before.
  * The choice is remembered in localStorage and restored on the next visit.
  *
  * Any manual show/hide elsewhere (a row's own badge, "show/hide all", the
@@ -39,6 +47,9 @@ export const AlgoSpotlight = {
   _container: null,
   _SPOTLIGHT_KEY: 'spotlight-algo',
   _onChange: null,
+  // What each section had hidden before the spotlight took over (Map<section, Set<id>>), so
+  // ending the spotlight puts that back rather than showing every algorithm.
+  _before: null,
 
   _updateBadgeClasses() {
     this._container.querySelectorAll('.algo-badge').forEach((badge) => {
@@ -46,6 +57,7 @@ export const AlgoSpotlight = {
       const isActive = badge.dataset.algo === this._state.spotlightedAlgo;
       badge.classList.toggle('algo-badge--hidden', isSpotlighting && !isActive);
       badge.classList.toggle('algo-badge--active', isActive);
+      badge.setAttribute('aria-pressed', String(isActive));
     });
   },
 
@@ -55,6 +67,7 @@ export const AlgoSpotlight = {
   reset() {
     if (this._state.spotlightedAlgo === null) return;
     this._state.spotlightedAlgo = null;
+    this._before = null;
     Storage.remove(this._SPOTLIGHT_KEY);
     this._updateBadgeClasses();
     this._onChange?.(null);
@@ -68,10 +81,13 @@ export const AlgoSpotlight = {
    *  persist is false), update badge classes. Shared by a direct click and by
    *  restoring a persisted or permalink choice on init. */
   _apply(algoId, ALGORITHMS, sections, { persist = true } = {}) {
-    const hideOthers = () => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
-    // persist: false is a permalink's view, which isn't the visitor's own to save.
-    if (persist) hideOthers();
-    else Preferences.silently(hideOthers);
+    // Taken once, when the spotlight starts, not when it moves from one algorithm to another.
+    if (this._state.spotlightedAlgo === null) {
+      this._before = new Map(sections.map((section) => [section, new Set(section.hiddenAlgos)]));
+    }
+    // The spotlight's own hiding is never saved as the visitor's hidden algorithms (their
+    // choice stays what it was before it, and is what comes back); a permalink's view isn't theirs either.
+    Preferences.silently(() => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS)));
     this._state.spotlightedAlgo = algoId;
     if (persist) Storage.write(this._SPOTLIGHT_KEY, algoId);
     this._updateBadgeClasses();
@@ -80,7 +96,14 @@ export const AlgoSpotlight = {
 
   _toggle(algoId, ALGORITHMS, sections) {
     if (this._state.spotlightedAlgo === algoId) {
-      sections.forEach((section) => _showAllInSection(section, ALGORITHMS));
+      const before = this._before;
+      Preferences.silently(() =>
+        sections.forEach((section) => {
+          const hidden = before?.get(section);
+          if (hidden) _restoreHidden(section, hidden, ALGORITHMS);
+          else _showAllInSection(section, ALGORITHMS);
+        }),
+      );
       this.reset();
       return;
     }
@@ -125,5 +148,6 @@ export const AlgoSpotlight = {
     if (persisted && ALGORITHMS.some((a) => a.id === persisted)) {
       this._apply(persisted, ALGORITHMS, sections);
     }
+    this._updateBadgeClasses();
   },
 };
