@@ -43,4 +43,23 @@
       </svg>
     </button>
   </div>
+  <!-- Help and the legal pages: shown on mobile only. Help opens its popover, once that is wired. -->
+  <div class="nav-menu__group" role="group" aria-labelledby="navSupportLabel">
+    <span class="nav-menu__group-label" id="navSupportLabel"
+      >Support<svg viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-lifebuoy"></use></svg
+    ></span>
+    <button class="nav-menu__action" id="navHelp" type="button" hidden>
+      <span class="nav-menu__action-label">Help</span>
+      <svg class="nav-menu__chevron" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-chevron-right"></use>
+      </svg>
+    </button>
+    <a class="nav-menu__action" href="/privacy">
+      <span class="nav-menu__action-label">Privacy Policy</span>
+    </a>
+    <a class="nav-menu__action" href="/terms">
+      <span class="nav-menu__action-label">Terms of Service</span>
+    </a>
+  </div>
 </nav>

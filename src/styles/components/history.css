@@ -140,7 +140,8 @@
 /* =========================================================================
        HISTORY POPOVER
        ========================================================================= */
-.history-popover {
+.history-popover,
+.help-popover {
   position: fixed;
   inset: 0;
   margin: auto;
@@ -170,7 +171,8 @@
     visibility 0.18s;
 }
 
-[data-theme='dark'] .history-popover {
+[data-theme='dark'] .history-popover,
+[data-theme='dark'] .help-popover {
   background: rgba(28, 32, 48, 0.78);
 }
 
@@ -194,7 +196,8 @@
   }
 }
 
-.history-popover--visible {
+.history-popover--visible,
+.help-popover--visible {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
@@ -206,7 +209,8 @@
     visibility 0s;
 }
 
-.history-popover__header {
+.history-popover__header,
+.help-popover__header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -216,7 +220,8 @@
   background: var(--accent-surface);
 }
 
-.history-popover__title {
+.history-popover__title,
+.help-popover__title {
   font-family: var(--mono);
   font-size: 11.5px;
   font-weight: 600;
@@ -234,6 +239,7 @@
        (history-popover__close is always visible; file-drop__clear defaults to
        none and is revealed by the --visible modifier). */
 .history-popover__close,
+.help-popover__close,
 .file-drop__clear,
 .text-input__clear,
 .text-input__paste,
@@ -255,13 +261,15 @@
     background 0.15s;
 }
 
-.history-popover__close {
+.history-popover__close,
+.help-popover__close {
   display: flex;
   padding: 6px;
   margin: -6px -9px -6px -6px;
 }
 
 .history-popover__close:hover,
+.help-popover__close:hover,
 .file-drop__clear:hover,
 .text-input__clear:hover,
 .text-input__paste:hover,
@@ -274,6 +282,7 @@
 }
 
 .history-popover__close:active,
+.help-popover__close:active,
 .file-drop__clear:active,
 .text-input__clear:active,
 .text-input__paste:active,
@@ -297,7 +306,8 @@
 }
 
 /* Its own size: the dismiss button is a larger target than the field buttons above */
-.history-popover__close svg {
+.history-popover__close svg,
+.help-popover__close svg {
   width: 18px;
   height: 18px;
   fill: currentColor;

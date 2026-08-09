@@ -2,7 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { BackToTop } from '~core/components/back-to-top.js';
 import { initGlobalPaste } from '~core/components/global-paste.js';
 import { HashSelect } from '~core/components/hash-select.js';
-import { initHelpAction } from '~core/components/help.js';
+import { createHelpPopover } from '~core/components/help.js';
 import { History } from '~core/components/history.js';
 import { Permalink } from '~core/components/permalink.js';
 import { initSectionCollapse } from '~core/components/section-collapse.js';
@@ -13,6 +13,7 @@ import { checkWasmSupport } from '~core/components/warning-banner.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
 import { initSocialTooltips } from '~core/layout/footer/social.js';
 import { initVersionTooltip } from '~core/layout/footer/version.js';
+import { initNavHelp } from '~core/layout/nav/nav-help.js';
 import { initNavHistory } from '~core/layout/nav/nav-history.js';
 import { NavMenu } from '~core/layout/nav/nav-menu.js';
 import { NavSpy } from '~core/layout/nav/nav-spy.js';
@@ -81,12 +82,7 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher
     onChange: (algoId) => RandomSection.applySpotlight(algoId),
     permalink,
   });
-  initHelpAction('quickSelectHelpBtn', [
-    'Start typing or drop a file – all algorithms run instantly',
-    '•  Toggle algorithms on/off by clicking on them',
-    '•  Browse "History" for recent outputs',
-    '•  Click "Permalink" for a shareable link',
-  ]);
+  initNavHelp(createHelpPopover('quickSelectHelpBtn', 'helpPopover'));
 }
 
 function _initFooter() {

@@ -1,3 +1,5 @@
+import { OPEN_POPOVER } from '~core/components/popover.js';
+
 // What closes the menu when clicked: the section links, and the history entries (see nav-history.js).
 const CLOSING_ITEMS = '.header__nav-link, .nav-menu__action';
 
@@ -41,8 +43,8 @@ export const NavMenu = {
     // drawer that is gone.
     document.addEventListener('keydown', (e) => {
       if (e.key !== 'Escape' || !isOpen()) return;
-      // A history popover opened from the menu has its own Escape.
-      if (document.querySelector('.history-popover--visible')) return;
+      // A popover opened from the menu has its own Escape.
+      if (document.querySelector(OPEN_POPOVER)) return;
       setOpen(false);
       toggle.focus();
     });

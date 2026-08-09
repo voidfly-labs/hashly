@@ -1,0 +1,113 @@
+/* =========================================================================
+       HELP POPOVER
+       — The help button's popover (see core/components/help.js). Its shell,
+         header and close button are shared with the history popover (see
+         history.css); this is its width and its body. Import after history.css:
+         the width overrides the shell's.
+       ========================================================================= */
+.help-popover {
+  width: min(460px, calc(100vw - 48px));
+}
+
+@media (max-width: 630px) {
+  .help-popover {
+    width: calc(max(100vw, 320px) - 32px);
+  }
+}
+
+.help-popover__header {
+  flex-shrink: 0;
+}
+
+.help-popover__body {
+  flex: 0 1 auto;
+  min-height: 0;
+  padding: 18px 18px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  border-radius: 0 0 var(--radius) var(--radius);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+
+.help-popover__lead {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.help-popover__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0;
+  margin: 0 0 16px;
+  list-style: none;
+}
+
+.help-popover__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.help-popover__item svg {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  fill: currentColor;
+  color: var(--accent);
+}
+
+/* The bolt symbol is 10 wide: keep the 20px icon column and centre it in it */
+.help-popover__item svg.help-popover__bolt {
+  width: 9px;
+  margin-right: 5.5px;
+  margin-left: 5.5px;
+}
+
+.help-popover__item strong {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.help-popover__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 12px 18px;
+  margin: 0 -18px;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius) var(--radius);
+  background: var(--accent-surface);
+}
+
+.help-popover__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.help-popover__link:hover {
+  text-decoration: underline;
+}
+
+.help-popover__link:focus-visible {
+  border-radius: var(--radius-sm);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.help-popover__link svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}

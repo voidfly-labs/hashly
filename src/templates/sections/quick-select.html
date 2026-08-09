@@ -7,9 +7,15 @@
       </svg>
       <span class="section__label-text">Quick Select</span>
     </h2>
-    <button class="help-btn" id="quickSelectHelpBtn" aria-label="How to use this tool">
+    <button
+      class="help-btn"
+      id="quickSelectHelpBtn"
+      aria-label="How to use this tool"
+      aria-expanded="false"
+      aria-controls="helpPopover">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-help"></use></svg>
     </button>
+    <%- include('/src/templates/components/help-popover.html') %>
   </div>
 
   <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms"></div>

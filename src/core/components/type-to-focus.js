@@ -5,7 +5,7 @@ import { takesText } from '~core/utils/text-field.js';
 const KEYBOARD_DEVICE = '(hover: hover) and (pointer: fine)';
 
 // Controls with their own use for keys, or panels that own the keyboard while open.
-const OWNS_KEYS = 'select, .history-popover';
+const OWNS_KEYS = 'select, .history-popover, .help-popover';
 
 /** Typing anywhere on the page starts typing into the text input: `onType(char)`
  *  gets the first character, and the keys after it land in the (now focused) input

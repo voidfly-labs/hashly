@@ -26,6 +26,7 @@
   --accent-strong: rgba(67, 97, 238, 0.7); /* --accent at 70% alpha */
   --scrollbar-thumb: rgba(107, 123, 140, 0.65); /* --text-muted at 65% alpha */
   --text: #1a1d23;
+  --text-secondary: #333c49;
   --text-muted: #5b6b7c;
   --text-hint: #a16500;
   --success: #17714a;
@@ -81,6 +82,7 @@
   --accent-strong: rgba(107, 138, 255, 0.7); /* --accent at 70% alpha */
   --scrollbar-thumb: rgba(154, 164, 188, 0.45); /* --text-muted at 45% alpha */
   --text: #e2e6ef;
+  --text-secondary: #c0c7d8;
   --text-muted: #9aa4bc;
   --text-hint: #e0a030;
   --success: #4cc38a;

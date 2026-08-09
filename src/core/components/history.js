@@ -12,6 +12,7 @@ import { takesText } from '~core/utils/text-field.js';
 import { initHistoryRows } from './history-rows.js';
 import { createHistorySearch } from './history-search.js';
 import { renderHistoryTable } from './history-table.js';
+import { createPopover } from './popover.js';
 import { Tooltip } from './tooltip.js';
 
 // How long Clear stays armed for its confirming second click.
@@ -426,48 +427,31 @@ export const History = {
     btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'History'));
     btn.addEventListener('mouseleave', () => Tooltip.hide());
 
-    const open = () => {
-      this._tallest[ns] = 0;
-      this.setQuery(ns, '');
-      search.reset();
-      refresh();
-      popover.classList.add('history-popover--visible');
-      search.focus();
-      btn.setAttribute('aria-expanded', 'true');
-      document.getElementById('historyBackdrop').classList.add('history-backdrop--visible');
-    };
-    const close = () => {
-      this._disarmClear[ns]?.();
-      popover.classList.remove('history-popover--visible');
-      btn.setAttribute('aria-expanded', 'false');
-      const anyOpen = document.querySelector('.history-popover--visible');
-      if (!anyOpen) document.getElementById('historyBackdrop').classList.remove('history-backdrop--visible');
-    };
+    const { open, close } = createPopover({
+      trigger: btn,
+      el: popover,
+      visibleClass: 'history-popover--visible',
+      onOpen: () => {
+        this._tallest[ns] = 0;
+        this.setQuery(ns, '');
+        search.reset();
+        refresh();
+      },
+      onShown: () => search.focus(),
+      onClose: () => this._disarmClear[ns]?.(),
+      // Escape backs out of the innermost thing first: an armed Clear, then a search, then the popover.
+      onEscape: () => {
+        if (this._disarmClear[ns]?.()) return true;
+        if (!search.value()) return false;
+        search.reset();
+        this.setQuery(ns, '');
+        refresh();
+        return true;
+      },
+    });
 
     this._openFns[ns] = open;
     this._closeFns[ns] = close;
-
-    popover.addEventListener('click', (e) => {
-      if (e.target.closest('[data-popover-close]')) {
-        e.stopPropagation();
-        close();
-        btn.focus();
-      }
-    });
-
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      popover.classList.contains('history-popover--visible') ? close() : open();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (popover.classList.contains('history-popover--visible') && !popover.contains(e.target) && e.target !== btn)
-        close();
-    });
-
-    document.getElementById('historyBackdrop').addEventListener('click', () => {
-      if (popover.classList.contains('history-popover--visible')) close();
-    });
 
     document.addEventListener('keydown', (e) => {
       if (!popover.classList.contains('history-popover--visible')) return;
@@ -479,19 +463,6 @@ export const History = {
       if ((findKey || slashKey) && !search.el.hidden) {
         e.preventDefault();
         search.focus(true);
-        return;
-      }
-      if (e.key === 'Escape') {
-        // Escape backs out of the innermost thing first: an armed Clear, then a search, then the popover.
-        if (this._disarmClear[ns]?.()) return;
-        if (search.value()) {
-          search.reset();
-          this.setQuery(ns, '');
-          refresh();
-          return;
-        }
-        close();
-        btn.focus();
       }
     });
 

@@ -50,23 +50,18 @@
     var(--shadow);
 }
 
-/* The state of a search: the accent while it has matches, red (as on the reference hash
-   field's mismatch) when nothing matches. The field's edge keeps that colour while it is
-   focused, and the ring goes back to the blue one, so focus stays visible.
-   Only the red tints the row. With matches it stays the field's own surface: the accent tint
-   would be the popover header's, and the two would merge into one band. */
+/* The state of a search: the accent while it has matches, red when nothing matches. Only the
+   field's edge, icon and count take the colour: the row keeps its surface, as a band of tint
+   would read as an error banner (and, in the accent, merge with the popover header's). The edge
+   keeps its colour while focused; with matches the ring stays the blue one, and with none it
+   turns red too, so that focus is visible without a blue halo around a red edge. */
 .history-search[data-state='match'] {
   --verdict: var(--accent);
-  --verdict-surface: var(--surface);
 }
 
 .history-search[data-state='none'] {
   --verdict: var(--danger);
-  --verdict-surface: var(--danger-surface);
-}
-
-.history-search[data-state] {
-  background: var(--verdict-surface);
+  --focus-ring: 0 0 0 2px var(--danger-glow);
 }
 
 .history-search[data-state]::before,
@@ -136,6 +131,10 @@
     padding: 4px 12px;
     /* Mobile keeps the earlier effect, as .input-wrap does */
     --focus-ring: 0 0 0 1px var(--accent-ring), 0 0 4px 1px var(--accent-glow);
+  }
+
+  .history-search[data-state='none'] {
+    --focus-ring: 0 0 0 1px var(--danger-ring), 0 0 4px 1px var(--danger-glow);
   }
 
   .history-search__input {

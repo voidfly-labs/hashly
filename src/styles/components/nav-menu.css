@@ -163,12 +163,12 @@
   }
 }
 
-/* History shortcuts (in the mobile drawer): a labelled group set apart from the section links */
+/* Groups in the mobile drawer (History shortcuts, Support): labelled, and set apart from the section links */
 .nav-menu__group {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-top: 14px;
+  margin-top: 10px;
 }
 
 .nav-menu__group[hidden],
@@ -231,6 +231,7 @@
   font-weight: 500;
   text-align: left;
   color: var(--text-muted);
+  text-decoration: none; /* a link, where the rest are buttons */
   background: transparent;
   cursor: pointer;
   transition:
