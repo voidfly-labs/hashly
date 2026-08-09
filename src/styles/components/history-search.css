@@ -4,25 +4,55 @@
          between its header and its table.
        ========================================================================= */
 .history-search {
+  /* The field's box inside the row: its distance from the row's edges (the ring spills 3px
+     beyond it, so it must stay clear of the popover's walls and of the rules above and below). */
+  --field-x: 4px;
+  --field-y: 4px;
+  --focus-ring: 0 0 0 2px var(--accent-muted);
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 4px 14px;
   border-bottom: 1px solid var(--border);
   background: var(--surface);
-  transition: box-shadow 0.15s;
 }
 
 .history-search[hidden] {
   display: none;
 }
 
-.history-search:focus-within {
-  box-shadow: inset 0 -2px 0 var(--accent);
+/* The field's own box, as the reference-hash field's: a rounded 1px edge that takes the
+   --accent-strong colour and the shared focus ring on focus (see input-wrap.css). A floating
+   box, not a full-width line, which would read as the divider above the table. */
+.history-search::before {
+  content: '';
+  position: absolute;
+  top: var(--field-y);
+  right: var(--field-x);
+  bottom: var(--field-y);
+  left: var(--field-x);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+/* The same edge as the reference-hash field's focus: its card's grey 1px border shows through
+   under the (translucent) ring, and it lifts to --shadow. */
+.history-search:focus-within::before {
+  border-color: var(--accent-strong);
+  box-shadow:
+    var(--focus-ring),
+    0 0 0 1px var(--border),
+    var(--shadow);
 }
 
 /* The state of a search: the accent while it has matches, red (as on the reference hash
-   field's mismatch) when nothing matches. It keeps its colour while the field is focused.
+   field's mismatch) when nothing matches. The field's edge keeps that colour while it is
+   focused, and the ring goes back to the blue one, so focus stays visible.
    Only the red tints the row. With matches it stays the field's own surface: the accent tint
    would be the popover header's, and the two would merge into one band. */
 .history-search[data-state='match'] {
@@ -37,7 +67,11 @@
 
 .history-search[data-state] {
   background: var(--verdict-surface);
-  box-shadow: inset 0 -2px 0 var(--verdict);
+}
+
+.history-search[data-state]::before,
+.history-search[data-state]:focus-within::before {
+  border-color: var(--verdict);
 }
 
 .history-search[data-state] .history-search__icon {
@@ -99,7 +133,9 @@
 
 @media (max-width: 630px) {
   .history-search {
-    padding: 2px 12px;
+    padding: 4px 12px;
+    /* Mobile keeps the earlier effect, as .input-wrap does */
+    --focus-ring: 0 0 0 1px var(--accent-ring), 0 0 4px 1px var(--accent-glow);
   }
 
   .history-search__input {

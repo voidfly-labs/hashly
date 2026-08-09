@@ -2,8 +2,8 @@ import { readReferenceFile } from '~core/utils/reference-file.js';
 
 import { Tooltip } from './tooltip.js';
 
-// Says what the file is for: the drop zone's own button carries the same icon.
-const TIP = 'Load hash from file';
+// Matches the drop zone's "browse" wording; the icon alone says it opens a file picker.
+const TIP = 'Browse';
 
 /** Wires an "Upload" button that reads a file's text into the reference field.
  *  `onText(line)` gets the reference picked from the file (see utils/reference-file.js);

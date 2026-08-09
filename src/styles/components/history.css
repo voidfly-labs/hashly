@@ -257,7 +257,8 @@
 
 .history-popover__close {
   display: flex;
-  margin: -2px; /* optical alignment against the edge of the header padding */
+  padding: 6px;
+  margin: -6px -9px -6px -6px;
 }
 
 .history-popover__close:hover,
@@ -283,7 +284,6 @@
   transform: scale(0.9);
 }
 
-.history-popover__close svg,
 .file-drop__clear svg,
 .text-input__clear svg,
 .text-input__paste svg,
@@ -293,6 +293,13 @@
 .history-search__clear svg {
   width: 16px;
   height: 16px;
+  fill: currentColor;
+}
+
+/* Its own size: the dismiss button is a larger target than the field buttons above */
+.history-popover__close svg {
+  width: 18px;
+  height: 18px;
   fill: currentColor;
 }
 

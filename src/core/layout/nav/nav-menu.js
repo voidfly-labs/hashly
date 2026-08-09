@@ -1,3 +1,16 @@
+// What closes the menu when clicked: the section links, and the history entries (see nav-history.js).
+const CLOSING_ITEMS = '.header__nav-link, .nav-menu__action';
+
+/** Dims the page under the drawer. It lives on <body>, not in the header: the header's
+ *  backdrop-filter would make it the containing block of a fixed child. */
+function createBackdrop() {
+  const backdrop = document.createElement('div');
+  backdrop.className = 'nav-backdrop';
+  backdrop.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(backdrop);
+  return backdrop;
+}
+
 export const NavMenu = {
   init() {
     const toggle = document.getElementById('navToggle');
@@ -5,28 +18,33 @@ export const NavMenu = {
     const nav = document.getElementById('navMenu');
     if (!toggle || !header || !nav) return;
 
-    toggle.addEventListener('click', () => {
-      const isOpen = header.classList.toggle('is-open');
-      toggle.setAttribute('aria-expanded', String(isOpen));
-      nav.setAttribute('aria-hidden', String(!isOpen));
-      toggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
-    });
+    const backdrop = createBackdrop();
+    const isOpen = () => header.classList.contains('is-open');
 
-    const close = () => {
-      header.classList.remove('is-open');
-      toggle.setAttribute('aria-expanded', 'false');
-      nav.setAttribute('aria-hidden', 'true');
-      toggle.setAttribute('aria-label', 'Open navigation menu');
+    const setOpen = (open) => {
+      header.classList.toggle('is-open', open);
+      backdrop.classList.toggle('nav-backdrop--visible', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.setAttribute('aria-hidden', String(!open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
     };
 
-    nav.querySelectorAll('.header__nav-link').forEach((link) => {
-      link.addEventListener('click', close);
-    });
+    toggle.addEventListener('click', () => setOpen(!isOpen()));
+    backdrop.addEventListener('click', () => setOpen(false));
+    nav.querySelectorAll(CLOSING_ITEMS).forEach((item) => item.addEventListener('click', () => setOpen(false)));
 
     document.addEventListener('click', (e) => {
-      if (header.classList.contains('is-open') && !header.contains(e.target)) {
-        close();
-      }
+      if (isOpen() && !header.contains(e.target)) setOpen(false);
+    });
+
+    // Escape closes the menu and hands focus back to its button, so the keyboard isn't left in a
+    // drawer that is gone.
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || !isOpen()) return;
+      // A history popover opened from the menu has its own Escape.
+      if (document.querySelector('.history-popover--visible')) return;
+      setOpen(false);
+      toggle.focus();
     });
   },
 };

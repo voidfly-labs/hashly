@@ -17,6 +17,8 @@ import { Tooltip } from './tooltip.js';
 // How long Clear stays armed for its confirming second click.
 const CLEAR_CONFIRM_MS = 4000;
 const ARMED_CLASS = 'history-popover__clear--armed';
+/** Fired on `document` whenever a history's entries change; `detail` is `{ ns, count }`. */
+export const HISTORY_CHANGE = 'history:change';
 
 let _APP_CONFIG, _DEFAULT_ALGO, _ALGO_ORDER;
 
@@ -52,6 +54,9 @@ export const History = {
   _tallest: {},
   // Per popover, the function that takes its Clear button out of the "Confirm" state (see initPopover).
   _disarmClear: {},
+  // Per popover, how to open and close it from outside (the nav menu opens them).
+  _openFns: {},
+  _closeFns: {},
   // The search in each popover: the query as typed, and its words (see utils/history-filter.js).
   _query: { text: '', file: '' },
   _terms: { text: [], file: [] },
@@ -96,6 +101,7 @@ export const History = {
     for (const { batchId } of this._stores[ns]) {
       if (batchId > this._batchCounter) this._batchCounter = batchId;
     }
+    this._notify(ns);
   },
 
   save(ns) {
@@ -125,6 +131,7 @@ export const History = {
     // New entry goes to page 0
     this._pages[ns] = 0;
     this.save(ns);
+    this._notify(ns);
   },
 
   clear(ns) {
@@ -132,10 +139,22 @@ export const History = {
     this._sources[ns].clear();
     this._pages[ns] = 0;
     this.save(ns);
+    this._notify(ns);
   },
 
   entries(ns) {
     return this._stores[ns];
+  },
+
+  /** Opens a section's history popover from outside it, closing the other one. */
+  show(ns) {
+    for (const other of Object.keys(this._closeFns)) if (other !== ns) this._closeFns[other]();
+    this._openFns[ns]?.();
+  },
+
+  /** Tells listeners (the nav menu's counts) that a history's entries changed. */
+  _notify(ns) {
+    document.dispatchEvent(new CustomEvent(HISTORY_CHANGE, { detail: { ns, count: this._stores[ns].length } }));
   },
 
   /** The entries the popover shows, in its order: all of them, or those matching the search. */
@@ -341,8 +360,11 @@ export const History = {
       });
 
       popover.querySelectorAll('.history-pagination__btn').forEach((pbtn) => {
+        pbtn.addEventListener('mouseenter', () => Tooltip.show(pbtn, pbtn.dataset.dir === '-1' ? 'Previous' : 'Next'));
+        pbtn.addEventListener('mouseleave', () => Tooltip.hide());
         pbtn.addEventListener('click', (e) => {
           e.stopPropagation();
+          Tooltip.hide(); // the footer is rebuilt below, so no mouseleave comes for this button
           const pages = Math.max(1, Math.ceil(this._visible(ns).length / this.PAGE_SIZE));
           const dir = Number.parseInt(pbtn.dataset.dir, 10);
           this._pages[ns] = Math.max(0, Math.min(this._pages[ns] + dir, pages - 1));
@@ -421,6 +443,9 @@ export const History = {
       const anyOpen = document.querySelector('.history-popover--visible');
       if (!anyOpen) document.getElementById('historyBackdrop').classList.remove('history-backdrop--visible');
     };
+
+    this._openFns[ns] = open;
+    this._closeFns[ns] = close;
 
     popover.addEventListener('click', (e) => {
       if (e.target.closest('[data-popover-close]')) {

@@ -13,6 +13,7 @@ import { checkWasmSupport } from '~core/components/warning-banner.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
 import { initSocialTooltips } from '~core/layout/footer/social.js';
 import { initVersionTooltip } from '~core/layout/footer/version.js';
+import { initNavHistory } from '~core/layout/nav/nav-history.js';
 import { NavMenu } from '~core/layout/nav/nav-menu.js';
 import { NavSpy } from '~core/layout/nav/nav-spy.js';
 import { FaqSection } from '~core/sections/faq.js';
@@ -61,6 +62,7 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher
   TabTitle.init();
   History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
   History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
+  initNavHistory();
   TextSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
   Permalink.init();
   const permalink = Permalink.restoreFromUrl();

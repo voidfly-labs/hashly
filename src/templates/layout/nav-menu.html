@@ -22,4 +22,25 @@
   >
   <a class="header__nav-link" href="#random-section">Random</a>
   <a class="header__nav-link" href="#about-section">FAQ</a>
+  <!-- Shortcuts to the history popovers: shown on mobile only, and only for a history with entries -->
+  <div class="nav-menu__group" id="navHistory" role="group" aria-labelledby="navHistoryLabel" hidden>
+    <span class="nav-menu__group-label" id="navHistoryLabel"
+      >History<svg viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-history"></use></svg
+    ></span>
+    <button class="nav-menu__action" type="button" data-history-ns="text" hidden>
+      <span class="nav-menu__action-label">Text <%= sectionNounPlural %></span>
+      <span class="nav-menu__count" aria-hidden="true">0</span>
+      <svg class="nav-menu__chevron" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-chevron-right"></use>
+      </svg>
+    </button>
+    <button class="nav-menu__action" type="button" data-history-ns="file" hidden>
+      <span class="nav-menu__action-label">File <%= sectionNounPlural %></span>
+      <span class="nav-menu__count" aria-hidden="true">0</span>
+      <svg class="nav-menu__chevron" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-chevron-right"></use>
+      </svg>
+    </button>
+  </div>
 </nav>

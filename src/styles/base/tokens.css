@@ -79,9 +79,9 @@
   --mark-diff-edge: rgba(255, 107, 120, 0.65);
   --accent-ring: rgba(107, 138, 255, 0.5);
   --accent-strong: rgba(107, 138, 255, 0.7); /* --accent at 70% alpha */
-  --scrollbar-thumb: rgba(122, 133, 160, 0.55); /* --text-muted at 55% alpha */
+  --scrollbar-thumb: rgba(154, 164, 188, 0.45); /* --text-muted at 45% alpha */
   --text: #e2e6ef;
-  --text-muted: #7a85a0;
+  --text-muted: #9aa4bc;
   --text-hint: #e0a030;
   --success: #4cc38a;
   --success-surface: rgba(76, 195, 138, 0.1);
