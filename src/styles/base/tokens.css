@@ -54,6 +54,7 @@
          Even rows use --result-alt-surface — a lighter, barely-there step of the
          same hue family so the stripe is gentle and the card reads as one block. */
   --result-alt-surface: #f7f8fe;
+  --result-hover-surface: #e9edfd;
 }
 
 [data-theme='dark'] {
@@ -103,4 +104,5 @@
   --shadow-lg: 0 6px 28px rgba(0, 0, 0, 0.32);
 
   --result-alt-surface: rgba(107, 138, 255, 0.03);
+  --result-hover-surface: rgba(107, 138, 255, 0.14);
 }

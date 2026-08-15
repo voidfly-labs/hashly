@@ -1,4 +1,5 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { createCounterNotes } from '~core/components/counter-notes.js';
 import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
@@ -7,6 +8,7 @@ import { History } from '~core/components/history.js';
 import { initPasteButton } from '~core/components/paste-button.js';
 import { setHashEmpty } from '~core/components/result.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
+import { createSoloResult } from '~core/components/solo-result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { Clipboard } from '~core/utils/clipboard.js';
@@ -79,11 +81,14 @@ export const TextSection = {
     _ALGORITHMS.forEach(({ id }) => this._buildRow(id));
     this._hiddenSummary = createHiddenSummary({
       resultsEl: this._resultsEl,
+      total: _ALGORITHMS.length,
       onShowAll: () => this._toggleAll(),
     });
+    this._soloResult = createSoloResult({ resultsEl: this._resultsEl, algorithms: _ALGORITHMS });
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
 
     // Put back the visitor's saved formats and hidden algorithms (and keep saving them).
     rememberRadioGroup('textInputFormat', 'textInputFormat');
@@ -161,6 +166,7 @@ export const TextSection = {
 
     // Inline ✕ button in the textarea corner — mirrors file-drop__clear behaviour.
     this._inputClear.addEventListener('click', () => this.onClear());
+    initButtonTooltip(this._inputClear, 'Clear');
 
     initPasteButton(document.getElementById('textPasteBtn'), {
       // Don't focus the textarea: on mobile that would raise the keyboard just for a paste.
@@ -388,6 +394,7 @@ export const TextSection = {
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
     saveHiddenAlgos(this, 'textHidden');
     if (resetSpotlight) AlgoSpotlight.reset();
     if (!refreshTooltip) return;
@@ -464,6 +471,7 @@ export const TextSection = {
     }
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
     saveHiddenAlgos(this, 'textHidden');
     if (resetSpotlight) AlgoSpotlight.reset();
   },

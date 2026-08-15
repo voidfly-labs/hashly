@@ -1,9 +1,11 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
+import { createSoloResult } from '~core/components/solo-result.js';
 import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
@@ -59,11 +61,14 @@ export const FileSection = {
     });
     this._hiddenSummary = createHiddenSummary({
       resultsEl: this._resultsEl,
+      total: _ALGORITHMS.length,
       onShowAll: () => this._toggleAll(),
     });
+    this._soloResult = createSoloResult({ resultsEl: this._resultsEl, algorithms: _ALGORITHMS });
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
 
     // Put back the visitor's saved output format and hidden algorithms (and keep saving them).
     rememberRadioGroup('fileFormat', 'fileOutputFormat');
@@ -147,6 +152,8 @@ export const FileSection = {
 
     this._dropClear.addEventListener('mouseenter', () => this._drop.classList.add('file-drop--clear-hover'));
     this._dropClear.addEventListener('mouseleave', () => this._drop.classList.remove('file-drop--clear-hover'));
+
+    initButtonTooltip(this._dropClear, 'Remove file');
 
     this._dropClear.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -281,6 +288,7 @@ export const FileSection = {
 
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
     saveHiddenAlgos(this, 'fileHidden');
     this._verify.refresh();
     this._cancelIfIdle();
@@ -351,6 +359,7 @@ export const FileSection = {
     }
     this._updateToggleAllBtn();
     this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
     saveHiddenAlgos(this, 'fileHidden');
     this._verify.refresh();
     this._cancelIfIdle();

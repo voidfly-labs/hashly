@@ -1,5 +1,6 @@
 import { iconHref } from '~core/utils/icon.js';
 
+import { initButtonTooltip } from './button-tooltip.js';
 import { initResponsivePlaceholder } from './responsive-placeholder.js';
 
 // Mouse-and-keyboard devices only: on a phone, focusing the field on open raises the keyboard
@@ -67,6 +68,7 @@ export function createHistorySearch({ ns, onChange }) {
     // Enter dismisses the on-screen keyboard, so the results can be seen.
     if (e.key === 'Enter' && !keyboard.matches) input.blur();
   });
+  initButtonTooltip(clear, 'Clear');
   clear.addEventListener('click', () => {
     controller.reset();
     onChange('');

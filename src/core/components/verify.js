@@ -1,6 +1,7 @@
 import { parseReference } from '~core/utils/reference.js';
 import { availableSizes, describeVerifyState } from '~core/utils/verify-status.js';
 
+import { initButtonTooltip } from './button-tooltip.js';
 import { initPasteButton } from './paste-button.js';
 import { initReferenceFileButton } from './reference-file-button.js';
 import { initReferenceFileDrop } from './reference-file-drop.js';
@@ -86,6 +87,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
       clear();
     }
   });
+  initButtonTooltip(clearBtn, 'Clear');
   clearBtn.addEventListener('click', () => {
     clear();
     input.focus();

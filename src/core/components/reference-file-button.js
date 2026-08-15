@@ -1,6 +1,6 @@
 import { readReferenceFile } from '~core/utils/reference-file.js';
 
-import { Tooltip } from './tooltip.js';
+import { initButtonTooltip } from './button-tooltip.js';
 
 // Matches the drop zone's "browse" wording; the icon alone says it opens a file picker.
 const TIP = 'Browse';
@@ -25,8 +25,5 @@ export function initReferenceFileButton(btn, fileInput, { getFileName, onText, o
     else onText(line);
   });
 
-  btn.addEventListener('mouseenter', () => Tooltip.show(btn, TIP));
-  btn.addEventListener('mouseleave', () => Tooltip.hide());
-  btn.addEventListener('focus', () => Tooltip.show(btn, TIP));
-  btn.addEventListener('blur', () => Tooltip.hide());
+  initButtonTooltip(btn, TIP);
 }

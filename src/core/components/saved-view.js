@@ -27,3 +27,14 @@ export function restoreHiddenAlgos(section, prefName, algorithms) {
 export function saveHiddenAlgos(section, prefName) {
   Preferences.set(prefName, [...section.hiddenAlgos]);
 }
+
+/** The ids of the sections the visitor left open, or null when nothing is saved (everything
+ *  starts open). The saved list is the complete set: a section that isn't in it is collapsed. */
+export function savedOpenSections(prefName) {
+  const saved = Preferences.get(prefName);
+  return Array.isArray(saved) ? new Set(saved) : null;
+}
+
+export function saveOpenSections(prefName, ids) {
+  Preferences.set(prefName, [...ids]);
+}

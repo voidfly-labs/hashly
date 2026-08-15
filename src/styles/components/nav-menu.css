@@ -72,6 +72,12 @@
     visibility 0.2s;
 }
 
+/* Mobile-only. Without a desktop rule it is a plain block at opacity 1, so crossing the breakpoint
+   fades the dim out over 0.2s (a flash); display: none has no style to transition from. */
+.nav-backdrop {
+  display: none;
+}
+
 @media (max-width: 630px) {
   .nav-toggle {
     display: flex;
@@ -140,6 +146,7 @@
   /* Dims the page under the open drawer. Below the header (z-index 100), so the header and
      drawer stay crisp; the history backdrop (110) still covers both. */
   .nav-backdrop {
+    display: block;
     position: fixed;
     inset: 0;
     z-index: 90;

@@ -1,18 +1,7 @@
-/** Makes every top-level <section class="section"> collapsible by clicking
- *  its heading — collapsing to just the title line (and, for Text/File,
- *  the toggle-all/permalink/history buttons that share that row).
- *
- *  No template changes: at init, the heading's existing content is moved
- *  into a real <button> (for native keyboard/AT semantics), and every
- *  sibling after the header is moved into a synthetic .section__body
- *  wrapper, animated via the same grid-template-rows collapse technique
- *  used for .result rows (see result.css).
- *
- *  No persistence — every section always starts expanded on load. If the
- *  user navigates to a section via its #anchor (header nav, footer links)
- *  while it's collapsed (or to an element inside it, like the skip link's
- *  textarea), it auto-expands so they don't land on an
- *  apparently-empty section. */
+import { savedOpenSections, saveOpenSections } from './saved-view.js';
+
+const PREF_NAME = 'openSections';
+
 // Material Icons "keyboard_arrow_down" — rotated 180° for the expanded
 // (pointing up) state rather than swapped for a separate "keyboard_arrow_up"
 // glyph, since the two are exact mirror images and rotation is what lets the
@@ -30,6 +19,7 @@ function _setCollapsed(entry, collapsed) {
 
 export function initSectionCollapse() {
   const entries = new Map(); // section id -> { section, body, toggleBtn }
+  const savedOpen = savedOpenSections(PREF_NAME);
 
   document.querySelectorAll('.section').forEach((section) => {
     const header = section.querySelector('.section__label-row') || section.querySelector(':scope > .section__label');
@@ -71,10 +61,17 @@ export function initSectionCollapse() {
 
     const entry = { section, body, toggleBtn };
     entries.set(section.id, entry);
+    if (savedOpen && !savedOpen.has(section.id)) _setCollapsed(entry, true);
 
     toggleBtn.addEventListener('click', () => {
       const collapsed = !section.classList.contains('section--collapsed');
       _setCollapsed(entry, collapsed);
+      saveOpenSections(
+        PREF_NAME,
+        [...entries.values()]
+          .filter((e) => !e.section.classList.contains('section--collapsed'))
+          .map((e) => e.section.id),
+      );
       // Close an open history popover inside a section that's collapsing —
       // it's anchored to the header, which stays visible, but its content
       // (e.g. the just-hidden result rows) no longer makes sense to show.

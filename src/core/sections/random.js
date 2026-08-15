@@ -1,4 +1,5 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
+import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
@@ -135,16 +136,13 @@ export const RandomSection = {
 
       const randomBadge = item.querySelector('.algo-badge');
       randomBadge.setAttribute('aria-label', `${algo} — ${_tipText}`);
-      randomBadge.addEventListener('mouseenter', () => Tooltip.show(randomBadge, _tipText));
-      randomBadge.addEventListener('mouseleave', () => Tooltip.hide());
-      randomBadge.addEventListener('focus', () => Tooltip.show(randomBadge, _tipText));
-      randomBadge.addEventListener('blur', () => Tooltip.hide());
+      initButtonTooltip(randomBadge, _tipText);
 
-      // Hover tooltips for icon-only Copy / Download buttons in random list
+      // Hover tooltips for icon-only Copy / Download buttons in random list. Their click flashes
+      // "Copied!" / "Exported" (see handleItemAction), so it must not hide the tooltip as well.
       item.querySelectorAll('.random__item-btn[data-action]').forEach((btn) => {
         const label = btn.dataset.action === 'copy' ? 'Copy' : 'Download';
-        btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
-        btn.addEventListener('mouseleave', () => Tooltip.hide());
+        initButtonTooltip(btn, label, { hideOnClick: false });
       });
 
       fragment.appendChild(item);

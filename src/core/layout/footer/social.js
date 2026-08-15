@@ -1,4 +1,4 @@
-import { Tooltip } from '~core/components/tooltip.js';
+import { initButtonTooltip } from '~core/components/button-tooltip.js';
 
 /** Wire hover/focus tooltips for the footer's social icon links
  *  (`.footer__social-icon[aria-label]`), reusing each link's own aria-label
@@ -7,10 +7,6 @@ import { Tooltip } from '~core/components/tooltip.js';
 export function initSocialTooltips() {
   const links = document.querySelectorAll('.footer__social-icon[aria-label]');
   for (const link of links) {
-    const tip = link.getAttribute('aria-label');
-    link.addEventListener('mouseenter', () => Tooltip.show(link, tip));
-    link.addEventListener('mouseleave', () => Tooltip.hide());
-    link.addEventListener('focus', () => Tooltip.show(link, tip));
-    link.addEventListener('blur', () => Tooltip.hide());
+    initButtonTooltip(link, link.getAttribute('aria-label'));
   }
 }

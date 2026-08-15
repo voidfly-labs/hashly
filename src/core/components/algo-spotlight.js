@@ -2,7 +2,7 @@ import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
 import { Format } from '~core/utils/format.js';
 
-import { Tooltip } from './tooltip.js';
+import { initButtonTooltip } from './button-tooltip.js';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.
  *  resetSpotlight: false — these calls originate from AlgoSpotlight itself,
@@ -113,10 +113,7 @@ export const AlgoSpotlight = {
   _wireBadge(badge, algo, ALGORITHMS, sections) {
     const tipText = `${algo.bits}-bit · ${algo.hexLen} hex chars`;
     badge.setAttribute('aria-label', `${algo.id} — ${tipText} — click to show only this algorithm`);
-    badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText));
-    badge.addEventListener('mouseleave', () => Tooltip.hide());
-    badge.addEventListener('focus', () => Tooltip.show(badge, tipText));
-    badge.addEventListener('blur', () => Tooltip.hide());
+    initButtonTooltip(badge, tipText, { hideOnClick: false });
     badge.addEventListener('click', () => this._toggle(algo.id, ALGORITHMS, sections));
   },
 

@@ -139,6 +139,18 @@
   background: transparent;
 }
 
+/* ── Click-to-copy hover ──────────────────────────────────────────────────
+       The whole row copies its hash (see the row click handler), so the whole row
+       reacts. Not offered where a click does nothing (empty, hidden), while
+       Ctrl/⌘ has the hash cells in selection mode (core/components/hash-select.js),
+       or on rows carrying a verify verdict (their tint is the message). */
+@media (hover: hover) {
+  html:not(.hash-select)
+    .result:not(.result--empty):not(.result--hidden):not(.result--match):not(.result--mismatch):hover {
+    background: var(--result-hover-surface);
+  }
+}
+
 /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
 
 @media (max-width: 630px) {

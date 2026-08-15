@@ -9,6 +9,7 @@ import { iconHref } from '~core/utils/icon.js';
 import { slideIn } from '~core/utils/slide-in.js';
 import { takesText } from '~core/utils/text-field.js';
 
+import { initButtonTooltip } from './button-tooltip.js';
 import { initHistoryRows } from './history-rows.js';
 import { createHistorySearch } from './history-search.js';
 import { renderHistoryTable } from './history-table.js';
@@ -353,11 +354,11 @@ export const History = {
       this._renderFooter(ns, popover);
       // Measured with the footer in place: on a short screen the body is what gives way to it.
       this._tallest[ns] = Math.max(this._tallest[ns] ?? 0, body.offsetHeight);
-      // Re-wire hover tooltips on the newly-rendered action buttons
+      // Re-wire hover tooltips on the newly-rendered action buttons. Their click flashes
+      // "Copied!" / "Exported", so it must not hide the tooltip as well.
       body.querySelectorAll('.history-table__action-btn[data-action]').forEach((btn) => {
         const label = btn.dataset.action === 'copy-history' ? 'Copy' : 'Download';
-        btn.addEventListener('mouseenter', () => Tooltip.show(btn, label));
-        btn.addEventListener('mouseleave', () => Tooltip.hide());
+        initButtonTooltip(btn, label, { hideOnClick: false });
       });
 
       popover.querySelectorAll('.history-pagination__btn').forEach((pbtn) => {
