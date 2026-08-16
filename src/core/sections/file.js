@@ -24,6 +24,7 @@ import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { downloadDigest } from '~core/utils/download-digest.js';
 import { Format } from '~core/utils/format.js';
+import { trackPageDrag } from '~core/utils/page-drag.js';
 import { createRunStats } from '~core/utils/run-stats.js';
 import { takesText } from '~core/utils/text-field.js';
 
@@ -121,26 +122,13 @@ export const FileSection = {
     // ── Whole-page drag indicator ──────────────────────────────────────
     // Highlights the drop zone whenever a file is dragged anywhere over
     // the browser window, not just directly over the zone itself.
-    // An enter-counter prevents the flicker that occurs when dragleave
-    // fires as the cursor moves between child elements of the document.
-    let _dragDepth = 0;
-
-    document.addEventListener('dragenter', (e) => {
-      // Only react to file drags, not text selections or other drag types
-      if (!e.dataTransfer?.types?.includes('Files')) return;
-      _dragDepth++;
-      if (_dragDepth === 1) {
-        this._drop.classList.add('file-drop--page-drag');
-        this._drop.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-
-    document.addEventListener('dragleave', (e) => {
-      if (!e.dataTransfer?.types?.includes('Files')) return;
-      _dragDepth--;
-      if (_dragDepth === 0) {
-        this._drop.classList.remove('file-drop--page-drag');
-      }
+    // Only file drags count, not text selections or other drag types.
+    trackPageDrag({
+      accepts: (dt) => Boolean(dt?.types?.includes('Files')),
+      onChange: (active, { internal }) => {
+        this._drop.classList.toggle('file-drop--page-drag', active);
+        if (active && !internal) this._drop.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
     });
 
     document.addEventListener('dragover', (e) => {
@@ -153,9 +141,6 @@ export const FileSection = {
       if (!e.dataTransfer?.types?.includes('Files') && takesText(e.target)) return;
       // Prevent the browser from navigating to a dropped file
       e.preventDefault();
-      // Reset counter and page-drag highlight unconditionally
-      _dragDepth = 0;
-      this._drop.classList.remove('file-drop--page-drag');
       // If the drop landed inside the zone itself, the zone's own handler
       // already processed the file — don't process it a second time.
       if (this._drop.contains(e.target)) return;

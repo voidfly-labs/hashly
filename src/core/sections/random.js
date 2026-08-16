@@ -3,7 +3,6 @@ import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Preferences } from '~core/services/preferences.js';
-import { Storage } from '~core/services/storage.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
@@ -33,8 +32,7 @@ export const RandomSection = {
     // Default to whatever algorithm is spotlighted via the header Quick
     // Select badges, if any, rather than always DEFAULT_ALGO.
     // Otherwise to the algorithm the visitor last picked here, then to DEFAULT_ALGO.
-    const spotlighted = Storage.read(AlgoSpotlight._SPOTLIGHT_KEY);
-    const initialAlgo = ALGORITHMS.some((a) => a.id === spotlighted) ? spotlighted : this._savedAlgo();
+    const initialAlgo = AlgoSpotlight.saved(ALGORITHMS) ?? this._savedAlgo();
 
     // Populate algorithm options from ALGORITHMS (single source of truth)
     this.elements.algo.innerHTML = _ALGORITHMS

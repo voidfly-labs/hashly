@@ -24,6 +24,7 @@ import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { downloadDigest } from '~core/utils/download-digest.js';
 import { Format } from '~core/utils/format.js';
+import { trackPageDrag } from '~core/utils/page-drag.js';
 import { takesText } from '~core/utils/text-field.js';
 import { inputNotes, isValidInput } from '~core/utils/text-notes.js';
 import { textPreview } from '~core/utils/text-preview.js';
@@ -221,27 +222,17 @@ export const TextSection = {
     this._card = this._input.closest('.card');
 
     // ── Page-wide text drag highlight ──────────────────────────────────
-    // Mirrors FileSection's _dragDepth pattern exactly: document-level
-    // dragenter/dragleave light up the text card whenever ANY text/plain
-    // drag enters the browser window, regardless of where it lands.
-    // Only text drags are handled; Files drags route to the File section.
-    let _textDragDepth = 0;
-
+    // Lights up the text card whenever ANY text/plain drag enters the browser window,
+    // regardless of where it lands. Only text drags are handled; Files drags route to
+    // the File section.
     const _hasTextOnly = (dt) => dt?.types?.includes('text/plain') && !dt?.types?.includes('Files');
 
-    document.addEventListener('dragenter', (e) => {
-      if (!_hasTextOnly(e.dataTransfer)) return;
-      _textDragDepth++;
-      if (_textDragDepth === 1) {
-        this._card.classList.add('card--text-drag');
-        this._card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    });
-
-    document.addEventListener('dragleave', (e) => {
-      if (!_hasTextOnly(e.dataTransfer)) return;
-      _textDragDepth--;
-      if (_textDragDepth === 0) this._card.classList.remove('card--text-drag');
+    trackPageDrag({
+      accepts: (dt) => Boolean(_hasTextOnly(dt)),
+      onChange: (active, { internal }) => {
+        this._card.classList.toggle('card--text-drag', active);
+        if (active && !internal) this._card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      },
     });
 
     document.addEventListener('dragover', (e) => {
@@ -251,9 +242,6 @@ export const TextSection = {
 
     document.addEventListener('drop', (e) => {
       if (!_hasTextOnly(e.dataTransfer)) return;
-      // Reset page-drag state unconditionally (mirrors FileSection)
-      _textDragDepth = 0;
-      this._card.classList.remove('card--text-drag');
       // Text dropped into another field (the reference hash, the history search) stays there.
       if (takesText(e.target)) return;
       // If the drop landed inside the card, the card's own handler already
@@ -280,8 +268,6 @@ export const TextSection = {
       e.preventDefault();
       // Stop propagation so the document drop handler skips this drop.
       e.stopPropagation();
-      _textDragDepth = 0;
-      this._card.classList.remove('card--text-drag');
 
       const raw = e.dataTransfer.getData('text/plain');
       if (raw) this.insertText(raw, { replace: true });

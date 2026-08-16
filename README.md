@@ -40,7 +40,7 @@ lightweight. The target budget is 150–250 kB per app, fully loaded.
 
 ## Requirements
 
-Node.js 18+ to build; any modern browser to use.
+Node.js 20.19+ to build; any modern browser to use.
 
 ## Getting started
 
@@ -51,7 +51,7 @@ npm install
 ### Run the dev server
 
 ```bash
-APP=md5kit npm run dev   # → http://localhost:5173/src/apps/md5kit/
+APP=md5kit npm run dev   # → http://localhost:5173/src/apps/md5/
 APP=crckit npm run dev
 # ...
 ```

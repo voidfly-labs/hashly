@@ -1,8 +1,10 @@
 import { Preferences } from '~core/services/preferences.js';
-import { Storage } from '~core/services/storage.js';
 import { Format } from '~core/utils/format.js';
 
 import { initButtonTooltip } from './button-tooltip.js';
+
+// The spotlight is saved with the other preferences (see services/preferences.js).
+const PREF_NAME = 'spotlight';
 
 /** Show only `algoId` in `section`, hiding every other algorithm.
  *  resetSpotlight: false — these calls originate from AlgoSpotlight itself,
@@ -32,7 +34,7 @@ function _showAllInSection(section, ALGORITHMS) {
  * clicking one spotlights it (hiding every other algorithm in both
  * sections), clicking the spotlighted badge again puts back what each section
  * had hidden before.
- * The choice is remembered in localStorage and restored on the next visit.
+ * The choice is remembered in the preferences and restored on the next visit.
  *
  * Any manual show/hide elsewhere (a row's own badge, "show/hide all", the
  * hidden-algorithms summary) clears the spotlight via reset() — once the
@@ -45,7 +47,6 @@ function _showAllInSection(section, ALGORITHMS) {
 export const AlgoSpotlight = {
   _state: { spotlightedAlgo: null },
   _container: null,
-  _SPOTLIGHT_KEY: 'spotlight-algo',
   _onChange: null,
   // What each section had hidden before the spotlight took over (Map<section, Set<id>>), so
   // ending the spotlight puts that back rather than showing every algorithm.
@@ -68,9 +69,16 @@ export const AlgoSpotlight = {
     if (this._state.spotlightedAlgo === null) return;
     this._state.spotlightedAlgo = null;
     this._before = null;
-    Storage.remove(this._SPOTLIGHT_KEY);
+    Preferences.set(PREF_NAME, null);
     this._updateBadgeClasses();
     this._onChange?.(null);
+  },
+
+  /** The spotlight the visitor left on, if it is still one of `ALGORITHMS`, else null. Nothing
+   *  is saved for a permalink view (see Preferences), which shows what the link says. */
+  saved(ALGORITHMS) {
+    const saved = Preferences.get(PREF_NAME);
+    return ALGORITHMS.some((a) => a.id === saved) ? saved : null;
   },
 
   getSpotlighted() {
@@ -89,7 +97,7 @@ export const AlgoSpotlight = {
     // choice stays what it was before it, and is what comes back); a permalink's view isn't theirs either.
     Preferences.silently(() => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS)));
     this._state.spotlightedAlgo = algoId;
-    if (persist) Storage.write(this._SPOTLIGHT_KEY, algoId);
+    if (persist) Preferences.set(PREF_NAME, algoId);
     this._updateBadgeClasses();
     this._onChange?.(algoId);
   },
@@ -141,10 +149,8 @@ export const AlgoSpotlight = {
       return;
     }
 
-    const persisted = Storage.read(this._SPOTLIGHT_KEY);
-    if (persisted && ALGORITHMS.some((a) => a.id === persisted)) {
-      this._apply(persisted, ALGORITHMS, sections);
-    }
+    const persisted = this.saved(ALGORITHMS);
+    if (persisted) this._apply(persisted, ALGORITHMS, sections);
     this._updateBadgeClasses();
   },
 };

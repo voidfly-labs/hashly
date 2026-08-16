@@ -87,6 +87,13 @@
     visibility 0.2s;
 }
 
+/* Nothing to copy or download yet: hide the buttons but keep their space, so the row does not
+   change size when the digest arrives. Must follow the rule above (same specificity). */
+.result.result--empty .result__actions {
+  opacity: 0;
+  visibility: hidden;
+}
+
 /* In random items the badge sits at the trailing end; flex: 1 on the hash
        span pushes everything after it to the right naturally. */
 .random__item-badge {
