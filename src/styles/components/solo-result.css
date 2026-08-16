@@ -39,7 +39,7 @@
   transition: font-size 0.3s ease;
 }
 
-.result--solo .result__hash:not(.result__hash--empty):not(.result__hash--computing) {
+.result--solo .result__hash:not(.result__hash--empty) {
   font-size: 18px;
   line-height: 1.5;
   letter-spacing: 0.6px;
@@ -60,7 +60,7 @@
 }
 
 @media (max-width: 630px) {
-  .result--solo .result__hash:not(.result__hash--empty):not(.result__hash--computing) {
+  .result--solo .result__hash:not(.result__hash--empty) {
     font-size: 15px;
   }
 

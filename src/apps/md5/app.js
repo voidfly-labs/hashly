@@ -1,9 +1,8 @@
-import { createMD4, createMD5, md4, md5 } from 'hash-wasm';
-
-import { md2 } from '~core/algos/md2.js';
 import { initApp } from '~core/init/app.js';
-import { forEachChunk } from '~core/utils/file-chunks.js';
-import { Format } from '~core/utils/format.js';
+import { createHasherClient } from '~core/workers/hasher-client.js';
+import { spawnWorker } from '~core/workers/spawn.js';
+
+import workerUrl from './worker.js?worker&url';
 
 const APP_CONFIG = {
   appName: 'md5kit',
@@ -13,59 +12,20 @@ const APP_CONFIG = {
   defaultHiddenAlgos: ['MD2'],
 };
 
+// `cost` is the time a byte takes, relative to the others (measured in the worker, in tenths of a ms
+// per MiB): it is how a file's algorithms are shared out over the threads. MD2 is plain
+// JavaScript, the rest WebAssembly.
 const ALGORITHMS = [
-  { id: 'MD2', type: 'md2', bits: 128, hexLen: 32 },
-  { id: 'MD4', type: 'wasm', fn: md4, createFn: createMD4, bits: 128, hexLen: 32 },
-  { id: 'MD5', type: 'wasm', fn: md5, createFn: createMD5, bits: 128, hexLen: 32 },
+  { id: 'MD2', bits: 128, hexLen: 32, cost: 1000 },
+  { id: 'MD4', bits: 128, hexLen: 32, cost: 25 },
+  { id: 'MD5', bits: 128, hexLen: 32, cost: 35 },
 ];
 
 const DEFAULT_ALGO = 'MD5';
 const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
 const Hasher = {
-  async _hashBytes(algo, data) {
-    if (algo.type === 'wasm') return algo.fn(data);
-    if (algo.type === 'md2') return md2(data);
-    throw new Error(`Unknown algo type: ${algo.type}`);
-  },
-
-  async fromTextAll(text, inputFmt = 'utf-8') {
-    const data = Format.textToBytes(text, inputFmt);
-    const results = await Promise.all(ALGORITHMS.map(async (algo) => [algo.id, await this._hashBytes(algo, data)]));
-    return new Map(results);
-  },
-
-  async fromFileAll(file, onProgress, algos = ALGORITHMS, signal) {
-    const hashers = await Promise.all(
-      algos.map(async (algo) => {
-        let instance;
-        if (algo.type === 'md2') {
-          instance = md2.create();
-        } else {
-          instance = await algo.createFn();
-          instance.init();
-        }
-        return { id: algo.id, instance };
-      }),
-    );
-
-    await forEachChunk(
-      file,
-      (buffer) => {
-        const chunk = new Uint8Array(buffer);
-
-        for (const { instance } of hashers) instance.update(chunk);
-      },
-      { onProgress, signal },
-    );
-
-    return new Map(
-      hashers.map(({ id, instance }) => [
-        id,
-        typeof instance.hex === 'function' ? instance.hex() : instance.digest('hex'),
-      ]),
-    );
-  },
+  ...createHasherClient({ spawn: () => spawnWorker(workerUrl), algorithms: ALGORITHMS }),
 
   generateRandom(algoId) {
     const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 32;

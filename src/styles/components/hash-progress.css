@@ -1,0 +1,65 @@
+/* ── Hash progress ────────────────────────────────────────────────────────
+       While a file is hashed, each row's hash cell (see core/components/hash-progress.js)
+       holds a bar and its percentage. Invisible filler (.result__sizer) in the length and
+       format of the digest to come gives the cell that digest's height, so the row does
+       not jump when it lands; the bar is centred over it. The fill moves by transform,
+       which runs on the compositor and stays smooth while the main thread is busy
+       hashing. */
+.result--computing {
+  cursor: default;
+}
+
+.result__hash--computing {
+  cursor: default;
+  user-select: none;
+}
+
+.result__sizer {
+  visibility: hidden;
+}
+
+.result__bar {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transform: translateY(-50%);
+}
+
+.result__bar-track {
+  flex: 1;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 5px;
+  background: var(--progress-track);
+}
+
+/* Always full width; at 0 it sits a whole width to the left, outside the track's clip. */
+.result__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 5px;
+  background: var(--progress-fill);
+  transform: translateX(calc((var(--progress, 0) - 1) * 100%));
+  transition: transform 0.12s linear;
+}
+
+.result__bar-label {
+  flex-shrink: 0;
+  min-width: 4ch;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent-dim);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result__bar-fill {
+    transition: none;
+  }
+}

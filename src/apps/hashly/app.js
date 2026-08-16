@@ -1,51 +1,8 @@
-import { fromArrayBuffer } from 'crypto-api/src/encoder/array-buffer';
-import { toHex } from 'crypto-api/src/encoder/hex';
-import Ripemd from 'crypto-api/src/hasher/ripemd';
-import {
-  adler32,
-  blake2b,
-  blake2s,
-  blake3,
-  createAdler32,
-  createBLAKE2b,
-  createBLAKE2s,
-  createBLAKE3,
-  createKeccak,
-  createMD4,
-  createMD5,
-  createSHA1,
-  createSHA3,
-  createSHA224,
-  createSHA256,
-  createSHA384,
-  createSHA512,
-  createSM3,
-  createWhirlpool,
-  createXXHash3,
-  createXXHash32,
-  createXXHash64,
-  createXXHash128,
-  keccak,
-  md4,
-  md5,
-  sha1,
-  sha3,
-  sha224,
-  sha256,
-  sha384,
-  sha512,
-  sm3,
-  whirlpool,
-  xxhash3,
-  xxhash32,
-  xxhash64,
-  xxhash128,
-} from 'hash-wasm';
-
-import { md2 } from '~core/algos/md2.js';
 import { initApp } from '~core/init/app.js';
-import { forEachChunk } from '~core/utils/file-chunks.js';
-import { Format } from '~core/utils/format.js';
+import { createHasherClient } from '~core/workers/hasher-client.js';
+import { spawnWorker } from '~core/workers/spawn.js';
+
+import workerUrl from './worker.js?worker&url';
 
 const APP_CONFIG = {
   appName: 'hashly',
@@ -55,189 +12,65 @@ const APP_CONFIG = {
   defaultHiddenAlgos: ['MD2', 'Adler-32', 'SM3', 'Whirlpool'],
 };
 
+// `cost` is the time a byte takes, relative to the others (measured in the worker, in tenths of a ms
+// per MiB): it is how a file's algorithms are shared out over the threads. MD2 and RIPEMD are plain
+// JavaScript, the rest WebAssembly.
 const ALGORITHMS = [
   // MDx family
-  { id: 'MD2', type: 'md2', bits: 128, hexLen: 32 },
-  { id: 'MD4', type: 'wasm', fn: md4, createFn: createMD4, bits: 128, hexLen: 32 },
-  { id: 'MD5', type: 'wasm', fn: md5, createFn: createMD5, bits: 128, hexLen: 32 },
+  { id: 'MD2', bits: 128, hexLen: 32, cost: 1000 },
+  { id: 'MD4', bits: 128, hexLen: 32, cost: 25 },
+  { id: 'MD5', bits: 128, hexLen: 32, cost: 35 },
   // SHA-1 + SHA-2 family
-  { id: 'SHA-1', type: 'wasm', fn: sha1, createFn: createSHA1, bits: 160, hexLen: 40 },
-  { id: 'SHA-224', type: 'wasm', fn: sha224, createFn: createSHA224, bits: 224, hexLen: 56 },
-  { id: 'SHA-256', type: 'wasm', fn: sha256, createFn: createSHA256, bits: 256, hexLen: 64 },
-  { id: 'SHA-384', type: 'wasm', fn: sha384, createFn: createSHA384, bits: 384, hexLen: 96 },
-  { id: 'SHA-512', type: 'wasm', fn: sha512, createFn: createSHA512, bits: 512, hexLen: 128 },
+  { id: 'SHA-1', bits: 160, hexLen: 40, cost: 40 },
+  { id: 'SHA-224', bits: 224, hexLen: 56, cost: 60 },
+  { id: 'SHA-256', bits: 256, hexLen: 64, cost: 60 },
+  { id: 'SHA-384', bits: 384, hexLen: 96, cost: 45 },
+  { id: 'SHA-512', bits: 512, hexLen: 128, cost: 50 },
   // SHA-3 family
-  { id: 'SHA3-224', type: 'wasm-sha3', bits: 224, hexLen: 56 },
-  { id: 'SHA3-256', type: 'wasm-sha3', bits: 256, hexLen: 64 },
-  { id: 'SHA3-384', type: 'wasm-sha3', bits: 384, hexLen: 96 },
-  { id: 'SHA3-512', type: 'wasm-sha3', bits: 512, hexLen: 128 },
+  { id: 'SHA3-224', bits: 224, hexLen: 56, cost: 50 },
+  { id: 'SHA3-256', bits: 256, hexLen: 64, cost: 50 },
+  { id: 'SHA3-384', bits: 384, hexLen: 96, cost: 65 },
+  { id: 'SHA3-512', bits: 512, hexLen: 128, cost: 80 },
   // BLAKE family
-  { id: 'BLAKE2b-256', type: 'wasm-blake2b', bits: 256, hexLen: 64 },
-  { id: 'BLAKE2b-512', type: 'wasm-blake2b', bits: 512, hexLen: 128 },
-  { id: 'BLAKE2s-128', type: 'wasm-blake2s', bits: 128, hexLen: 32 },
-  { id: 'BLAKE2s-256', type: 'wasm-blake2s', bits: 256, hexLen: 64 },
-  { id: 'BLAKE3-256', type: 'wasm-blake3', bits: 256, hexLen: 64 },
-  { id: 'BLAKE3-512', type: 'wasm-blake3', bits: 512, hexLen: 128 },
+  { id: 'BLAKE2b-256', bits: 256, hexLen: 64, cost: 35 },
+  { id: 'BLAKE2b-512', bits: 512, hexLen: 128, cost: 25 },
+  { id: 'BLAKE2s-128', bits: 128, hexLen: 32, cost: 40 },
+  { id: 'BLAKE2s-256', bits: 256, hexLen: 64, cost: 40 },
+  { id: 'BLAKE3-256', bits: 256, hexLen: 64, cost: 45 },
+  { id: 'BLAKE3-512', bits: 512, hexLen: 128, cost: 40 },
   // Keccak family
-  { id: 'Keccak-224', type: 'wasm-keccak', bits: 224, hexLen: 56 },
-  { id: 'Keccak-256', type: 'wasm-keccak', bits: 256, hexLen: 64 },
-  { id: 'Keccak-384', type: 'wasm-keccak', bits: 384, hexLen: 96 },
-  { id: 'Keccak-512', type: 'wasm-keccak', bits: 512, hexLen: 128 },
+  { id: 'Keccak-224', bits: 224, hexLen: 56, cost: 50 },
+  { id: 'Keccak-256', bits: 256, hexLen: 64, cost: 50 },
+  { id: 'Keccak-384', bits: 384, hexLen: 96, cost: 60 },
+  { id: 'Keccak-512', bits: 512, hexLen: 128, cost: 80 },
   // RIPEMD family
-  { id: 'RIPEMD-128', type: 'ripemd', bits: 128, hexLen: 32 },
-  { id: 'RIPEMD-160', type: 'ripemd', bits: 160, hexLen: 40 },
-  { id: 'RIPEMD-256', type: 'ripemd', bits: 256, hexLen: 64 },
-  { id: 'RIPEMD-320', type: 'ripemd', bits: 320, hexLen: 80 },
+  { id: 'RIPEMD-128', bits: 128, hexLen: 32, cost: 500 },
+  { id: 'RIPEMD-160', bits: 160, hexLen: 40, cost: 500 },
+  { id: 'RIPEMD-256', bits: 256, hexLen: 64, cost: 500 },
+  { id: 'RIPEMD-320', bits: 320, hexLen: 80, cost: 500 },
   // xxHash family
-  { id: 'XXH32', type: 'wasm', fn: xxhash32, createFn: createXXHash32, bits: 32, hexLen: 8 },
-  { id: 'XXH64', type: 'wasm', fn: xxhash64, createFn: createXXHash64, bits: 64, hexLen: 16 },
-  { id: 'XXH3', type: 'wasm', fn: xxhash3, createFn: createXXHash3, bits: 64, hexLen: 16 },
-  { id: 'XXH128', type: 'wasm', fn: xxhash128, createFn: createXXHash128, bits: 128, hexLen: 32 },
+  { id: 'XXH32', bits: 32, hexLen: 8, cost: 15 },
+  { id: 'XXH64', bits: 64, hexLen: 16, cost: 15 },
+  { id: 'XXH3', bits: 64, hexLen: 16, cost: 15 },
+  { id: 'XXH128', bits: 128, hexLen: 32, cost: 15 },
   // Other (rarely needed; hidden by default for files, see defaultHiddenAlgos)
-  { id: 'Adler-32', type: 'wasm', fn: adler32, createFn: createAdler32, bits: 32, hexLen: 8 },
-  { id: 'SM3', type: 'wasm', fn: sm3, createFn: createSM3, bits: 256, hexLen: 64 },
-  { id: 'Whirlpool', type: 'wasm', fn: whirlpool, createFn: createWhirlpool, bits: 512, hexLen: 128 },
+  { id: 'Adler-32', bits: 32, hexLen: 8, cost: 15 },
+  { id: 'SM3', bits: 256, hexLen: 64, cost: 65 },
+  { id: 'Whirlpool', bits: 512, hexLen: 128, cost: 110 },
 ];
 
 const DEFAULT_ALGO = 'SHA-256';
 const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
-const Hasher = (() => {
-  // Lazily initialised pools for parameterised wasm hashers
-  const _keccakPool = new Map();
-  const _sha3Pool = new Map();
-  const _blake2bPool = new Map();
-  const _blake2sPool = new Map();
-  const _blake3Pool = new Map();
+const Hasher = {
+  ...createHasherClient({ spawn: () => spawnWorker(workerUrl), algorithms: ALGORITHMS }),
 
-  function _getKeccakHasher(bits) {
-    if (!_keccakPool.has(bits)) _keccakPool.set(bits, createKeccak(bits));
-    return _keccakPool.get(bits);
-  }
-
-  function _getSha3Hasher(bits) {
-    if (!_sha3Pool.has(bits)) _sha3Pool.set(bits, createSHA3(bits));
-    return _sha3Pool.get(bits);
-  }
-
-  function _getBlake2bHasher(bits) {
-    if (!_blake2bPool.has(bits)) _blake2bPool.set(bits, createBLAKE2b(bits));
-    return _blake2bPool.get(bits);
-  }
-
-  function _getBlake2sHasher(bits) {
-    if (!_blake2sPool.has(bits)) _blake2sPool.set(bits, createBLAKE2s(bits));
-    return _blake2sPool.get(bits);
-  }
-
-  function _getBlake3Hasher(bits) {
-    if (!_blake3Pool.has(bits)) _blake3Pool.set(bits, createBLAKE3(bits));
-    return _blake3Pool.get(bits);
-  }
-
-  return {
-    async fromTextAll(text, inputFmt = 'utf-8') {
-      const data = Format.textToBytes(text, inputFmt);
-      const results = await Promise.all(
-        ALGORITHMS.map(async (algo) => {
-          let hash;
-          if (algo.type === 'wasm') {
-            hash = await algo.fn(data);
-          } else if (algo.type === 'md2') {
-            hash = md2(data);
-          } else if (algo.type === 'wasm-keccak') {
-            hash = await keccak(data, algo.bits);
-          } else if (algo.type === 'wasm-sha3') {
-            hash = await sha3(data, algo.bits);
-          } else if (algo.type === 'wasm-blake2b') {
-            hash = await blake2b(data, algo.bits);
-          } else if (algo.type === 'wasm-blake2s') {
-            hash = await blake2s(data, algo.bits);
-          } else if (algo.type === 'wasm-blake3') {
-            hash = await blake3(data, algo.bits);
-          } else {
-            // ripemd — crypto-api expects a binary string, not Uint8Array
-            const hasher = new Ripemd({ length: algo.bits });
-            hasher.update(fromArrayBuffer(data.buffer));
-            hash = toHex(hasher.finalize());
-          }
-          return [algo.id, hash];
-        }),
-      );
-      return new Map(results);
-    },
-
-    async fromFileAll(file, onProgress, algos = ALGORITHMS, signal) {
-      const hashers = await Promise.all(
-        algos.map(async (algo) => {
-          let instance;
-          if (algo.type === 'md2') {
-            instance = md2.create();
-          } else if (algo.type === 'wasm') {
-            instance = await algo.createFn();
-          } else if (algo.type === 'wasm-keccak') {
-            instance = await _getKeccakHasher(algo.bits);
-            instance.init();
-          } else if (algo.type === 'wasm-sha3') {
-            instance = await _getSha3Hasher(algo.bits);
-            instance.init();
-          } else if (algo.type === 'wasm-blake2b') {
-            instance = await _getBlake2bHasher(algo.bits);
-            instance.init();
-          } else if (algo.type === 'wasm-blake2s') {
-            instance = await _getBlake2sHasher(algo.bits);
-            instance.init();
-          } else if (algo.type === 'wasm-blake3') {
-            instance = await _getBlake3Hasher(algo.bits);
-            instance.init();
-          } else {
-            // ripemd
-            instance = new Ripemd({ length: algo.bits });
-          }
-          return { algo, instance };
-        }),
-      );
-
-      await forEachChunk(
-        file,
-        (buffer) => {
-          const chunk = new Uint8Array(buffer);
-          // The binary string crypto-api reads is as large as the chunk: only made when a RIPEMD hasher needs it.
-          const encodedChunk = hashers.some(({ algo }) => algo.type === 'ripemd') ? fromArrayBuffer(buffer) : null;
-
-          for (const { algo, instance } of hashers) {
-            if (algo.type === 'ripemd') {
-              instance.update(encodedChunk);
-            } else {
-              instance.update(chunk);
-            }
-          }
-        },
-        { onProgress, signal },
-      );
-
-      return new Map(
-        hashers.map(({ algo, instance }) => {
-          let hash;
-          if (algo.type === 'ripemd') {
-            hash = toHex(instance.finalize());
-          } else if (algo.type === 'md2') {
-            hash = instance.hex();
-          } else {
-            hash = instance.digest('hex');
-          }
-          return [algo.id, hash];
-        }),
-      );
-    },
-
-    generateRandom(algoId) {
-      const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 64;
-      const bytes = new Uint8Array(hexLen / 2);
-      crypto.getRandomValues(bytes);
-      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-    },
-  };
-})();
+  generateRandom(algoId) {
+    const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 64;
+    const bytes = new Uint8Array(hexLen / 2);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  },
+};
 
 initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher });

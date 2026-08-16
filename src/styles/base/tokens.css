@@ -55,6 +55,10 @@
          same hue family so the stripe is gentle and the card reads as one block. */
   --result-alt-surface: #f7f8fe;
   --result-hover-surface: #e9edfd;
+
+  /* Hash progress bar track (components/hash-progress.css). */
+  --progress-track: rgba(67, 97, 238, 0.14);
+  --progress-fill: rgba(67, 97, 238, 0.55);
 }
 
 [data-theme='dark'] {
@@ -105,4 +109,6 @@
 
   --result-alt-surface: rgba(107, 138, 255, 0.03);
   --result-hover-surface: rgba(107, 138, 255, 0.14);
+  --progress-track: rgba(107, 138, 255, 0.18);
+  --progress-fill: rgba(107, 138, 255, 0.6);
 }

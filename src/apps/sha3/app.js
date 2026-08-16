@@ -1,8 +1,8 @@
-import { createSHA3, sha3 } from 'hash-wasm';
-
 import { initApp } from '~core/init/app.js';
-import { forEachChunk } from '~core/utils/file-chunks.js';
-import { Format } from '~core/utils/format.js';
+import { createHasherClient } from '~core/workers/hasher-client.js';
+import { spawnWorker } from '~core/workers/spawn.js';
+
+import workerUrl from './worker.js?worker&url';
 
 const APP_CONFIG = {
   appName: 'sha3kit',
@@ -22,47 +22,15 @@ const ALGORITHMS = [
 const DEFAULT_ALGO = 'SHA3-256';
 const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
-const Hasher = (() => {
-  // Lazily initialised pool: Map<bits, IHasher>
-  const _pool = new Map();
+const Hasher = {
+  ...createHasherClient({ spawn: () => spawnWorker(workerUrl), algorithms: ALGORITHMS }),
 
-  function _getHasher(bits) {
-    if (!_pool.has(bits)) _pool.set(bits, createSHA3(bits));
-    return _pool.get(bits);
-  }
-
-  return {
-    async fromTextAll(text, inputFmt = 'utf-8') {
-      const data = Format.textToBytes(text, inputFmt);
-      const results = await Promise.all(ALGORITHMS.map(async ({ id, bits }) => [id, await sha3(data, bits)]));
-      return new Map(results);
-    },
-
-    async fromFileAll(file, onProgress, algos = ALGORITHMS, signal) {
-      const hashers = await Promise.all(algos.map(async ({ id, bits }) => ({ id, instance: await _getHasher(bits) })));
-
-      for (const { instance } of hashers) instance.init();
-
-      await forEachChunk(
-        file,
-        (buffer) => {
-          const chunk = new Uint8Array(buffer);
-
-          for (const { instance } of hashers) instance.update(chunk);
-        },
-        { onProgress, signal },
-      );
-
-      return new Map(hashers.map(({ id, instance }) => [id, instance.digest('hex')]));
-    },
-
-    generateRandom(algoId) {
-      const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 64;
-      const bytes = new Uint8Array(hexLen / 2);
-      crypto.getRandomValues(bytes);
-      return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
-    },
-  };
-})();
+  generateRandom(algoId) {
+    const hexLen = ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 64;
+    const bytes = new Uint8Array(hexLen / 2);
+    crypto.getRandomValues(bytes);
+    return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  },
+};
 
 initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher });

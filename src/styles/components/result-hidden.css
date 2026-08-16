@@ -51,11 +51,6 @@
   font-weight: 500;
 }
 
-.result-hidden:hover .result-hidden__action {
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
 @media (max-width: 630px) {
   .result-hidden {
     padding-top: 10px;

@@ -75,31 +75,6 @@
   user-select: none;
 }
 
-/* ── Computing / progress state ───────────────────────────────────────────
-       The hash cell doubles as a progress bar while file hashing is in progress.
-       A CSS custom property --progress (0–100) drives a two-stop linear-gradient
-       that fills left-to-right, turning the entire cell into a track.
-       The percentage text is rendered inside the cell — no extra pill element.
-    ──────────────────────────────────────────────────────────────────────── */
-.result__hash--computing {
-  padding: 3px 6px;
-  border-radius: 3px;
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  line-height: 1.8;
-  color: var(--accent-dim);
-  background: linear-gradient(
-    to right,
-    var(--accent-glow) calc(var(--progress, 0) * 1%),
-    transparent calc(var(--progress, 0) * 1%)
-  );
-  cursor: default;
-  user-select: none;
-  transition: background 0.15s linear;
-}
-
 .result__actions {
   display: flex;
   gap: 6px;
@@ -146,7 +121,9 @@
        or on rows carrying a verify verdict (their tint is the message). */
 @media (hover: hover) {
   html:not(.hash-select)
-    .result:not(.result--empty):not(.result--hidden):not(.result--match):not(.result--mismatch):hover {
+    .result:not(.result--empty):not(.result--hidden):not(.result--computing):not(.result--match):not(
+      .result--mismatch
+    ):hover {
     background: var(--result-hover-surface);
   }
 }

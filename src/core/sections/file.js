@@ -1,5 +1,6 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { createHashProgress } from '~core/components/hash-progress.js';
 import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
@@ -23,7 +24,7 @@ let _APP_CONFIG, _ALGORITHMS, _Hasher;
 export const FileSection = {
   // rawHexMap: Map<algoId, hex>
   rawHexMap: new Map(),
-  // rowEls: Map<algoId, { row, hash, download, copy }>
+  // rowEls: Map<algoId, { row, hash, download, copy, progress }>
   rowEls: new Map(),
   hiddenAlgos: new Set(),
   currentFileName: '',
@@ -209,6 +210,13 @@ export const FileSection = {
       download: row.querySelector(`#fileDownload-${safeId}`),
       copy: row.querySelector(`#fileCopy-${safeId}`),
     };
+    els.progress = createHashProgress({
+      row,
+      hash: els.hash,
+      algoId,
+      hexLen: _ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 32,
+      getFormat: () => this.getSelectedFormat(),
+    });
 
     this.rowEls.set(algoId, els);
 
@@ -381,20 +389,16 @@ export const FileSection = {
     return this.currentFileName ? 'not computed' : 'no file selected';
   },
 
-  /** Enter computing state: hash cell becomes a left-to-right progress bar.
-   *  ratio is in [0, 1]. */
-  _setComputingState(els, ratio) {
-    const pct = (ratio * 100).toFixed(1);
-    els.hash.style.setProperty('--progress', pct);
-    els.hash.textContent = `${pct}%`;
-    els.hash.classList.add('result__hash--computing');
+  /** Enter computing state: the row shows a progress fill and the hash cell scrambled
+   *  characters in place of the digest (see components/hash-progress.js). */
+  _startComputing(els) {
+    els.progress.start();
     setHashEmpty(els.hash, false);
   },
 
-  /** Exit computing state: remove progress bar styling. */
+  /** Exit computing state at once. The caller sets whatever the cell shows instead. */
   _clearComputingState(els) {
-    els.hash.classList.remove('result__hash--computing');
-    els.hash.style.removeProperty('--progress');
+    els.progress.stop();
   },
 
   getSelectedFormat() {
@@ -479,14 +483,13 @@ export const FileSection = {
     }
 
     const title = TabTitle.track();
-    const stats = createRunStats(file.size);
+    const stats = createRunStats(file.size, { threads: _Hasher.threadsFor(visibleAlgos) });
     this._stats.classList.add('file-drop__stats--visible');
-    this._setStats('Hashing…', 'busy');
+    this._setStats(stats.start(), 'busy');
 
-    // Enter computing state: hash cell becomes the progress bar at 0%.
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
-      this._setComputingState(this.rowEls.get(id), 0);
+      this._startComputing(this.rowEls.get(id));
     }
     this._setAllActionsEnabled(false);
 
@@ -496,10 +499,7 @@ export const FileSection = {
       if (line) this._setStats(line, 'busy');
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
-        const els = this.rowEls.get(id);
-        if (els.hash.classList.contains('result__hash--computing')) {
-          this._setComputingState(els, ratio);
-        }
+        this.rowEls.get(id).progress.set(ratio);
       }
     };
 
@@ -530,14 +530,15 @@ export const FileSection = {
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const els = this.rowEls.get(id);
-      this._clearComputingState(els);
       const hex = this.rawHexMap.get(id);
       if (!hex) {
+        els.progress.stop();
         // Shown while this ran: it was hidden when the file was hashed, so there is no digest.
         this._setHashText(els, this._emptyText());
         setHashEmpty(els.hash, true);
         continue;
       }
+      els.progress.stop();
       const hash = Format.applyFormat(hex, fmt);
       this._setHashText(els, hash);
       History.record('file', hash, id, this._currentBatchId, this.currentFileName);

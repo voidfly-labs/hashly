@@ -39,13 +39,15 @@ function formatElapsed(seconds) {
 /** Speed and time-left for one hashing run over `totalBytes`.
  *
  *  `update(ratio)` takes the 0–1 progress and returns the line to show
- *  ("42% · 38.2 MiB/s · 2 min left"), or null when there is nothing new to show:
+ *  ("42% · 38.2 MiB/s · 2 min left · 4 threads"), or null when there is nothing new to show:
  *  too early in the run, or sooner than UPDATE_EVERY_MS after the last line.
- *  `summary()` returns "Hashed in 4.2 s · 38.2 MiB/s" for a finished run (just
+ *  `summary()` returns "Hashed in 4.2 s · 38.2 MiB/s · 4 threads" for a finished run (just
  *  "Hashed in 0.2 s" when it was too short for a speed to mean anything).
  *
+ *  `threads` is how many threads the run is spread over, named on every line it produces.
  *  `now` is injectable (ms) so the maths can be tested without waiting. */
-export function createRunStats(totalBytes, now = () => performance.now()) {
+export function createRunStats(totalBytes, { threads = 1, now = () => performance.now() } = {}) {
+  const onThreads = `${threads} ${threads === 1 ? 'thread' : 'threads'}`;
   const start = now();
   const samples = [{ time: start, bytes: 0 }];
   let lastShown = -Infinity;
@@ -62,6 +64,9 @@ export function createRunStats(totalBytes, now = () => performance.now()) {
   }
 
   return {
+    /** The plain line for the start of a run, before there are numbers to show. */
+    start: () => `Hashing… · ${onThreads}`,
+
     update(ratio) {
       const time = now();
       const bytes = ratio * totalBytes;
@@ -75,13 +80,14 @@ export function createRunStats(totalBytes, now = () => performance.now()) {
 
       const parts = [`${Math.floor(ratio * 100)}%`, formatRate(rate)];
       if (ratio >= ETA_AFTER_RATIO) parts.push(`${formatRemaining((totalBytes - bytes) / rate)} left`);
-      return parts.join(' · ');
+      return [...parts, onThreads].join(' · ');
     },
 
     summary() {
       const elapsedMs = now() - start;
       const took = `Hashed in ${formatElapsed(elapsedMs / 1000)}`;
-      return elapsedMs < SPEED_AFTER_MS ? took : `${took} · ${formatRate(totalBytes / (elapsedMs / 1000))}`;
+      if (elapsedMs < SPEED_AFTER_MS) return `${took} · ${onThreads}`;
+      return `${took} · ${formatRate(totalBytes / (elapsedMs / 1000))} · ${onThreads}`;
     },
   };
 }
