@@ -71,7 +71,7 @@
       "name": "How does CRCKit protect my data?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "All checksum computation runs entirely inside your browser using the js-crc JavaScript library by emn178. No text, file content, or checksum output is ever transmitted to any server."
+        "text": "All checksum computation runs entirely inside your browser using the js-crc library by emn178 and the hash-wasm library by Daninet. No text, file content, or checksum output is ever transmitted to any server."
       }
     },
     {

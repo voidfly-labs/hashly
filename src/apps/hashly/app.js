@@ -13,8 +13,8 @@ const APP_CONFIG = {
 };
 
 // `cost` is the time a byte takes, relative to the others (measured in the worker, in tenths of a ms
-// per MiB): it is how a file's algorithms are shared out over the threads. MD2 and RIPEMD are plain
-// JavaScript, the rest WebAssembly.
+// per MiB): it is how a file's algorithms are shared out over the threads. MD2 and RIPEMD (but 160) are
+// plain JavaScript, the rest WebAssembly.
 const ALGORITHMS = [
   // MDx family
   { id: 'MD2', bits: 128, hexLen: 32, cost: 1000 },
@@ -45,7 +45,7 @@ const ALGORITHMS = [
   { id: 'Keccak-512', bits: 512, hexLen: 128, cost: 80 },
   // RIPEMD family
   { id: 'RIPEMD-128', bits: 128, hexLen: 32, cost: 500 },
-  { id: 'RIPEMD-160', bits: 160, hexLen: 40, cost: 500 },
+  { id: 'RIPEMD-160', bits: 160, hexLen: 40, cost: 40 },
   { id: 'RIPEMD-256', bits: 256, hexLen: 64, cost: 500 },
   { id: 'RIPEMD-320', bits: 320, hexLen: 80, cost: 500 },
   // xxHash family

@@ -1,6 +1,6 @@
 import { createModel } from 'js-crc';
 
-export { crc16, crc32 } from 'js-crc';
+export { crc16 } from 'js-crc';
 
 export const crc_8_maxim_dow = createModel({
   width: 8,
@@ -91,14 +91,6 @@ export const crc_24_openpgp = createModel({
   refout: false,
   xorout: 0x000000,
 });
-export const crc_32c = createModel({
-  width: 32,
-  poly: 0x1edc6f41,
-  init: 0xffffffff,
-  refin: true,
-  refout: true,
-  xorout: 0xffffffff,
-});
 export const crc_32_bzip2 = createModel({
   width: 32,
   poly: 0x04c11db7,
@@ -146,14 +138,6 @@ export const crc_64_redis = createModel({
   refin: true,
   refout: true,
   xorout: [0, 0],
-});
-export const crc_64_xz = createModel({
-  width: 64,
-  poly: [0x42f0e1eb, 0xa9ea3693],
-  init: [0xffffffff, 0xffffffff],
-  refin: true,
-  refout: true,
-  xorout: [0xffffffff, 0xffffffff],
 });
 export const crc_82_darc = createModel({
   width: 82,

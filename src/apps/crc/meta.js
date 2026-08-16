@@ -30,7 +30,10 @@ export default {
   srcDir: 'crc',
   legal: {
     domain: 'crc32.app',
-    libraries: [{ name: 'js-crc', url: 'https://github.com/emn178/js-crc', author: 'emn178' }],
+    libraries: [
+      { name: 'js-crc', url: 'https://github.com/emn178/js-crc', author: 'emn178' },
+      { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+    ],
     privacy: {
       title: 'Privacy Policy | CRCKit',
       description:

@@ -30,7 +30,10 @@ export default {
   srcDir: 'ripemd',
   legal: {
     domain: 'ripemd.com',
-    libraries: [{ name: 'crypto-api', url: 'https://github.com/nf404/crypto-api', author: 'nf404' }],
+    libraries: [
+      { name: 'crypto-api', url: 'https://github.com/nf404/crypto-api', author: 'nf404' },
+      { name: 'hash-wasm', url: 'https://github.com/Daninet/hash-wasm', author: 'Daninet' },
+    ],
     privacy: {
       title: 'Privacy Policy | RIPEMDKit',
       description:
