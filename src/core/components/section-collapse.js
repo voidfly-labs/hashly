@@ -1,6 +1,6 @@
-import { savedOpenSections, saveOpenSections } from './saved-view.js';
+import { saveCollapsedSections, savedCollapsedSections } from './saved-view.js';
 
-const PREF_NAME = 'openSections';
+const PREF_NAME = 'collapsedSections';
 
 // Material Icons "keyboard_arrow_down" — rotated 180° for the expanded
 // (pointing up) state rather than swapped for a separate "keyboard_arrow_up"
@@ -17,9 +17,18 @@ function _setCollapsed(entry, collapsed) {
   entry.body.toggleAttribute('inert', collapsed);
 }
 
+/** Opens `section` if the visitor had collapsed it, so what is about to happen in it (a drop, a paste,
+ *  typing) is seen. Goes through its toggle, so the choice is saved like any other. Returns whether it
+ *  was collapsed. */
+export function expandSection(section) {
+  if (!section?.classList.contains('section--collapsed')) return false;
+  section.querySelector('.section__toggle')?.click();
+  return true;
+}
+
 export function initSectionCollapse() {
   const entries = new Map(); // section id -> { section, body, toggleBtn }
-  const savedOpen = savedOpenSections(PREF_NAME);
+  const savedCollapsed = savedCollapsedSections(PREF_NAME);
 
   document.querySelectorAll('.section').forEach((section) => {
     const header = section.querySelector('.section__label-row') || section.querySelector(':scope > .section__label');
@@ -61,15 +70,15 @@ export function initSectionCollapse() {
 
     const entry = { section, body, toggleBtn };
     entries.set(section.id, entry);
-    if (savedOpen && !savedOpen.has(section.id)) _setCollapsed(entry, true);
+    if (savedCollapsed.has(section.id)) _setCollapsed(entry, true);
 
     toggleBtn.addEventListener('click', () => {
       const collapsed = !section.classList.contains('section--collapsed');
       _setCollapsed(entry, collapsed);
-      saveOpenSections(
+      saveCollapsedSections(
         PREF_NAME,
         [...entries.values()]
-          .filter((e) => !e.section.classList.contains('section--collapsed'))
+          .filter((e) => e.section.classList.contains('section--collapsed'))
           .map((e) => e.section.id),
       );
       // Close an open history popover inside a section that's collapsing —

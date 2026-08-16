@@ -4,8 +4,7 @@
  *  is as tall as that bar and grows to the digest's height when it lands, as a text hash's row does.
  *
  *  `start()` enters the state, `set(ratio)` (0–1) moves the bar and `stop()` leaves it. Neither
- *  writes the cell's final text: the caller replaces the bar, which is why a row's tooltip is kept.
- *  `getFormat()` returns the output format (`hex`, `hex-upper`, `base64`, `binary`). */
+ *  writes the cell's final text: the caller replaces the bar, which is why a row's tooltip is kept. */
 export function createHashProgress({ row, hash, algoId }) {
   let active = false;
   let percent = -1;

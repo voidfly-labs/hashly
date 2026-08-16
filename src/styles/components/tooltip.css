@@ -35,11 +35,6 @@
   transform: translateY(calc(-100% - 6px));
 }
 
-.tooltip-singleton--xl {
-  width: 288px;
-  text-align: left;
-}
-
 @media (max-width: 630px) {
   .tooltip-singleton {
     font-size: 12px;

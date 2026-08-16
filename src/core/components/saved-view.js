@@ -28,13 +28,13 @@ export function saveHiddenAlgos(section, prefName) {
   Preferences.set(prefName, [...section.hiddenAlgos]);
 }
 
-/** The ids of the sections the visitor left open, or null when nothing is saved (everything
- *  starts open). The saved list is the complete set: a section that isn't in it is collapsed. */
-export function savedOpenSections(prefName) {
+/** The ids of the sections the visitor collapsed (none when nothing is saved). Only collapsed ones
+ *  are kept, so a section added later starts open for everyone. */
+export function savedCollapsedSections(prefName) {
   const saved = Preferences.get(prefName);
-  return Array.isArray(saved) ? new Set(saved) : null;
+  return new Set(Array.isArray(saved) ? saved : []);
 }
 
-export function saveOpenSections(prefName, ids) {
+export function saveCollapsedSections(prefName, ids) {
   Preferences.set(prefName, [...ids]);
 }

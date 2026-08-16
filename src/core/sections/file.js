@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { createHashProgress } from '~core/components/hash-progress.js';
+import { createHiddenAlgos } from '~core/components/hidden-algos.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
@@ -11,18 +12,17 @@ import {
   setHashText,
   setRowActions,
   showRow,
-  showToggleAllTooltip,
   updateToggleAllButton,
   wireResultRow,
 } from '~core/components/result-row.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
+import { expandSection } from '~core/components/section-collapse.js';
 import { createSoloResult } from '~core/components/solo-result.js';
 import { TabTitle } from '~core/components/tab-title.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
-import { toChecksumFile } from '~core/utils/checksum-file.js';
-import { Download } from '~core/utils/download.js';
+import { downloadDigest } from '~core/utils/download-digest.js';
 import { Format } from '~core/utils/format.js';
 import { createRunStats } from '~core/utils/run-stats.js';
 import { takesText } from '~core/utils/text-field.js';
@@ -48,6 +48,14 @@ export const FileSection = {
     _Hasher = Hasher;
 
     this.hiddenAlgos = new Set(_APP_CONFIG.defaultHiddenAlgos ?? []);
+    this._hidden = createHiddenAlgos({
+      algorithms: _ALGORITHMS,
+      hiddenAlgos: this.hiddenAlgos,
+      setHidden: (algoId, hidden) => this._setHidden(algoId, hidden),
+      afterChange: (opts) => this._afterVisibilityChange(opts),
+      getBadge: (algoId) => this.rowEls.get(algoId).badge,
+      toggleAllBtnId: 'fileToggleAllBtn',
+    });
 
     this._drop = document.getElementById('fileDrop');
     this._input = document.getElementById('fileInput');
@@ -228,21 +236,12 @@ export const FileSection = {
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
-  _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
-    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    for (const { id } of _ALGORITHMS) {
-      if (allVisible || this.hiddenAlgos.has(id)) this._setHidden(id, allVisible);
-    }
-    this._afterVisibilityChange({ resetSpotlight });
-    if (refreshTooltip) showToggleAllTooltip('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS);
+  _toggleAll(options) {
+    this._hidden.toggleAll(options);
   },
 
-  _toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
-    this._setHidden(algoId, !this.hiddenAlgos.has(algoId));
-    // Refresh the tooltip to reflect the new state while it may still be visible —
-    // only for a direct click on this badge, not when driven by AlgoSpotlight.
-    if (refreshTooltip) Tooltip.show(this.rowEls.get(algoId).badge, this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
-    this._afterVisibilityChange({ resetSpotlight });
+  _toggleAlgo(algoId, options) {
+    this._hidden.toggleAlgo(algoId, options);
   },
 
   // ── Hash helpers ───────────────────────────────────────────────────────
@@ -295,15 +294,6 @@ export const FileSection = {
     }
   },
 
-  // ── File size helper ────────────────────────────────────────────────────
-
-  _formatFileSize(bytes) {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
-    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
-    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GiB`;
-  },
-
   /** Mirrors a file that didn't come through the input itself (drop, paste) into it. */
   _setInputFile(file) {
     const dt = new DataTransfer();
@@ -320,6 +310,8 @@ export const FileSection = {
   },
 
   async processFile(file) {
+    // A file dropped or pasted into a collapsed section opens it, to show what happens to the file.
+    expandSection(this._drop.closest('.section'));
     // A file still hashing is abandoned, not left to finish over this one.
     this._run?.controller.abort();
     const controller = new AbortController();
@@ -328,7 +320,7 @@ export const FileSection = {
 
     this.currentFileName = file.name;
     this._fileNameText.textContent = file.name;
-    this._fileSize.textContent = ` · ${this._formatFileSize(file.size)}`;
+    this._fileSize.textContent = ` · ${Format.fileSize(file.size)}`;
     this._fileName.classList.add('file-drop__filename--visible');
     this._dropClear.classList.add('file-drop__clear--visible');
 
@@ -481,17 +473,7 @@ export const FileSection = {
   _onDownload(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    const ext = _APP_CONFIG.slugify(algoId);
-    const checksumFile = toChecksumFile(hash, ext, this.currentFileName);
-    if (checksumFile) {
-      Download.trigger(checksumFile.content, checksumFile.filename);
-    } else {
-      // Base64/binary output: no checksum-file format exists for it, so write the digest alone.
-      const base = this.currentFileName
-        ? this.currentFileName.replace(/\.[^.]+$/, '')
-        : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-      Download.trigger(hash, `${base}.${ext}`);
-    }
+    downloadDigest(hash, algoId, this.currentFileName, _APP_CONFIG);
     const btn = this.rowEls.get(algoId).download;
     Tooltip.flash(btn);
     Checkmark.flash(btn);

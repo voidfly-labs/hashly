@@ -47,6 +47,11 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['crypto-api'],
   },
+  // A worker is bundled on its own and not given `build.target`: without this, newer syntax
+  // in a dependency (`||=`, `??=`) ships as it is, and Firefox 78 cannot even parse the worker.
+  worker: {
+    rollupOptions: { transform: { target: BROWSER_TARGETS } },
+  },
   build: {
     target: BROWSER_TARGETS,
     cssTarget: BROWSER_TARGETS,

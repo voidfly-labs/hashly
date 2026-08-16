@@ -22,7 +22,12 @@ export function createHasherClient({ spawn, algorithms }) {
   const maxThreads = Math.min(MAX_THREADS, Math.max(1, (navigator.hardwareConcurrency ?? 2) - 1));
 
   const threadsFor = (algos) => Math.max(1, Math.min(maxThreads, algos.length));
-  const fresh = (channel) => (channel && !channel.dead ? channel : createWorkerChannel(spawn()));
+  // The channel itself while it works, else a new one (a dead one's worker is stopped first).
+  const fresh = (channel) => {
+    if (channel && !channel.dead) return channel;
+    channel?.terminate();
+    return createWorkerChannel(spawn());
+  };
 
   // ── Text ────────────────────────────────────────────────────────────────
   // One request at a time. Typing faster than hashing leaves at most one more waiting, and it
@@ -33,8 +38,19 @@ export function createHasherClient({ spawn, algorithms }) {
   const allIds = algorithms.map(({ id }) => id);
 
   function runText(bytes, waiters) {
+    // A worker that can't be started fails this request, not every later one: nothing is busy.
+    try {
+      textChannel = fresh(textChannel);
+    } catch (error) {
+      waiters.forEach((w) => w.reject(error));
+      if (textNext) {
+        const { bytes: nextBytes, waiters: nextWaiters } = textNext;
+        textNext = null;
+        runText(nextBytes, nextWaiters);
+      }
+      return;
+    }
     textBusy = true;
-    textChannel = fresh(textChannel);
     textChannel
       .request({ type: 'text', bytes, ids: allIds })
       .promise.then(
@@ -78,22 +94,30 @@ export function createHasherClient({ spawn, algorithms }) {
 
       const ratios = groups.map(() => 0);
       let reported = 0;
-      const runs = groups.map((ids, i) => {
-        pool[i] = fresh(pool[i]);
-        return pool[i].request(
-          { type: 'file', file, ids },
-          {
-            onProgress(ratio) {
-              ratios[i] = ratio;
-              // The file is as far along as its slowest share.
-              const slowest = Math.min(...ratios);
-              if (slowest <= reported) return;
-              reported = slowest;
-              onProgress?.(slowest);
-            },
-          },
-        );
-      });
+      const runs = [];
+      try {
+        groups.forEach((ids, i) => {
+          pool[i] = fresh(pool[i]);
+          runs.push(
+            pool[i].request(
+              { type: 'file', file, ids },
+              {
+                onProgress(ratio) {
+                  ratios[i] = ratio;
+                  // The file is as far along as its slowest share.
+                  const slowest = Math.min(...ratios);
+                  if (slowest <= reported) return;
+                  reported = slowest;
+                  onProgress?.(slowest);
+                },
+              },
+            ),
+          );
+        });
+      } catch (error) {
+        runs.forEach((run) => run.cancel()); // a worker that wouldn't start: stop the ones that did
+        throw error;
+      }
       const cancelAll = () => runs.forEach((run) => run.cancel());
 
       return new Promise((resolve, reject) => {

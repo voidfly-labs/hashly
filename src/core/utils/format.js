@@ -91,6 +91,14 @@ export const Format = {
     }
   },
 
+  /** "12 B", "3.4 KiB", "1.50 MiB", "2.00 GiB". */
+  fileSize(bytes) {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
+    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
+    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GiB`;
+  },
+
   /** Makes a value safe to interpolate into markup, in text or in a quoted attribute. For values
    *  this code didn't produce: file names, anything read back from storage. */
   escapeHtml(value) {

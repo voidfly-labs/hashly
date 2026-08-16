@@ -2,6 +2,7 @@ import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
 import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { createCounterNotes } from '~core/components/counter-notes.js';
+import { createHiddenAlgos } from '~core/components/hidden-algos.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { Hint } from '~core/components/hint.js';
 import { History } from '~core/components/history.js';
@@ -13,15 +14,15 @@ import {
   setHashText,
   setRowActions,
   showRow,
-  showToggleAllTooltip,
   updateToggleAllButton,
   wireResultRow,
 } from '~core/components/result-row.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
+import { expandSection } from '~core/components/section-collapse.js';
 import { createSoloResult } from '~core/components/solo-result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
-import { Download } from '~core/utils/download.js';
+import { downloadDigest } from '~core/utils/download-digest.js';
 import { Format } from '~core/utils/format.js';
 import { takesText } from '~core/utils/text-field.js';
 import { inputNotes, isValidInput } from '~core/utils/text-notes.js';
@@ -36,6 +37,12 @@ const HISTORY_IDLE_MS = 1000;
 
 // Text is hashed with every algorithm on each change; past this many bytes that is a file's job.
 const MAX_TEXT_BYTES = 1024 * 1024;
+// The most characters one byte can take in each input format (a binary group and its space: 9).
+// Input longer than that many times the limit is too large without being decoded, and the counter
+// says "<max>+" instead of decoding megabytes on every keystroke.
+const CHARS_PER_BYTE = { 'utf-8': 1, hex: 2, base64: 4 / 3, binary: 9 };
+const TOO_LARGE_NOTE = { label: 'too large', tip: 'Over 1 MB, use a file' };
+const isSurelyTooLarge = (text, fmt) => text.length > MAX_TEXT_BYTES * (CHARS_PER_BYTE[fmt] ?? 1);
 
 const _FORMAT_HINTS = {
   hex: 'hex only · 0–9, a–f',
@@ -84,6 +91,16 @@ export const TextSection = {
     this._counterNotes = createCounterNotes(document.getElementById('textCounterNotes'));
     this._formatHint = document.getElementById('textFormatHint');
 
+    this._hidden = createHiddenAlgos({
+      algorithms: _ALGORITHMS,
+      hiddenAlgos: this.hiddenAlgos,
+      setHidden: (algoId, hidden) => this._setHidden(algoId, hidden),
+      applied: (restored) => this._recordRestored(restored),
+      afterChange: (opts) => this._afterVisibilityChange(opts),
+      getBadge: (algoId) => this.rowEls.get(algoId).badge,
+      toggleAllBtnId: 'textToggleAllBtn',
+    });
+
     // Build one result row per algorithm (least to most complex = ALGORITHMS order).
     _ALGORITHMS.forEach(({ id }) => this._buildRow(id));
     this._hiddenSummary = createHiddenSummary({
@@ -105,10 +122,13 @@ export const TextSection = {
 
     this._updateCounter('');
 
-    this._input.addEventListener('input', () => {
+    this._input.addEventListener('input', (e) => {
+      if (!e.isComposing) this._dropIllegalChars();
       clearTimeout(this._debounceTimer);
       this._debounceTimer = setTimeout(() => this.onInput(), 20);
     });
+    // Input still being composed (a soft keyboard's) is filtered once it is committed.
+    this._input.addEventListener('compositionend', () => this._dropIllegalChars());
 
     // Leaving the field (to copy a hash, say) or the page is when typing is over.
     this._input.addEventListener('blur', () => this._flushHistory());
@@ -293,20 +313,20 @@ export const TextSection = {
   },
 
   /** Hides or shows one algorithm's row (showing puts back its digest, if the current input has one).
-   *  Returns that digest, formatted, for a row just shown. */
+   *  Returns the history item `{ hash, algo }` of a row just shown with a digest, else null. */
   _setHidden(algoId, hidden) {
     const els = this.rowEls.get(algoId);
     if (hidden) {
       this.hiddenAlgos.add(algoId);
       hideRow(els);
-      return '';
+      return null;
     }
     this.hiddenAlgos.delete(algoId);
     // fromTextAll hashes every algorithm regardless of hidden state (see onInput()), so there is
     // nothing to compute here.
     const hash = this._formattedHash(algoId);
     showRow(els, hash, 'awaiting input…');
-    return hash;
+    return hash ? { hash, algo: algoId } : null;
   },
 
   /** Puts algorithms shown again (`[{ hash, algo }]`) in the history, in a batch of their own that
@@ -329,28 +349,12 @@ export const TextSection = {
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
-  _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
-    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    const restored = [];
-    for (const { id } of _ALGORITHMS) {
-      if (allVisible) this._setHidden(id, true);
-      else if (this.hiddenAlgos.has(id)) {
-        const hash = this._setHidden(id, false);
-        if (hash) restored.push({ hash, algo: id });
-      }
-    }
-    this._recordRestored(restored);
-    this._afterVisibilityChange({ resetSpotlight });
-    if (refreshTooltip) showToggleAllTooltip('textToggleAllBtn', this.hiddenAlgos, _ALGORITHMS);
+  _toggleAll(options) {
+    this._hidden.toggleAll(options);
   },
 
-  _toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
-    const hash = this._setHidden(algoId, !this.hiddenAlgos.has(algoId));
-    if (hash) this._recordRestored([{ hash, algo: algoId }]);
-    // Refresh the tooltip to reflect the new state while it may still be visible —
-    // only for a direct click on this badge, not when driven by AlgoSpotlight.
-    if (refreshTooltip) Tooltip.show(this.rowEls.get(algoId).badge, this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
-    this._afterVisibilityChange({ resetSpotlight });
+  _toggleAlgo(algoId, options) {
+    this._hidden.toggleAlgo(algoId, options);
   },
 
   // ── Hash text helpers ──────────────────────────────────────────────────
@@ -438,6 +442,12 @@ export const TextSection = {
     this._counterChars.textContent = chars === 1 ? '1 char' : `${chars.toLocaleString()} chars`;
 
     // Secondary label: the bytes that get hashed (decoded ones for the structured formats; none for invalid input).
+    if (isSurelyTooLarge(text, fmt)) {
+      const bytes = MAX_TEXT_BYTES + 1;
+      this._counterBytes.textContent = `${MAX_TEXT_BYTES.toLocaleString()}+ bytes`;
+      this._counterNotes.set([TOO_LARGE_NOTE]);
+      return bytes;
+    }
     let bytes = 0;
     if (text && isValidInput(text, fmt)) {
       bytes = fmt === 'utf-8' ? Format.utf8ByteLength(text) : Format.textToBytes(text, fmt).length;
@@ -447,7 +457,7 @@ export const TextSection = {
     // Things that silently change a hash (hidden characters, padding, a trailing newline in UTF-8
     // text; what is left out of, or read differently from, the other formats).
     const notes = inputNotes(text, fmt);
-    if (bytes > MAX_TEXT_BYTES) notes.push({ label: 'too large', tip: 'Over 1 MB, use a file' });
+    if (bytes > MAX_TEXT_BYTES) notes.push(TOO_LARGE_NOTE);
     this._counterNotes.set(notes);
     return bytes;
   },
@@ -466,6 +476,20 @@ export const TextSection = {
       default:
         return text; // utf-8: no filtering
     }
+  },
+
+  /** Takes characters the input format can't hold out of the field, keeping the caret where it was.
+   *  The keydown filter can't see keys that soft keyboards report as "Unidentified", so whatever
+   *  they type arrives here. */
+  _dropIllegalChars() {
+    const ta = this._input;
+    const fmt = this.getSelectedInputFormat();
+    const filtered = this._filterTextForFormat(ta.value, fmt);
+    if (filtered === ta.value) return;
+    const caret = this._filterTextForFormat(ta.value.slice(0, ta.selectionStart), fmt).length;
+    ta.value = filtered;
+    ta.setSelectionRange(caret, caret);
+    Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
   },
 
   /** The first character typed elsewhere on the page (see components/type-to-focus.js).
@@ -494,6 +518,8 @@ export const TextSection = {
   /** Insert `raw` at the caret (replacing any selection), filtered for the
    *  selected input format, and recompute. `replace` swaps the whole content for it instead. */
   insertText(raw, { focus = true, replace = false } = {}) {
+    // Text arriving in a collapsed section (typed, pasted, dropped) opens it, so it is seen.
+    expandSection(this._card.closest('.section'));
     const fmt = this.getSelectedInputFormat();
     const filtered = this._filterTextForFormat(raw, fmt);
     if (filtered.length < raw.length) Hint.show(this._formatHint, _FORMAT_HINTS[fmt]);
@@ -603,8 +629,7 @@ export const TextSection = {
   _onDownload(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    const filename = `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}.${_APP_CONFIG.slugify(algoId)}`;
-    Download.trigger(hash, filename);
+    downloadDigest(hash, algoId, '', _APP_CONFIG);
     const btn = this.rowEls.get(algoId).download;
     Tooltip.flash(btn);
     Checkmark.flash(btn);

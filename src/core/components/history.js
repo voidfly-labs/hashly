@@ -1,8 +1,8 @@
 import { createBatchSources } from '~core/services/batch-sources.js';
 import { Checkmark } from '~core/utils/checkmark.js';
-import { toChecksumFile } from '~core/utils/checksum-file.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
+import { downloadDigest } from '~core/utils/download-digest.js';
 import { matchesTerms, searchTerms } from '~core/utils/history-filter.js';
 import { iconHref } from '~core/utils/icon.js';
 import { slideIn } from '~core/utils/slide-in.js';
@@ -491,21 +491,7 @@ export const History = {
         await copyWithFeedback(hash, { button: target });
       } else if (action === 'download-history') {
         e.stopPropagation();
-        const algo = target.dataset.algo ?? _DEFAULT_ALGO;
-        const storedFilename = target.dataset.filename ?? '';
-        // Mirror FileSection._onDownload: a hex digest of a named file is written as a
-        // checksum file; anything else is the digest alone, named <basename>.<ext> or,
-        // without a recorded source filename, the timestamped default.
-        const ext = _APP_CONFIG.slugify(algo);
-        const checksumFile = toChecksumFile(hash, ext, storedFilename);
-        if (checksumFile) {
-          Download.trigger(checksumFile.content, checksumFile.filename);
-        } else {
-          const base = storedFilename
-            ? storedFilename.replace(/\.[^.]+$/, '')
-            : `${_APP_CONFIG.appName}-${_APP_CONFIG.fileNoun}_${Download.filenameSafeTimestamp()}`;
-          Download.trigger(hash, `${base}.${ext}`);
-        }
+        downloadDigest(hash, target.dataset.algo ?? _DEFAULT_ALGO, target.dataset.filename ?? '', _APP_CONFIG);
         Tooltip.flash(target);
         Checkmark.flash(target);
       }

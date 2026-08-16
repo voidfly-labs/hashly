@@ -1,6 +1,9 @@
 // How long a tooltip opened by a tap stays up: there's no mouseleave to close it on a touch screen.
 export const TAP_TOOLTIP_MS = 3000;
 
+// Keeps a tooltip this far from the viewport's edges.
+const VIEWPORT_MARGIN = 8;
+
 // Singleton <div> appended to <body> so it escapes all stacking contexts
 // (including transformed ancestors like the history popover).
 // All .tooltip spans in markup are kept for semantic grouping but are hidden;
@@ -21,16 +24,18 @@ export const Tooltip = (() => {
     document.body.appendChild(el);
   }
 
-  /** Position the singleton above anchorElement, centered on it. */
+  /** Position the singleton above anchorElement, centered on it, kept inside the viewport. */
   function _position(anchorElement) {
     const rect = _stableRect(anchorElement);
+    const centered = rect.left + rect.width / 2 - el.offsetWidth / 2;
+    const maxLeft = document.documentElement.clientWidth - el.offsetWidth - VIEWPORT_MARGIN;
     el.style.right = '';
-    el.style.left = `${rect.left + rect.width / 2 - el.offsetWidth / 2}px`;
+    el.style.left = `${Math.max(VIEWPORT_MARGIN, Math.min(centered, maxLeft))}px`;
     el.style.top = `${rect.top}px`;
   }
 
   /** Position the singleton above anchorElement, right-edge-aligned to it
-   *  instead of centered — for a wider (--xl) block of text. CSS `right`
+   *  instead of centered — for anchors against the right edge. CSS `right`
    *  (not a computed `left`) lets the browser handle the box's own width
    *  natively, so this doesn't depend on measuring it. */
   function _positionXl(anchorElement) {
@@ -67,7 +72,7 @@ export const Tooltip = (() => {
       // Derive label: passed explicitly, or from the child .tooltip span's text
       const label = text ?? anchorElement.querySelector('.tooltip')?.textContent ?? 'Copied!';
 
-      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--visible');
+      el.classList.remove('tooltip-singleton--visible');
       el.textContent = label;
 
       // Force a reflow so the transition fires even if already visible
@@ -91,30 +96,11 @@ export const Tooltip = (() => {
     show(anchorElement, text, duration, { align = 'center' } = {}) {
       _ensureEl();
       clearTimeout(hideTimer);
-      el.classList.remove('tooltip-singleton--xl', 'tooltip-singleton--visible');
+      el.classList.remove('tooltip-singleton--visible');
       el.textContent = text;
       // eslint-disable-next-line sonarjs/void-use
       void el.offsetWidth;
       (align === 'end' ? _positionXl : _position)(anchorElement);
-      el.classList.add('tooltip-singleton--visible');
-      if (duration) {
-        hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), duration);
-      } else if (lastPointerType !== 'mouse') {
-        hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), 1400);
-      }
-    },
-
-    /** Like show(), but right-edge-aligned instead of centered (see
-     *  _positionXl) — for a wider, multi-line block of content. */
-    showXl(anchorElement, text, duration) {
-      _ensureEl();
-      clearTimeout(hideTimer);
-      el.classList.remove('tooltip-singleton--visible');
-      el.classList.add('tooltip-singleton--xl');
-      el.textContent = text;
-      // eslint-disable-next-line sonarjs/void-use
-      void el.offsetWidth;
-      _positionXl(anchorElement);
       el.classList.add('tooltip-singleton--visible');
       if (duration) {
         hideTimer = setTimeout(() => el.classList.remove('tooltip-singleton--visible'), duration);
