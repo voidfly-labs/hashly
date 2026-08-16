@@ -1,4 +1,4 @@
-import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
 /** Wire the footer's "Report issue" tooltip on `.footer__report`.
  *  Shared by the main app init and the legal-page init — both render the

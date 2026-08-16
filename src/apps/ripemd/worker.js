@@ -1,5 +1,5 @@
-import { ripemdEngine } from '~core/workers/engines/ripemd.js';
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { ripemdEngine } from '~core/features/hashing/workers/engines/ripemd.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 initHasherServer({
   'RIPEMD-128': ripemdEngine(128),

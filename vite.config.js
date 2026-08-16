@@ -58,8 +58,8 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: `src/apps/${srcDir}/index.html`,
-        privacy: 'src/templates/pages/legal/privacy.html',
-        terms: 'src/templates/pages/legal/terms.html',
+        privacy: 'src/core/app/legal/privacy.html',
+        terms: 'src/core/app/legal/terms.html',
       },
     },
     outDir: `dist/${app}`,
@@ -71,8 +71,8 @@ export default defineConfig({
   plugins: [
     devRewrites({
       '/': `/src/apps/${srcDir}/index.html`,
-      '/privacy': '/src/templates/pages/legal/privacy.html',
-      '/terms': '/src/templates/pages/legal/terms.html',
+      '/privacy': '/src/core/app/legal/privacy.html',
+      '/terms': '/src/core/app/legal/terms.html',
     }),
     createHtmlPlugin({
       pages: [
@@ -83,12 +83,12 @@ export default defineConfig({
         },
         {
           filename: 'privacy.html',
-          template: 'src/templates/pages/legal/privacy.html',
+          template: 'src/core/app/legal/privacy.html',
           injectOptions: { data: injectData, ejsOptions },
         },
         {
           filename: 'terms.html',
-          template: 'src/templates/pages/legal/terms.html',
+          template: 'src/core/app/legal/terms.html',
           injectOptions: { data: injectData, ejsOptions },
         },
       ],

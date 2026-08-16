@@ -56,7 +56,7 @@
   --result-alt-surface: #f7f8fe;
   --result-hover-surface: #e9edfd;
 
-  /* Hash progress bar track (components/hash-progress.css). */
+  /* Hash progress bar track (core/features/results/hash-progress.css). */
   --progress-track: rgba(67, 97, 238, 0.14);
   --progress-fill: rgba(67, 97, 238, 0.55);
 }

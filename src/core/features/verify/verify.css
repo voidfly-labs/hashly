@@ -1,0 +1,299 @@
+/* =========================================================================
+       REFERENCE-HASH VERIFY
+       — Input under the file drop zone plus the per-row verdicts it drives.
+         See core/features/verify/verify.js.
+       ========================================================================= */
+/* The field is a .card (unclipped) around an .input-wrap, exactly like the text
+       input, so the shared focus ring lands on a real card border and stacks with
+       the card's focus shadow the same way. The verdict colours that border. */
+/* The caption is .options__prefix (see options.css) stripped down to its text:
+       its tint and right divider are painted by the wrap (see
+       `.verify__field .input-wrap`) so they run flush to the field's edge. Being a
+       label, it hints that clicking it focuses the field, and it picks up the
+       accent while the field has focus. */
+.verify__prefix {
+  flex: none;
+  box-sizing: border-box;
+  width: var(--prefix-w);
+  border-right: none;
+  padding-top: 0; /* the wrap paints the tint, so the cell needn't be tall; its text is what aligns */
+  padding-bottom: 0;
+  font-size: 12px;
+  opacity: 1;
+  cursor: text;
+  transition: color 0.15s;
+}
+
+.input-wrap:focus-within .verify__prefix {
+  color: var(--accent);
+}
+
+.verify__input {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  padding: 0 72px 0 11px; /* room for the Upload and Paste buttons */
+  border: none;
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--text);
+  background: transparent;
+  outline: none;
+}
+
+.verify__input::placeholder {
+  color: var(--text-muted);
+}
+
+/* Minimal shadow: --shadow-sm, one step lighter than a plain .card. The field
+       sits on the file card's white body and shouldn't compete with it.
+       Hover/focus come up to --shadow. */
+.verify__field {
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+}
+
+.verify__field:hover,
+.verify__field:focus-within {
+  box-shadow: var(--shadow);
+}
+
+/* Caption tint + right divider as a hard-stopped gradient on the wrap itself, so
+       it sits under the wrap's focus border (a child would paint over it) and runs
+       flush to the field's edge. `border-box` origin puts x=0 at the wrap's outer
+       edge; the caption starts 2px in (wrap border + padding), --prefix-w wide,
+       its last 1px being the divider. */
+.verify__field {
+  --prefix-w: 64px;
+}
+
+/* A file is being dragged over the field: same highlight as the main drop zone's
+   drag state (.file-drop--page-drag in core/sections/file/file.css). */
+.verify__field.verify__field--drop {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.verify__field .input-wrap {
+  display: flex; /* caption cell + input on one row */
+  align-items: baseline; /* the caption shares the input text's baseline, in every browser */
+  border-radius: var(--radius-sm);
+  background: linear-gradient(
+    to right,
+    var(--accent-surface) calc(var(--prefix-w) + 1px),
+    var(--border) calc(var(--prefix-w) + 1px) calc(var(--prefix-w) + 2px),
+    transparent 0
+  );
+  background-origin: border-box;
+}
+
+/* Verdict ring — the focus ring's recipe (2px edge + glow, lighter on desktop)
+       in the verdict's colour, on the same wrap. Focused, the border keeps the
+       verdict colour but the ring goes back to the blue focus ring, so focus
+       stays visible. */
+.verify--match {
+  --verdict: var(--success);
+  --verdict-halo: var(--success-surface);
+  --verdict-ring: var(--success-ring);
+  --verdict-glow: var(--success-glow);
+}
+
+.verify--mismatch {
+  --verdict: var(--danger);
+  --verdict-halo: var(--danger-surface);
+  --verdict-ring: var(--danger-ring);
+  --verdict-glow: var(--danger-glow);
+}
+
+.verify--match .input-wrap,
+.verify--mismatch .input-wrap {
+  border-color: var(--verdict);
+  box-shadow: 0 0 0 2px var(--verdict-halo);
+}
+
+.verify--match .input-wrap:focus-within,
+.verify--mismatch .input-wrap:focus-within {
+  box-shadow: var(--focus-ring);
+}
+
+/* Dismiss button — shares its visual styles with the other dismiss buttons
+       (see the grouped ruleset in history.css); hidden until the field has content. */
+.verify__clear,
+.verify__paste,
+.verify__file {
+  position: absolute;
+  top: 5px;
+  right: 7px;
+  padding: 5px;
+}
+
+.verify__clear {
+  display: none;
+}
+
+/* Paste and Upload take the clear button's corner while the field is empty:
+       Paste in the corner itself, Upload beside it (26px button + 4px gap). */
+.verify__paste,
+.verify__file {
+  display: flex;
+}
+
+.verify__file {
+  right: 37px;
+}
+
+.verify__clear--visible ~ .verify__paste,
+.verify__clear--visible ~ .verify__file {
+  display: none;
+}
+
+.verify__clear--visible {
+  display: flex;
+}
+
+/* ── Per-row verdict ──────────────────────────────────────────────────────
+       The tint and stripe go on the row itself. The 3px stripe is an inset
+       box-shadow so it neither shifts layout nor needs `outline`. These come
+       after result.css in main.css, so at equal specificity they beat its
+       odd/even zebra backgrounds. */
+.result.result--match {
+  background: var(--success-surface);
+  box-shadow: inset 3px 0 0 var(--success);
+}
+
+.result.result--mismatch {
+  background: var(--danger-surface);
+  box-shadow: inset 3px 0 0 var(--danger);
+}
+
+/* Verdict icon: a small filled circle on the algorithm badge's top-right corner.
+       Absolutely positioned so it never shifts the row's layout when it appears. */
+.result--match {
+  --verdict: var(--success);
+  --verdict-surface: var(--success-surface);
+}
+
+.result--mismatch {
+  --verdict: var(--danger);
+  --verdict-surface: var(--danger-surface);
+}
+
+/* Halo behind the dot, in the row's tint so the dot reads as cut out of the badge.
+       Dark theme only: in light mode the dot sits fine without it. It is the badge's
+       ::before, which paints before the badge's own ::after border ring, so the border
+       shows through the halo instead of being covered by it. */
+[data-theme='dark'] .result--match .algo-badge::before,
+[data-theme='dark'] .result--mismatch .algo-badge::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--verdict-surface);
+  pointer-events: none;
+}
+
+.result__status {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  color: var(--surface);
+  background: var(--verdict);
+}
+
+.result__status[hidden] {
+  display: none;
+}
+
+.result__status-icon {
+  width: 10px;
+  height: 10px;
+  fill: currentColor;
+}
+
+/* Characters of a near-miss digest that differ from the reference: the mark pattern of the
+       history search (a light fill, a firmer edge, the text left as it is), in red. No horizontal
+       padding: it would widen each marked character and push the rest of the monospace digest
+       out of line with the other rows. The 1px shadow is the edge, and gives the block a little
+       bleed without taking up any space. */
+.result__diff {
+  border-radius: 2px;
+  color: inherit;
+  background: var(--mark-diff);
+  box-shadow: 0 0 0 1px var(--mark-diff-edge);
+}
+
+@media (max-width: 630px) {
+  .verify--match .input-wrap,
+  .verify--mismatch .input-wrap {
+    box-shadow:
+      0 0 0 1px var(--verdict-ring),
+      0 0 4px 1px var(--verdict-glow);
+  }
+
+  .verify--match .input-wrap:focus-within,
+  .verify--mismatch .input-wrap:focus-within {
+    box-shadow: var(--focus-ring);
+  }
+
+  .verify__input {
+    padding-right: 80px;
+  }
+
+  .verify__clear,
+  .verify__paste,
+  .verify__file {
+    top: 2px;
+    right: 4px;
+    padding: 6px;
+  }
+
+  /* 32px button + 4px gap, from the 4px corner offset. */
+  .verify__file {
+    right: 40px;
+  }
+
+  .verify__clear svg,
+  .verify__paste svg,
+  .verify__file svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Verdict dot, 3px larger on mobile. Same top/right anchors, so it grows
+     inward over the badge; the halo (dot + 2px each side) and glyph scale with it. */
+  .result__status {
+    width: 17px;
+    height: 17px;
+  }
+
+  .result__status-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  [data-theme='dark'] .result--match .algo-badge::before,
+  [data-theme='dark'] .result--mismatch .algo-badge::before {
+    width: 21px;
+    height: 21px;
+  }
+}
+
+/* iOS WebKit zooms the page on focus when a text field is under 16px and never
+   zooms back out. -webkit-touch-callout is only implemented there. */
+@supports (-webkit-touch-callout: none) {
+  .verify__input {
+    font-size: 16px;
+  }
+}

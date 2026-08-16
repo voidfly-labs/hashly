@@ -1,0 +1,86 @@
+/* =========================================================================
+       TEXT COUNTER
+       — The "N chars · N bytes" line at the bottom-right of the text input, and the
+         small pills after it (hidden / padded / ↵ at end) that flag what silently
+         changes a hash. Markup: core/sections/text/text.html; pills are rendered by
+         core/sections/text/counter/counter-notes.js from core/sections/text/counter/text-notes.js.
+       ========================================================================= */
+.text-input__counter {
+  position: absolute;
+  max-width: calc(100% - 30px); /* on a narrow screen the last notes are cut off, not wrapped */
+  overflow: hidden;
+  white-space: nowrap;
+  bottom: 3px;
+  right: 15px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* The notes sit inline with the figures; their container adds no box of its own. */
+.text-input__counter-notes {
+  display: contents;
+}
+
+/* A note is a small tinted pill, the one part of the counter that takes the pointer (for its
+   tooltip). The pills tell themselves apart, so they need no separator dots between them. */
+.text-input__counter-note {
+  padding: 0 5px;
+  border-radius: 4px;
+  color: var(--warning);
+  background: var(--warning-surface);
+  box-shadow: inset 0 0 0 1px var(--warning-border);
+  cursor: help;
+  pointer-events: auto;
+}
+
+/* A little more room between the figures and the first pill than between pills. */
+.text-input__counter-note:first-child {
+  margin-left: 4px;
+}
+
+.text-input__counter-note:hover,
+.text-input__counter-note:active {
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+/* Touch screens: grow the tap target without moving the text or the tooltip. The counter gets
+   padding to hold the extra area (its overflow: hidden would clip anything beyond that), its
+   bottom offset shrinks by the same amount, and each note's hit area is an invisible
+   pseudo-element, so the note's own box (which its tooltip is anchored to) stays text-sized. */
+@media (pointer: coarse) {
+  .text-input__counter {
+    bottom: -4px;
+    padding: 7px 0;
+  }
+
+  .text-input__counter-note {
+    position: relative;
+  }
+
+  .text-input__counter-note::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: -4px;
+    bottom: -7px;
+    left: -4px;
+  }
+}
+
+.text-input__counter-sep {
+  flex-shrink: 0;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+}

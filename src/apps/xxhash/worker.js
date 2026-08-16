@@ -9,8 +9,8 @@ import {
   xxhash128,
 } from 'hash-wasm';
 
-import { wasmEngine } from '~core/workers/engines/wasm.js';
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 initHasherServer({
   XXH32: wasmEngine({ fn: xxhash32, createFn: createXXHash32 }),

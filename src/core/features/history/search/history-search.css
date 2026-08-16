@@ -1,0 +1,151 @@
+/* =========================================================================
+       HISTORY SEARCH
+       — The search row of a history popover (see core/features/history/search/history-search.js),
+         between its header and its table.
+       ========================================================================= */
+.history-search {
+  /* The field's box inside the row: its distance from the row's edges (the ring spills 3px
+     beyond it, so it must stay clear of the popover's walls and of the rules above and below). */
+  --field-x: 4px;
+  --field-y: 4px;
+  --focus-ring: 0 0 0 2px var(--accent-muted);
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.history-search[hidden] {
+  display: none;
+}
+
+/* The field's own box, as the reference-hash field's: a rounded 1px edge that takes the
+   --accent-strong colour and the shared focus ring on focus (see input-wrap.css). A floating
+   box, not a full-width line, which would read as the divider above the table. */
+.history-search::before {
+  content: '';
+  position: absolute;
+  top: var(--field-y);
+  right: var(--field-x);
+  bottom: var(--field-y);
+  left: var(--field-x);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+
+/* The same edge as the reference-hash field's focus: its card's grey 1px border shows through
+   under the (translucent) ring, and it lifts to --shadow. */
+.history-search:focus-within::before {
+  border-color: var(--accent-strong);
+  box-shadow:
+    var(--focus-ring),
+    0 0 0 1px var(--border),
+    var(--shadow);
+}
+
+/* The state of a search: the accent while it has matches, red when nothing matches. Only the
+   field's edge, icon and count take the colour: the row keeps its surface, as a band of tint
+   would read as an error banner (and, in the accent, merge with the popover header's). The edge
+   keeps its colour while focused; with matches the ring stays the blue one, and with none it
+   turns red too, so that focus is visible without a blue halo around a red edge. */
+.history-search[data-state='match'] {
+  --verdict: var(--accent);
+}
+
+.history-search[data-state='none'] {
+  --verdict: var(--danger);
+  --focus-ring: 0 0 0 2px var(--danger-glow);
+}
+
+.history-search[data-state]::before,
+.history-search[data-state]:focus-within::before {
+  border-color: var(--verdict);
+}
+
+.history-search[data-state] .history-search__icon {
+  fill: var(--verdict);
+}
+
+.history-search[data-state] .history-search__count {
+  color: var(--verdict);
+}
+
+.history-search__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  fill: var(--text-muted);
+}
+
+.history-search__input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 0;
+  border: none;
+  border-radius: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  background: none;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.history-search__input::placeholder {
+  color: var(--text-muted);
+}
+
+/* The field has its own clear button */
+.history-search__input::-webkit-search-cancel-button,
+.history-search__input::-webkit-search-decoration {
+  display: none;
+  -webkit-appearance: none;
+}
+
+.history-search__clear {
+  display: flex;
+}
+
+.history-search__clear[hidden] {
+  display: none;
+}
+
+.history-search__count {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 630px) {
+  .history-search {
+    padding: 4px 12px;
+    /* Mobile keeps the earlier effect, as .input-wrap does */
+    --focus-ring: 0 0 0 1px var(--accent-ring), 0 0 4px 1px var(--accent-glow);
+  }
+
+  .history-search[data-state='none'] {
+    --focus-ring: 0 0 0 1px var(--danger-ring), 0 0 4px 1px var(--danger-glow);
+  }
+
+  .history-search__input {
+    padding: 8px 0;
+  }
+}
+
+/* iOS zooms the page in when a field under 16px is focused, so there (WebKit's touch callout
+   is how to tell it) the field is 16px; everywhere else it stays the size of the text around it. */
+@supports (-webkit-touch-callout: none) {
+  .history-search__input {
+    font-size: 16px;
+  }
+}

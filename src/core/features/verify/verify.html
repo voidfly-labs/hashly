@@ -1,0 +1,35 @@
+<!-- Reference hash — judges the same-size result rows below, see core/features/verify/verify.js -->
+<div class="verify" id="fileVerify">
+  <!-- Same chrome as the text input (card around an .input-wrap) so the focus ring renders identically -->
+  <div class="card card--unclipped verify__field">
+    <div class="input-wrap">
+      <!-- Persistent caption, reusing the format options' prefix cell; clicking it focuses the field -->
+      <label class="options__prefix verify__prefix" for="fileVerifyInput">Verify</label>
+      <input
+        class="verify__input"
+        id="fileVerifyInput"
+        type="text"
+        placeholder="Paste a reference hash (hex or Base64)…"
+        data-placeholder-mobile="Paste hex or Base64…"
+        spellcheck="false"
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        aria-label="Reference hash to compare the file against"
+        aria-describedby="fileVerifyStatus" />
+      <button class="verify__clear" aria-label="Clear reference hash" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
+      </button>
+      <button class="verify__paste" aria-label="Paste reference hash from clipboard" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
+      </button>
+      <button class="verify__file" aria-label="Upload a file containing the reference hash" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-upload"></use>
+        </svg>
+      </button>
+      <input class="verify__file-input" type="file" hidden tabindex="-1" aria-hidden="true" />
+    </div>
+  </div>
+  <%- include('/src/core/features/verify/status/verify-status.html') %>
+</div>

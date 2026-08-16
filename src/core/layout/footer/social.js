@@ -1,4 +1,4 @@
-import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
 /** Wire hover/focus tooltips for the footer's social icon links
  *  (`.footer__social-icon[aria-label]`), reusing each link's own aria-label

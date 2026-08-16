@@ -1,42 +1,56 @@
-/* Base */
+/* The one stylesheet entry point. The order of these imports is the cascade: rules of equal
+   specificity are won by the file that comes later. Groups run from the most general to the most
+   specific; where one file has to stay behind another, it says why (and so does the file itself). */
+
+/* Base: reset, design tokens, fonts */
 @import './base/reset.css';
 @import './base/tokens.css';
 @import './base/typography.css';
 
-/* Layout */
-@import './layout/footer.css';
-@import './layout/header.css';
-@import './layout/page.css';
+/* UI: feature-agnostic primitives */
+@import '../core/ui/button/button.css';
+@import '../core/ui/algo-badge.css';
+@import '../core/ui/card.css';
+@import '../core/ui/input-wrap.css';
+@import '../core/ui/options.css';
+@import '../core/ui/hint/hint.css';
+@import '../core/ui/tooltip/tooltip.css';
+@import '../core/ui/warning-banner/warning-banner.css';
 
-/* Components */
-@import './components/algo-badge.css';
-@import './components/back-to-top.css';
-@import './components/button.css';
-@import './components/card.css';
-@import './components/file-stats.css';
-@import './components/hash-progress.css';
-@import './components/help.css';
-@import './components/hint.css';
-@import './components/history.css';
-@import './components/history-search.css';
-@import './components/history-table.css';
-@import './components/help-popover.css';
-@import './components/input-wrap.css';
-@import './components/nav-menu.css';
-@import './components/options.css';
-@import './components/result-hidden.css';
-@import './components/result.css';
-@import './components/section-collapse.css';
-@import './components/solo-result.css';
-@import './components/text-counter.css';
-@import './components/tooltip.css';
-@import './components/warning-banner.css';
-@import './components/verify-status.css';
-@import './components/verify.css';
+/* Layout: the page around the sections */
+@import '../core/layout/page.css';
+@import '../core/layout/header/header.css';
+@import '../core/layout/footer/footer.css';
+@import '../core/layout/nav/nav-menu.css';
+@import '../core/layout/back-to-top/back-to-top.css';
+
+/* Features */
+/* after layout/page.css: a collapsed section overrides the margin it sets */
+@import '../core/features/section-collapse/section-collapse.css';
+/* history.css first: the other popovers, the clear buttons of the inputs and the verify field
+   override parts of it */
+@import '../core/features/history/history.css';
+@import '../core/features/history/search/history-search.css';
+@import '../core/features/history/table/history-table.css';
+/* hash-progress.css before result.css (as ever): its `cursor: default` on a row being hashed is
+   overridden by the row's own `cursor: pointer` */
+@import '../core/features/results/hash-progress.css';
+@import '../core/features/results/hidden/result-hidden.css';
+@import '../core/features/results/result.css';
+@import '../core/features/results/solo-result.css';
+/* after result.css, ui/card.css, ui/input-wrap.css, ui/options.css: the verdicts and the field
+   override them */
+@import '../core/features/verify/status/verify-status.css';
+@import '../core/features/verify/verify.css';
+/* help-popover.css after history.css: it narrows the popover width history.css sets */
+@import '../core/features/help/help.css';
+@import '../core/features/help/help-popover.css';
+@import '../core/features/spotlight/quick-select.css';
 
 /* Sections */
-@import './sections/faq.css';
-@import './sections/file.css';
-@import './sections/quick-select.css';
-@import './sections/random.css';
-@import './sections/text.css';
+@import '../core/sections/text/counter/text-counter.css';
+@import '../core/sections/text/text.css';
+@import '../core/sections/file/file-stats.css';
+@import '../core/sections/file/file.css';
+@import '../core/sections/random/random.css';
+@import '../core/sections/faq/faq.css';

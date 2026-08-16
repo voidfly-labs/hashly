@@ -1,4 +1,4 @@
-import { OPEN_POPOVER } from '~core/components/popover.js';
+import { OPEN_POPOVER } from '~core/ui/popover.js';
 
 // What closes the menu when clicked: the section links, and the history entries (see nav-history.js).
 const CLOSING_ITEMS = '.header__nav-link, .nav-menu__action';

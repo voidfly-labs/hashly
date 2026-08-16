@@ -1,0 +1,49 @@
+/* =========================================================================
+       HELP ACTION BUTTON
+       — Same visual language as .toggle-all-btn/.history-btn/.permalink-btn
+         (history.css): bordered icon-only square, same 17px icon. Wired in
+         core/features/help/help.js; usable in any section's header row.
+       ========================================================================= */
+.help-btn {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.help-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.help-btn:active {
+  transform: scale(0.9);
+}
+
+.help-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@media (max-width: 630px) {
+  .help-btn {
+    padding: 9px; /* 40px touch target (was 32px) */
+  }
+
+  .help-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

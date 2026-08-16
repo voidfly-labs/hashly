@@ -1,4 +1,4 @@
-import { History, HISTORY_CHANGE } from '~core/components/history.js';
+import { History, HISTORY_CHANGE } from '~core/features/history/history.js';
 
 const MAX_SHOWN = 999;
 

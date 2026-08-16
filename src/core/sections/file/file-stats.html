@@ -1,0 +1,15 @@
+<!-- What the hashing is doing: "Hashing…", speed and time left, then how long it took
+     (core/features/hashing/run-stats.js). Present for every loaded file, so it never shifts the page. -->
+<div class="file-drop__stats" id="fileStats">
+  <span class="file-drop__stats-spinner" aria-hidden="true"></span>
+  <svg class="file-drop__stats-icon file-drop__stats-icon--done" viewBox="0 0 24 24" aria-hidden="true">
+    <use href="/src/assets/images/icons.svg#icon-check"></use>
+  </svg>
+  <svg class="file-drop__stats-icon file-drop__stats-icon--error" viewBox="0 0 24 24" aria-hidden="true">
+    <use href="/src/assets/images/icons.svg#icon-close"></use>
+  </svg>
+  <svg class="file-drop__stats-icon file-drop__stats-icon--warn" viewBox="0 0 24 24" aria-hidden="true">
+    <use href="/src/assets/images/icons.svg#icon-warning"></use>
+  </svg>
+  <span id="fileStatsText"></span>
+</div>

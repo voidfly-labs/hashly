@@ -1,4 +1,4 @@
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 import {
   crc_8_dvb_s2,

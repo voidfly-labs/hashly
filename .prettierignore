@@ -1,4 +1,4 @@
 dist/
 node_modules/
 
-src/templates/components/warning-banner.html
+src/core/ui/warning-banner/warning-banner.html

@@ -1,0 +1,358 @@
+/* =========================================================================
+       HISTORY TABLE
+       — The rows of a history popover (see core/features/history/table/history-table.js), and
+         their stacked layout on phones.
+       ========================================================================= */
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.history-table thead th {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  background: var(--bg);
+}
+
+[data-theme='dark'] .history-table thead th {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.history-table tbody td {
+  padding: 7px 12px;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+[data-theme='dark'] .history-table tbody td {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.history-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.history-table tbody tr:hover td {
+  background: var(--accent-surface);
+}
+
+.history-table__row {
+  cursor: pointer;
+}
+
+.history-table__num {
+  width: 35px;
+  color: var(--text-muted);
+}
+
+.history-table__hash {
+  position: relative; /* anchor for inline .tooltip */
+  overflow: hidden;
+  letter-spacing: 0.3px;
+  color: var(--text);
+  user-select: none;
+}
+
+.history-table__hash-text,
+.history-table__source {
+  display: block;
+  /* The 1px padding is room for the edge of a search mark at the start of the line, which the
+     clipping would cut off; the negative margin keeps the text where it was. */
+  padding: 1px;
+  margin: -1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-table__hash-text {
+  font-size: 13.5px; /* as the hash in the main view (.result__hash) */
+}
+
+/* A file name is cut in the middle (see history-table.js): its start shrinks, its end stays */
+.history-table__source--file {
+  display: flex;
+}
+
+.history-table__source-head,
+.history-table__source-tail {
+  white-space: pre;
+}
+
+.history-table__source-head {
+  min-width: 0;
+  padding: 1px;
+  margin: -1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-table__source-tail {
+  flex: none;
+}
+
+/* What was hashed, under the hash */
+.history-table__source {
+  margin-top: 1px;
+  font-family: var(--sans);
+  font-size: 12px;
+  letter-spacing: normal;
+  color: var(--text-muted);
+}
+
+.history-table__time {
+  /* Wide enough for "YYYY-MM-DD HH:mm:ss" at 12px mono */
+  width: 150px;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+/* Where the time wraps (see the phone layout), it breaks between date and time, not inside the date */
+.history-table__date {
+  white-space: nowrap;
+}
+
+/* A search match: a light accent fill with a firmer edge, in the full text colour (the source
+   line is muted, and a match should stand out of it). No horizontal padding, so a monospace
+   hash stays in line; the 1px shadow is the edge, and gives the block its bleed. */
+.history-table mark {
+  border-radius: 2px;
+  color: var(--text);
+  background: var(--mark);
+  box-shadow: 0 0 0 1px var(--mark-edge);
+}
+
+/* Action buttons column — mirrors .random__item-actions pattern */
+.history-table__actions {
+  width: 58px;
+  padding-left: 4px !important;
+  padding-right: 8px !important;
+  overflow: visible;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.history-table__action-btns {
+  display: inline-flex;
+  gap: 1px;
+  vertical-align: middle;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.history-table tbody tr:hover .history-table__action-btns {
+  opacity: 1;
+}
+
+/* Unified with .random__item-btn — identical padding, icon size, hover ring */
+.history-table__action-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.history-table__action-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.history-table__action-btn svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}
+
+/* Phones: a table has no room for five columns (the hash got 10px of 390), so each row
+   stacks: algorithm, time and actions on one line, the hash under them, then what was hashed. */
+@media (max-width: 630px) {
+  .history-table thead {
+    display: none;
+  }
+
+  .history-table,
+  .history-table tbody {
+    display: block;
+  }
+
+  .history-table tbody tr.history-table__row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'algo time actions'
+      'hash hash hash';
+    position: relative;
+    align-items: center;
+    column-gap: 8px;
+    row-gap: 4px;
+    padding: 8px 8px 8px 12px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  [data-theme='dark'] .history-table tbody tr.history-table__row {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .history-table tbody tr.history-table__row:last-child {
+    border-bottom: none;
+  }
+
+  .history-table tbody tr.history-table__row td {
+    display: block;
+    width: auto;
+    padding: 0;
+    border-bottom: none;
+    background: none;
+  }
+
+  /* The row number, as #004, in the row's lower right corner; the last line of text leaves room */
+  .history-table tbody tr.history-table__row td.history-table__num {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    font-size: 12px;
+  }
+
+  .history-table__num::before {
+    content: '#';
+  }
+
+  .history-table__source,
+  .history-table__hash-text--last {
+    padding-right: 44px;
+  }
+
+  .history-table tbody tr.history-table__row td.history-table__actions {
+    padding: 0 !important;
+  }
+
+  .history-table__algo {
+    grid-area: algo;
+  }
+
+  /* On the narrowest screens the date wraps above the time instead of being cut off */
+  .history-table__time {
+    grid-area: time;
+    min-width: 0;
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: right;
+    white-space: normal;
+  }
+
+  .history-table__actions {
+    grid-area: actions;
+  }
+
+  /* A 32px touch target; the negative margin keeps it from making the row taller */
+  .history-table__action-btn {
+    padding: 7px;
+    margin: -4px 0;
+  }
+
+  .history-table__action-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .history-table__hash {
+    grid-area: hash;
+  }
+}
+
+/* Touch devices have no hover — always show action buttons and history
+       table actions so they remain reachable regardless of viewport width.
+       @media (hover: none) targets the input mechanism, not the screen size,
+       which is the correct semantic here. */
+@media (hover: none) {
+  .history-table__action-btns {
+    opacity: 1;
+  }
+}
+
+/* Under 360px every pixel of the first line counts: a long algorithm name (CRC-16 (Kermit)),
+   the date and two buttons have to share 260px. */
+@media (max-width: 359px) {
+  .history-table tbody tr.history-table__row {
+    column-gap: 6px;
+    padding: 8px 6px 8px 10px;
+  }
+
+  .history-table__action-btn {
+    padding: 6px;
+  }
+
+  /* The date always sits over the time here (so it doesn't jump between one line and two as the
+     algorithm names change width), and is cut with an ellipsis if even that is too wide. */
+  .history-table__time {
+    white-space: nowrap;
+  }
+
+  .history-table__date {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .history-table tbody tr.history-table__row td.history-table__num {
+    right: 10px;
+  }
+}
+
+/* =========================================================================
+       HISTORY EMPTY STATE
+       — No entries yet, or no match for a search. The popover body is a flex
+         column then, and the margin: auto centres the message in it, whatever
+         height the body holds.
+       ========================================================================= */
+.history-popover__body--empty {
+  display: flex;
+}
+
+.history-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: auto;
+  padding: 32px 16px;
+  text-align: center;
+}
+
+.history-empty__icon {
+  width: 36px;
+  height: 36px;
+  fill: var(--text-muted);
+  opacity: 0.7;
+}
+
+.history-empty__text {
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.history-empty__clear svg {
+  width: 15px;
+  height: 15px;
+  fill: currentColor;
+}

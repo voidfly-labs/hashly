@@ -1,6 +1,6 @@
-import { initApp } from '~core/init/app.js';
-import { createHasherClient } from '~core/workers/hasher-client.js';
-import { spawnWorker } from '~core/workers/spawn.js';
+import { initApp } from '~core/app/init/app.js';
+import { createHasherClient } from '~core/features/hashing/workers/hasher-client.js';
+import { spawnWorker } from '~core/features/hashing/workers/spawn.js';
 
 import workerUrl from './worker.js?worker&url';
 
@@ -44,28 +44,10 @@ const ALGORITHMS = [
 ];
 
 const DEFAULT_ALGO = 'CRC-32';
-const ALGO_ORDER = new Map(ALGORITHMS.map(({ id }, i) => [id, i]));
 
-const Hasher = {
-  ...createHasherClient({
-    spawn: () => spawnWorker(workerUrl),
-    algorithms: ALGORITHMS,
-  }),
+const Hasher = createHasherClient({
+  spawn: () => spawnWorker(workerUrl),
+  algorithms: ALGORITHMS,
+});
 
-  generateRandom(algoId) {
-    const algo = ALGORITHMS.find((a) => a.id === algoId);
-    const hexLen = algo?.hexLen ?? 8;
-    const byteLen = Math.ceil(hexLen / 2);
-    const bytes = new Uint8Array(byteLen);
-    crypto.getRandomValues(bytes);
-    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
-      .join('')
-      .slice(0, hexLen);
-    // A width that isn't a multiple of 4 (CRC-82) leaves the top digit with fewer than 4 bits.
-    const topBits = algo ? algo.bits - (hexLen - 1) * 4 : 4;
-    if (topBits >= 4) return hex;
-    return (Number.parseInt(hex[0], 16) & ((1 << topBits) - 1)).toString(16) + hex.slice(1);
-  },
-};
-
-initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, ALGO_ORDER, Hasher });
+initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });

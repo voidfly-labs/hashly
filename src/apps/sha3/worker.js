@@ -1,7 +1,7 @@
 import { createSHA3, sha3 } from 'hash-wasm';
 
-import { wasmEngine } from '~core/workers/engines/wasm.js';
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 initHasherServer({
   'SHA3-224': wasmEngine({ fn: (bytes) => sha3(bytes, 224), createFn: () => createSHA3(224) }),

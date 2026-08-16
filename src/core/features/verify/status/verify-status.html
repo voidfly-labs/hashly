@@ -1,0 +1,26 @@
+<!-- Notice under the reference field, driven by core/features/verify/status/verify-status.js -->
+<div class="verify__status-wrap">
+  <div class="verify__status-inner">
+    <!-- The tone (data-tone) picks which icon shows and how the notice is tinted -->
+    <div class="verify__status" id="fileVerifyStatus" data-tone="info" aria-live="polite">
+      <svg class="verify__status-icon verify__status-icon--info" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-info"></use>
+      </svg>
+      <svg class="verify__status-icon verify__status-icon--warn" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-warning"></use>
+      </svg>
+      <svg class="verify__status-icon verify__status-icon--match" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-check"></use>
+      </svg>
+      <svg class="verify__status-icon verify__status-icon--mismatch" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-close"></use>
+      </svg>
+      <div class="verify__status-body">
+        <span class="verify__status-text"
+          ><strong class="verify__status-lead"></strong><span class="verify__status-rest"></span
+        ></span>
+        <span class="verify__status-hint" hidden></span>
+      </div>
+    </div>
+  </div>
+</div>

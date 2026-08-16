@@ -1,0 +1,90 @@
+/* =========================================================================
+       FILE STATS
+       — The status row under the file name in the drop zone: a spinner while hashing,
+         then a ✓ or ✕, with the speed, time left and how long it took. Markup:
+         ./file-stats.html; driven by FileSection and
+         core/features/hashing/run-stats.js.
+       ========================================================================= */
+/* Status row under the file name: "Hashing…", speed and time left, then how long it
+       took. Shown whenever a file is loaded (never blank). One line that ellipsises
+       instead of wrapping, so it can't resize the zone. Its icon follows data-state. */
+.file-drop__stats {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text-muted);
+  pointer-events: none;
+  user-select: none;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+}
+
+.file-drop__stats span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-drop__stats--visible {
+  display: flex;
+}
+
+.file-drop__stats-spinner,
+.file-drop__stats-icon {
+  display: none;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.file-drop__stats-icon {
+  fill: currentColor;
+}
+
+.file-drop__stats-icon--done {
+  color: var(--success);
+}
+
+.file-drop__stats-icon--error {
+  color: var(--danger);
+}
+
+.file-drop__stats-icon--warn {
+  color: var(--warning);
+}
+
+/* In-progress ring: a track with one accent arc, rotated by a transform animation, which
+       runs on the compositor and so keeps turning smoothly while the main thread is busy
+       hashing. */
+.file-drop__stats-spinner {
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: file-drop-spin 0.8s linear infinite;
+}
+
+@keyframes file-drop-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-drop__stats-spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/* One icon per state: running → spinner, finished → ✓, stopped or failed → ✕, nothing to do → ⚠. */
+.file-drop__stats[data-state='busy'] .file-drop__stats-spinner,
+.file-drop__stats[data-state='done'] .file-drop__stats-icon--done,
+.file-drop__stats[data-state='error'] .file-drop__stats-icon--error,
+.file-drop__stats[data-state='warn'] .file-drop__stats-icon--warn {
+  display: block;
+}

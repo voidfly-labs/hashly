@@ -1,0 +1,71 @@
+/* ── Solo row ─────────────────────────────────────────────────────────────
+       With exactly one algorithm visible (see core/features/results/solo-result.js) its
+       row is all there is, so it grows: header line (badge, digest description,
+       actions), then the hash at a larger size on its own line, with Copy as
+       the primary action. Only properties that already transition (padding, here
+       font-size) change, so rows still animate in and out. */
+.result__meta {
+  display: none;
+  flex: 1;
+  min-width: 0;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.result--solo .result__inner {
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  padding-top: 14px;
+  padding-bottom: 16px;
+}
+
+.result--solo .result__meta {
+  display: block;
+}
+
+.result--solo .algo-badge {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+.result--solo .result__actions {
+  order: 2;
+}
+
+.result--solo .result__hash {
+  order: 3;
+  flex-basis: 100%;
+  transition: font-size 0.3s ease;
+}
+
+.result--solo .result__hash:not(.result__hash--empty) {
+  font-size: 18px;
+  line-height: 1.5;
+  letter-spacing: 0.6px;
+}
+
+.result--solo .result__actions .btn:first-child {
+  padding: 6px 16px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.result--solo .result__actions .btn:first-child:hover {
+  color: #fff;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  opacity: 0.88;
+}
+
+@media (max-width: 630px) {
+  .result--solo .result__hash:not(.result__hash--empty) {
+    font-size: 15px;
+  }
+
+  /* Header line is the badge and description; the hash, then the buttons, follow. */
+  .result--solo .result__actions {
+    order: 4;
+  }
+}

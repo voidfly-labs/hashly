@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" data-theme="light">
-  <%- include('/src/templates/layout/head.html') %>
+  <%- include('/src/core/layout/head.html') %>
   <body>
     <!-- Backdrop overlay for history popovers (UX focus effect) -->
     <div class="history-backdrop" id="historyBackdrop" aria-hidden="true"></div>
@@ -11,30 +11,30 @@
       <%= skipLinkText %>
     </a>
 
-    <%- include('/src/templates/layout/header.html') %>
+    <%- include('/src/core/layout/header/header.html') %>
 
     <!-- ========== MAIN ========== -->
     <main aria-label="<%= mainAriaLabel %>">
-      <%- include('/src/templates/components/warning-banner.html') %>
+      <%- include('/src/core/ui/warning-banner/warning-banner.html') %>
       <!-- Page heading -->
       <div class="page-heading">
         <h1><%- pageH1Html %></h1>
         <p class="page-heading__subtitle"><%= pageSubtitle %></p>
       </div>
 
-      <%- include('/src/templates/sections/quick-select.html') %>
+      <%- include('/src/core/features/spotlight/quick-select.html') %>
       <!-- -->
-      <%- include('/src/templates/sections/text.html') %>
+      <%- include('/src/core/sections/text/text.html') %>
       <!-- -->
-      <%- include('/src/templates/sections/file.html') %>
+      <%- include('/src/core/sections/file/file.html') %>
       <!-- -->
-      <%- include('/src/templates/sections/random.html') %>
+      <%- include('/src/core/sections/random/random.html') %>
 
       <!-- ── ABOUT & FAQ ── -->
       <%- include('/src/apps/sha2/sections/faq.html') %>
     </main>
 
-    <%- include('/src/templates/layout/footer.html') %>
+    <%- include('/src/core/layout/footer/footer.html') %>
 
     <!-- ── Structured Data ── -->
     <script type="application/ld+json">

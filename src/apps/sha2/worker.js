@@ -11,8 +11,8 @@ import {
   sha512,
 } from 'hash-wasm';
 
-import { wasmEngine } from '~core/workers/engines/wasm.js';
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 initHasherServer({
   'SHA-1': wasmEngine({ fn: sha1, createFn: createSHA1 }),

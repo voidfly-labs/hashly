@@ -1,7 +1,7 @@
 import { createKeccak, keccak } from 'hash-wasm';
 
-import { wasmEngine } from '~core/workers/engines/wasm.js';
-import { initHasherServer } from '~core/workers/hasher-server.js';
+import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
 
 initHasherServer({
   'Keccak-224': wasmEngine({ fn: (bytes) => keccak(bytes, 224), createFn: () => createKeccak(224) }),
