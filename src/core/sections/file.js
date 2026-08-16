@@ -1,10 +1,20 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { createHashProgress } from '~core/components/hash-progress.js';
-import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { History } from '~core/components/history.js';
 import { setHashEmpty } from '~core/components/result.js';
+import {
+  buildResultRow,
+  hideRow,
+  setHashText,
+  setRowActions,
+  showRow,
+  showToggleAllTooltip,
+  updateToggleAllButton,
+  wireResultRow,
+} from '~core/components/result-row.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
 import { createSoloResult } from '~core/components/solo-result.js';
 import { TabTitle } from '~core/components/tab-title.js';
@@ -12,10 +22,8 @@ import { Tooltip } from '~core/components/tooltip.js';
 import { createVerify } from '~core/components/verify.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { toChecksumFile } from '~core/utils/checksum-file.js';
-import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
-import { iconHref } from '~core/utils/icon.js';
 import { createRunStats } from '~core/utils/run-stats.js';
 import { takesText } from '~core/utils/text-field.js';
 
@@ -67,7 +75,7 @@ export const FileSection = {
     });
     this._soloResult = createSoloResult({ resultsEl: this._resultsEl, algorithms: _ALGORITHMS });
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
-    this._updateToggleAllBtn();
+    updateToggleAllButton('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'file');
     this._hiddenSummary.update(this.hiddenAlgos.size);
     this._soloResult.update();
 
@@ -178,210 +186,66 @@ export const FileSection = {
   // ── DOM helpers ────────────────────────────────────────────────────────
 
   _buildRow(algoId) {
-    const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const tipText = () => (this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
-
-    const row = document.createElement('div');
-    row.className = 'result result--empty';
-    row.dataset.algo = algoId;
-    row.innerHTML = `
-          <div class="result__inner">
-            <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}<span class="result__status" aria-hidden="true" hidden><svg class="result__status-icon" viewBox="0 0 24 24"><use href=""></use></svg></span></span>
-            <span class="result__hash result__hash--empty" id="fileHash-${safeId}">no file selected<span class="tooltip">Copied!</span></span>
-            <div class="result__actions">
-              <button class="btn" id="fileCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('copy')}"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                Copy<span class="tooltip">Copied!</span>
-              </button>
-              <button class="btn" id="fileDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                Download<span class="tooltip">Exported</span>
-              </button>
-            </div>
-          </div>`;
-
-    this._resultsEl.appendChild(row);
-
-    const els = {
-      row,
-      hash: row.querySelector(`#fileHash-${safeId}`),
-      download: row.querySelector(`#fileDownload-${safeId}`),
-      copy: row.querySelector(`#fileCopy-${safeId}`),
-    };
-    els.progress = createHashProgress({
-      row,
-      hash: els.hash,
-      algoId,
-      hexLen: _ALGORITHMS.find((a) => a.id === algoId)?.hexLen ?? 32,
-      getFormat: () => this.getSelectedFormat(),
-    });
-
+    const els = buildResultRow({ prefix: 'file', algoId, emptyText: 'no file selected', withStatus: true });
+    this._resultsEl.appendChild(els.row);
+    els.progress = createHashProgress({ row: els.row, hash: els.hash, algoId });
     this.rowEls.set(algoId, els);
 
-    // Badge hover tooltip — same pattern as TextSection._buildRow.
-    const badge = row.querySelector('.algo-badge');
-    badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText()));
-    badge.addEventListener('mouseleave', () => Tooltip.hide());
-    badge.addEventListener('focus', () => Tooltip.show(badge, tipText()));
-    badge.addEventListener('blur', () => Tooltip.hide());
-    badge.addEventListener('click', () => this._toggleAlgo(algoId, { refreshTooltip: true }));
-    badge.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        this._toggleAlgo(algoId, { refreshTooltip: true });
-      }
+    wireResultRow(els, {
+      isHidden: () => this.hiddenAlgos.has(algoId),
+      onToggle: () => this._toggleAlgo(algoId, { refreshTooltip: true }),
+      onDownload: () => this._onDownload(algoId),
+      onCopy: () => this._onCopy(algoId),
+      getHash: () => this._formattedHash(algoId),
     });
 
     // Apply initial hidden state if set before _buildRow is called.
-    if (this.hiddenAlgos.has(algoId)) {
-      badge.classList.add('algo-badge--hidden');
-      row.classList.add('result--hidden');
-      badge.setAttribute('aria-checked', 'false');
-      this._setHashText(els, 'disabled');
-    }
+    if (this.hiddenAlgos.has(algoId)) hideRow(els);
+  },
 
-    els.download.addEventListener('click', () => this._onDownload(algoId));
-    els.copy.addEventListener('click', () => this._onCopy(algoId));
-    row.addEventListener('click', (e) => {
-      if (e.target.closest('.algo-badge, .result__actions')) return;
-      if (HashSelect.isSelectClick(e)) return; // Ctrl/⌘ is for selecting part of the hash
-      const hash = this._formattedHash(algoId);
-      if (!hash) return;
-      Clipboard.copy(hash);
-      Tooltip.flash(els.hash);
-    });
+  /** Hides or shows one algorithm's row. Showing puts back its digest if the file has been hashed
+   *  with it, and otherwise says so. */
+  _setHidden(algoId, hidden) {
+    const els = this.rowEls.get(algoId);
+    if (hidden) {
+      this.hiddenAlgos.add(algoId);
+      this._clearComputingState(els);
+      hideRow(els);
+      return;
+    }
+    this.hiddenAlgos.delete(algoId);
+    showRow(els, this._formattedHash(algoId), this._emptyText());
+  },
+
+  /** What follows any change to which algorithms are hidden. */
+  _afterVisibilityChange({ resetSpotlight }) {
+    updateToggleAllButton('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'file');
+    this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
+    saveHiddenAlgos(this, 'fileHidden');
+    this._verify.refresh();
+    this._cancelIfIdle();
+    if (resetSpotlight) AlgoSpotlight.reset();
   },
 
   _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
     const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-
-    _ALGORITHMS.forEach(({ id }) => {
-      const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
-      const badge = row?.querySelector('.algo-badge');
-      const els = this.rowEls.get(id);
-      if (!row || !badge || !els) return;
-
-      if (allVisible) {
-        // Hide all
-        this.hiddenAlgos.add(id);
-        badge.classList.add('algo-badge--hidden');
-        row.classList.add('result--hidden');
-        badge.setAttribute('aria-checked', 'false');
-        this._clearComputingState(els);
-        this._setHashText(els, 'disabled');
-        setHashEmpty(els.hash, true);
-        [els.download, els.copy].forEach((btn) => {
-          btn.disabled = true;
-        });
-      } else if (this.hiddenAlgos.has(id)) {
-        // Show — restore existing hash from rawHexMap if available
-        this.hiddenAlgos.delete(id);
-        badge.classList.remove('algo-badge--hidden');
-        row.classList.remove('result--hidden');
-        badge.setAttribute('aria-checked', 'true');
-        const existingHash = this._formattedHash(id);
-        if (existingHash) {
-          this._setHashText(els, existingHash);
-          setHashEmpty(els.hash, false);
-          els.download.disabled = false;
-          els.copy.disabled = false;
-        } else {
-          this._setHashText(els, this._emptyText());
-          setHashEmpty(els.hash, true);
-        }
-      }
-    });
-
-    this._updateToggleAllBtn();
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
-    saveHiddenAlgos(this, 'fileHidden');
-    this._verify.refresh();
-    this._cancelIfIdle();
-    if (resetSpotlight) AlgoSpotlight.reset();
-    if (!refreshTooltip) return;
-    const fileBtn = document.getElementById('fileToggleAllBtn');
-    if (!fileBtn) return;
-    const nowAllVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    Tooltip.show(fileBtn, nowAllVisible ? 'Hide all' : 'Show all');
-  },
-
-  _updateToggleAllBtn() {
-    const btn = document.getElementById('fileToggleAllBtn');
-    if (!btn) return;
-    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    const allHidden = _ALGORITHMS.every((a) => this.hiddenAlgos.has(a.id));
-    const iconChecked =
-      '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
-    const iconIndeterminate =
-      '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>';
-    const iconUnchecked =
-      '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
-    let icon;
-    if (allVisible) icon = iconChecked;
-    else if (allHidden) icon = iconUnchecked;
-    else icon = iconIndeterminate;
-    btn.querySelector('svg').innerHTML = icon;
-    btn.setAttribute('aria-label', allVisible ? 'Hide all file algorithms' : 'Show all file algorithms');
+    for (const { id } of _ALGORITHMS) {
+      if (allVisible || this.hiddenAlgos.has(id)) this._setHidden(id, allVisible);
+    }
+    this._afterVisibilityChange({ resetSpotlight });
+    if (refreshTooltip) showToggleAllTooltip('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS);
   },
 
   _toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
-    const row = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
-    const badge = row.querySelector('.algo-badge');
-    const els = this.rowEls.get(algoId);
-    if (this.hiddenAlgos.has(algoId)) {
-      this.hiddenAlgos.delete(algoId);
-      badge.classList.remove('algo-badge--hidden');
-      row.classList.remove('result--hidden');
-      badge.setAttribute('aria-checked', 'true');
-      // Restore previously computed hash if available, otherwise show empty state.
-      const existingHash = this._formattedHash(algoId);
-      if (existingHash) {
-        this._setHashText(els, existingHash);
-        setHashEmpty(els.hash, false);
-        els.download.disabled = false;
-        els.copy.disabled = false;
-      } else {
-        this._setHashText(els, this._emptyText());
-        setHashEmpty(els.hash, true);
-      }
-    } else {
-      this.hiddenAlgos.add(algoId);
-      badge.classList.add('algo-badge--hidden');
-      row.classList.add('result--hidden');
-      badge.setAttribute('aria-checked', 'false');
-      this._clearComputingState(els);
-      this._setHashText(els, 'disabled');
-      setHashEmpty(els.hash, true);
-      [els.download, els.copy].forEach((btn) => {
-        btn.disabled = true;
-      });
-    }
+    this._setHidden(algoId, !this.hiddenAlgos.has(algoId));
     // Refresh the tooltip to reflect the new state while it may still be visible —
     // only for a direct click on this badge, not when driven by AlgoSpotlight.
-    if (refreshTooltip) {
-      const nowHidden = this.hiddenAlgos.has(algoId);
-      Tooltip.show(badge, nowHidden ? 'Show' : 'Hide');
-    }
-    this._updateToggleAllBtn();
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
-    saveHiddenAlgos(this, 'fileHidden');
-    this._verify.refresh();
-    this._cancelIfIdle();
-    if (resetSpotlight) AlgoSpotlight.reset();
+    if (refreshTooltip) Tooltip.show(this.rowEls.get(algoId).badge, this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
+    this._afterVisibilityChange({ resetSpotlight });
   },
 
   // ── Hash helpers ───────────────────────────────────────────────────────
-
-  /** Preserve the child .tooltip span when replacing text content. */
-  _setHashText(els, text) {
-    const tip = els.hash.querySelector('.tooltip');
-    els.hash.textContent = text;
-    if (tip) els.hash.appendChild(tip);
-  },
 
   /** What a visible row with no digest says: nothing was chosen, or the file was hashed (or its
    *  run stopped) without this algorithm, which was hidden at the time. */
@@ -411,25 +275,23 @@ export const FileSection = {
   },
 
   _reformatAll(record = false) {
+    const items = [];
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);
       if (!hex) continue;
-      const els = this.rowEls.get(id);
       const hash = Format.applyFormat(hex, this.getSelectedFormat());
-      this._setHashText(els, hash);
-      if (record) History.record('file', hash, id, this._currentBatchId, this.currentFileName);
+      setHashText(this.rowEls.get(id).hash, hash);
+      items.push({ hash, algo: id });
     }
+    if (record) History.record('file', items, this._currentBatchId, this.currentFileName);
     // Rewriting the text drops any marks showing where a hash differs from the reference.
     this._verify.refresh();
   },
 
   _setAllActionsEnabled(enabled) {
     for (const [id, els] of this.rowEls.entries()) {
-      if (this.hiddenAlgos.has(id)) continue;
-      [els.download, els.copy].forEach((btn) => {
-        btn.disabled = !enabled;
-      });
+      if (!this.hiddenAlgos.has(id)) setRowActions(els, enabled);
     }
   },
 
@@ -527,22 +389,23 @@ export const FileSection = {
   /** Shows (and records) the digests of the file just hashed, in the selected output format. */
   _showDigests() {
     const fmt = this.getSelectedFormat();
+    const items = [];
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const els = this.rowEls.get(id);
       const hex = this.rawHexMap.get(id);
+      els.progress.stop();
       if (!hex) {
-        els.progress.stop();
         // Shown while this ran: it was hidden when the file was hashed, so there is no digest.
-        this._setHashText(els, this._emptyText());
+        setHashText(els.hash, this._emptyText());
         setHashEmpty(els.hash, true);
         continue;
       }
-      els.progress.stop();
       const hash = Format.applyFormat(hex, fmt);
-      this._setHashText(els, hash);
-      History.record('file', hash, id, this._currentBatchId, this.currentFileName);
+      setHashText(els.hash, hash);
+      items.push({ hash, algo: id });
     }
+    History.record('file', items, this._currentBatchId, this.currentFileName);
   },
 
   /** Every algorithm is hidden, so a file was taken but nothing is computed for it. */
@@ -553,7 +416,7 @@ export const FileSection = {
     for (const { id } of _ALGORITHMS) {
       const els = this.rowEls.get(id);
       this._clearComputingState(els);
-      this._setHashText(els, 'disabled');
+      setHashText(els.hash, 'disabled');
       setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);
@@ -572,7 +435,7 @@ export const FileSection = {
       if (this.hiddenAlgos.has(id)) continue;
       const els = this.rowEls.get(id);
       this._clearComputingState(els);
-      this._setHashText(els, 'error reading file');
+      setHashText(els.hash, 'error reading file');
       setHashEmpty(els.hash, true);
     }
   },
@@ -607,7 +470,7 @@ export const FileSection = {
     for (const { id } of _ALGORITHMS) {
       const els = this.rowEls.get(id);
       this._clearComputingState(els);
-      this._setHashText(els, this.hiddenAlgos.has(id) ? 'disabled' : 'no file selected');
+      setHashText(els.hash, this.hiddenAlgos.has(id) ? 'disabled' : 'no file selected');
       setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);
@@ -637,9 +500,6 @@ export const FileSection = {
   async _onCopy(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    await Clipboard.copy(hash);
-    const btn = this.rowEls.get(algoId).copy;
-    Tooltip.flash(btn);
-    Checkmark.flash(btn);
+    await copyWithFeedback(hash, { button: this.rowEls.get(algoId).copy });
   },
 };

@@ -1,7 +1,7 @@
 const MIB = 1024 * 1024;
 const GIB = 1024 * MIB;
 
-// Live numbers start this far into a run; before that the caller shows a plain "Hashing…".
+// Speed and time-left start this far into a run; before that the line is just "Hashing… 12%".
 const LIVE_AFTER_MS = 1500;
 // Below this a run is mostly start-up cost, so its "speed" would only mislead.
 const SPEED_AFTER_MS = 500;
@@ -9,7 +9,7 @@ const SPEED_AFTER_MS = 500;
 const ETA_AFTER_RATIO = 0.03;
 // Speed is averaged over this window, so one slow chunk doesn't jerk the numbers.
 const WINDOW_MS = 5000;
-// The line is rewritten at most this often.
+// Speed and time-left are recalculated at most this often (the percentage follows every step).
 const UPDATE_EVERY_MS = 1000;
 
 /** "38.2 MiB/s", in the same binary units as the file size. */
@@ -39,8 +39,9 @@ function formatElapsed(seconds) {
 /** Speed and time-left for one hashing run over `totalBytes`.
  *
  *  `update(ratio)` takes the 0–1 progress and returns the line to show
- *  ("42% · 38.2 MiB/s · 2 min left · 4 threads"), or null when there is nothing new to show:
- *  too early in the run, or sooner than UPDATE_EVERY_MS after the last line.
+ *  ("42% · 38.2 MiB/s · 2 min left · 4 threads"; "Hashing… 12% · 4 threads" while it is too
+ *  early for speed), or null when it would read the same as the last one. The percentage moves
+ *  with every whole percent; speed and time-left are refreshed every UPDATE_EVERY_MS.
  *  `summary()` returns "Hashed in 4.2 s · 38.2 MiB/s · 4 threads" for a finished run (just
  *  "Hashed in 0.2 s" when it was too short for a speed to mean anything).
  *
@@ -50,7 +51,9 @@ export function createRunStats(totalBytes, { threads = 1, now = () => performanc
   const onThreads = `${threads} ${threads === 1 ? 'thread' : 'threads'}`;
   const start = now();
   const samples = [{ time: start, bytes: 0 }];
-  let lastShown = -Infinity;
+  let numbersAt = -Infinity;
+  let numbers = null; // the speed and time-left parts of the line
+  let lastLine = '';
 
   /** Bytes per second over the recent window, or over the whole run if it is shorter.
    *  The newest sample is the current one, so the span always starts at an earlier
@@ -65,7 +68,7 @@ export function createRunStats(totalBytes, { threads = 1, now = () => performanc
 
   return {
     /** The plain line for the start of a run, before there are numbers to show. */
-    start: () => `Hashing… · ${onThreads}`,
+    start: () => (lastLine = `Hashing… · ${onThreads}`),
 
     update(ratio) {
       const time = now();
@@ -73,14 +76,20 @@ export function createRunStats(totalBytes, { threads = 1, now = () => performanc
       samples.push({ time, bytes });
       while (samples.length > 2 && time - samples[1].time > WINDOW_MS) samples.shift();
 
-      if (time - start < LIVE_AFTER_MS || time - lastShown < UPDATE_EVERY_MS) return null;
-      const rate = speed(time, bytes);
-      if (rate <= 0) return null;
-      lastShown = time;
+      if (time - start >= LIVE_AFTER_MS && time - numbersAt >= UPDATE_EVERY_MS) {
+        const rate = speed(time, bytes);
+        if (rate > 0) {
+          numbersAt = time;
+          numbers = [formatRate(rate)];
+          if (ratio >= ETA_AFTER_RATIO) numbers.push(`${formatRemaining((totalBytes - bytes) / rate)} left`);
+        }
+      }
 
-      const parts = [`${Math.floor(ratio * 100)}%`, formatRate(rate)];
-      if (ratio >= ETA_AFTER_RATIO) parts.push(`${formatRemaining((totalBytes - bytes) / rate)} left`);
-      return [...parts, onThreads].join(' · ');
+      const percent = `${Math.floor(ratio * 100)}%`;
+      const line = numbers ? [percent, ...numbers, onThreads].join(' · ') : `Hashing… ${percent} · ${onThreads}`;
+      if (line === lastLine) return null;
+      lastLine = line;
+      return line;
     },
 
     summary() {

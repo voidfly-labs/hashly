@@ -9,11 +9,12 @@
  *  Messages out: `{ type: 'progress', id, ratio }`, `{ type: 'result', id, digests }` (`[[algoId, hex]]`)
  *  or `{ type: 'error', id, message }`. A cancelled file job says nothing more.
  *
- *  A file is read here, by the worker, in fixed-size chunks (a `File` can be sent to a worker), so no
+ *  A file is read here, by the worker, in chunks (a `File` can be sent to a worker), so no
  *  chunk is ever copied between threads. Every file job gets hashers of its own, which is what lets a
  *  cancelled job and its replacement overlap for a moment without sharing any state. */
 
-const CHUNK_BYTES = 4 * 1024 * 1024;
+import { createChunkSizer } from './chunk-sizer.js';
+
 const PROGRESS_EVERY_MS = 50;
 
 export function initHasherServer(engines) {
@@ -41,19 +42,22 @@ export function initHasherServer(engines) {
     const hashers = await Promise.all(ids.map(async (algoId) => engineFor(algoId).create()));
     let offset = 0;
     let lastPost = 0;
+    const sizer = createChunkSizer();
 
     while (offset < file.size) {
       if (job.cancelled) return null;
-      const buffer = await file.slice(offset, offset + CHUNK_BYTES).arrayBuffer();
+      const buffer = await file.slice(offset, offset + sizer.bytes).arrayBuffer();
       // Cancelled while reading: stop before touching anything.
       if (job.cancelled) return null;
 
       const chunk = new Uint8Array(buffer);
       const shared = {};
+      const hashStart = performance.now();
       for (const hasher of hashers) hasher.update(chunk, shared);
 
       offset += buffer.byteLength;
       const now = performance.now();
+      sizer.record(buffer.byteLength, now - hashStart);
       if (offset >= file.size || now - lastPost >= PROGRESS_EVERY_MS) {
         lastPost = now;
         self.postMessage({ type: 'progress', id, ratio: Math.min(offset / file.size, 1) });

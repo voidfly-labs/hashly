@@ -1,7 +1,6 @@
 import { createBatchSources } from '~core/services/batch-sources.js';
 import { Checkmark } from '~core/utils/checkmark.js';
 import { toChecksumFile } from '~core/utils/checksum-file.js';
-import { Clipboard } from '~core/utils/clipboard.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
 import { matchesTerms, searchTerms } from '~core/utils/history-filter.js';
@@ -10,6 +9,7 @@ import { slideIn } from '~core/utils/slide-in.js';
 import { takesText } from '~core/utils/text-field.js';
 
 import { initButtonTooltip } from './button-tooltip.js';
+import { copyWithFeedback } from './copy-feedback.js';
 import { initHistoryRows } from './history-rows.js';
 import { createHistorySearch } from './history-search.js';
 import { renderHistoryTable } from './history-table.js';
@@ -114,23 +114,28 @@ export const History = {
     }
   },
 
-  push(ns, hash, algo, batchId, filename) {
+  /** Puts `items` (`[{ hash, algo }]`, one batch) at the top of the history with a single write, however
+   *  many there are: a batch holds an entry per algorithm, and writing the whole store for each of them
+   *  would stall the page. */
+  push(ns, items, batchId, filename) {
     const entries = this._stores[ns];
-    // Deduplicate on (hash + algo) pair so the same hash value for different
-    // algorithms is treated as a distinct entry.
-    const idx = entries.findIndex((e) => e.hash === hash && e.algo === algo);
-    if (idx !== -1) entries.splice(idx, 1);
-    entries.unshift({
-      hash,
-      algo,
-      batchId,
-      ts: Date.now(),
-      filename: filename || '',
-    });
+    for (const { hash, algo } of items) {
+      // Deduplicate on (hash + algo) pair so the same hash value for different
+      // algorithms is treated as a distinct entry.
+      const idx = entries.findIndex((e) => e.hash === hash && e.algo === algo);
+      if (idx !== -1) entries.splice(idx, 1);
+      entries.unshift({
+        hash,
+        algo,
+        batchId,
+        ts: Date.now(),
+        filename: filename || '',
+      });
+    }
     if (entries.length > this.MAX) entries.length = this.MAX;
     // A batch's description goes when its last entry does (trimmed, or replaced by a re-hash).
     this._sources[ns].keepOnly(new Set(entries.map((e) => e.batchId)));
-    // New entry goes to page 0
+    // New entries go to page 0
     this._pages[ns] = 0;
     this.save(ns);
     this._notify(ns);
@@ -188,8 +193,7 @@ export const History = {
   async _copyRow(ns, row) {
     const entry = this._view[ns]?.[Number(row.dataset.i)];
     if (!entry) return;
-    await Clipboard.copy(entry.hash);
-    Tooltip.flash(row.querySelector('.history-table__hash'));
+    await copyWithFeedback(entry.hash, { anchor: row.querySelector('.history-table__hash') });
   },
 
   // ── Rendering ────────────────────────────────────────────────────────────
@@ -484,9 +488,7 @@ export const History = {
 
       if (action === 'copy-history') {
         e.stopPropagation();
-        await Clipboard.copy(hash);
-        Tooltip.flash(target);
-        Checkmark.flash(target);
+        await copyWithFeedback(hash, { button: target });
       } else if (action === 'download-history') {
         e.stopPropagation();
         const algo = target.dataset.algo ?? _DEFAULT_ALGO;
@@ -510,9 +512,10 @@ export const History = {
     });
   },
 
-  // Call after a hash is produced
-  record(ns, hash, algo, batchId, filename) {
-    this.push(ns, hash, algo, batchId, filename);
+  /** Call after hashes are produced: `items` is `[{ hash, algo }]`, all of one batch. */
+  record(ns, items, batchId, filename) {
+    if (!items.length) return;
+    this.push(ns, items, batchId, filename);
     // Live-refresh the popover if it's open (refresh() is a no-op when closed)
     this._refreshFns[ns]?.();
   },

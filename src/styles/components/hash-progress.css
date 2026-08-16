@@ -1,8 +1,7 @@
 /* ── Hash progress ────────────────────────────────────────────────────────
        While a file is hashed, each row's hash cell (see core/components/hash-progress.js)
-       holds a bar and its percentage. Invisible filler (.result__sizer) in the length and
-       format of the digest to come gives the cell that digest's height, so the row does
-       not jump when it lands; the bar is centred over it. The fill moves by transform,
+       holds a bar and its percentage. The row is as tall as the bar and grows to the
+       digest's height when it lands, as a text hash's row does. The fill moves by transform,
        which runs on the compositor and stays smooth while the main thread is busy
        hashing. */
 .result--computing {
@@ -14,19 +13,11 @@
   user-select: none;
 }
 
-.result__sizer {
-  visibility: hidden;
-}
-
 .result__bar {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  transform: translateY(-50%);
+  height: 1.35rem; /* about a line of the digest: the row is no shorter than a one-line digest's */
 }
 
 .result__bar-track {
@@ -44,7 +35,7 @@
   border-radius: 5px;
   background: var(--progress-fill);
   transform: translateX(calc((var(--progress, 0) - 1) * 100%));
-  transition: transform 0.12s linear;
+  transition: transform 0.2s linear;
 }
 
 .result__bar-label {

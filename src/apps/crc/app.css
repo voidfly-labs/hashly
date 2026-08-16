@@ -196,3 +196,11 @@
   color: var(--badge-crc82darc-text);
   background: var(--badge-crc82darc-bg);
 }
+
+/* Its badge names are the longest in the suite: Download goes icon-only (see result.css)
+   from a wider screen than in the other apps. */
+@media (max-width: 389px) {
+  .result__actions .btn__label {
+    display: none;
+  }
+}

@@ -51,7 +51,8 @@ export function setHashDiff(hashEl, reference, digest) {
   const nodes = [...hashEl.childNodes].filter((node) => node !== tip);
   const shown = nodes.map((node) => node.textContent).join('');
   const aligned = diff && shown.toLowerCase() === diff.hex;
-  if (!aligned && !nodes.some((node) => node.nodeType === Node.ELEMENT_NODE)) return; // nothing to undo
+  // Nothing to undo: no marks to take out. Other elements (a progress bar) are not ours to flatten.
+  if (!aligned && !nodes.some((node) => node.classList?.contains('result__diff'))) return;
 
   const frag = document.createDocumentFragment();
   if (!aligned) {

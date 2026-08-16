@@ -1,5 +1,4 @@
-import { Tooltip } from '~core/components/tooltip.js';
-import { Clipboard } from '~core/utils/clipboard.js';
+import { copyWithFeedback } from '~core/components/copy-feedback.js';
 
 const ACTIVE_CLASS = 'hash-select';
 const HASH_CELL = '.result__hash';
@@ -65,8 +64,7 @@ export const HashSelect = {
       const cell = selectedCell();
       const text = window.getSelection().toString();
       if (cell && text) {
-        Clipboard.copy(text);
-        Tooltip.flash(cell);
+        copyWithFeedback(text, { anchor: cell });
       }
       setGesture(cell && text ? 'copied' : '');
     });

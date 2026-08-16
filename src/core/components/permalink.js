@@ -1,8 +1,8 @@
 import { TextSection } from '~core/sections/text.js';
-import { Clipboard } from '~core/utils/clipboard.js';
 import { Format } from '~core/utils/format.js';
 
 import { AlgoSpotlight } from './algo-spotlight.js';
+import { copyWithFeedback } from './copy-feedback.js';
 import { Tooltip } from './tooltip.js';
 
 export const Permalink = {
@@ -59,16 +59,15 @@ export const Permalink = {
   init() {
     const btn = document.getElementById('textPermalinkBtn');
     if (!btn) return;
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', async () => {
       const url = this.buildUrl();
       if (url.length > this._MAX_URL_LENGTH) {
         Tooltip.show(btn, 'Text too long – not copied', 2500);
         return;
       }
-      Clipboard.copy(url);
+      if (!(await copyWithFeedback(url, { anchor: btn }))) return;
       btn.classList.add('permalink-btn--copied');
       setTimeout(() => btn.classList.remove('permalink-btn--copied'), 1500);
-      Tooltip.flash(btn);
     });
     btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'Permalink'));
     btn.addEventListener('mouseleave', () => Tooltip.hide());

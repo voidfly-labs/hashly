@@ -13,9 +13,9 @@
   padding: 9px 16px;
   border: none;
   border-top: 1px solid var(--border);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.3px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums; /* the count doesn't jitter as it changes */
   color: var(--text-muted);
   background: var(--bg);
   cursor: pointer;
@@ -53,6 +53,7 @@
 
 @media (max-width: 630px) {
   .result-hidden {
+    min-height: 44px; /* touch target; the whole row is the button */
     padding-top: 10px;
     padding-bottom: 10px;
   }

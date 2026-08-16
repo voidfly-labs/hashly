@@ -131,15 +131,39 @@
 /* ── Result footer removed — Clear is now an inline ✕ on the input ────── */
 
 @media (max-width: 630px) {
-  /* Result bar: buttons wrap onto their own row */
+  /* Header line, then the hash at full width: the badge on the left and the buttons on the
+     right share a line, so the hash is not squeezed beside the badge and no row of buttons
+     leaves a gap under it. */
   .result__inner {
     flex-wrap: wrap;
-    gap: 8px 12px;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .result__inner > .algo-badge {
+    order: 1;
   }
 
   .result__actions {
-    justify-content: flex-end;
+    order: 2;
+    margin-left: auto;
+  }
+
+  .result__hash {
+    order: 3;
     flex-basis: 100%;
-    padding-top: 4px;
+  }
+
+  .result__actions .btn {
+    padding: 8px 10px;
+  }
+}
+
+/* Very small screens: Download shrinks to its icon so the badge and both buttons keep one line
+   (Copy keeps its label: it is the primary action). The button's aria-label still names it.
+   The CRC app, with the longest badge names, does the same from a wider breakpoint (apps/crc/app.css). */
+@media (max-width: 359px) {
+  .result__actions .btn__label {
+    display: none;
   }
 }

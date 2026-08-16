@@ -1,10 +1,10 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Preferences } from '~core/services/preferences.js';
 import { Storage } from '~core/services/storage.js';
 import { Checkmark } from '~core/utils/checkmark.js';
-import { Clipboard } from '~core/utils/clipboard.js';
 import { toCsv } from '~core/utils/csv.js';
 import { Download } from '~core/utils/download.js';
 import { iconHref } from '~core/utils/icon.js';
@@ -152,7 +152,7 @@ export const RandomSection = {
     this.elements.list.appendChild(fragment);
   },
 
-  handleItemAction(button) {
+  async handleItemAction(button) {
     const action = button.dataset.action;
     const hash = button.dataset.hash;
     // Only the icon button itself has an icon to morph — a click on the
@@ -160,9 +160,7 @@ export const RandomSection = {
     const isIconBtn = button.classList.contains('random__item-btn');
 
     if (action === 'copy') {
-      Clipboard.copy(hash);
-      Tooltip.flash(button);
-      if (isIconBtn) Checkmark.flash(button);
+      await copyWithFeedback(hash, { anchor: button, button: isIconBtn ? button : undefined });
     } else if (action === 'download') {
       const index = button.dataset.index;
       const algo = button.dataset.algo ?? _DEFAULT_ALGO;
@@ -180,9 +178,7 @@ export const RandomSection = {
 
   async onCopyAll() {
     const text = this.hashes.map(({ hash }) => hash).join('\n');
-    await Clipboard.copy(text);
-    Tooltip.flash(this.elements.copyAll);
-    Checkmark.flash(this.elements.copyAll);
+    await copyWithFeedback(text, { button: this.elements.copyAll });
   },
 
   onDownloadAll() {

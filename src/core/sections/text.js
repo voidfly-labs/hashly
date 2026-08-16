@@ -1,20 +1,28 @@
 import { AlgoSpotlight } from '~core/components/algo-spotlight.js';
 import { initButtonTooltip } from '~core/components/button-tooltip.js';
+import { copyWithFeedback } from '~core/components/copy-feedback.js';
 import { createCounterNotes } from '~core/components/counter-notes.js';
-import { HashSelect } from '~core/components/hash-select.js';
 import { createHiddenSummary } from '~core/components/hidden-summary.js';
 import { Hint } from '~core/components/hint.js';
 import { History } from '~core/components/history.js';
 import { initPasteButton } from '~core/components/paste-button.js';
 import { setHashEmpty } from '~core/components/result.js';
+import {
+  buildResultRow,
+  hideRow,
+  setHashText,
+  setRowActions,
+  showRow,
+  showToggleAllTooltip,
+  updateToggleAllButton,
+  wireResultRow,
+} from '~core/components/result-row.js';
 import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/components/saved-view.js';
 import { createSoloResult } from '~core/components/solo-result.js';
 import { Tooltip } from '~core/components/tooltip.js';
 import { Checkmark } from '~core/utils/checkmark.js';
-import { Clipboard } from '~core/utils/clipboard.js';
 import { Download } from '~core/utils/download.js';
 import { Format } from '~core/utils/format.js';
-import { iconHref } from '~core/utils/icon.js';
 import { takesText } from '~core/utils/text-field.js';
 import { inputNotes, isValidInput } from '~core/utils/text-notes.js';
 import { textPreview } from '~core/utils/text-preview.js';
@@ -26,7 +34,7 @@ let _APP_CONFIG, _ALGORITHMS, _Hasher;
 // keystroke: a typed sentence would otherwise push everything else out of the history.
 const HISTORY_IDLE_MS = 1000;
 
-// Every input hashes with all algorithms on the main thread; past this many bytes that freezes the page.
+// Text is hashed with every algorithm on each change; past this many bytes that is a file's job.
 const MAX_TEXT_BYTES = 1024 * 1024;
 
 const _FORMAT_HINTS = {
@@ -54,8 +62,7 @@ export const TextSection = {
   _sourceDescription: '',
 
   // ── Debounced input handler ────────────────────────────────────────────
-  // Debouncing prevents stale-result races when fromTextAll resolves
-  // out of order on rapid typing, and avoids redundant WASM calls.
+  // Typing is debounced so a burst of keystrokes asks for one hash.
   _debounceTimer: null,
   // Counts onInput() runs, so one that was overtaken while it hashed can tell and drop its result.
   _inputSeq: 0,
@@ -86,7 +93,7 @@ export const TextSection = {
     });
     this._soloResult = createSoloResult({ resultsEl: this._resultsEl, algorithms: _ALGORITHMS });
     // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
-    this._updateToggleAllBtn();
+    updateToggleAllButton('textToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'text');
     this._hiddenSummary.update(this.hiddenAlgos.size);
     this._soloResult.update();
 
@@ -269,221 +276,84 @@ export const TextSection = {
 
   /** Build a result row for one algorithm and append it to the container. */
   _buildRow(algoId) {
-    const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const tipText = () => (this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
-
-    const row = document.createElement('div');
-    row.className = 'result result--empty';
-    row.dataset.algo = algoId;
-    row.innerHTML = `
-          <div class="result__inner">
-            <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}</span>
-            <span class="result__hash result__hash--empty" id="textHash-${safeId}">awaiting input…<span class="tooltip">Copied!</span></span>
-            <div class="result__actions">
-              <button class="btn" id="textCopy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('copy')}"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                Copy<span class="tooltip">Copied!</span>
-              </button>
-              <button class="btn" id="textDownload-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
-                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
-                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-                Download<span class="tooltip">Exported</span>
-              </button>
-            </div>
-          </div>`;
-
-    this._resultsEl.appendChild(row);
-
-    const els = {
-      hash: row.querySelector(`#textHash-${safeId}`),
-      download: row.querySelector(`#textDownload-${safeId}`),
-      copy: row.querySelector(`#textCopy-${safeId}`),
-    };
-
+    const els = buildResultRow({ prefix: 'text', algoId, emptyText: 'awaiting input…' });
+    this._resultsEl.appendChild(els.row);
     this.rowEls.set(algoId, els);
 
-    const badge = row.querySelector('.algo-badge');
-    badge.addEventListener('mouseenter', () => Tooltip.show(badge, tipText()));
-    badge.addEventListener('mouseleave', () => Tooltip.hide());
-    badge.addEventListener('focus', () => Tooltip.show(badge, tipText()));
-    badge.addEventListener('blur', () => Tooltip.hide());
-    badge.addEventListener('click', () => this._toggleAlgo(algoId, { refreshTooltip: true }));
-    badge.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        this._toggleAlgo(algoId, { refreshTooltip: true });
-      }
+    wireResultRow(els, {
+      isHidden: () => this.hiddenAlgos.has(algoId),
+      onToggle: () => this._toggleAlgo(algoId, { refreshTooltip: true }),
+      onDownload: () => this._onDownload(algoId),
+      onCopy: () => this._onCopy(algoId),
+      getHash: () => this._formattedHash(algoId),
     });
 
     // Apply initial hidden state if set before _buildRow is called.
-    if (this.hiddenAlgos.has(algoId)) {
-      badge.classList.add('algo-badge--hidden');
-      row.classList.add('result--hidden');
-      badge.setAttribute('aria-checked', 'false');
-      this._setHashText(els, 'disabled');
-    }
+    if (this.hiddenAlgos.has(algoId)) hideRow(els);
+  },
 
-    // Wire actions — each row is independent.
-    els.download.addEventListener('click', () => this._onDownload(algoId));
-    els.copy.addEventListener('click', () => this._onCopy(algoId));
-    row.addEventListener('click', (e) => {
-      if (e.target.closest('.algo-badge, .result__actions')) return;
-      if (HashSelect.isSelectClick(e)) return; // Ctrl/⌘ is for selecting part of the hash
-      const hash = this._formattedHash(algoId);
-      if (!hash) return;
-      Clipboard.copy(hash);
-      Tooltip.flash(els.hash);
-    });
+  /** Hides or shows one algorithm's row (showing puts back its digest, if the current input has one).
+   *  Returns that digest, formatted, for a row just shown. */
+  _setHidden(algoId, hidden) {
+    const els = this.rowEls.get(algoId);
+    if (hidden) {
+      this.hiddenAlgos.add(algoId);
+      hideRow(els);
+      return '';
+    }
+    this.hiddenAlgos.delete(algoId);
+    // fromTextAll hashes every algorithm regardless of hidden state (see onInput()), so there is
+    // nothing to compute here.
+    const hash = this._formattedHash(algoId);
+    showRow(els, hash, 'awaiting input…');
+    return hash;
+  },
+
+  /** Puts algorithms shown again (`[{ hash, algo }]`) in the history, in a batch of their own that
+   *  carries the input's description. A fresh batchId, not the stale original: History.record()
+   *  always stamps a fresh ts, and an old batchId would sort these entries among their old
+   *  batch-mates by algo order instead of by their real time. One batch per user action. */
+  _recordRestored(items) {
+    if (!items.length) return;
+    const batchId = History.nextBatch();
+    History.setSource('text', batchId, this._sourceDescription);
+    History.record('text', items, batchId);
+  },
+
+  /** What follows any change to which algorithms are hidden. */
+  _afterVisibilityChange({ resetSpotlight }) {
+    updateToggleAllButton('textToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'text');
+    this._hiddenSummary.update(this.hiddenAlgos.size);
+    this._soloResult.update();
+    saveHiddenAlgos(this, 'textHidden');
+    if (resetSpotlight) AlgoSpotlight.reset();
   },
 
   _toggleAll({ refreshTooltip = false, resetSpotlight = true } = {}) {
     const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    // Every algorithm restored by this single "show all" click shares one
-    // fresh batchId — same "one user action, one batch" rule as onInput() —
-    // rather than reusing the stale batchId from whenever they were first
-    // computed. History.record() always stamps a fresh ts regardless, and a
-    // stale batchId would then sort these entries among their old batch-mates
-    // by algo order instead of by their (fresh) real time.
-    const restoreBatchId = allVisible ? null : History.nextBatch();
-    // The restored entries are of the same input as the others, so they carry its description too.
-    if (restoreBatchId !== null && this.rawHexMap.size) {
-      History.setSource('text', restoreBatchId, this._sourceDescription);
-    }
-
-    _ALGORITHMS.forEach(({ id }) => {
-      const row = this._resultsEl.querySelector(`.result[data-algo="${id}"]`);
-      const badge = row?.querySelector('.algo-badge');
-      const els = this.rowEls.get(id);
-      if (!row || !badge || !els) return;
-
-      if (allVisible) {
-        // Hide all — update DOM state without triggering onInput per algo
-        this.hiddenAlgos.add(id);
-        badge.classList.add('algo-badge--hidden');
-        row.classList.add('result--hidden');
-        badge.setAttribute('aria-checked', 'false');
-        this._setHashText(els, 'disabled');
-        setHashEmpty(els.hash, true);
-        [els.download, els.copy].forEach((btn) => {
-          btn.disabled = true;
-        });
-      } else if (this.hiddenAlgos.has(id)) {
-        // Show — restore the already-computed hash (fromTextAll hashes every
-        // algorithm regardless of hidden state, see onInput()) instead of
-        // re-hashing, which would re-record every *other* visible algorithm
-        // into history under a fresh batchId even though only this one
-        // changed visibility.
-        this.hiddenAlgos.delete(id);
-        badge.classList.remove('algo-badge--hidden');
-        row.classList.remove('result--hidden');
-        badge.setAttribute('aria-checked', 'true');
-        const hash = this._formattedHash(id);
-        if (hash) {
-          this._setHashText(els, hash);
-          setHashEmpty(els.hash, false);
-          els.download.disabled = false;
-          els.copy.disabled = false;
-          History.record('text', hash, id, restoreBatchId);
-        } else {
-          this._setHashText(els, 'awaiting input…');
-          setHashEmpty(els.hash, true);
-        }
+    const restored = [];
+    for (const { id } of _ALGORITHMS) {
+      if (allVisible) this._setHidden(id, true);
+      else if (this.hiddenAlgos.has(id)) {
+        const hash = this._setHidden(id, false);
+        if (hash) restored.push({ hash, algo: id });
       }
-    });
-
-    this._updateToggleAllBtn();
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
-    saveHiddenAlgos(this, 'textHidden');
-    if (resetSpotlight) AlgoSpotlight.reset();
-    if (!refreshTooltip) return;
-    const textBtn = document.getElementById('textToggleAllBtn');
-    if (!textBtn) return;
-    const nowAllVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    Tooltip.show(textBtn, nowAllVisible ? 'Hide all' : 'Show all');
-  },
-
-  _updateToggleAllBtn() {
-    const btn = document.getElementById('textToggleAllBtn');
-    if (!btn) return;
-    const allVisible = _ALGORITHMS.every((a) => !this.hiddenAlgos.has(a.id));
-    const allHidden = _ALGORITHMS.every((a) => this.hiddenAlgos.has(a.id));
-    const iconChecked =
-      '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>';
-    const iconIndeterminate =
-      '<path d="M19 3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/>';
-    const iconUnchecked =
-      '<path d="M19 5v14H5V5h14m0-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/>';
-    let icon;
-    if (allVisible) icon = iconChecked;
-    else if (allHidden) icon = iconUnchecked;
-    else icon = iconIndeterminate;
-    btn.querySelector('svg').innerHTML = icon;
-    btn.setAttribute('aria-label', allVisible ? 'Hide all text algorithms' : 'Show all text algorithms');
+    }
+    this._recordRestored(restored);
+    this._afterVisibilityChange({ resetSpotlight });
+    if (refreshTooltip) showToggleAllTooltip('textToggleAllBtn', this.hiddenAlgos, _ALGORITHMS);
   },
 
   _toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
-    const row = this._resultsEl.querySelector(`.result[data-algo="${algoId}"]`);
-    const badge = row.querySelector('.algo-badge');
-    if (this.hiddenAlgos.has(algoId)) {
-      this.hiddenAlgos.delete(algoId);
-      badge.classList.remove('algo-badge--hidden');
-      row.classList.remove('result--hidden');
-      badge.setAttribute('aria-checked', 'true');
-      // Restore the already-computed hash instead of re-hashing — see the
-      // matching comment in _toggleAll for why a full onInput() here would
-      // wrongly re-record every other visible algorithm too. Give it a fresh
-      // batchId (not the stale original one) so it sorts by its own real
-      // time instead of by algo order among its old batch-mates — see the
-      // matching comment in _toggleAll.
-      const els = this.rowEls.get(algoId);
-      const hash = this._formattedHash(algoId);
-      if (hash) {
-        this._setHashText(els, hash);
-        setHashEmpty(els.hash, false);
-        els.download.disabled = false;
-        els.copy.disabled = false;
-        const batchId = History.nextBatch();
-        History.setSource('text', batchId, this._sourceDescription);
-        History.record('text', hash, algoId, batchId);
-      } else {
-        this._setHashText(els, 'awaiting input…');
-        setHashEmpty(els.hash, true);
-      }
-    } else {
-      this.hiddenAlgos.add(algoId);
-      badge.classList.add('algo-badge--hidden');
-      row.classList.add('result--hidden');
-      badge.setAttribute('aria-checked', 'false');
-      const els = this.rowEls.get(algoId);
-      this._setHashText(els, 'disabled');
-      setHashEmpty(els.hash, true);
-      [els.download, els.copy].forEach((btn) => {
-        btn.disabled = true;
-      });
-    }
+    const hash = this._setHidden(algoId, !this.hiddenAlgos.has(algoId));
+    if (hash) this._recordRestored([{ hash, algo: algoId }]);
     // Refresh the tooltip to reflect the new state while it may still be visible —
     // only for a direct click on this badge, not when driven by AlgoSpotlight.
-    if (refreshTooltip) {
-      const nowHidden = this.hiddenAlgos.has(algoId);
-      Tooltip.show(badge, nowHidden ? 'Show' : 'Hide');
-    }
-    this._updateToggleAllBtn();
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
-    saveHiddenAlgos(this, 'textHidden');
-    if (resetSpotlight) AlgoSpotlight.reset();
+    if (refreshTooltip) Tooltip.show(this.rowEls.get(algoId).badge, this.hiddenAlgos.has(algoId) ? 'Show' : 'Hide');
+    this._afterVisibilityChange({ resetSpotlight });
   },
 
   // ── Hash text helpers ──────────────────────────────────────────────────
-
-  /** Preserve the child .tooltip span when replacing text content. */
-  _setHashText(els, text) {
-    const tip = els.hash.querySelector('.tooltip');
-    els.hash.textContent = text;
-    if (tip) els.hash.appendChild(tip);
-  },
 
   getSelectedInputFormat() {
     return document.querySelector('input[name="textInputFormat"]:checked')?.value ?? 'utf-8';
@@ -505,7 +375,7 @@ export const TextSection = {
       if (this.hiddenAlgos.has(id)) continue;
       const hex = this.rawHexMap.get(id);
       if (!hex) continue;
-      this._setHashText(this.rowEls.get(id), Format.applyFormat(hex, this.getSelectedFormat()));
+      setHashText(this.rowEls.get(id).hash, Format.applyFormat(hex, this.getSelectedFormat()));
     }
     // Reuse the existing batchId so format changes don't create new history batches — the
     // batch identity belongs to the computation, not the format. This also covers input
@@ -536,11 +406,17 @@ export const TextSection = {
   _recordHistory() {
     if (!this.rawHexMap.size) return;
     History.setSource('text', this._currentBatchId, this._sourceDescription);
-    for (const { id } of _ALGORITHMS) {
-      if (this.hiddenAlgos.has(id)) continue;
-      const hash = this._formattedHash(id);
-      if (hash) History.record('text', hash, id, this._currentBatchId);
-    }
+    const items = _ALGORITHMS
+      .filter(({ id }) => !this.hiddenAlgos.has(id))
+      .map(({ id }) => ({
+        hash: this._formattedHash(id),
+        algo: id,
+      }));
+    History.record(
+      'text',
+      items.filter((item) => item.hash),
+      this._currentBatchId,
+    );
   },
 
   _setAllActionsEnabled(enabled) {
@@ -548,10 +424,7 @@ export const TextSection = {
     // using a disabled state — it has no meaningful "empty" affordance.
     this._inputClear.classList.toggle('text-input__clear--visible', enabled);
     for (const [id, els] of this.rowEls.entries()) {
-      if (this.hiddenAlgos.has(id)) continue;
-      [els.download, els.copy].forEach((btn) => {
-        btn.disabled = !enabled;
-      });
+      if (!this.hiddenAlgos.has(id)) setRowActions(els, enabled);
     }
   },
 
@@ -659,7 +532,7 @@ export const TextSection = {
       for (const { id } of _ALGORITHMS) {
         if (this.hiddenAlgos.has(id)) continue;
         const els = this.rowEls.get(id);
-        this._setHashText(els, 'awaiting input…');
+        setHashText(els.hash, 'awaiting input…');
         setHashEmpty(els.hash, true);
       }
       this._setAllActionsEnabled(false);
@@ -697,7 +570,7 @@ export const TextSection = {
       if (this.hiddenAlgos.has(id)) continue;
       const hash = Format.applyFormat(this.rawHexMap.get(id), fmt);
       const els = this.rowEls.get(id);
-      this._setHashText(els, hash);
+      setHashText(els.hash, hash);
       setHashEmpty(els.hash, false);
     }
     this._setAllActionsEnabled(true);
@@ -712,7 +585,7 @@ export const TextSection = {
     for (const { id } of _ALGORITHMS) {
       if (this.hiddenAlgos.has(id)) continue;
       const els = this.rowEls.get(id);
-      this._setHashText(els, message);
+      setHashText(els.hash, message);
       setHashEmpty(els.hash, true);
     }
     this._setAllActionsEnabled(false);
@@ -740,9 +613,6 @@ export const TextSection = {
   async _onCopy(algoId) {
     const hash = this._formattedHash(algoId);
     if (!hash) return;
-    await Clipboard.copy(hash);
-    const btn = this.rowEls.get(algoId).copy;
-    Tooltip.flash(btn);
-    Checkmark.flash(btn);
+    await copyWithFeedback(hash, { button: this.rowEls.get(algoId).copy });
   },
 };
