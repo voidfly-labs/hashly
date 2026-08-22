@@ -5,7 +5,8 @@
  *      `shared` is one object per chunk, handed to every hasher, to cache work they would repeat.
  *    - `once(bytes)` hashes a whole input in one call; without it `create()` does it.
  *
- *  Messages in:  `{ type: 'text', id, bytes, ids }`, `{ type: 'file', id, file, ids }`, `{ type: 'cancel', id }`.
+ *  Messages in:  `{ type: 'text', id, bytes, ids }`, `{ type: 'file', id, file, ids }`, `{ type: 'cancel', id }`
+ *  and `{ type: 'drop', id, ids }` (a running file job stops computing `ids`, and has no digest for them).
  *  Messages out: `{ type: 'progress', id, ratio }`, `{ type: 'result', id, digests }` (`[[algoId, hex]]`)
  *  or `{ type: 'error', id, message }`. A cancelled file job says nothing more.
  *
@@ -18,7 +19,7 @@ import { createChunkSizer } from './chunk-sizer.js';
 const PROGRESS_EVERY_MS = 50;
 
 export function initHasherServer(engines) {
-  /** Jobs that may still be cancelled: `id → { cancelled }`. */
+  /** Jobs that may still be cancelled or trimmed: `id → { cancelled, dropped }`. */
   const fileJobs = new Map();
 
   const engineFor = (algoId) => {
@@ -39,7 +40,7 @@ export function initHasherServer(engines) {
   }
 
   async function hashFile({ id, file, ids }, job) {
-    const hashers = await Promise.all(ids.map(async (algoId) => engineFor(algoId).create()));
+    let hashers = await Promise.all(ids.map(async (algoId) => ({ algoId, hasher: await engineFor(algoId).create() })));
     let offset = 0;
     let lastPost = 0;
     const sizer = createChunkSizer();
@@ -50,10 +51,16 @@ export function initHasherServer(engines) {
       // Cancelled while reading: stop before touching anything.
       if (job.cancelled) return null;
 
+      // Dropped meanwhile: nothing more is computed for those.
+      if (job.dropped.size) {
+        hashers = hashers.filter(({ algoId }) => !job.dropped.has(algoId));
+        if (!hashers.length) return [];
+      }
+
       const chunk = new Uint8Array(buffer);
       const shared = {};
       const hashStart = performance.now();
-      for (const hasher of hashers) hasher.update(chunk, shared);
+      for (const { hasher } of hashers) hasher.update(chunk, shared);
 
       offset += buffer.byteLength;
       const now = performance.now();
@@ -64,7 +71,7 @@ export function initHasherServer(engines) {
       }
     }
 
-    return ids.map((algoId, i) => [algoId, hashers[i].digest()]);
+    return hashers.map(({ algoId, hasher }) => [algoId, hasher.digest()]);
   }
 
   self.onmessage = async ({ data }) => {
@@ -74,12 +81,16 @@ export function initHasherServer(engines) {
       if (job) job.cancelled = true;
       return;
     }
+    if (type === 'drop') {
+      for (const algoId of data.ids) fileJobs.get(id)?.dropped.add(algoId);
+      return;
+    }
 
     try {
       if (type === 'text') {
         self.postMessage({ type: 'result', id, digests: await hashText(data) });
       } else if (type === 'file') {
-        const job = { cancelled: false };
+        const job = { cancelled: false, dropped: new Set() };
         fileJobs.set(id, job);
         try {
           const digests = await hashFile(data, job);

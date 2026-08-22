@@ -17,7 +17,7 @@ export function createHiddenSummary({ resultsEl, total, onShowAll }) {
           <svg class="result-hidden__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('more-vert')}"></use></svg>
           <span class="result-hidden__label"></span>
         </span>
-        <span class="result-hidden__action" aria-hidden="true">Show all</span>`;
+        <span class="result-hidden__action">Show all</span>`;
   btn.addEventListener('click', onShowAll);
   resultsEl.appendChild(btn);
 
@@ -29,11 +29,9 @@ export function createHiddenSummary({ resultsEl, total, onShowAll }) {
       btn.hidden = count === 0;
       if (count === 0) {
         label.textContent = '';
-        btn.removeAttribute('aria-label');
         return;
       }
       label.textContent = `Showing ${total - count} of ${total}`;
-      btn.setAttribute('aria-label', `Showing ${total - count} of ${total} algorithms. Show all`);
     },
   };
 }

@@ -2,13 +2,16 @@ import { defineConfig } from 'vite';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
 import { APPS_META } from './scripts/apps-meta.js';
 import { LEGAL_UPDATED_ON, getLegalUpdatedLabel, getVendorNotice } from './scripts/legal.js';
 import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
 import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
 import { generateSitemap } from './scripts/vite-plugins/generate-sitemap.js';
 import { generateRobotsTxt } from './scripts/vite-plugins/generate-robots.js';
+import { generateLlmsTxt } from './scripts/vite-plugins/generate-llms.js';
 import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
+import { injectCsp } from './scripts/vite-plugins/inject-csp.js';
 import { minifyJsonLd } from './scripts/vite-plugins/minify-json-ld.js';
 
 const BROWSER_TARGETS = ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14.1'];
@@ -25,8 +28,12 @@ if (!app || !VALID_APPS.includes(app)) {
 
 const { srcDir } = APPS_META[app];
 
+// The quick-select badges are rendered into the page here, so they are there at first paint.
+const { ALGORITHMS } = await import(pathToFileURL(resolve(`src/apps/${srcDir}/algorithms.js`)).href);
+
 const injectData = {
   ...APPS_META[app],
+  algorithmIds: ALGORITHMS.map(({ id }) => id),
   buildDate,
   getVendorNotice,
   legalUpdatedLabel: getLegalUpdatedLabel(),
@@ -95,8 +102,10 @@ export default defineConfig({
     }),
     injectFontPreloads(),
     minifyJsonLd(),
+    injectCsp(),
     generateManifest(injectData),
     generateRobotsTxt(injectData),
+    generateLlmsTxt(injectData, ALGORITHMS),
     generateSitemap(injectData),
   ],
 });

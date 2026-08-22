@@ -91,12 +91,20 @@ export const Format = {
     }
   },
 
-  /** "12 B", "3.4 KiB", "1.50 MiB", "2.00 GiB". */
+  /** "12 B", "3.4 KiB", "1.50 MiB", "2.00 GiB". A size that rounds up to 1024 of its unit is shown
+   *  in the next one ("1.00 MiB", not "1024.0 KiB"). */
   fileSize(bytes) {
     if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KiB`;
-    if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MiB`;
-    return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GiB`;
+    const units = [
+      ['KiB', 1],
+      ['MiB', 2],
+      ['GiB', 3],
+    ];
+    for (const [i, [unit, power]] of units.entries()) {
+      const digits = unit === 'KiB' ? 1 : 2;
+      const text = (bytes / 1024 ** power).toFixed(digits);
+      if (Number(text) < 1024 || i === units.length - 1) return `${text} ${unit}`;
+    }
   },
 
   /** Makes a value safe to interpolate into markup, in text or in a quoted attribute. For values

@@ -5,7 +5,7 @@ import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 import { initConfirmClear } from './confirm-clear.js';
 
 const footerMarkup = ({ ns, page, pages, total, searching }) => `
-          <div class="history-pagination" aria-label="History pagination">
+          <div class="history-pagination" role="group" aria-label="History pagination">
             <button
               class="history-pagination__btn"
               data-dir="-1"

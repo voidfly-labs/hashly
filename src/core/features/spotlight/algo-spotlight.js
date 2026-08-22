@@ -50,6 +50,8 @@ export const AlgoSpotlight = {
   // What each section had hidden before the spotlight took over (Map<section, Set<id>>), so
   // ending the spotlight puts that back rather than showing every algorithm.
   _before: null,
+  // The sections it spotlights in, for saving what they have hidden when it ends.
+  _sections: [],
 
   _updateBadgeClasses() {
     this._container.querySelectorAll('.algo-badge').forEach((badge) => {
@@ -69,6 +71,10 @@ export const AlgoSpotlight = {
     this._state.spotlightedAlgo = null;
     this._before = null;
     Preferences.set(PREF_NAME, null);
+    // While it lasted, the sections' hiding was the spotlight's and not saved (so what the visitor
+    // had comes back). Ended by a hand-pick in one section, that section saved what it shows, so the
+    // others save theirs too, or a reload would show them disagreeing.
+    this._sections.forEach((section) => section.saveHidden());
     this._updateBadgeClasses();
     this._onChange?.(null);
   },
@@ -133,11 +139,10 @@ export const AlgoSpotlight = {
 
   init(ALGORITHMS, sections, { onChange, permalink = null } = {}) {
     this._onChange = onChange ?? null;
+    this._sections = sections;
     this._container = document.getElementById('algoBadges');
     if (!this._container) return;
-    this._container.innerHTML = ALGORITHMS.map(
-      ({ id }) => `<button class="algo-badge" data-algo="${id}">${id}</button>`,
-    ).join('');
+    // The badges themselves are in the page already (see quick-select.html); this wires them.
     this._container.querySelectorAll('.algo-badge').forEach((badge) => {
       const algo = ALGORITHMS.find((a) => a.id === badge.dataset.algo);
       this._wireBadge(badge, algo, ALGORITHMS, sections);

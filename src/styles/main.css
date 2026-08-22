@@ -16,6 +16,7 @@
 @import '../core/ui/hint/hint.css';
 @import '../core/ui/tooltip/tooltip.css';
 @import '../core/ui/warning-banner/warning-banner.css';
+@import '../core/ui/announcer/announcer.css';
 
 /* Layout: the page around the sections */
 @import '../core/layout/page.css';

@@ -5,6 +5,8 @@ export const FaqSection = {
     if (!tablist) return;
 
     this._tabs = [...document.querySelectorAll('.info__tab')];
+    // Before anything opens one: with no tab selected yet, the first is the stop.
+    this._tabs.forEach((t) => (t.tabIndex = t.getAttribute('aria-selected') === 'true' ? 0 : -1));
     this._panels = [...document.querySelectorAll('.info__panel')];
     this._section = tablist.closest('.section');
 
@@ -100,9 +102,14 @@ export const FaqSection = {
     this._panels.forEach((p) => {
       if (p !== panel) p.removeAttribute('data-active');
     });
-    this._tabs.forEach((t) => t.setAttribute('aria-selected', 'false'));
+    // Roving tabindex: the strip is one tab stop (the open tab), the arrow keys move within it.
+    this._tabs.forEach((t) => {
+      t.setAttribute('aria-selected', 'false');
+      t.tabIndex = -1;
+    });
     if (tab) {
       tab.setAttribute('aria-selected', 'true');
+      tab.tabIndex = 0;
       if (!fromUrl) tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
     if (!fromUrl) this._syncUrl(tabId);

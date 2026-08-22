@@ -35,9 +35,14 @@
       aria-controls="textHistoryPopover">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-history"></use></svg>
     </button>
-    <div class="history-popover" id="textHistoryPopover">
+    <div
+      class="history-popover"
+      id="textHistoryPopover"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="textHistoryTitle">
       <div class="history-popover__header">
-        <span class="history-popover__title"
+        <span class="history-popover__title" id="textHistoryTitle"
           >History – Text <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %></span
         >
         <button class="history-popover__close" data-popover-close aria-label="Close history">
@@ -54,6 +59,8 @@
         class="text-input__textarea"
         id="textInput"
         autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
         placeholder="Start typing or paste text…"
         spellcheck="false"
         aria-label="Text input for <%= sectionNoun %> calculation"></textarea>

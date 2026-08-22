@@ -21,7 +21,7 @@ export function createHistorySearch({ ns, onChange }) {
   el.innerHTML = `
     <svg class="history-search__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('search')}"></use></svg>
     <input class="history-search__input" type="search" placeholder="Search ${ns === 'file' ? 'file' : 'text'}, hash or algorithm" data-placeholder-mobile="Search history"
-      aria-label="Search the ${ns} history" aria-keyshortcuts="/ Control+F Meta+F" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" />
+      aria-label="Search the ${ns} history" aria-keyshortcuts="/ Control+F Meta+F" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" />
     <button class="history-search__clear" type="button" aria-label="Clear search" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('close')}"></use></svg>
     </button>

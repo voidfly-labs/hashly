@@ -36,6 +36,26 @@
   background: var(--border);
 }
 
+/* The line and the chevron are added by script, once the page is up: fading in keeps them from
+   popping in beside a heading that was already there. They are made once, so it runs once. */
+.section__toggle::after,
+.section__toggle-chevron {
+  animation: section-toggle-in 0.3s ease;
+}
+
+@keyframes section-toggle-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .section__toggle::after,
+  .section__toggle-chevron {
+    animation: none;
+  }
+}
+
 /* Single Material "keyboard_arrow_down" glyph, rotated rather than swapped
        for a smooth animation (same transform + 0.2s ease as the rest of the
        app's icon transitions, e.g. .toggle-all-btn:active, .algo-badge:hover)

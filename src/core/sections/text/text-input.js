@@ -3,7 +3,14 @@ import { expandSection } from '~core/features/section-collapse/section-collapse.
 import { Hint } from '~core/ui/hint/hint.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
-import { allowsChar, filterTextForFormat, FORMAT_HINTS, PLACEHOLDERS, selectedInputFormat } from './input-format.js';
+import {
+  allowsChar,
+  filterTextForFormat,
+  FORMAT_HINTS,
+  normalizeBulkText,
+  PLACEHOLDERS,
+  selectedInputFormat,
+} from './input-format.js';
 
 // Typing is debounced so a burst of keystrokes asks for one hash.
 const DEBOUNCE_MS = 20;
@@ -43,8 +50,9 @@ export function createTextInput({ onInput, onClear }) {
     // Text arriving in a collapsed section (typed, pasted, dropped) opens it, so it is seen.
     expandSection(card.closest('.section'));
     const format = selectedInputFormat();
-    const filtered = filterTextForFormat(raw, format);
-    if (filtered.length < raw.length) Hint.show(formatHint, FORMAT_HINTS[format]);
+    const readable = normalizeBulkText(raw, format);
+    const filtered = filterTextForFormat(readable, format);
+    if (filtered.length < readable.length) Hint.show(formatHint, FORMAT_HINTS[format]);
 
     const start = replace ? 0 : (el.selectionStart ?? el.value.length);
     const end = replace ? el.value.length : (el.selectionEnd ?? el.value.length);
@@ -165,7 +173,8 @@ export function createTextInput({ onInput, onClear }) {
     /** Puts `text` in the field for the selected input format, minus what that format can't hold
      *  (as typing and pasting would), without recomputing: a link may carry anything. */
     setText(text) {
-      el.value = filterTextForFormat(text, selectedInputFormat());
+      const format = selectedInputFormat();
+      el.value = filterTextForFormat(normalizeBulkText(text, format), format);
     },
 
     /** Empties the field and recomputes, without waiting for a pending keystroke. */

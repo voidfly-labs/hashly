@@ -121,6 +121,11 @@ export const FileSection = {
     if (resetSpotlight) AlgoSpotlight.reset();
   },
 
+  /** Persists which algorithms are hidden (the spotlight calls it for every section when it ends). */
+  saveHidden() {
+    saveHiddenAlgos(this, 'fileHidden');
+  },
+
   _toggleAll(options) {
     this._hidden.toggleAll(options);
   },
@@ -224,12 +229,13 @@ export const FileSection = {
     this._rows.showNothingToHash();
   },
 
-  /** Hiding the last algorithm a running pass was computing leaves nothing for it
-   *  to produce, so stop it instead of letting it read the rest of the file for
-   *  results nobody can see. */
+  /** A running pass stops computing the algorithms hidden meanwhile, and once it has none left it is
+   *  stopped, instead of reading the rest of the file for results nobody can see. */
   _cancelIfIdle() {
     const run = this._run;
-    if (!run?.isIdle(this.hiddenAlgos)) return;
+    if (!run) return;
+    run.dropHidden(this.hiddenAlgos);
+    if (!run.isIdle()) return;
     run.abort();
     this._run = null;
     TabTitle.reset();

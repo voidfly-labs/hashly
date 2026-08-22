@@ -18,5 +18,8 @@
     <%- include('/src/core/features/help/help-popover.html') %>
   </div>
 
-  <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms"></div>
+  <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms">
+    <% algorithmIds.forEach(function (id) { %><button class="algo-badge" data-algo="<%= id %>"><%= id %></button>
+    <% }); %>
+  </div>
 </section>

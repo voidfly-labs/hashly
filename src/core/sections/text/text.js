@@ -6,6 +6,7 @@ import { updateToggleAllButton } from '~core/features/results/result-row.js';
 import { createSoloResult } from '~core/features/results/solo-result.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
 import { Format } from '~core/lib/format.js';
+import { Announcer } from '~core/ui/announcer/announcer.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
@@ -30,6 +31,8 @@ export const TextSection = {
   hiddenAlgos: new Set(),
   // Counts onInput() runs, so one that was overtaken while it hashed can tell and drop its result.
   _inputSeq: 0,
+  // The input the digests in rawHexMap are of, `{ raw, format }`, or null while there are none.
+  _hashed: null,
 
   init({ APP_CONFIG, ALGORITHMS, Hasher }) {
     _APP_CONFIG = APP_CONFIG;
@@ -127,8 +130,8 @@ export const TextSection = {
       return null;
     }
     this.hiddenAlgos.delete(algoId);
-    // fromTextAll hashes every algorithm regardless of hidden state (see onInput()), so there is
-    // nothing to compute here.
+    // Only the visible algorithms are hashed (see onInput()): a digest this row doesn't have yet is
+    // fetched by _afterVisibilityChange(), once all the toggles of this change are made.
     const hash = this._formattedHash(algoId);
     this._rows.show(algoId, hash);
     return hash ? { hash, algo: algoId } : null;
@@ -140,7 +143,45 @@ export const TextSection = {
     this._hiddenSummary.update(this.hiddenAlgos.size);
     this._soloResult.update();
     saveHiddenAlgos(this, 'textHidden');
+    this._fillMissing();
     if (resetSpotlight) AlgoSpotlight.reset();
+  },
+
+  /** Persists which algorithms are hidden (the spotlight calls it for every section when it ends). */
+  saveHidden() {
+    saveHiddenAlgos(this, 'textHidden');
+  },
+
+  /** Hashes the current input for the visible algorithms that have no digest yet (shown after the
+   *  input was hashed), shows them and puts them in the history as a batch of their own. A new input,
+   *  or a clear, while it is hashing makes the answer stale: the new input's own pass covers it. */
+  async _fillMissing() {
+    const hashed = this._hashed;
+    if (!hashed) return;
+    const missing = _ALGORITHMS
+      .filter(({ id }) => !this.hiddenAlgos.has(id) && !this.rawHexMap.has(id))
+      .map(({ id }) => id);
+    if (!missing.length) return;
+
+    let digests;
+    try {
+      digests = await _Hasher.fromTextSome(hashed.raw, hashed.format, missing);
+    } catch {
+      if (this._hashed === hashed) this._rows.showMessageFor(missing, 'hashing failed');
+      return;
+    }
+    if (this._hashed !== hashed) return;
+
+    const items = [];
+    for (const [id, hex] of digests) {
+      this.rawHexMap.set(id, hex);
+      // Hidden again meanwhile: the digest is kept for when it comes back, but there is no row to fill.
+      if (this.hiddenAlgos.has(id)) continue;
+      const hash = this._formattedHash(id);
+      this._rows.show(id, hash);
+      items.push({ hash, algo: id });
+    }
+    this._history.recordRestored(items);
   },
 
   _toggleAll(options) {
@@ -209,6 +250,7 @@ export const TextSection = {
     const bytes = this._counter.update(raw, inputFmt);
 
     if (!raw) {
+      this._hashed = null;
       this.rawHexMap.clear();
       this._history.cancel();
       this._rows.showAwaiting();
@@ -226,10 +268,11 @@ export const TextSection = {
       return;
     }
 
-    // Hash with all algorithms simultaneously.
+    // Hash with the visible algorithms simultaneously (a hidden one is hashed if it is shown later).
     let hexMap;
     try {
-      hexMap = await _Hasher.fromTextAll(raw, inputFmt);
+      const visible = _ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id)).map(({ id }) => id);
+      hexMap = await _Hasher.fromTextAll(raw, inputFmt, visible);
     } catch {
       if (seq === this._inputSeq) this._showNoDigests('hashing failed');
       return;
@@ -237,20 +280,27 @@ export const TextSection = {
     // Typing on, or clearing, while this was hashing: that newer input's result is the one to show.
     if (seq !== this._inputSeq) return;
     this.rawHexMap = hexMap;
+    this._hashed = { raw, format: inputFmt };
 
     // Described from `raw`, not the field, which may have moved on while hashing.
     this._history.begin(textPreview(raw, inputFmt));
     this._rows.showDigests(this.rawHexMap, this.getSelectedFormat());
     this._setActionsEnabled(true);
     this._history.queue();
+    // An algorithm shown while this was hashing has no digest in it.
+    this._fillMissing();
+    const shown = _ALGORITHMS.length - this.hiddenAlgos.size;
+    Announcer.say(`${shown} ${shown === 1 ? 'hash' : 'hashes'} calculated`);
   },
 
   /** The visible rows have no digests (`message` says why: WebAssembly missing, input invalid…): say so where they would be. */
   _showNoDigests(message) {
+    this._hashed = null;
     this.rawHexMap.clear();
     this._history.cancel();
     this._rows.showMessage(message);
     this._setActionsEnabled(false);
+    Announcer.say(`No hashes: ${message}`);
   },
 
   // ── Row actions ────────────────────────────────────────────────────────

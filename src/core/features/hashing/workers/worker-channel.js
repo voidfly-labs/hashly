@@ -2,7 +2,8 @@
  *  fresh id and returns `{ promise, cancel }`. The promise resolves with the worker's `digests`, or
  *  rejects if it reports an error or the worker itself fails (after which the channel is `dead` and
  *  should be replaced). `cancel()` tells the worker to stop and forgets the request; its promise
- *  is left unsettled, so whoever cancels has to settle things on their own. */
+ *  is left unsettled, so whoever cancels has to settle things on their own. `drop(ids)` stops a file
+ *  request computing some of its algorithms. */
 let nextId = 0;
 
 export function createWorkerChannel(worker) {
@@ -48,7 +49,12 @@ export function createWorkerChannel(worker) {
       if (!pending.delete(id) || channel.dead) return;
       worker.postMessage({ type: 'cancel', id });
     };
-    return { promise, cancel };
+    /** Tells the worker to stop computing `ids` of this (file) request. */
+    const drop = (ids) => {
+      if (!pending.has(id) || channel.dead) return;
+      worker.postMessage({ type: 'drop', id, ids });
+    };
+    return { promise, cancel, drop };
   };
 
   channel.terminate = () => {

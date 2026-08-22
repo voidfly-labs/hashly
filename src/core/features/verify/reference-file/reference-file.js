@@ -54,6 +54,16 @@ export function pickReferenceLine(text, fileName = '') {
   return entry.line.slice(0, MAX_LINE_LENGTH);
 }
 
+/** The text of `buffer`. UTF-16 is read when its byte order mark says so: Windows PowerShell's `>`
+ *  and `Out-File` write checksum lists that way, and read as UTF-8 they come out as nothing but NULs.
+ *  Anything else is UTF-8 (a BOM there is dropped by the decoder). */
+export function decodeText(buffer) {
+  const [a, b] = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
+  if (a === 0xff && b === 0xfe) return new TextDecoder('utf-16le').decode(buffer);
+  if (a === 0xfe && b === 0xff) return new TextDecoder('utf-16be').decode(buffer);
+  return new TextDecoder('utf-8').decode(buffer);
+}
+
 /** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the
  *  reference to use, or `{ error }` with a message for the user when it can't be used. */
 export async function readReferenceFile(file, fileName = '') {
@@ -62,7 +72,7 @@ export async function readReferenceFile(file, fileName = '') {
   }
   let text;
   try {
-    text = await file.text();
+    text = decodeText(await file.arrayBuffer());
   } catch {
     return { error: "Couldn't read that file" };
   }

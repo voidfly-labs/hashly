@@ -56,12 +56,15 @@ export function createTextRows({ resultsEl, algorithms, isHidden, handlers }) {
       }
     },
 
-    /** Shows the digests of the current input (`hexMap`: `Map<id, hex>`) in `format`. */
+    /** Shows the digests of the current input (`hexMap`: `Map<id, hex>`) in `format`; a visible row
+     *  that has none yet waits for it. */
     showDigests(hexMap, format) {
       for (const { id } of visible()) {
         const els = rows.get(id);
-        setHashText(els.hash, Format.applyFormat(hexMap.get(id), format));
-        setHashEmpty(els.hash, false);
+        const hex = hexMap.get(id);
+        // Shown while the digests were being computed: it has none yet, and is filled in when it does.
+        setHashText(els.hash, hex ? Format.applyFormat(hex, format) : AWAITING);
+        setHashEmpty(els.hash, !hex);
       }
     },
 
@@ -77,6 +80,15 @@ export function createTextRows({ resultsEl, algorithms, isHidden, handlers }) {
      *  failed…), where the digests would be. */
     showMessage(message) {
       for (const { id } of visible()) {
+        const els = rows.get(id);
+        setHashText(els.hash, message);
+        setHashEmpty(els.hash, true);
+      }
+    },
+
+    /** Like `showMessage`, for the rows of `ids` only. */
+    showMessageFor(ids, message) {
+      for (const id of ids) {
         const els = rows.get(id);
         setHashText(els.hash, message);
         setHashEmpty(els.hash, true);

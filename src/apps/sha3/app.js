@@ -2,6 +2,7 @@ import { initApp } from '~core/app/init/app.js';
 import { createHasherClient } from '~core/features/hashing/workers/hasher-client.js';
 import { spawnWorker } from '~core/features/hashing/workers/spawn.js';
 
+import { ALGORITHMS } from './algorithms.js';
 import workerUrl from './worker.js?worker&url';
 
 const APP_CONFIG = {
@@ -11,13 +12,6 @@ const APP_CONFIG = {
   slugify: (algo) => algo.toLowerCase().replace(/-/g, ''),
   defaultHiddenAlgos: [],
 };
-
-const ALGORITHMS = [
-  { id: 'SHA3-224', bits: 224, hexLen: 56 },
-  { id: 'SHA3-256', bits: 256, hexLen: 64 },
-  { id: 'SHA3-384', bits: 384, hexLen: 96 },
-  { id: 'SHA3-512', bits: 512, hexLen: 128 },
-];
 
 const DEFAULT_ALGO = 'SHA3-256';
 

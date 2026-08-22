@@ -1,4 +1,7 @@
 // Matches whichever popover is open. The one backdrop under them stays up while any of them is.
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export const OPEN_POPOVER = '.history-popover--visible, .help-popover--visible';
 
 const BACKDROP_ID = 'historyBackdrop';
@@ -52,7 +55,24 @@ export function createPopover({ trigger, el, visibleClass, onOpen, onShown, onCl
     if (isOpen()) close();
   });
 
+  // Tab stays inside an open popover (it is modal: the page behind is dimmed and out of reach).
+  const trapTab = (e) => {
+    const stops = [...el.querySelectorAll(FOCUSABLE)].filter((node) => node.offsetParent !== null);
+    if (!stops.length) return;
+    const first = stops[0];
+    const last = stops[stops.length - 1];
+    const outside = !el.contains(document.activeElement);
+    if (e.shiftKey && (outside || document.activeElement === first)) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && (outside || document.activeElement === last)) {
+      e.preventDefault();
+      first.focus();
+    }
+  };
+
   document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab' && isOpen()) trapTab(e);
     if (e.key !== 'Escape' || !isOpen()) return;
     if (onEscape?.()) return;
     close();
