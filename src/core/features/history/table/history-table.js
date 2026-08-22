@@ -1,4 +1,4 @@
-import { findRanges } from '~core/features/history/history-filter.js';
+import { findRanges } from '~core/features/history/list/history-filter.js';
 import { Format } from '~core/lib/format.js';
 import { iconHref } from '~core/lib/icon.js';
 
