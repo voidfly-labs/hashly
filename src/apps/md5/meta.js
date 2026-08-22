@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate MD2, MD4, and MD5 hashes in your browser. Text and file input, hex/Base64/binary output. No uploads, no tracking.',
   canonicalUrl: 'https://www.md5kit.com/',
-  ogImage: 'https://www.md5kit.com/og-image.png',
+  ogImageAlt: 'MD5Kit: MD2, MD4, MD5. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>MD5</span> Hash Calculator',

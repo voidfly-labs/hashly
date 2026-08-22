@@ -31,6 +31,7 @@
 /* history.css first: the other popovers, the clear buttons of the inputs and the verify field
    override parts of it */
 @import '../core/features/history/history.css';
+@import '../core/features/history/popover/confirm-clear.css';
 @import '../core/features/history/search/history-search.css';
 @import '../core/features/history/table/history-table.css';
 /* hash-progress.css before result.css (as ever): its `cursor: default` on a row being hashed is

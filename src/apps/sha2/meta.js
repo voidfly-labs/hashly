@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate SHA-224, SHA-256, SHA-384, SHA-512, and SHA-1 hashes in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.sha256.app/',
-  ogImage: 'https://www.sha256.app/og-image.png',
+  ogImageAlt: 'SHA2Kit: SHA-1, 224, 256, 384, 512. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>SHA-256</span> Hash Calculator',

@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate CRC-8, CRC-16, CRC-24, CRC-32, CRC-64, CRC-82, and more checksum variants in your browser. No uploads, no tracking.',
   canonicalUrl: 'https://www.crc32.app/',
-  ogImage: 'https://www.crc32.app/og-image.png',
+  ogImageAlt: 'CRCKit: CRC-8 to CRC-82, 23 variants. Text and file checksums, in your browser.',
 
   // Page
   pageH1Html: '<span>CRC-32</span> Checksum Calculator',

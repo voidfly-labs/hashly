@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate xxHash32, xxHash64, xxHash3, and xxHash128 checksums in your browser. Instant non-cryptographic hashing — no uploads, no tracking.',
   canonicalUrl: 'https://www.xxhash.dev/',
-  ogImage: 'https://www.xxhash.dev/og-image.png',
+  ogImageAlt: 'xxHashKit: XXH32, XXH64, XXH3, XXH128. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>xxHash64</span> Hash Calculator',

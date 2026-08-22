@@ -6,8 +6,12 @@
        font-size) change, so rows still animate in and out. */
 .result__meta {
   display: none;
+  order: 1; /* after the badge, which the narrow layout orders explicitly (result.css) */
   flex: 1;
   min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   font-family: var(--sans);
   font-size: 13px;
   color: var(--text-muted);
@@ -63,9 +67,33 @@
   .result--solo .result__hash:not(.result__hash--empty) {
     font-size: 15px;
   }
+}
 
-  /* Header line is the badge and description; the hash, then the buttons, follow. */
-  .result--solo .result__actions {
-    order: 4;
+/* The header line (badge, description, buttons) stays on one line: the description gives way
+   first (ellipsis), and Download shrinks to its icon (its aria-label still names it) so the
+   description keeps some room. Copy, the primary action, keeps its label. */
+@media (max-width: 540px) {
+  .result--solo .result__actions .btn__label {
+    display: none;
+  }
+}
+
+/* Too little room left for the description to say anything useful. */
+@media (max-width: 400px) {
+  .result--solo .result__meta {
+    display: none;
+  }
+}
+
+/* Smallest screens: the longest badge (CRC-82 (DARC)) plus both buttons just fits once Copy's
+   padding and the gap are trimmed. */
+@media (max-width: 359px) {
+  .result--solo .result__inner {
+    column-gap: 8px;
+  }
+
+  .result--solo .result__actions .btn:first-child {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }

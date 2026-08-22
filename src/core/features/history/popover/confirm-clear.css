@@ -1,0 +1,74 @@
+/* ── Two-click Clear (see confirm-clear.js) ───────────────────────────────
+       The footer's Clear button: red, and armed by its first click. It shares the box, the
+       :active scale and the :disabled look with the Export button (history.css), so this file
+       comes after history.css (main.css). */
+/* Clear deletes the history, so it is a red button: .btn--primary's recipe (button.css), in red */
+.history-popover__clear {
+  color: #fff;
+  border-color: var(--danger-fill);
+  background: var(--danger-fill);
+}
+
+.history-popover__clear:hover:not(:disabled) {
+  color: #fff;
+  box-shadow: 0 4px 16px var(--danger-glow);
+  opacity: 0.88;
+}
+
+/* "Clear" and "Confirm" (each an icon and a label) share a cell, so the button keeps its width
+   when it is armed, and either face is centred in it */
+.history-popover__clear {
+  display: inline-grid;
+}
+
+.history-popover__clear-face {
+  position: relative; /* above the armed button's draining layer, so the label stays at full strength */
+  z-index: 1;
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.history-popover__clear-face--confirm,
+.history-popover__clear--armed .history-popover__clear-face:first-child {
+  visibility: hidden;
+}
+
+.history-popover__clear--armed .history-popover__clear-face--confirm {
+  visibility: visible;
+}
+
+/* Armed: the next click deletes the history. The button keeps its colours; a ring and a darker
+   layer that drains across it for as long as it stays armed (CLEAR_CONFIRM_MS) show that this is
+   a short-lived state, not the same button once more. */
+.history-popover__clear--armed,
+.history-popover__clear--armed:hover:not(:disabled) {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px var(--danger-ring);
+  opacity: 1;
+}
+
+.history-popover__clear--armed::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.22);
+  transform-origin: left;
+  animation: history-clear-drain var(--confirm-ms) linear forwards;
+}
+
+@keyframes history-clear-drain {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}

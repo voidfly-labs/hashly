@@ -11,6 +11,7 @@ import { generateSitemap } from './scripts/vite-plugins/generate-sitemap.js';
 import { generateRobotsTxt } from './scripts/vite-plugins/generate-robots.js';
 import { generateLlmsTxt } from './scripts/vite-plugins/generate-llms.js';
 import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
+import { emitOgImage } from './scripts/vite-plugins/emit-og-image.js';
 import { injectCsp } from './scripts/vite-plugins/inject-csp.js';
 import { minifyJsonLd } from './scripts/vite-plugins/minify-json-ld.js';
 
@@ -104,6 +105,7 @@ export default defineConfig({
     minifyJsonLd(),
     injectCsp(),
     generateManifest(injectData),
+    emitOgImage(injectData),
     generateRobotsTxt(injectData),
     generateLlmsTxt(injectData, ALGORITHMS),
     generateSitemap(injectData),

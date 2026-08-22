@@ -10,7 +10,7 @@ export default {
   description:
     'Calculate MD5, SHA-256, BLAKE3, Keccak-256, RIPEMD-160, and 28 more hash algorithms in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.hashly.org/',
-  ogImage: 'https://www.hashly.org/og-image.png',
+  ogImageAlt: 'Hashly: 33 algorithms, one tool. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>Online Hash</span> Calculator',

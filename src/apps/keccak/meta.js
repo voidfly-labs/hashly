@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate Keccak-224, Keccak-256, Keccak-384, and Keccak-512 hashes in your browser. Keccak-256 powers Ethereum. No uploads, no tracking.',
   canonicalUrl: 'https://www.keccak.app/',
-  ogImage: 'https://www.keccak.app/og-image.png',
+  ogImageAlt: 'KeccakKit: Keccak-224, 256, 384, 512. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>Keccak-256</span> Hash Calculator',

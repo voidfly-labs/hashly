@@ -11,7 +11,7 @@ export default {
   description:
     'Calculate BLAKE2b, BLAKE2s, and BLAKE3 hashes in your browser. Text and file input. No uploads, no tracking.',
   canonicalUrl: 'https://www.blake3.app/',
-  ogImage: 'https://www.blake3.app/og-image.png',
+  ogImageAlt: 'BLAKEKit: BLAKE2b, BLAKE2s, BLAKE3. Text and file hashes, in your browser.',
 
   // Page
   pageH1Html: '<span>BLAKE3</span> Hash Calculator',

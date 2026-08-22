@@ -1,3 +1,4 @@
+import { OG_IMAGE } from './vite-plugins/emit-og-image.js';
 import blakekit from '../src/apps/blake/meta.js';
 import crckit from '../src/apps/crc/meta.js';
 import hashly from '../src/apps/hashly/meta.js';
@@ -18,6 +19,7 @@ export const APPS_META = Object.fromEntries(
     id,
     {
       ...meta,
+      ogImage: { ...OG_IMAGE, url: `${meta.brandUrl}/${OG_IMAGE.file}` },
       moreToolsLinks: Object.entries(metas)
         .filter(([i]) => i !== id && i !== SUITE_APP)
         .map(([, meta]) => ({ text: meta.footerLabel, href: meta.brandUrl })),

@@ -1,4 +1,7 @@
-// How long Clear stays armed for its confirming second click.
+import { Announcer } from '~core/ui/announcer/announcer.js';
+
+// How long Clear stays armed for its confirming second click (also the length of the bar that
+// drains across the button meanwhile, see history.css).
 const CLEAR_CONFIRM_MS = 4000;
 const ARMED_CLASS = 'history-popover__clear--armed';
 
@@ -8,6 +11,8 @@ const ARMED_CLASS = 'history-popover__clear--armed';
  *  armed, which Escape uses to know it has done something. */
 export function initConfirmClear(clearBtn, onConfirm) {
   let timer = 0;
+
+  clearBtn.style.setProperty('--confirm-ms', `${CLEAR_CONFIRM_MS}ms`);
 
   const disarm = () => {
     clearTimeout(timer);
@@ -21,6 +26,7 @@ export function initConfirmClear(clearBtn, onConfirm) {
     e.stopPropagation();
     if (!clearBtn.classList.contains(ARMED_CLASS)) {
       clearBtn.classList.add(ARMED_CLASS);
+      Announcer.say('Press again to delete the history');
       timer = setTimeout(disarm, CLEAR_CONFIRM_MS);
       return;
     }

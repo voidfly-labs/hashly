@@ -12,7 +12,7 @@ function findAsset(bundle, pattern) {
 
 // Installable-app icons that no page references, so the bundler would not otherwise emit them.
 const INSTALL_ICONS = ['icon-192.png', 'icon-512.png'];
-const ICON_DIR = resolve('src/assets/images/favicons');
+const ICON_DIR = resolve('src/assets/images/icons');
 
 // PNG width/height are big-endian uint32s at byte offsets 16 and 20 (IHDR chunk).
 function pngSizes(source) {

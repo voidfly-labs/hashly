@@ -11,7 +11,7 @@ branding of this project.
 The following are trademarks (or claimed as such) of Voidfly LLC:
 
 - **Names:** Hashly, BLAKEKit, CRCKit, KeccakKit, MD5Kit, RIPEMDKit, SHA2Kit, SHA3Kit and xxHashKit
-- **Logos and icons:** the files in `src/assets/images/logo.svg`, `src/assets/images/favicons/` and
+- **Logos and icons:** the files in `src/assets/images/logo.svg`, `src/assets/images/icons/` and
   `src/assets/images/social/`
 - **Domain names** used to distribute the apps
 
