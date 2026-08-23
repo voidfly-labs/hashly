@@ -1,0 +1,69 @@
+/* ── Question links (see faq-links.js) ────────────────────────────────
+       The "copy link" button after a question: out of sight until the question is hovered or the
+       button focused, and always there where nothing hovers. Its checkmark morph is .btn--done
+       (button.css). */
+.info h3 {
+  scroll-margin-top: 80px; /* keep clear of the sticky header when a link scrolls to the question */
+}
+
+.info__link {
+  display: inline-flex;
+  align-items: center;
+  margin: -4px 0 -4px 4px; /* the taller box must not stretch the question's line */
+  padding: 5px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--text-muted);
+  background: none;
+  position: relative;
+  top: -1px;
+  vertical-align: middle;
+  cursor: pointer;
+  opacity: 0;
+  transition:
+    opacity 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+}
+
+.info h3:hover .info__link,
+.info__link:focus-visible,
+.info__link.btn--done {
+  opacity: 1;
+}
+
+.info__link:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.info__link svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+@media (hover: none) {
+  .info__link {
+    opacity: 1;
+  }
+}
+
+/* The question a permalink scrolled to: a soft highlight that fades out. It is added once the
+   page has stopped scrolling (see whenScrollSettles). */
+.info__question--flash {
+  border-radius: 4px;
+  animation: faq-question-flash 1.8s ease-out;
+}
+
+@keyframes faq-question-flash {
+  from {
+    background: var(--accent-glow);
+    box-shadow: 0 0 0 6px var(--accent-glow);
+  }
+
+  to {
+    background: transparent;
+    box-shadow: 0 0 0 6px transparent;
+  }
+}

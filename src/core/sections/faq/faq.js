@@ -1,3 +1,6 @@
+import { whenScrollSettles } from '~core/lib/scroll-settle.js';
+
+import { findQuestion, flashQuestion, initQuestionLinks } from './faq-links.js';
 import { createFaqSearch } from './faq-search.js';
 import { initTabScroll } from './faq-tab-scroll.js';
 
@@ -12,6 +15,7 @@ export const FaqSection = {
     this._tabs.forEach((t) => (t.tabIndex = t.getAttribute('aria-selected') === 'true' ? 0 : -1));
     this._panels = [...document.querySelectorAll('.info__panel')];
     this._section = tablist.closest('.section');
+    initQuestionLinks({ tabs: this._tabs, panels: this._panels });
     this._search = createFaqSearch({ info: tablist.closest('.info'), tabs: this._tabs, panels: this._panels });
 
     initTabScroll(wrap, tablist);
@@ -38,9 +42,10 @@ export const FaqSection = {
       }
     });
 
-    // Deep links: #<tab id> (e.g. /#crc32) opens that tab. Picking a tab updates the hash
-    // with replaceState, which doesn't fire hashchange, so this only reacts to the URL
-    // being changed from outside.
+    // Deep links: #<tab id> (e.g. /#crc32) opens that tab, and #<tab id>/<question> (see
+    // faq-links.js) scrolls to one of its questions. Picking a tab updates the hash with
+    // replaceState, which doesn't fire hashchange, so this only reacts to the URL being changed
+    // from outside.
     window.addEventListener('hashchange', () => this._openFromHash({ scroll: true }));
     this._openFromHash({ scroll: this._isFreshLoad() });
   },
@@ -53,14 +58,15 @@ export const FaqSection = {
   },
 
   /** Opens the tab named by the URL hash, if it names one, and (when `scroll` is set) scrolls to
-   *  the section the way a menu click does: the page's own smooth scrolling, landing where
-   *  `scroll-margin-top` puts the section's title. The short hash names no element, so the browser
-   *  never scrolls to it itself. Other hashes (#about-section, …) are ignored. */
+   *  its question, if the hash names one, or else to the section the way a menu click does: the
+   *  page's own smooth scrolling, landing where `scroll-margin-top` puts the title. The hash names
+   *  no element, so the browser never scrolls to it itself. Other hashes (#about-section, …) are ignored. */
   _openFromHash({ scroll }) {
-    const tabId = window.location.hash.slice(1);
+    const [tabId, questionSlug] = window.location.hash.slice(1).split('/');
     const tab = this._tabs.find((t) => t.dataset.tab === tabId);
     if (!tab) return;
     this.activate(tabId, { fromUrl: true });
+    const question = questionSlug && findQuestion(document.getElementById(`faq-panel-${tabId}`), questionSlug);
 
     // Open the section if the user had collapsed it, so the link doesn't land on just its title.
     const wasCollapsed = scroll && this._section.classList.contains('section--collapsed');
@@ -68,7 +74,9 @@ export const FaqSection = {
 
     const finish = () => {
       this._revealTab(tab);
-      if (scroll) this._section.scrollIntoView({ block: 'start' });
+      if (!scroll) return;
+      (question || this._section).scrollIntoView({ block: 'start' });
+      if (question) whenScrollSettles(() => flashQuestion(question));
     };
     // Not right away. On a fresh load this runs mid-init: the other sections are still building
     // their content (scrolling now would aim at where the FAQ is before that pushes it down), and

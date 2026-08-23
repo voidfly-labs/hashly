@@ -10,6 +10,7 @@ import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
 import { generateSitemap } from './scripts/vite-plugins/generate-sitemap.js';
 import { generateRobotsTxt } from './scripts/vite-plugins/generate-robots.js';
 import { generateLlmsTxt } from './scripts/vite-plugins/generate-llms.js';
+// eslint-disable-next-line no-unused-vars
 import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
 import { emitOgImage } from './scripts/vite-plugins/emit-og-image.js';
 import { injectCsp } from './scripts/vite-plugins/inject-csp.js';
@@ -104,7 +105,8 @@ export default defineConfig({
     injectFontPreloads(),
     minifyJsonLd(),
     injectCsp(),
-    generateManifest(injectData),
+    // PWA manifest disabled for now
+    // generateManifest(injectData),
     emitOgImage(injectData),
     generateRobotsTxt(injectData),
     generateLlmsTxt(injectData, ALGORITHMS),
