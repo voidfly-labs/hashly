@@ -250,7 +250,7 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  padding: 3px;
+  padding: 4px;
   border: none;
   border-radius: var(--radius-sm);
   color: var(--text-muted);

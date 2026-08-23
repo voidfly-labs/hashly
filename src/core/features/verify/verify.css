@@ -124,9 +124,9 @@
 .verify__paste,
 .verify__file {
   position: absolute;
-  top: 5px;
-  right: 7px;
-  padding: 5px;
+  top: 4px;
+  right: 6px;
+  padding: 6px;
 }
 
 .verify__clear {
@@ -134,14 +134,14 @@
 }
 
 /* Paste and Upload take the clear button's corner while the field is empty:
-       Paste in the corner itself, Upload beside it (26px button + 4px gap). */
+       Paste in the corner itself, Upload beside it (28px buttons, 30px between their centres). */
 .verify__paste,
 .verify__file {
   display: flex;
 }
 
 .verify__file {
-  right: 37px;
+  right: 36px;
 }
 
 .verify__clear--visible ~ .verify__paste,
@@ -254,12 +254,12 @@
   .verify__clear,
   .verify__paste,
   .verify__file {
-    top: 2px;
-    right: 4px;
-    padding: 6px;
+    top: 0;
+    right: 2px;
+    padding: 8px;
   }
 
-  /* 32px button + 4px gap, from the 4px corner offset. */
+  /* 36px buttons, 38px between their centres, from the 2px corner offset. */
   .verify__file {
     right: 40px;
   }

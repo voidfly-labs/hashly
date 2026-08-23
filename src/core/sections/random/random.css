@@ -95,7 +95,7 @@
 
 .random__item-actions {
   display: flex;
-  gap: 4px;
+  gap: 1px; /* as between the history table's action buttons */
   opacity: 0;
   transition: opacity 0.15s;
 }
@@ -108,7 +108,8 @@
   position: relative;
   display: flex;
   align-items: center;
-  padding: 3px;
+  margin: -2px 0; /* the bigger box must not make the row taller */
+  padding: 5px;
   border: 1px solid transparent;
   border-radius: 4px;
   color: var(--text-muted);

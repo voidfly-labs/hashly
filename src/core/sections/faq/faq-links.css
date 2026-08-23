@@ -1,7 +1,8 @@
 /* ── Question links (see faq-links.js) ────────────────────────────────
        The "copy link" button after a question: out of sight until the question is hovered or the
-       button focused, and always there where nothing hovers. Its checkmark morph is .btn--done
-       (button.css). */
+       button focused, and not at all where nothing hovers. Only the glyph shows: the padding is
+       a bigger target to hit, hovering turns the glyph accent, and a ring marks keyboard focus.
+       Its checkmark morph is .btn--done (button.css). */
 .info h3 {
   scroll-margin-top: 80px; /* keep clear of the sticky header when a link scrolls to the question */
 }
@@ -9,9 +10,12 @@
 .info__link {
   display: inline-flex;
   align-items: center;
-  margin: -4px 0 -4px 4px; /* the taller box must not stretch the question's line */
-  padding: 5px;
-  border: 1px solid transparent;
+  justify-content: center;
+  width: 32px; /* as tall as the page's other icon buttons */
+  height: 32px;
+  margin: -6px 0 -6px 1px; /* the taller box must not stretch the question's line */
+  padding: 0;
+  border: 0;
   border-radius: 4px;
   color: var(--text-muted);
   background: none;
@@ -22,8 +26,7 @@
   opacity: 0;
   transition:
     opacity 0.15s,
-    color 0.15s,
-    border-color 0.15s;
+    color 0.15s;
 }
 
 .info h3:hover .info__link,
@@ -34,18 +37,24 @@
 
 .info__link:hover {
   color: var(--accent);
-  border-color: var(--accent-border);
+}
+
+.info__link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
 }
 
 .info__link svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
   fill: currentColor;
 }
 
+/* Nothing hovers on a touch screen, and 44 questions' worth of icons were noise there, so it has
+   no button: a question's link is still opened by its permalink, just not copied from here. */
 @media (hover: none) {
   .info__link {
-    opacity: 1;
+    display: none;
   }
 }
 

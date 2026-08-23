@@ -124,7 +124,7 @@
 
 /* Action buttons column — mirrors .random__item-actions pattern */
 .history-table__actions {
-  width: 58px;
+  width: 67px; /* two 27px buttons, the 1px gap between them, and the padding below */
   padding-left: 4px !important;
   padding-right: 8px !important;
   overflow: visible;
@@ -149,7 +149,8 @@
   position: relative;
   display: inline-flex;
   align-items: center;
-  padding: 3px;
+  margin: -2px 0; /* the bigger box must not make the row taller */
+  padding: 5px;
   border: 1px solid transparent;
   border-radius: 4px;
   color: var(--text-muted);

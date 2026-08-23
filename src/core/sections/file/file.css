@@ -127,9 +127,9 @@
        so any positive value suffices) so click events reach this button first. */
 .file-drop__clear {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  padding: 5px;
+  top: 5px;
+  right: 5px;
+  padding: 6px;
   z-index: 1;
   display: none; /* hidden until a file is loaded */
 }
@@ -153,9 +153,9 @@
   }
 
   .file-drop__clear {
-    top: 3px;
-    right: 3px;
-    padding: 6px;
+    top: 1px;
+    right: 1px;
+    padding: 8px;
   }
 
   .file-drop__clear svg {

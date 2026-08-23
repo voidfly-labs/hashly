@@ -56,18 +56,18 @@
 
 .text-input__clear {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  padding: 5px;
+  top: 5px;
+  right: 5px;
+  padding: 6px;
   z-index: 1;
   display: none; /* hidden until input has content */
 }
 
 .text-input__paste {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  padding: 5px;
+  top: 5px;
+  right: 5px;
+  padding: 6px;
   z-index: 1;
   display: flex;
 }
@@ -85,9 +85,9 @@
   /* Larger tap target; top/right shrink so the icon stays at the same corner offset. */
   .text-input__clear,
   .text-input__paste {
-    top: 3px;
-    right: 3px;
-    padding: 6px;
+    top: 1px;
+    right: 1px;
+    padding: 8px;
   }
 
   .text-input__clear svg,
