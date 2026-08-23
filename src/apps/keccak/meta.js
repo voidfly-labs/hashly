@@ -2,7 +2,7 @@ export default {
   // Brand
   siteName: 'KeccakKit',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.keccak.app',
+  brandUrl: 'https://keccak.app',
   brandTitleHtml: '<span>Keccak</span>Kit',
   footerLabel: 'Keccak',
 
@@ -10,7 +10,7 @@ export default {
   title: 'Keccak-256 Hash Calculator',
   description:
     'Calculate Keccak-224, Keccak-256, Keccak-384, and Keccak-512 hashes in your browser. Keccak-256 powers Ethereum. No uploads, no tracking.',
-  canonicalUrl: 'https://www.keccak.app/',
+  canonicalUrl: 'https://keccak.app/',
   ogImageAlt: 'KeccakKit: Keccak-224, 256, 384, 512. Text and file hashes, in your browser.',
 
   // Page
@@ -35,12 +35,12 @@ export default {
       title: 'Privacy Policy | KeccakKit',
       description:
         'Privacy policy for KeccakKit by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.keccak.app/privacy',
+      canonicalUrl: 'https://keccak.app/privacy',
     },
     terms: {
       title: 'Terms of Service | KeccakKit',
       description: 'Terms of service for KeccakKit by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.keccak.app/terms',
+      canonicalUrl: 'https://keccak.app/terms',
     },
   },
 };

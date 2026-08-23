@@ -2,14 +2,14 @@ export default {
   // Brand
   siteName: 'Hashly',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.hashly.org',
+  brandUrl: 'https://hashly.org',
   brandTitleHtml: '<span>Hash</span>ly',
 
   // SEO
   title: 'Online Hash Calculator | Hashly',
   description:
     'Calculate MD5, SHA-256, BLAKE3, Keccak-256, RIPEMD-160, and 28 more hash algorithms in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.hashly.org/',
+  canonicalUrl: 'https://hashly.org/',
   ogImageAlt: 'Hashly: 33 algorithms, one tool. Text and file hashes, in your browser.',
 
   // Page
@@ -37,12 +37,12 @@ export default {
       title: 'Privacy Policy | Hashly',
       description:
         'Privacy policy for Hashly by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.hashly.org/privacy',
+      canonicalUrl: 'https://hashly.org/privacy',
     },
     terms: {
       title: 'Terms of Service | Hashly',
       description: 'Terms of service for Hashly by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.hashly.org/terms',
+      canonicalUrl: 'https://hashly.org/terms',
     },
   },
 };

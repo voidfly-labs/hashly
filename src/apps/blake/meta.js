@@ -2,7 +2,7 @@ export default {
   // Brand
   siteName: 'BLAKEKit',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.blake3.app',
+  brandUrl: 'https://blake3.app',
   brandTitleHtml: '<span>BLAKE</span>Kit',
   footerLabel: 'BLAKE2/3',
 
@@ -10,7 +10,7 @@ export default {
   title: 'BLAKE3 Hash Calculator',
   description:
     'Calculate BLAKE2b, BLAKE2s, and BLAKE3 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.blake3.app/',
+  canonicalUrl: 'https://blake3.app/',
   ogImageAlt: 'BLAKEKit: BLAKE2b, BLAKE2s, BLAKE3. Text and file hashes, in your browser.',
 
   // Page
@@ -35,12 +35,12 @@ export default {
       title: 'Privacy Policy | BLAKEKit',
       description:
         'Privacy policy for BLAKEKit by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.blake3.app/privacy',
+      canonicalUrl: 'https://blake3.app/privacy',
     },
     terms: {
       title: 'Terms of Service | BLAKEKit',
       description: 'Terms of service for BLAKEKit by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.blake3.app/terms',
+      canonicalUrl: 'https://blake3.app/terms',
     },
   },
 };

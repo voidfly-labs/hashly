@@ -2,7 +2,7 @@ export default {
   // Brand
   siteName: 'MD5Kit',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.md5kit.com',
+  brandUrl: 'https://md5kit.com',
   brandTitleHtml: '<span>MD5</span>Kit',
   footerLabel: 'MD4/5',
 
@@ -10,7 +10,7 @@ export default {
   title: 'MD5 Hash Calculator',
   description:
     'Calculate MD2, MD4, and MD5 hashes in your browser. Text and file input, hex/Base64/binary output. No uploads, no tracking.',
-  canonicalUrl: 'https://www.md5kit.com/',
+  canonicalUrl: 'https://md5kit.com/',
   ogImageAlt: 'MD5Kit: MD2, MD4, MD5. Text and file hashes, in your browser.',
 
   // Page
@@ -35,12 +35,12 @@ export default {
       title: 'Privacy Policy | MD5Kit',
       description:
         'Privacy policy for MD5Kit by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.md5kit.com/privacy',
+      canonicalUrl: 'https://md5kit.com/privacy',
     },
     terms: {
       title: 'Terms of Service | MD5Kit',
       description: 'Terms of service for MD5Kit by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.md5kit.com/terms',
+      canonicalUrl: 'https://md5kit.com/terms',
     },
   },
 };

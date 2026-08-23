@@ -2,7 +2,7 @@ export default {
   // Brand
   siteName: 'SHA3Kit',
   author: 'Voidfly Labs',
-  brandUrl: 'https://www.sha3.app',
+  brandUrl: 'https://sha3.app',
   brandTitleHtml: '<span>SHA3</span>Kit',
   footerLabel: 'SHA-3',
 
@@ -10,7 +10,7 @@ export default {
   title: 'SHA3-256 Hash Calculator',
   description:
     'Calculate SHA3-224, SHA3-256, SHA3-384, and SHA3-512 hashes in your browser. Text and file input. No uploads, no tracking.',
-  canonicalUrl: 'https://www.sha3.app/',
+  canonicalUrl: 'https://sha3.app/',
   ogImageAlt: 'SHA3Kit: SHA3-224, 256, 384, 512. Text and file hashes, in your browser.',
 
   // Page
@@ -35,12 +35,12 @@ export default {
       title: 'Privacy Policy | SHA3Kit',
       description:
         'Privacy policy for SHA3Kit by Voidfly Labs. All hashing runs in your browser — no data is ever transmitted.',
-      canonicalUrl: 'https://www.sha3.app/privacy',
+      canonicalUrl: 'https://sha3.app/privacy',
     },
     terms: {
       title: 'Terms of Service | SHA3Kit',
       description: 'Terms of service for SHA3Kit by Voidfly Labs. Free to use, no account required, provided as-is.',
-      canonicalUrl: 'https://www.sha3.app/terms',
+      canonicalUrl: 'https://sha3.app/terms',
     },
   },
 };
