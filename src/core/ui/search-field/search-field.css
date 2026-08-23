@@ -1,9 +1,9 @@
 /* =========================================================================
-       HISTORY SEARCH
-       — The search row of a history popover (see core/features/history/search/history-search.js),
-         between its header and its table.
+       SEARCH FIELD
+       — A row with a search field, its clear button and a match count (see search-field.js):
+         the history popover's, between its header and its table, and the FAQ's.
        ========================================================================= */
-.history-search {
+.search-field {
   /* The field's box inside the row: its distance from the row's edges (the ring spills 3px
      beyond it, so it must stay clear of the popover's walls and of the rules above and below). */
   --field-x: 4px;
@@ -18,14 +18,10 @@
   background: var(--surface);
 }
 
-.history-search[hidden] {
-  display: none;
-}
-
 /* The field's own box, as the reference-hash field's: a rounded 1px edge that takes the
    --accent-strong colour and the shared focus ring on focus (see input-wrap.css). A floating
    box, not a full-width line, which would read as the divider above the table. */
-.history-search::before {
+.search-field::before {
   content: '';
   position: absolute;
   top: var(--field-y);
@@ -42,7 +38,7 @@
 
 /* The same edge as the reference-hash field's focus: its card's grey 1px border shows through
    under the (translucent) ring, and it lifts to --shadow. */
-.history-search:focus-within::before {
+.search-field:focus-within::before {
   border-color: var(--accent-strong);
   box-shadow:
     var(--focus-ring),
@@ -55,36 +51,36 @@
    would read as an error banner (and, in the accent, merge with the popover header's). The edge
    keeps its colour while focused; with matches the ring stays the blue one, and with none it
    turns red too, so that focus is visible without a blue halo around a red edge. */
-.history-search[data-state='match'] {
+.search-field[data-state='match'] {
   --verdict: var(--accent);
 }
 
-.history-search[data-state='none'] {
+.search-field[data-state='none'] {
   --verdict: var(--danger);
   --focus-ring: 0 0 0 2px var(--danger-glow);
 }
 
-.history-search[data-state]::before,
-.history-search[data-state]:focus-within::before {
+.search-field[data-state]::before,
+.search-field[data-state]:focus-within::before {
   border-color: var(--verdict);
 }
 
-.history-search[data-state] .history-search__icon {
+.search-field[data-state] .search-field__icon {
   fill: var(--verdict);
 }
 
-.history-search[data-state] .history-search__count {
+.search-field[data-state] .search-field__count {
   color: var(--verdict);
 }
 
-.history-search__icon {
+.search-field__icon {
   flex-shrink: 0;
   width: 16px;
   height: 16px;
   fill: var(--text-muted);
 }
 
-.history-search__input {
+.search-field__input {
   flex: 1;
   min-width: 0;
   padding: 7px 0;
@@ -99,26 +95,26 @@
   -webkit-appearance: none;
 }
 
-.history-search__input::placeholder {
+.search-field__input::placeholder {
   color: var(--text-muted);
 }
 
 /* The field has its own clear button */
-.history-search__input::-webkit-search-cancel-button,
-.history-search__input::-webkit-search-decoration {
+.search-field__input::-webkit-search-cancel-button,
+.search-field__input::-webkit-search-decoration {
   display: none;
   -webkit-appearance: none;
 }
 
-.history-search__clear {
+.search-field__clear {
   display: flex;
 }
 
-.history-search__clear[hidden] {
+.search-field__clear[hidden] {
   display: none;
 }
 
-.history-search__count {
+.search-field__count {
   flex-shrink: 0;
   white-space: nowrap;
   font-family: var(--mono);
@@ -127,17 +123,17 @@
 }
 
 @media (max-width: 630px) {
-  .history-search {
+  .search-field {
     padding: 4px 12px;
     /* Mobile keeps the earlier effect, as .input-wrap does */
     --focus-ring: 0 0 0 1px var(--accent-ring), 0 0 4px 1px var(--accent-glow);
   }
 
-  .history-search[data-state='none'] {
+  .search-field[data-state='none'] {
     --focus-ring: 0 0 0 1px var(--danger-ring), 0 0 4px 1px var(--danger-glow);
   }
 
-  .history-search__input {
+  .search-field__input {
     padding: 8px 0;
   }
 }
@@ -145,7 +141,19 @@
 /* iOS zooms the page in when a field under 16px is focused, so there (WebKit's touch callout
    is how to tell it) the field is 16px; everywhere else it stays the size of the text around it. */
 @supports (-webkit-touch-callout: none) {
-  .history-search__input {
+  .search-field__input {
     font-size: 16px;
   }
+}
+
+/* A search match, in a hash, a line of text or an answer: a light accent fill with a firmer edge,
+   in the full text colour (the text around it is often muted, and a match should stand out of it).
+   No horizontal padding, so a monospace hash stays in line; the 1px shadow is the edge, and
+   gives the block its bleed. */
+.history-table mark,
+.info mark {
+  border-radius: 2px;
+  color: var(--text);
+  background: var(--mark);
+  box-shadow: 0 0 0 1px var(--mark-edge);
 }

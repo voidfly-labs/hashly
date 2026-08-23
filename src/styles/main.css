@@ -13,6 +13,7 @@
 @import '../core/ui/card.css';
 @import '../core/ui/input-wrap.css';
 @import '../core/ui/options.css';
+@import '../core/ui/search-field/search-field.css';
 @import '../core/ui/hint/hint.css';
 @import '../core/ui/tooltip/tooltip.css';
 @import '../core/ui/warning-banner/warning-banner.css';
@@ -32,7 +33,6 @@
    override parts of it */
 @import '../core/features/history/history.css';
 @import '../core/features/history/popover/confirm-clear.css';
-@import '../core/features/history/search/history-search.css';
 @import '../core/features/history/table/history-table.css';
 /* hash-progress.css before result.css (as ever): its `cursor: default` on a row being hashed is
    overridden by the row's own `cursor: pointer` */
@@ -55,4 +55,7 @@
 @import '../core/sections/file/file-stats.css';
 @import '../core/sections/file/file.css';
 @import '../core/sections/random/random.css';
+/* faq-search.css overrides the panel rules of faq.css, so it has to stay behind it */
 @import '../core/sections/faq/faq.css';
+@import '../core/sections/faq/faq-search.css';
+@import '../core/sections/faq/faq-tab-scroll.css';

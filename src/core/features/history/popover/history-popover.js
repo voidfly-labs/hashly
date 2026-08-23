@@ -1,7 +1,5 @@
 import { exportHistoryCsv } from '~core/features/history/export/history-csv.js';
 import { formatTimestamp } from '~core/features/history/export/history-time.js';
-import { PAGE_SIZE } from '~core/features/history/list/history-list.js';
-import { createHistorySearch } from '~core/features/history/search/history-search.js';
 import { initHistoryRows } from '~core/features/history/table/history-rows.js';
 import { renderHistoryTable } from '~core/features/history/table/history-table.js';
 import { downloadDigest } from '~core/features/results/export/download-digest.js';
@@ -10,6 +8,7 @@ import { takesText } from '~core/lib/text-field.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
 import { createPopover } from '~core/ui/popover.js';
+import { createSearchField } from '~core/ui/search-field/search-field.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
@@ -41,8 +40,12 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
   // The body is re-rendered often; this listens on it once.
   initHistoryRows(body, copyRow);
 
-  const search = createHistorySearch({
-    ns,
+  const search = createSearchField({
+    label: `Search the ${ns} history`,
+    placeholder: `Search ${ns === 'file' ? 'file' : 'text'}, hash or algorithm`,
+    mobilePlaceholder: 'Search history',
+    noun: 'entries',
+    shortcuts: '/ Control+F Meta+F',
     onChange: (query) => {
       list.setQuery(query);
       refresh();
@@ -96,6 +99,8 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
           onClear();
           tallest = 0;
           refresh();
+          // The refresh rebuilt the footer, so the button that was clicked is gone: flash on its successor.
+          Tooltip.flash(popover.querySelector('[data-history-clear]'), 'Cleared');
         },
       }) ?? disarmClear;
   }
@@ -103,12 +108,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
   /** Renders the search, the body and the footer for the current state. */
   function refresh() {
     const total = store.entries().length;
-    // A history of one page has nothing to search, so the field is only there for a longer one.
-    if (total <= PAGE_SIZE && list.searching) {
-      list.setQuery('');
-      search.reset();
-    }
-    search.update({ shown: total > PAGE_SIZE, matched: list.visible().length, total });
+    search.update({ matched: list.visible().length, total });
     body.style.minHeight = `${tallest}px`;
     renderBody();
     renderFooter();

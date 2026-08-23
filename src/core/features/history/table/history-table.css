@@ -122,16 +122,6 @@
   white-space: nowrap;
 }
 
-/* A search match: a light accent fill with a firmer edge, in the full text colour (the source
-   line is muted, and a match should stand out of it). No horizontal padding, so a monospace
-   hash stays in line; the 1px shadow is the edge, and gives the block its bleed. */
-.history-table mark {
-  border-radius: 2px;
-  color: var(--text);
-  background: var(--mark);
-  box-shadow: 0 0 0 1px var(--mark-edge);
-}
-
 /* Action buttons column — mirrors .random__item-actions pattern */
 .history-table__actions {
   width: 58px;

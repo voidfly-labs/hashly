@@ -1,10 +1,10 @@
-import { matchesTerms, searchTerms } from './history-filter.js';
+import { matchesTerms, searchTerms } from '~core/lib/search.js';
 
 /** How many rows a page of a history table has. */
 export const PAGE_SIZE = 10;
 
 /** The view of one history's entries that its popover shows: sorted, narrowed by a search, and cut
- *  into pages. It holds the search (the query as typed, and its words, see ./history-filter.js)
+ *  into pages. It holds the search (the query as typed, and its words, see ~core/lib/search.js)
  *  and the current page, but not the entries, which stay in `store`.
  *
  *  Sorted by batch, newest calculation first, then by the algorithm's place in `algoOrder` (an

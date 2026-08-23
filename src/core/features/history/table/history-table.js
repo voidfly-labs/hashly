@@ -1,6 +1,6 @@
-import { findRanges } from '~core/features/history/list/history-filter.js';
 import { Format } from '~core/lib/format.js';
 import { iconHref } from '~core/lib/icon.js';
+import { findRanges, markHtml } from '~core/lib/search.js';
 
 const HEAD = `
   <thead>
@@ -28,20 +28,6 @@ const emptyState = (query) => `
     }
   </div>`;
 
-/** `text[from, to)` as markup, with the parts inside `ranges` (see findRanges) marked. */
-function mark(text, ranges, from = 0, to = text.length) {
-  let html = '';
-  let at = from;
-  for (const [start, end] of ranges) {
-    const s = Math.max(start, from);
-    const e = Math.min(end, to);
-    if (s >= e) continue;
-    html += `${Format.escapeHtml(text.slice(at, s))}<mark>${Format.escapeHtml(text.slice(s, e))}</mark>`;
-    at = e;
-  }
-  return html + Format.escapeHtml(text.slice(at, to));
-}
-
 // How much of a file name stays visible at its end when the middle is cut: the extension and a bit more.
 const FILE_TAIL_CHARS = 10;
 
@@ -52,9 +38,9 @@ function sourceLine(source, terms, isFile) {
   if (!source) return '';
   const title = Format.escapeHtml(source);
   const ranges = findRanges(source, terms);
-  if (!isFile) return `<span class="history-table__source" title="${title}">${mark(source, ranges)}</span>`;
+  if (!isFile) return `<span class="history-table__source" title="${title}">${markHtml(source, ranges)}</span>`;
   const cut = Array.from(source).slice(0, -FILE_TAIL_CHARS).join('').length;
-  return `<span class="history-table__source history-table__source--file" title="${title}"><span class="history-table__source-head">${mark(source, ranges, 0, cut)}</span><span class="history-table__source-tail">${mark(source, ranges, cut)}</span></span>`;
+  return `<span class="history-table__source history-table__source--file" title="${title}"><span class="history-table__source-head">${markHtml(source, ranges, 0, cut)}</span><span class="history-table__source-tail">${markHtml(source, ranges, cut)}</span></span>`;
 }
 
 const table = (rows) => `
@@ -67,7 +53,7 @@ const table = (rows) => `
  *  `defaultAlgo` names the algorithm of an entry without one, `formatTs(ts)` gives "YYYY-MM-DD
  *  HH:mm:ss" and `sourceOf(entry)` what the entry was made from ('' for unknown), which
  *  `sourceIsFile` says is a file name. With a search `query` active, `terms` (see
- *  core/features/history/history-filter.js) are marked in the hash and the source, and an empty page says
+ *  core/lib/search.js) are marked in the hash and the source, and an empty page says
  *  nothing matched. A page with no rows is not a table but a centred message.
  *
  *  A row's `data-i` is its index in `rows`, which leads a click back to its entry. */
@@ -89,7 +75,7 @@ export function renderHistoryTable(
           <tr class="history-table__row" data-i="${i}">
             <td class="history-table__num">${String(start + i + 1).padStart(3, '0')}</td>
             <td class="history-table__algo"><span class="algo-badge" data-algo="${algo}">${algo}</span></td>
-            <td class="history-table__hash"><span class="history-table__hash-text${source ? '' : ' history-table__hash-text--last'}">${mark(e.hash, findRanges(e.hash, terms))}</span>${sourceLine(source, terms, sourceIsFile)}<span class="tooltip">Copied!</span></td>
+            <td class="history-table__hash"><span class="history-table__hash-text${source ? '' : ' history-table__hash-text--last'}">${markHtml(e.hash, findRanges(e.hash, terms))}</span>${sourceLine(source, terms, sourceIsFile)}<span class="tooltip">Copied!</span></td>
             <td class="history-table__time"><span dir="ltr"><span class="history-table__date">${date}</span> ${time}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">

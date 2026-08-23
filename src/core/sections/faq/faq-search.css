@@ -1,0 +1,82 @@
+/* =========================================================================
+       FAQ SEARCH
+       — While the search field (see faq-search.js) holds a query, the panels with a matching
+         question are all shown, one under the other, each under a label with its tab's name.
+         What doesn't match is left out with data-faq-miss, which must come last here to win
+         over the display rules of the panels and the tables. Imported after faq.css, whose
+         panel rules it overrides.
+       ========================================================================= */
+.info__panel-label {
+  display: none;
+}
+
+.info--searching .info__panel {
+  display: block;
+  padding-top: 16px;
+  padding-bottom: 8px;
+  animation: none;
+}
+
+.info--searching .info__panel ~ .info__panel:not([data-faq-miss]) {
+  border-top: 1px solid var(--border);
+}
+
+.info--searching .info__panel-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+}
+
+.info__panel-count {
+  font-weight: 400;
+  letter-spacing: 0.3px;
+  text-transform: none;
+  opacity: 0.8;
+}
+
+/* A search has no open tab, and the tabs without a match step back */
+.info--searching .info__tab[aria-selected='true'] {
+  color: var(--text-muted);
+}
+
+.info--searching .info__tab[aria-selected='true']::after {
+  transform: scaleX(0);
+}
+
+.info__tab[data-faq-dim] {
+  opacity: 0.4;
+}
+
+.info__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.info__empty[hidden] {
+  display: none;
+}
+
+.info__empty-icon {
+  width: 28px;
+  height: 28px;
+  fill: var(--text-muted);
+  opacity: 0.6;
+}
+
+.info__empty-text {
+  margin: 0;
+}
+
+.info [data-faq-miss] {
+  display: none;
+}

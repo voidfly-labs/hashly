@@ -246,7 +246,7 @@
 .verify__clear,
 .verify__paste,
 .verify__file,
-.history-search__clear {
+.search-field__clear {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
@@ -276,7 +276,7 @@
 .verify__clear:hover,
 .verify__paste:hover,
 .verify__file:hover,
-.history-search__clear:hover {
+.search-field__clear:hover {
   color: var(--text);
   background: var(--surface-2);
 }
@@ -289,7 +289,7 @@
 .verify__clear:active,
 .verify__paste:active,
 .verify__file:active,
-.history-search__clear:active {
+.search-field__clear:active {
   transform: scale(0.9);
 }
 
@@ -299,7 +299,7 @@
 .verify__clear svg,
 .verify__paste svg,
 .verify__file svg,
-.history-search__clear svg {
+.search-field__clear svg {
   width: 16px;
   height: 16px;
   fill: currentColor;
@@ -397,7 +397,7 @@
 }
 
 .history-popover__header,
-.history-search,
+.search-field,
 .history-popover__footer {
   flex-shrink: 0;
 }

@@ -1,0 +1,69 @@
+/* =========================================================================
+       FAQ TAB SCROLL
+       — The tab strip's scroll cues (see faq-tab-scroll.js): the edge fades and the chevron
+         buttons. The strip's own layout is in faq.css.
+       ========================================================================= */
+.info__tabs-wrap[data-can-left]::before,
+.info__tabs-wrap[data-can-right]::after {
+  opacity: 1;
+}
+
+/* Chevron buttons at the ends of the strip (see faq-tab-scroll.js): a click scrolls
+   by most of the strip's width. They sit over the fades, and show only while there is more to
+   scroll to in their direction. */
+.info__tabs-btn {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  padding: 0;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    color 0.15s,
+    background 0.15s;
+}
+
+.info__tabs-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* Solid at the edge and fading out toward the tabs, so a tab running under the button
+   doesn't show through next to the chevron. */
+.info__tabs-btn--prev {
+  left: 0;
+  padding-right: 6px;
+  background: linear-gradient(to right, var(--accent-surface) 65%, transparent);
+}
+
+.info__tabs-btn--prev svg {
+  transform: scaleX(-1);
+}
+
+.info__tabs-btn--next {
+  right: 0;
+  padding-left: 6px;
+  background: linear-gradient(to left, var(--accent-surface) 65%, transparent);
+}
+
+.info__tabs-wrap[data-can-left] .info__tabs-btn--prev,
+.info__tabs-wrap[data-can-right] .info__tabs-btn--next {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: hover) {
+  .info__tabs-btn:hover {
+    color: var(--accent);
+  }
+}

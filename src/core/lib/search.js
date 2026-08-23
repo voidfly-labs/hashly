@@ -1,3 +1,5 @@
+import { Format } from '~core/lib/format.js';
+
 /** The words of a search query: lower-cased and split on whitespace. */
 export function searchTerms(query) {
   return query.toLowerCase().split(/\s+/).filter(Boolean);
@@ -29,4 +31,18 @@ export function findRanges(text, terms) {
     else ranges.push([index, index + hit.length]);
   }
   return ranges;
+}
+
+/** `text[from, to)` as markup, with the parts inside `ranges` (see findRanges) marked. */
+export function markHtml(text, ranges, from = 0, to = text.length) {
+  let html = '';
+  let at = from;
+  for (const [start, end] of ranges) {
+    const s = Math.max(start, from);
+    const e = Math.min(end, to);
+    if (s >= e) continue;
+    html += `${Format.escapeHtml(text.slice(at, s))}<mark>${Format.escapeHtml(text.slice(s, e))}</mark>`;
+    at = e;
+  }
+  return html + Format.escapeHtml(text.slice(at, to));
 }
