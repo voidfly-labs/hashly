@@ -24,7 +24,7 @@ export default {
   mainAriaLabel: 'RIPEMD-160 hash calculator',
 
   // Runtime
-  themeStorageKey: 'ripemd-theme',
+  themeStorageKey: 'ripemdkit-theme',
 
   // Build
   srcDir: 'ripemd',

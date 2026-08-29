@@ -24,7 +24,7 @@ export default {
   mainAriaLabel: 'xxHash64 hash calculator',
 
   // Runtime
-  themeStorageKey: 'xxhash-theme',
+  themeStorageKey: 'xxhashkit-theme',
 
   // Build
   srcDir: 'xxhash',

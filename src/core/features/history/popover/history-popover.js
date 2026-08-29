@@ -12,7 +12,7 @@ import { createSearchField } from '~core/ui/search-field/search-field.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
-import { renderHistoryFooter } from './history-footer.js';
+import { createHistoryFooter } from './history-footer.js';
 
 const VISIBLE_CLASS = 'history-popover--visible';
 
@@ -26,8 +26,6 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
   // The tallest the body has been since the popover opened: it keeps that height, so the popover
   // doesn't shrink and grow as pages with fewer rows come and go.
   let tallest = 0;
-  // Takes the Clear button of the current footer out of its "Confirm" state.
-  let disarmClear = null;
 
   const isVisible = () => popover.classList.contains(VISIBLE_CLASS);
 
@@ -73,36 +71,36 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
     });
   }
 
+  const footer = createHistoryFooter(popover, {
+    ns,
+    onPage(direction) {
+      list.step(direction);
+      refresh();
+      slideIn(body.querySelector('.history-table'), direction);
+    },
+    onExport: () =>
+      exportHistoryCsv({
+        entries: list.visible(),
+        kind: ns,
+        appName: appConfig.appName,
+        defaultAlgo,
+        sourceOf: (e) => store.sourceOf(e),
+      }),
+    onClear() {
+      onClear();
+      tallest = 0;
+      refresh();
+      Tooltip.flash(popover.querySelector('[data-history-clear]'), 'Cleared');
+    },
+  });
+
   function renderFooter() {
-    const total = list.visible().length;
-    disarmClear =
-      renderHistoryFooter(popover, {
-        ns,
-        page: list.page,
-        pages: list.pageCount(),
-        total,
-        searching: list.searching,
-        onPage(direction) {
-          list.step(direction);
-          refresh();
-          slideIn(body.querySelector('.history-table'), direction);
-        },
-        onExport: () =>
-          exportHistoryCsv({
-            entries: list.visible(),
-            kind: ns,
-            appName: appConfig.appName,
-            defaultAlgo,
-            sourceOf: (e) => store.sourceOf(e),
-          }),
-        onClear() {
-          onClear();
-          tallest = 0;
-          refresh();
-          // The refresh rebuilt the footer, so the button that was clicked is gone: flash on its successor.
-          Tooltip.flash(popover.querySelector('[data-history-clear]'), 'Cleared');
-        },
-      }) ?? disarmClear;
+    footer.update({
+      page: list.page,
+      pages: list.pageCount(),
+      total: list.visible().length,
+      searching: list.searching,
+    });
   }
 
   /** Renders the search, the body and the footer for the current state. */
@@ -122,7 +120,9 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
     refreshQueued = true;
     requestAnimationFrame(() => {
       refreshQueued = false;
-      if (isVisible()) refresh();
+      // Past the first page the reader is left alone: new entries would push the rows they are on
+      // out of view. The next page change draws from the entries as they are then.
+      if (isVisible() && list.page === 0) refresh();
     });
   }
 
@@ -141,10 +141,10 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
       refresh();
     },
     onShown: () => search.focus(),
-    onClose: () => disarmClear?.(),
+    onClose: () => footer.disarm(),
     // Escape backs out of the innermost thing first: an armed Clear, then a search, then the popover.
     onEscape: () => {
-      if (disarmClear?.()) return true;
+      if (footer.disarm()) return true;
       if (!search.value()) return false;
       search.reset();
       list.setQuery('');

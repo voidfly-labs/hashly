@@ -24,7 +24,7 @@ export default {
   mainAriaLabel: 'Keccak-256 hash calculator',
 
   // Runtime
-  themeStorageKey: 'keccak-theme',
+  themeStorageKey: 'keccakkit-theme',
 
   // Build
   srcDir: 'keccak',

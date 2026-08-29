@@ -1,4 +1,5 @@
 import { createBatchSources } from './batch-sources.js';
+import { createStoredJson } from './stored-json.js';
 
 /** The most entries a history keeps. */
 export const MAX_ENTRIES = 1000;
@@ -23,47 +24,42 @@ function isEntry(e) {
  *  entry carries its own file name, where text entries only point at a batch's description.
  *
  *  Anything unreadable is dropped on load, not repaired: the next save writes back what is left. A
- *  write the browser refuses (quota, private mode) is skipped silently. */
+ *  write the browser refuses (quota, private mode) is skipped silently.
+ *
+ *  Other tabs of the app write the same keys. Every change first `load`s, which merges in what they
+ *  saved (it only parses when the stored string differs from this tab's last, see ./stored-json.js),
+ *  so a tab adds to the history it finds, not to the one it started with. */
 export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile }) {
   const sources = createBatchSources(sourcesKey);
+  const stored = createStoredJson(entriesKey);
   let entries = [];
 
   function save() {
-    try {
-      localStorage.setItem(entriesKey, JSON.stringify(entries));
-    } catch {
-      /* storage full — silently skip */
-    }
+    stored.write(entries);
+  }
+
+  /** Brings the entries and descriptions up to date with storage: what this tab last saw, plus
+   *  whatever other tabs changed. */
+  function load() {
+    sources.load();
+    const parsed = stored.read();
+    if (parsed === undefined) return;
+    entries = Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, MAX_ENTRIES) : [];
   }
 
   return {
-    load() {
-      sources.load();
-      try {
-        const raw = localStorage.getItem(entriesKey);
-        const parsed = raw ? JSON.parse(raw) : [];
-        entries = Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, MAX_ENTRIES) : [];
-      } catch {
-        entries = [];
-      }
-    },
+    load,
 
     entries: () => entries,
-
-    /** The highest batch id on record (0 if none), for resuming the batch counter. */
-    highestBatchId() {
-      return entries.reduce((highest, { batchId }) => (batchId > highest ? batchId : highest), 0);
-    },
 
     /** Puts `items` (`[{ hash, algo }]`, one batch) at the top with a single write, however many
      *  there are: a batch holds an entry per algorithm, and writing the whole store for each of them
      *  would stall the page. */
     push(items, batchId, filename) {
+      load();
       for (const { hash, algo } of items) {
-        // Deduplicate on (hash + algo) pair so the same hash value for different
-        // algorithms is treated as a distinct entry.
-        const idx = entries.findIndex((e) => e.hash === hash && e.algo === algo);
-        if (idx !== -1) entries.splice(idx, 1);
+        // Append-only: an entry is never replaced, however alike (a short checksum is the same for
+        // many inputs, and a re-hash is a calculation of its own). Only the cap trims the history.
         entries.unshift({
           hash,
           algo,
@@ -73,7 +69,7 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile }) {
         });
       }
       if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES;
-      // A batch's description goes when its last entry does (trimmed, or replaced by a re-hash).
+      // A batch's description goes when its last entry does (trimmed by the cap).
       sources.keepOnly(new Set(entries.map((e) => e.batchId)));
       save();
     },

@@ -1,5 +1,6 @@
 import { createHistoryList } from '~core/features/history/list/history-list.js';
 import { createHistoryPopover } from '~core/features/history/popover/history-popover.js';
+import { initStorageSync } from '~core/features/history/storage-sync.js';
 import { createHistoryStore } from '~core/features/history/store/history-store.js';
 
 /** Fired on `document` whenever a history's entries change; `detail` is `{ ns, count }`. */
@@ -15,9 +16,9 @@ export const History = {
   _stores: {},
   _lists: {},
   _popovers: {},
-  // Monotonically-increasing batch counter: all algorithms hashed from the
-  // same user action share one batchId, allowing per-batch algo sorting.
-  _batchCounter: 0,
+  // The last batch id handed out: all algorithms hashed from the same user action share one batchId,
+  // allowing per-batch algo sorting.
+  _lastBatchId: 0,
 
   init({ APP_CONFIG, DEFAULT_ALGO, ALGO_ORDER }) {
     _APP_CONFIG = APP_CONFIG;
@@ -28,25 +29,28 @@ export const History = {
   /** Call once before pushing a group of per-algorithm entries so they
    *  all share the same batchId and can be sorted together. */
   nextBatch() {
-    return ++this._batchCounter;
+    // The clock, not a counter: tabs of the same app share the stored history, and a counter each
+    // of them kept would hand out the same ids (a batch's description is looked up by its id).
+    // Ids stored before this were small counts, so they still sort as older. Never repeats or
+    // goes back within a tab, even in one millisecond or if the clock is set back.
+    this._lastBatchId = Math.max(this._lastBatchId + 1, Date.now());
+    return this._lastBatchId;
   },
 
   _load(ns) {
     const prefix = `${_APP_CONFIG.appName}-history`;
-    const store = createHistoryStore({
-      entriesKey: `${prefix}-${ns}`,
-      sourcesKey: `${prefix}-source-${ns}`,
-      sourceIsFile: ns === 'file',
-    });
+    const entriesKey = `${prefix}-${ns}`;
+    const sourcesKey = `${prefix}-source-${ns}`;
+    const store = createHistoryStore({ entriesKey, sourcesKey, sourceIsFile: ns === 'file' });
     store.load();
     this._stores[ns] = store;
     this._lists[ns] = createHistoryList({ store, algoOrder: _ALGO_ORDER, defaultAlgo: _DEFAULT_ALGO });
-    // _batchCounter isn't persisted — only the entries are — so on a fresh
-    // page load it would otherwise restart at 0 and immediately collide with
-    // batchIds already stored from a previous session, scrambling the sort
-    // (colliding batchIds fall through to the algo-order tiebreak instead of
-    // recency). Resume it above whatever's already on record instead.
-    this._batchCounter = Math.max(this._batchCounter, store.highestBatchId());
+    // Another tab recorded or cleared: take in its changes and redraw what shows them.
+    initStorageSync([entriesKey, sourcesKey], () => {
+      store.load();
+      this._notify(ns);
+      this._popovers[ns]?.refreshIfVisible();
+    });
     this._notify(ns);
   },
 
@@ -97,10 +101,8 @@ export const History = {
   record(ns, items, batchId, filename) {
     if (!items.length) return;
     this._stores[ns].push(items, batchId, filename);
-    // New entries go to page 0
-    this._lists[ns].firstPage();
     this._notify(ns);
-    // Live-refresh the popover if it's open (a no-op when closed)
+    // Live-refresh the popover if it's open (a no-op when closed, and when it is past its first page).
     this._popovers[ns]?.refreshIfVisible();
   },
 };

@@ -86,6 +86,10 @@ export function createTextInput({ onInput, onClear }) {
   // the selected input encoding (Hex / Base64 / Binary).
   // UTF-8 accepts everything so only the other three need filtering.
   el.addEventListener('keydown', (e) => {
+    // A key that belongs to an input method editor (Esc cancelling a composition, Enter accepting
+    // one) is not for the field. Safari ends the composition before this event, so `isComposing`
+    // is already false there, but it still reports keyCode 229.
+    if (e.isComposing || e.keyCode === 229) return;
     // Esc clears the textarea regardless of input format.
     if (e.key === 'Escape') {
       e.preventDefault();
