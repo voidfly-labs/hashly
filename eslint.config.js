@@ -19,11 +19,15 @@ const forbidden = {
   layout: ['sections', 'app'],
 };
 const sections = ['text', 'file', 'random', 'faq'];
+// Inside src/core: `~core/` across folders, `./` within one. Every block repeats this pattern because
+// the options of a later `no-restricted-imports` replace those of an earlier one rather than merging.
+const noParentImports = { group: ['../**'], message: 'Use the ~core/ alias across folders, ./ within one.' };
 const restrict = (files, patterns) => ({
   files,
-  rules: { 'no-restricted-imports': ['error', { patterns }] },
+  rules: { 'no-restricted-imports': ['error', { patterns: [noParentImports, ...patterns] }] },
 });
 const layerRules = [
+  restrict(['src/core/app/**/*.js'], []),
   ...Object.entries(forbidden).map(([layer, others]) =>
     restrict(
       [`src/core/${layer}/**/*.js`],

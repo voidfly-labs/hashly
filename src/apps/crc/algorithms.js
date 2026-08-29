@@ -26,9 +26,9 @@ export const ALGORITHMS = [
   { id: 'CRC-32 (MPEG-2)', bits: 32, hexLen: 8, cost: 40 },
   // CRC-64 — ordered alphabetically within the group
   { id: 'CRC-64 (ECMA)', bits: 64, hexLen: 16, cost: 100 },
-  { id: 'CRC-64 (NVMe)', bits: 64, hexLen: 16, cost: 110 },
-  { id: 'CRC-64 (Redis)', bits: 64, hexLen: 16, cost: 100 },
+  { id: 'CRC-64 (NVMe)', bits: 64, hexLen: 16, cost: 150 },
+  { id: 'CRC-64 (Redis)', bits: 64, hexLen: 16, cost: 255 },
   { id: 'CRC-64 (XZ)', bits: 64, hexLen: 16, cost: 10 },
   // CRC-82
-  { id: 'CRC-82 (DARC)', bits: 82, hexLen: 21, cost: 140 },
+  { id: 'CRC-82 (DARC)', bits: 82, hexLen: 21, cost: 345 },
 ];

@@ -1,11 +1,20 @@
-import { fromArrayBuffer } from 'crypto-api/src/encoder/array-buffer';
 import { toHex } from 'crypto-api/src/encoder/hex';
 import Ripemd from 'crypto-api/src/hasher/ripemd';
 
 const UINT32 = 2 ** 32;
+const BLOCK = 64; // bytes
 
-/** crypto-api's RIPEMD with a correct message length. Its `addLengthBits` encodes the length with
- *  int32 shifts (a known, unfixed gap upstream), so every digest of 2 GiB or more is silently wrong. */
+/** A binary string, one character per byte, of less than a block of `bytes`. */
+const binary = (bytes) => String.fromCharCode.apply(null, bytes);
+
+/** crypto-api's RIPEMD with a correct message length, fed bytes instead of a string.
+ *
+ *  - Its `addLengthBits` encodes the length with int32 shifts (a known, unfixed gap upstream), so every
+ *    digest of 2 GiB or more is silently wrong.
+ *  - It reads a binary string, and turning a chunk into one and then picking it apart again a block at a
+ *    time cost about as much as the rounds themselves. `updateBytes` hands the round functions (which are
+ *    crypto-api's own) their words straight from the bytes; only the unfinished block at the end of a
+ *    chunk is ever a string, kept in `state.message` as `finalize` expects it. */
 class Ripemd64bit extends Ripemd {
   addLengthBits() {
     const bits = this.state.length * 8; // exact up to 2^53 bits
@@ -15,24 +24,37 @@ class Ripemd64bit extends Ripemd {
     }
     this.state.message += tail;
   }
+
+  updateBytes(bytes) {
+    const { length } = bytes;
+    let offset = 0;
+    this.state.length += length;
+
+    // Complete the block left over from the last chunk first.
+    if (this.state.message.length) {
+      offset = Math.min(BLOCK - this.state.message.length, length);
+      this.state.message += binary(bytes.subarray(0, offset));
+      if (this.state.message.length < BLOCK) return;
+      this.process();
+    }
+
+    const view = new DataView(bytes.buffer, bytes.byteOffset, length);
+    const words = new Array(BLOCK / 4);
+    for (; offset + BLOCK <= length; offset += BLOCK) {
+      for (let i = 0; i < words.length; i++) words[i] = view.getInt32(offset + i * 4, true);
+      this.processBlock(words);
+    }
+    if (offset < length) this.state.message += binary(bytes.subarray(offset));
+  }
 }
 
-/** The engine (see hasher-server.js) for RIPEMD of `bits` bits, from crypto-api.
- *  crypto-api reads a binary string, not bytes: it is made once per chunk and shared by every
- *  RIPEMD hasher of the job (`shared.binary`). */
+/** The engine (see hasher-server.js) for RIPEMD of `bits` bits, from crypto-api. */
 export function ripemdEngine(bits) {
-  const binary = (bytes, shared) => {
-    shared.binary ??= fromArrayBuffer(
-      bytes.byteOffset === 0 && bytes.byteLength === bytes.buffer.byteLength ? bytes.buffer : bytes.slice().buffer,
-    );
-    return shared.binary;
-  };
-
   return {
     async create() {
       const hasher = new Ripemd64bit({ length: bits });
       return {
-        update: (chunk, shared) => hasher.update(binary(chunk, shared)),
+        update: (chunk) => hasher.updateBytes(chunk),
         digest: () => toHex(hasher.finalize()),
       };
     },

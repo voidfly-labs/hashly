@@ -30,10 +30,10 @@ export const ALGORITHMS = [
   { id: 'Keccak-384', bits: 384, hexLen: 96, cost: 60 },
   { id: 'Keccak-512', bits: 512, hexLen: 128, cost: 80 },
   // RIPEMD family
-  { id: 'RIPEMD-128', bits: 128, hexLen: 32, cost: 500 },
+  { id: 'RIPEMD-128', bits: 128, hexLen: 32, cost: 135 },
   { id: 'RIPEMD-160', bits: 160, hexLen: 40, cost: 40 },
-  { id: 'RIPEMD-256', bits: 256, hexLen: 64, cost: 500 },
-  { id: 'RIPEMD-320', bits: 320, hexLen: 80, cost: 500 },
+  { id: 'RIPEMD-256', bits: 256, hexLen: 64, cost: 135 },
+  { id: 'RIPEMD-320', bits: 320, hexLen: 80, cost: 135 },
   // xxHash family
   { id: 'XXH32', bits: 32, hexLen: 8, cost: 15 },
   { id: 'XXH64', bits: 64, hexLen: 16, cost: 15 },

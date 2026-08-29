@@ -44,7 +44,7 @@ export function flashQuestion(heading) {
 function createLinkButton(hash) {
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'info__link';
+  btn.className = 'info__link icon-swap';
   btn.setAttribute('aria-label', 'Copy link to this question');
   btn.innerHTML = `
     <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('link')}"></use></svg>

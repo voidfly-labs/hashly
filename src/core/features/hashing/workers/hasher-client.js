@@ -6,7 +6,7 @@ import { createWorkerChannel } from './worker-channel.js';
 
 // Threads hashing one file at once: as many as the machine has cores but one (the page needs a
 // core too), up to this many. More stops paying off: a file's time is that of its slowest share.
-const MAX_THREADS = 4;
+const MAX_THREADS = 8;
 
 // File workers hold WebAssembly instances and read buffers, so a pool that has been idle this long is
 // stopped; the next file starts new ones (a moment's start-up, once).

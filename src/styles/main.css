@@ -9,6 +9,7 @@
 
 /* UI: feature-agnostic primitives */
 @import '../core/ui/button/button.css';
+@import '../core/ui/button/icon-swap.css';
 @import '../core/ui/algo-badge.css';
 @import '../core/ui/card.css';
 @import '../core/ui/input-wrap.css';

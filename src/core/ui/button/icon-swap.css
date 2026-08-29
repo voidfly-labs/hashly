@@ -1,0 +1,31 @@
+/* ── Icon swap ────────────────────────────────────────────────────────
+       An opt-in variant of the checkmark morph (.btn--done, button.css) for a button that fades
+       out: the .icon-action / .icon-check pair stacks and swaps by visibility, and the swap back
+       is held for --icon-swap-delay, so the action icon doesn't show again while the button is
+       still fading away. Keep the delay equal to the button's own fade.
+       The button must be a fixed-size box that centres its icons (e.g. inline-flex); the icons
+       are absolutely positioned and stay where they would have flowed.
+       After button.css: its .btn--done rules have the higher specificity otherwise. */
+.icon-swap {
+  --icon-swap-delay: 0.15s;
+  position: relative;
+}
+
+.icon-swap svg {
+  position: absolute;
+  display: block;
+  transition: visibility 0s var(--icon-swap-delay);
+}
+
+.icon-swap .icon-check,
+.icon-swap.btn--done .icon-action {
+  visibility: hidden;
+}
+
+.icon-swap.btn--done .icon-check {
+  visibility: visible;
+}
+
+.icon-swap.btn--done svg {
+  transition-delay: 0s;
+}

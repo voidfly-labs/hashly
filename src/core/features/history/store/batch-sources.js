@@ -21,7 +21,12 @@ export function createBatchSources(storageKey) {
     load() {
       const parsed = stored.read();
       if (parsed === undefined) return;
-      map = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      map = {};
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return;
+      // Only strings are descriptions; anything else (old schema, tampering) would throw in the table.
+      for (const [id, description] of Object.entries(parsed)) {
+        if (typeof description === 'string') map[id] = description;
+      }
     },
 
     get(batchId) {

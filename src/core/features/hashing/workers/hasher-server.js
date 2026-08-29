@@ -39,23 +39,35 @@ export function initHasherServer(engines) {
     return Promise.all(ids.map(async (algoId) => [algoId, await once(engineFor(algoId), bytes)]));
   }
 
+  const withoutDropped = (hashers, job) =>
+    job.dropped.size ? hashers.filter(({ algoId }) => !job.dropped.has(algoId)) : hashers;
+
   async function hashFile({ id, file, ids }, job) {
     let hashers = await Promise.all(ids.map(async (algoId) => ({ algoId, hasher: await engineFor(algoId).create() })));
     let offset = 0;
     let lastPost = 0;
     const sizer = createChunkSizer();
 
-    while (offset < file.size) {
+    // The next chunk is read while this one is hashed, so the worker is not idle during reads. It is
+    // sized from the measurement before last. `catch` marks a read we abandon (cancel, every
+    // algorithm dropped) as handled; whoever awaits it still sees the rejection.
+    const read = (from) => {
+      const pending = file.slice(from, from + sizer.bytes).arrayBuffer();
+      pending.catch(() => {});
+      return pending;
+    };
+    let reading = file.size ? read(0) : null;
+
+    while (reading) {
       if (job.cancelled) return null;
-      const buffer = await file.slice(offset, offset + sizer.bytes).arrayBuffer();
+      const buffer = await reading;
       // Cancelled while reading: stop before touching anything.
       if (job.cancelled) return null;
+      reading = offset + buffer.byteLength < file.size ? read(offset + buffer.byteLength) : null;
 
       // Dropped meanwhile: nothing more is computed for those.
-      if (job.dropped.size) {
-        hashers = hashers.filter(({ algoId }) => !job.dropped.has(algoId));
-        if (!hashers.length) return [];
-      }
+      hashers = withoutDropped(hashers, job);
+      if (!hashers.length) return [];
 
       const chunk = new Uint8Array(buffer);
       const shared = {};
