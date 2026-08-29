@@ -1,6 +1,4 @@
 const MAX_NAMES = 3;
-// Past this many distinct digest sizes the "available sizes" hint stops being helpful.
-const MAX_HINT_SIZES = 3;
 
 /** "SHA-1, SHA-256, SHA3-256 +2 more" */
 export function listNames(ids) {
@@ -9,22 +7,11 @@ export function listNames(ids) {
   return more > 0 ? `${shown} +${more} more` : shown;
 }
 
-/** "Available: 128-bit (MD4, MD5) · 160-bit (RIPEMD-160)", or '' when there are
- *  too many sizes to be useful. `algorithms`: [{ id, hexLen, bits }]. The real width
- *  (`bits`) is shown, which is under hexLen * 4 for a CRC-82. */
-export function availableSizes(algorithms) {
-  const bySize = new Map();
-  for (const { id, hexLen, bits = hexLen * 4 } of algorithms) bySize.set(bits, [...(bySize.get(bits) ?? []), id]);
-  if (bySize.size > MAX_HINT_SIZES) return '';
-  const parts = [...bySize].sort(([a], [b]) => a - b).map(([bits, ids]) => `${bits}-bit (${listNames(ids)})`);
-  return `Available: ${parts.join(' · ')}`;
-}
-
 /** What the notice under the reference field should say for the current state.
- *  Returns `{ text, lead?, hint?, kind? }` (`lead`: the verdict word to emphasise), or `{}` when there is nothing to say (empty
+ *  Returns `{ text, lead?, kind? }` (`lead`: the verdict word to emphasise), or `{}` when there is nothing to say (empty
  *  field). `kind` is 'match' | 'mismatch' | 'warn'; undefined is a neutral note.
- *  `sizesHint` is `availableSizes(...)`, shown when no algorithm fits the length. */
-export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFits, unhashed = [], fits, sizesHint }) {
+ */
+export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFits, unhashed = [], fits }) {
   if (!hasInput) return {};
   if (!ref) return { text: 'Not a valid hash – expected hex or Base64', kind: 'warn' };
 
@@ -35,8 +22,8 @@ export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFi
   }
   if (compared.length) {
     // Hidden algorithms aren't computed, so a mismatch might just mean the reference is for one of them.
-    const skipped = hiddenFits.length ? ` · not compared (hidden): ${listNames(hiddenFits)}` : '';
-    const missing = unhashed.length ? ` · not compared (unhashed): ${listNames(unhashed)}` : '';
+    const skipped = hiddenFits.length ? ` · skipped (hidden): ${listNames(hiddenFits)}` : '';
+    const missing = unhashed.length ? ` · skipped (unhashed): ${listNames(unhashed)}` : '';
     return {
       text: `No match – compared with ${listNames(compared)}${skipped}${missing}`,
       lead: 'No match',
@@ -46,12 +33,8 @@ export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFi
   if (fits.length) return { text: `Fits ${listNames(fits)} – compared once a file is hashed` };
   // The length fits, but these were hidden when the file was hashed, so there is no digest to compare.
   if (unhashed.length) {
-    return { text: `Fits ${listNames(unhashed)} – not compared (unhashed)` };
+    return { text: `Fits ${listNames(unhashed)} – skipped (unhashed)` };
   }
   if (hiddenFits.length) return { text: `Fits ${listNames(hiddenFits)} – currently hidden` };
-  return {
-    text: `${ref.hex.length * 4}-bit hash – no algorithm matches this length`,
-    hint: sizesHint,
-    kind: 'warn',
-  };
+  return { text: `${ref.hex.length * 4}-bit hash – no algorithm matches this length`, kind: 'warn' };
 }

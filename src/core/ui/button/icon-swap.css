@@ -5,15 +5,21 @@
        still fading away. Keep the delay equal to the button's own fade.
        The button must be a fixed-size box that centres its icons (e.g. inline-flex); the icons
        are absolutely positioned and stay where they would have flowed.
-       After button.css: its .btn--done rules have the higher specificity otherwise. */
+       After button.css: the display rule below must win over its .btn--done display rules, which
+       it does by order alone (equal specificity). Both icons have to stay rendered: an icon that
+       goes from display: none to shown has nothing to transition from, so its delay would be lost. */
 .icon-swap {
   --icon-swap-delay: 0.15s;
   position: relative;
 }
 
+.icon-swap .icon-action,
+.icon-swap .icon-check {
+  display: block;
+}
+
 .icon-swap svg {
   position: absolute;
-  display: block;
   transition: visibility 0s var(--icon-swap-delay);
 }
 

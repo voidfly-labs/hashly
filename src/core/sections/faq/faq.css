@@ -191,7 +191,6 @@
 }
 
 .info h3 {
-  margin-top: 20px;
   margin-bottom: 8px;
   font-family: var(--mono);
   font-size: 13px;
@@ -199,8 +198,10 @@
   color: var(--accent-dim);
 }
 
-.info__panel > h3:first-of-type {
-  margin-top: 0;
+/* A heading is set off from what comes before it in its panel, so the first one, at the top (or
+   under the label of a search, whatever it hides), has no space above it. */
+.info__panel > :not(.info__panel-label):not([data-faq-miss]) ~ h3 {
+  margin-top: 20px;
 }
 
 .info p {

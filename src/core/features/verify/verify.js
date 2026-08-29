@@ -2,7 +2,7 @@ import { initPasteButton } from '~core/features/input/paste-button.js';
 import { setVerifyState } from '~core/features/results/result.js';
 import { initReferenceFileButton } from '~core/features/verify/reference-file/reference-file-button.js';
 import { initReferenceFileDrop } from '~core/features/verify/reference-file/reference-file-drop.js';
-import { availableSizes, describeVerifyState } from '~core/features/verify/status/verify-messages.js';
+import { describeVerifyState } from '~core/features/verify/status/verify-messages.js';
 import { createVerifyStatus } from '~core/features/verify/status/verify-status.js';
 import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
@@ -24,7 +24,6 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   const clearBtn = root.querySelector('.verify__clear');
   initResponsivePlaceholder(input);
   const status = createVerifyStatus(root);
-  const sizesHint = availableSizes(algorithms);
 
   // Map<algoId, lowercase hex> for the current file, or null when there is none.
   let digests = null;
@@ -79,7 +78,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
       setVerifyState(getRow(id), verdict, against);
     }
 
-    _showStatus(describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()), sizesHint }));
+    _showStatus(describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()) }));
   }
 
   input.addEventListener('input', render);
