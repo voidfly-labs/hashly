@@ -29,6 +29,10 @@ export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFi
   if (!ref) return { text: 'Not a valid hash – expected hex or Base64', kind: 'warn' };
 
   if (matched.length) return { text: `Match – ${listNames(matched)}`, lead: 'Match', kind: 'match' };
+  // Some digests are in and some are still being worked out: it is too early to call it a mismatch.
+  if (compared.length && fits.length) {
+    return { text: `No match yet – compared with ${listNames(compared)} · waiting for ${listNames(fits)}` };
+  }
   if (compared.length) {
     // Hidden algorithms aren't computed, so a mismatch might just mean the reference is for one of them.
     const skipped = hiddenFits.length ? ` · not compared (hidden): ${listNames(hiddenFits)}` : '';

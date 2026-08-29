@@ -12,7 +12,7 @@ export function injectFontPreloads() {
 
         return fontFiles.map((fileName) => ({
           tag: 'link',
-          attrs: { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: true, href: fileName },
+          attrs: { rel: 'preload', as: 'font', type: 'font/woff2', crossorigin: true, href: `/${fileName}` },
           injectTo: 'head',
         }));
       },

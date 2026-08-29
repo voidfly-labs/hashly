@@ -28,6 +28,8 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
 
   // Map<algoId, lowercase hex> for the current file, or null when there is none.
   let digests = null;
+  // The algorithms whose digest is still being worked out: no digest yet is not "never computed".
+  let pending = new Set();
 
   /** Shows the notice, and tints the field's border to match its verdict. */
   function _showStatus(message) {
@@ -43,7 +45,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     if (isHidden(id)) return 'hiddenFit';
     if (!digests) return 'fit';
     const digest = digests.get(id)?.toLowerCase();
-    if (!digest) return 'unhashed'; // it was hidden when the file was hashed, so never computed
+    if (!digest) return pending.has(id) ? 'fit' : 'unhashed'; // else it was hidden when the file was hashed
     return digest === ref.hex ? 'match' : 'mismatch';
   }
 
@@ -67,11 +69,12 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
 
     // Once an algorithm matches, the reference plainly belongs to it, so the other
     // same-size rows aren't failures worth flagging: they stay neutral. Red is for
-    // when nothing matched.
+    // when nothing matched, and nothing that might is still being hashed.
     const anyMatch = result.matched.length > 0;
+    const settled = result.fits.length === 0;
     for (const { id } of algorithms) {
       const kind = kinds.get(id);
-      const verdict = kind === 'match' || (kind === 'mismatch' && !anyMatch) ? kind : null;
+      const verdict = kind === 'match' || (kind === 'mismatch' && !anyMatch && settled) ? kind : null;
       const against = verdict === 'mismatch' ? { reference: ref.hex, digest: digests.get(id) } : null;
       setVerifyState(getRow(id), verdict, against);
     }
@@ -130,9 +133,12 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   render();
 
   return {
-    /** `digests`: Map<algoId, hex> for the hashed file, or null when there is none / it is being hashed. */
-    setDigests(next) {
+    /** `digests`: Map<algoId, hex> for the hashed file, or null when there is none / it is being hashed.
+     *  While some of it is known, `pending` lists the algorithms still being worked out (the rest
+     *  without a digest were never computed). */
+    setDigests(next, { pending: stillHashing = [] } = {}) {
       digests = next;
+      pending = new Set(stillHashing);
       render();
     },
     refresh: render,

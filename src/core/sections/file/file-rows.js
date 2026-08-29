@@ -71,9 +71,9 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
       }
     },
 
-    /** Moves the progress bar of every visible row to `ratio` (0–1). */
-    setProgress(ratio) {
-      for (const { id } of visible()) rows.get(id).progress.set(ratio);
+    /** Moves the progress bar of each of `ids` (the algorithms of one share) to `ratio` (0–1). */
+    setProgress(ids, ratio) {
+      for (const id of ids) if (!isHidden(id)) rows.get(id).progress.set(ratio);
     },
 
     /** Enables or disables the Copy and Download buttons of the visible rows. */
@@ -83,24 +83,33 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
       }
     },
 
-    /** Shows the digests of the file just hashed (`hexMap`: `Map<id, hex>`) in `format`. A visible
-     *  row without one was hidden when the file was hashed, and says so. */
+    /** Shows the digests of the visible rows among `hexMap` (`Map<id, hex>`, what one share of the
+     *  file's hashing came to, or all of it) in `format`, and lets their digests be copied. Rows
+     *  without one are left as they are. */
     showDigests(hexMap, format) {
       const items = [];
       for (const { id } of visible()) {
-        const els = rows.get(id);
         const hex = hexMap.get(id);
-        els.progress.stop();
-        if (!hex) {
-          setHashText(els.hash, emptyText());
-          setHashEmpty(els.hash, true);
-          continue;
-        }
+        if (!hex) continue;
+        const els = rows.get(id);
         const hash = Format.applyFormat(hex, format);
+        els.progress.stop();
         setHashText(els.hash, hash);
+        setRowActions(els, true);
         items.push({ hash, algo: id });
       }
       return items;
+    },
+
+    /** The file is hashed: a visible row still without a digest was hidden while it ran, and says so. */
+    settle(hexMap) {
+      for (const { id } of visible()) {
+        if (hexMap.get(id)) continue;
+        const els = rows.get(id);
+        els.progress.stop();
+        setHashText(els.hash, emptyText());
+        setHashEmpty(els.hash, true);
+      }
     },
 
     /** Rewrites the digests already shown in another `format`. */
@@ -127,9 +136,11 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
       this.setActionsEnabled(false);
     },
 
-    /** The visible rows could not be computed: say so where the digests would be. */
-    showReadError() {
+    /** The visible rows without a digest in `hexMap` could not be computed: say so where it would be.
+     *  Those that got one before the failure keep it. */
+    showReadError(hexMap) {
       for (const { id } of visible()) {
+        if (hexMap.get(id)) continue;
         const els = rows.get(id);
         els.progress.stop();
         setHashText(els.hash, 'error reading file');

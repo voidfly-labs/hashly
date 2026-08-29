@@ -127,8 +127,13 @@ export function createHasherClient({ spawn, algorithms }) {
     },
 
     /** Hashes `file` with `algos`. `handle`, if given, gets a `drop(ids)` that stops the run computing
-     *  those algorithms (they then have no digest in the result); a share left with none counts as done. */
-    async fromFileAll(file, onProgress, algos = algorithms, signal, handle = {}) {
+     *  those algorithms (they then have no digest in the result); a share left with none counts as done.
+     *
+     *  `onProgress(ratio)` is how far along the file is: as far as its slowest share. The shares work on
+     *  their own, so `onShareProgress(ids, ratio)` tells how far one has got, and `onShare(digests)` hands
+     *  over its digests (`Map<id, hex>`) when it is done, before the shares still running are. All of the
+     *  latter come before the result, which is still every digest at once. */
+    async fromFileAll(file, onProgress, algos = algorithms, signal, handle = {}, { onShare, onShareProgress } = {}) {
       if (signal?.aborted) throw abortError();
       const groups = share(algos, threadsFor(algos), costOf);
       startFile();
@@ -145,21 +150,26 @@ export function createHasherClient({ spawn, algorithms }) {
       try {
         groups.forEach((ids, i) => {
           pool[i] = fresh(pool[i]);
-          runs.push(
-            pool[i].request(
-              { type: 'file', file, ids },
-              {
-                onProgress(ratio) {
-                  ratios[i] = ratio;
-                  // The file is as far along as its slowest share.
-                  const slowest = Math.min(...ratios);
-                  if (slowest <= reported) return;
-                  reported = slowest;
-                  onProgress?.(slowest);
-                },
+          const run = pool[i].request(
+            { type: 'file', file, ids },
+            {
+              onProgress(ratio) {
+                ratios[i] = ratio;
+                onShareProgress?.(ids, ratio);
+                // The file is as far along as its slowest share.
+                const slowest = Math.min(...ratios);
+                if (slowest <= reported) return;
+                reported = slowest;
+                onProgress?.(slowest);
               },
-            ),
+            },
           );
+          // Handed over as soon as this share is done. A failure is reported below, for the run as a whole.
+          run.promise.then(
+            (digests) => onShare?.(new Map(digests)),
+            () => {},
+          );
+          runs.push(run);
         });
       } catch (error) {
         runs.forEach((run) => run.cancel()); // a worker that wouldn't start: stop the ones that did

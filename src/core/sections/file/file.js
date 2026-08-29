@@ -147,15 +147,24 @@ export const FileSection = {
 
   _reformatAll(record = false) {
     const items = this._rows.reformat(this.rawHexMap, this.getSelectedFormat());
-    if (record) History.record('file', items, this._currentBatchId, this.currentFileName);
+    // While the file is still being hashed the digests are not recorded again: each is, once it is in.
+    if (record && !this._run) History.record('file', items, this._currentBatchId, this.currentFileName);
     // Rewriting the text drops any marks showing where a hash differs from the reference.
     this._verify.refresh();
   },
 
-  /** Shows (and records) the digests of the file just hashed, in the selected output format. */
-  _showDigests() {
-    const items = this._rows.showDigests(this.rawHexMap, this.getSelectedFormat());
+  /** The algorithms `run` still has to work out a digest for. */
+  _pendingIds(run) {
+    return [...run.ids].filter((id) => !this.rawHexMap.has(id));
+  },
+
+  /** One share of the file's hashing is done, while the others go on: its digests are shown, can be
+   *  copied, are recorded (in the batch of this file) and are compared with the reference now. */
+  _onShare(run, digests) {
+    for (const [id, hex] of digests) this.rawHexMap.set(id, hex);
+    const items = this._rows.showDigests(digests, this.getSelectedFormat());
     History.record('file', items, this._currentBatchId, this.currentFileName);
+    this._verify.setDigests(this.rawHexMap, { pending: this._pendingIds(run) });
   },
 
   // ── Hashing a file ─────────────────────────────────────────────────────
@@ -190,12 +199,15 @@ export const FileSection = {
       return;
     }
 
+    // One batch for the file: its digests are recorded as the shares of the hashing finish (see _onShare).
+    this._currentBatchId = History.nextBatch();
     const run = startFileRun({
       file,
       algos: visibleAlgos,
       hasher: _Hasher,
       setStats: (text, state) => this._drop.setStats(text, state),
-      onProgress: (ratio) => this._rows.setProgress(ratio),
+      onShare: (digests) => this._onShare(run, digests),
+      onShareProgress: (ids, ratio) => this._rows.setProgress(ids, ratio),
     });
     this._run = run;
     this._drop.showStats();
@@ -205,16 +217,18 @@ export const FileSection = {
     try {
       const hexMap = await run.result;
       if (run.aborted) return; // cleared or replaced just as it finished
+      // Every digest is in by now, shown by its share; what is left is the end of the run.
       this.rawHexMap = hexMap;
-      this._currentBatchId = History.nextBatch();
-      this._showDigests();
+      this._rows.settle(this.rawHexMap);
       this._rows.setActionsEnabled(true);
       this._verify.setDigests(this.rawHexMap);
       run.succeed();
     } catch {
       if (run.aborted) return; // cancelled: the UI already shows what replaced it
       run.fail();
-      this._rows.showReadError();
+      // The digests that landed before the failure stay (shown, recorded); the rest are marked.
+      this._rows.showReadError(this.rawHexMap);
+      if (this.rawHexMap.size) this._verify.setDigests(this.rawHexMap, { pending: this._pendingIds(run) });
     } finally {
       // Only this run's own record: a newer run may already have replaced it.
       if (this._run === run) this._run = null;

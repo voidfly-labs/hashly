@@ -90,14 +90,15 @@
 }
 
 /* Verdict ring — the focus ring's recipe (2px edge + glow, lighter on desktop)
-       in the verdict's colour, on the same wrap. Focused, the border keeps the
-       verdict colour but the ring goes back to the blue focus ring, so focus
-       stays visible. */
+       in the verdict's colour, on the same wrap. Focused, the border and the focus
+       ring both keep the verdict colour (as the searches' red state), so that no
+       blue halo is left around a green or red edge. */
 .verify--match {
   --verdict: var(--success);
   --verdict-halo: var(--success-surface);
   --verdict-ring: var(--success-ring);
   --verdict-glow: var(--success-glow);
+  --verdict-focus: var(--success-focus);
 }
 
 .verify--mismatch {
@@ -105,10 +106,12 @@
   --verdict-halo: var(--danger-surface);
   --verdict-ring: var(--danger-ring);
   --verdict-glow: var(--danger-glow);
+  --verdict-focus: var(--danger-focus);
 }
 
 .verify--match .input-wrap,
 .verify--mismatch .input-wrap {
+  --focus-ring: 0 0 0 2px var(--verdict-focus);
   border-color: var(--verdict);
   box-shadow: 0 0 0 2px var(--verdict-halo);
 }
@@ -237,6 +240,7 @@
 @media (max-width: 630px) {
   .verify--match .input-wrap,
   .verify--mismatch .input-wrap {
+    --focus-ring: 0 0 0 1px var(--verdict-ring), 0 0 4px 1px var(--verdict-glow);
     box-shadow:
       0 0 0 1px var(--verdict-ring),
       0 0 4px 1px var(--verdict-glow);
