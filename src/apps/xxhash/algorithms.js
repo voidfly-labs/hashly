@@ -4,3 +4,6 @@ export const ALGORITHMS = [
   { id: 'XXH3', bits: 64, hexLen: 16 },
   { id: 'XXH128', bits: 128, hexLen: 32 },
 ];
+
+export const DEFAULT_ALGO = 'XXH64';
+export const DEFAULT_HIDDEN_ALGOS = [];

@@ -8,15 +8,18 @@ import { initTypeToFocus } from '~core/features/input/type-to-focus.js';
 import { Preferences } from '~core/features/preferences/preferences.js';
 import { HashSelect } from '~core/features/results/hash-select.js';
 import { toggleAllLabel } from '~core/features/results/result-row.js';
+import { removeSkeleton } from '~core/features/results/skeleton/skeleton.js';
 import { initSectionCollapse } from '~core/features/section-collapse/section-collapse.js';
+import { Settings } from '~core/features/settings/settings.js';
+import { createSettingsPopover } from '~core/features/settings/settings-popover.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
 import { BackToTop } from '~core/layout/back-to-top/back-to-top.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
 import { initSocialTooltips } from '~core/layout/footer/social.js';
 import { initVersionTooltip } from '~core/layout/footer/version.js';
-import { initNavHelp } from '~core/layout/nav/nav-help.js';
 import { initNavHistory } from '~core/layout/nav/nav-history.js';
 import { NavMenu } from '~core/layout/nav/nav-menu.js';
+import { initNavPopover } from '~core/layout/nav/nav-popover.js';
 import { NavSpy } from '~core/layout/nav/nav-spy.js';
 import { FaqSection } from '~core/sections/faq/faq.js';
 import { FileSection } from '~core/sections/file/file.js';
@@ -24,6 +27,9 @@ import { RandomSection } from '~core/sections/random/random.js';
 import { TextSection } from '~core/sections/text/text.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 import { checkWasmSupport } from '~core/ui/warning-banner/warning-banner.js';
+
+import { endLoading, startLoading } from './loading.js';
+import { initSmoothScroll } from './smooth-scroll.js';
 
 function _initToggleAllBtn(btnId, section, ALGORITHMS) {
   const btn = document.getElementById(btnId);
@@ -37,22 +43,39 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
 }
 
 export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
+  startLoading();
   document.addEventListener('DOMContentLoaded', () => {
-    const canHash = checkWasmSupport(APP_CONFIG);
-    // A permalink fully determines the view, so saved settings aren't applied to it.
-    Preferences.init({ appName: APP_CONFIG.appName, restore: !Permalink.isPermalink() });
-    Theme.init();
-    NavMenu.init();
-    NavSpy.init();
-    BackToTop.init();
-    // The banner says hashing is disabled: the sections that would hash, and what hangs off them
-    // (history, permalinks, quick select, pasting), stay as they are instead of failing row by row.
-    if (canHash) _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
-    // After the sections are built, and before the FAQ: a deep link into it has to find it collapsed or not.
-    initSectionCollapse();
-    FaqSection.init();
-    _initFooter();
+    try {
+      _init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
+    } finally {
+      endLoading();
+    }
   });
+}
+
+function _init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
+  const canHash = checkWasmSupport(APP_CONFIG);
+  Settings.init({ appName: APP_CONFIG.appName });
+  // A permalink fully determines the view, so saved view choices aren't applied to it.
+  Preferences.init({
+    appName: APP_CONFIG.appName,
+    restore: !Permalink.isPermalink(),
+    remember: Settings.get('rememberView'),
+  });
+  Theme.init();
+  initSmoothScroll();
+  NavMenu.init();
+  NavSpy.init();
+  BackToTop.init();
+  // The banner says hashing is disabled: the sections that would hash, and what hangs off them
+  // (history, permalinks, quick select, pasting), stay as they are instead of failing row by row.
+  if (canHash) _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
+  else removeSkeleton();
+  _initSettings(APP_CONFIG);
+  // After the sections are built, and before the FAQ: a deep link into it has to find it collapsed or not.
+  initSectionCollapse();
+  FaqSection.init();
+  _initFooter();
 }
 
 function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
@@ -83,7 +106,19 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
     onChange: (algoId) => RandomSection.applySpotlight(algoId),
     permalink,
   });
-  initNavHelp(createHelpPopover('quickSelectHelpBtn', 'helpPopover'));
+  initNavPopover('navHelp', createHelpPopover('quickSelectHelpBtn', 'helpPopover'));
+}
+
+// After the hashing: its histories are what the popover counts and trims. Without hashing (no
+// WebAssembly) there are none, but the button still opens it, to clear what was saved.
+function _initSettings(APP_CONFIG) {
+  const settings = createSettingsPopover({
+    trigger: document.getElementById('quickSelectSettingsBtn'),
+    appConfig: APP_CONFIG,
+    themeKey: document.querySelector('meta[name="theme-storage-key"]')?.content,
+    onRememberViewChange: (on) => Preferences.setRemembering(on),
+  });
+  initNavPopover('navSettings', settings);
 }
 
 function _initFooter() {

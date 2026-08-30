@@ -1,0 +1,38 @@
+<% algorithmIds.forEach(function (id, i) { %>
+<div
+  class="result result--empty result--skeleton"
+  data-skeleton
+  data-algo="<%= id %>"
+  data-slug="<%= algorithmSlugs[i] %>"
+  data-default-off="<%= hiddenByDefault.includes(id) %>"
+  style="--i: <%= i %>"
+  aria-hidden="true">
+  <div class="result__inner">
+    <span class="algo-badge skeleton__badge"><%= id %></span>
+    <span class="result__hash result__hash--empty">&nbsp;<span class="skeleton__bar"></span></span>
+    <div class="result__actions">
+      <span class="btn skeleton__btn">
+        <svg class="icon-action" viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
+        Copy
+      </span>
+      <span class="btn skeleton__btn">
+        <svg class="icon-action" viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-download"></use></svg>
+        <span class="btn__label">Download</span>
+      </span>
+    </div>
+  </div>
+</div>
+<% }) %>
+<div
+  class="result-hidden result-hidden--skeleton"
+  data-skeleton
+  data-default-on="<%= hiddenByDefault.length > 0 %>"
+  aria-hidden="true">
+  <span class="result-hidden__start">
+    <svg class="result-hidden__icon" viewBox="0 0 24 24">
+      <use href="/src/assets/images/icons.svg#icon-more-vert"></use>
+    </svg>
+    <span class="skeleton__line"></span>
+  </span>
+  <span class="skeleton__line skeleton__line--short"></span>
+</div>

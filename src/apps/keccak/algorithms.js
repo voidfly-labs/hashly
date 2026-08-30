@@ -4,3 +4,6 @@ export const ALGORITHMS = [
   { id: 'Keccak-384', bits: 384, hexLen: 96 },
   { id: 'Keccak-512', bits: 512, hexLen: 128 },
 ];
+
+export const DEFAULT_ALGO = 'Keccak-256';
+export const DEFAULT_HIDDEN_ALGOS = [];

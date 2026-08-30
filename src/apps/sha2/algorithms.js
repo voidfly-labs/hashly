@@ -5,3 +5,6 @@ export const ALGORITHMS = [
   { id: 'SHA-384', bits: 384, hexLen: 96 },
   { id: 'SHA-512', bits: 512, hexLen: 128 },
 ];
+
+export const DEFAULT_ALGO = 'SHA-256';
+export const DEFAULT_HIDDEN_ALGOS = [];

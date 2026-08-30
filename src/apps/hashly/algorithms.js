@@ -44,3 +44,6 @@ export const ALGORITHMS = [
   { id: 'SM3', bits: 256, hexLen: 64, cost: 65 },
   { id: 'Whirlpool', bits: 512, hexLen: 128, cost: 110 },
 ];
+
+export const DEFAULT_ALGO = 'SHA-256';
+export const DEFAULT_HIDDEN_ALGOS = ['MD2', 'Adler-32', 'SM3', 'Whirlpool'];

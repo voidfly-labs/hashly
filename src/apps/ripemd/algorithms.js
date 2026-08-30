@@ -6,3 +6,6 @@ export const ALGORITHMS = [
   { id: 'RIPEMD-256', bits: 256, hexLen: 64, cost: 135 },
   { id: 'RIPEMD-320', bits: 320, hexLen: 80, cost: 135 },
 ];
+
+export const DEFAULT_ALGO = 'RIPEMD-160';
+export const DEFAULT_HIDDEN_ALGOS = [];

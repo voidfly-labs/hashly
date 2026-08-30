@@ -9,3 +9,6 @@ export const ALGORITHMS = [
   { id: 'BLAKE3-256', bits: 256, hexLen: 64 },
   { id: 'BLAKE3-512', bits: 512, hexLen: 128 },
 ];
+
+export const DEFAULT_ALGO = 'BLAKE3-256';
+export const DEFAULT_HIDDEN_ALGOS = [];

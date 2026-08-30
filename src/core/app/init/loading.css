@@ -1,0 +1,5 @@
+html.is-loading *,
+html.is-loading *::before,
+html.is-loading *::after {
+  transition: none !important;
+}

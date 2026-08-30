@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { APPS_META } from './scripts/apps-meta.js';
+import { Format } from './src/core/lib/format.js';
 import { LEGAL_UPDATED_ON, getLegalUpdatedLabel, getVendorNotice } from './scripts/legal.js';
 import { injectFontPreloads } from './scripts/vite-plugins/inject-font-preloads.js';
 import { devRewrites } from './scripts/vite-plugins/dev-rewrites.js';
@@ -31,11 +32,17 @@ if (!app || !VALID_APPS.includes(app)) {
 const { srcDir } = APPS_META[app];
 
 // The quick-select badges are rendered into the page here, so they are there at first paint.
-const { ALGORITHMS } = await import(pathToFileURL(resolve(`src/apps/${srcDir}/algorithms.js`)).href);
+const { ALGORITHMS, DEFAULT_ALGO, DEFAULT_HIDDEN_ALGOS } = await import(
+  pathToFileURL(resolve(`src/apps/${srcDir}/algorithms.js`)).href
+);
 
 const injectData = {
   ...APPS_META[app],
   algorithmIds: ALGORITHMS.map(({ id }) => id),
+  algorithmSlugs: ALGORITHMS.map(({ id }) => Format.slug(id)),
+  defaultAlgo: DEFAULT_ALGO,
+  defaultHiddenAlgos: DEFAULT_HIDDEN_ALGOS,
+  appName: app,
   buildDate,
   getVendorNotice,
   legalUpdatedLabel: getLegalUpdatedLabel(),

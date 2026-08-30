@@ -6,3 +6,6 @@ export const ALGORITHMS = [
   { id: 'MD4', bits: 128, hexLen: 32, cost: 25 },
   { id: 'MD5', bits: 128, hexLen: 32, cost: 35 },
 ];
+
+export const DEFAULT_ALGO = 'MD5';
+export const DEFAULT_HIDDEN_ALGOS = ['MD2'];

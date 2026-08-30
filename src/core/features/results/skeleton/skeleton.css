@@ -1,0 +1,222 @@
+[data-skeleton] {
+  --skeleton-shine: rgba(255, 255, 255, 0.6);
+  --skeleton-pill-height: 24.65px;
+  --skeleton-row-height: 43px;
+  --skeleton-solo-row-height: 91.8px;
+  --skeleton-random-row-height: 44.594px;
+  pointer-events: none;
+}
+
+@media (max-width: 630px) {
+  [data-skeleton] {
+    --skeleton-pill-height: 27.6px;
+    --skeleton-row-height: 77.8px;
+    --skeleton-solo-row-height: 95.8px;
+    --skeleton-random-row-height: 46.594px;
+  }
+}
+
+@media (max-width: 540px) {
+  [data-skeleton] {
+    --skeleton-solo-row-height: 93.8px;
+  }
+}
+
+/* A fixed height, so the font swapping in does not resize the rows: the heights are those of a real row. */
+.result--skeleton .result__inner {
+  height: var(--skeleton-row-height);
+}
+
+[data-theme='dark'] [data-skeleton] {
+  --skeleton-shine: rgba(255, 255, 255, 0.1);
+}
+
+.result--skeleton[data-default-off='true'] {
+  display: none;
+}
+
+.result-hidden--skeleton {
+  display: none;
+}
+
+.result-hidden--skeleton[data-default-on='true'] {
+  display: flex;
+}
+
+.skeleton__bar,
+.skeleton__line,
+.skeleton__btn,
+.skeleton__badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton__bar::after,
+.skeleton__line::after,
+.skeleton__btn::after,
+.skeleton__badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(90deg, transparent, var(--skeleton-shine), transparent);
+  transform: translateX(-100%);
+  animation: skeleton-sweep 1.8s ease-in-out infinite;
+  animation-delay: calc(var(--i, 0) * -70ms);
+}
+
+@keyframes skeleton-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton__bar {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: 0;
+  width: var(--bar-width, 70%);
+  border-radius: 4px;
+  background: var(--progress-track);
+}
+
+.result--skeleton:nth-child(3n + 1) .skeleton__bar {
+  --bar-width: 72%;
+}
+
+.result--skeleton:nth-child(3n + 2) .skeleton__bar {
+  --bar-width: 56%;
+}
+
+.result--skeleton:nth-child(3n) .skeleton__bar {
+  --bar-width: 84%;
+}
+
+.skeleton__btn {
+  line-height: normal;
+  color: transparent;
+  border-color: transparent;
+  background: var(--progress-track);
+  clip-path: inset(calc((100% - var(--skeleton-pill-height)) / 2) 0 round var(--radius-sm));
+}
+
+.skeleton__badge {
+  color: transparent;
+  border-color: transparent;
+  background: var(--progress-track);
+  opacity: 1;
+  clip-path: inset(calc((100% - var(--skeleton-pill-height)) / 2) 0 round 4px);
+}
+
+.skeleton__badge::after {
+  border-radius: 0;
+  box-shadow: none;
+  opacity: 1;
+}
+
+.result--skeleton .skeleton__badge {
+  clip-path: none;
+}
+
+.random__item--skeleton {
+  height: var(--skeleton-random-row-height);
+}
+
+.random__item--skeleton:last-child {
+  height: calc(var(--skeleton-random-row-height) - 1px);
+}
+
+.random__item--skeleton .random__item-actions {
+  opacity: 1;
+}
+
+.random__item--skeleton .skeleton__btn {
+  color: transparent;
+  border-color: transparent;
+  background: var(--progress-track);
+  clip-path: inset(2px round 4px);
+}
+
+.skeleton__line {
+  display: block;
+  width: 110px;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--progress-track);
+}
+
+.skeleton__line--short {
+  width: 52px;
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .result__inner,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .result__inner {
+  flex-wrap: wrap;
+  gap: 10px 12px;
+  padding-top: 14px;
+  padding-bottom: 16px;
+  height: var(--skeleton-solo-row-height);
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .result__actions,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .result__actions {
+  order: 2;
+  margin-left: auto;
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .result__hash,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .result__hash {
+  order: 3;
+  flex-basis: 100%;
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .algo-badge,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .algo-badge {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .skeleton__btn:first-child,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .skeleton__btn:first-child {
+  padding: 6px 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 540px) {
+  html[data-skeleton-solo~='text'] #textResults .result--skeleton .btn__label,
+  html[data-skeleton-solo~='file'] #fileResults .result--skeleton .btn__label {
+    display: none;
+  }
+}
+
+@media (max-width: 359px) {
+  html[data-skeleton-solo~='text'] #textResults .result--skeleton .result__inner,
+  html[data-skeleton-solo~='file'] #fileResults .result--skeleton .result__inner {
+    column-gap: 8px;
+  }
+
+  html[data-skeleton-solo~='text'] #textResults .result--skeleton .skeleton__btn:first-child,
+  html[data-skeleton-solo~='file'] #fileResults .result--skeleton .skeleton__btn:first-child {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+html[data-skeleton-stalled] .skeleton__bar::after,
+html[data-skeleton-stalled] .skeleton__line::after,
+html[data-skeleton-stalled] .skeleton__btn::after,
+html[data-skeleton-stalled] .skeleton__badge::after {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton__bar::after,
+  .skeleton__line::after,
+  .skeleton__btn::after,
+  .skeleton__badge::after {
+    animation: none;
+  }
+}

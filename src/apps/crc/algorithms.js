@@ -32,3 +32,6 @@ export const ALGORITHMS = [
   // CRC-82
   { id: 'CRC-82 (DARC)', bits: 82, hexLen: 21, cost: 345 },
 ];
+
+export const DEFAULT_ALGO = 'CRC-32';
+export const DEFAULT_HIDDEN_ALGOS = [];
