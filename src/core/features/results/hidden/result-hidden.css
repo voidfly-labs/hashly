@@ -30,7 +30,7 @@
 
 /* It appears when a row is hidden, as that row shuts (see result.css, 0.3s): sliding open over the same
    time keeps it from popping into the space the row is leaving. */
-.result-hidden:not([hidden]) {
+.result-hidden--enter:not([hidden]) {
   overflow: hidden;
   animation: result-hidden-in 0.3s ease;
 }
@@ -49,7 +49,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .result-hidden:not([hidden]) {
+  .result-hidden--enter:not([hidden]) {
     animation: none;
   }
 }

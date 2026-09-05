@@ -1,6 +1,12 @@
 /* =========================================================================
        RANDOM HASHES
        ========================================================================= */
+.random__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* as section-collapse.css gives the body it wraps the children in, so nothing moves */
+}
+
 .random__controls {
   display: flex;
   align-items: center;
@@ -23,6 +29,7 @@
 }
 
 .random__select {
+  height: 30px;
   padding: 5px 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -127,6 +134,20 @@
   width: 15px;
   height: 15px;
   fill: currentColor;
+}
+
+/* Phones: the history table's touch target (see .history-table__action-btn); the negative margin
+   keeps it from making the row taller */
+@media (max-width: 630px) {
+  .random__item-btn {
+    padding: 7px;
+    margin: -4px 0;
+  }
+
+  .random__item-btn svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 @media (max-width: 650px) {

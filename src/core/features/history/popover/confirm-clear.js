@@ -10,8 +10,9 @@ const ARMED_CLASS = 'history-popover__clear--armed';
  *  tooltip that lasts as long as the armed state), the second, within a few seconds, runs
  *  `onConfirm`. It disarms on a timeout, on focus leaving it, and when the returned `disarm()` is
  *  called (on Escape and on closing the popover). `disarm()` returns whether it was armed, which
- *  Escape uses to know it has done something. */
-export function initConfirmClear(clearBtn, onConfirm) {
+ *  Escape uses to know it has done something. `announcement` is what a screen reader hears when it
+ *  is armed. */
+export function initConfirmClear(clearBtn, onConfirm, announcement = 'Press again to delete the history') {
   let timer = 0;
 
   clearBtn.style.setProperty('--confirm-ms', `${CLEAR_CONFIRM_MS}ms`);
@@ -29,7 +30,7 @@ export function initConfirmClear(clearBtn, onConfirm) {
     e.stopPropagation();
     if (!clearBtn.classList.contains(ARMED_CLASS)) {
       clearBtn.classList.add(ARMED_CLASS);
-      Announcer.say('Press again to delete the history');
+      Announcer.say(announcement);
       Tooltip.show(clearBtn, 'Are you sure?', CLEAR_CONFIRM_MS);
       timer = setTimeout(disarm, CLEAR_CONFIRM_MS);
       return;

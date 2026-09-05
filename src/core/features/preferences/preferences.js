@@ -8,13 +8,22 @@ import { Storage } from '~core/lib/storage.js';
 export const Preferences = {
   _key: '',
   _restore: true,
+  _remember: true,
   _silent: 0,
 
   /** `restore: false` ignores what's saved (a permalink fully determines the view)
-   *  while still letting the visitor's own later changes be saved. */
-  init({ appName, restore = true }) {
+   *  while still letting the visitor's own later changes be saved. `remember: false` (a setting)
+   *  neither reads nor writes anything. */
+  init({ appName, restore = true, remember = true }) {
     this._key = `${appName}-preferences`;
     this._restore = restore;
+    this._remember = remember;
+  },
+
+  /** Turns remembering on or off from now on; off also forgets what was saved. */
+  setRemembering(on) {
+    this._remember = on;
+    if (!on) Storage.remove(this._key);
   },
 
   _read() {
@@ -28,11 +37,11 @@ export const Preferences = {
 
   /** The saved value for `name`, or undefined when nothing is saved or restoring is off. */
   get(name) {
-    return this._restore ? this._read()[name] : undefined;
+    return this._restore && this._remember ? this._read()[name] : undefined;
   },
 
   set(name, value) {
-    if (this._silent) return;
+    if (this._silent || !this._remember) return;
     Storage.write(this._key, JSON.stringify({ ...this._read(), [name]: value }));
   },
 

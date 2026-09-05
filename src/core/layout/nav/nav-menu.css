@@ -183,45 +183,9 @@
   display: none;
 }
 
+/* The label is a .group-label (ui/group-label); this is its place in the drawer */
 .nav-menu__group-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
   padding: 0 16px 6px;
-  /* The page's section-heading type (see .section__label), but quiet: an accent colour would pass
-     for a link or the current section, so the label is a step lighter than the links instead. */
-  font-family: var(--mono);
-  font-size: 11.5px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: #66768a; /* 4.64:1 on --surface */
-}
-
-[data-theme='dark'] .nav-menu__group-label {
-  color: #8a94ad; /* 5.33:1 on --surface */
-}
-
-/* A rule after the label, to the right edge, as in the page's section headings: it is what makes
-   the label read as a heading and not as one more row. */
-.nav-menu__group-label::after {
-  content: '';
-  position: relative;
-  top: -1px; /* in line with the capitals (see the icon below) */
-  flex: 1;
-  min-width: 12px;
-  height: 1px;
-  margin-left: 4px;
-  background: var(--border);
-}
-
-.nav-menu__group-label svg {
-  position: relative;
-  top: -1px; /* capitals sit above the middle of their line, so the icon rises to meet them */
-  flex-shrink: 0;
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
 }
 
 .nav-menu__action {

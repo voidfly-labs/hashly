@@ -134,6 +134,8 @@
   }
 
   .search-field__input {
+    box-sizing: border-box;
+    min-height: 35px;
     padding: 8px 0;
   }
 }

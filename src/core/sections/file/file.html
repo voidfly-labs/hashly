@@ -73,7 +73,10 @@
     </div>
 
     <!-- Result rows — one per algorithm, rendered by FileSection.init() -->
-    <div id="fileResults"></div>
+    <div id="fileResults">
+      <%- include('/src/core/features/results/skeleton/results-skeleton.html', { hiddenByDefault: defaultHiddenAlgos })
+      %>
+    </div>
   </div>
 
   <!-- Format options — output only, right-aligned -->

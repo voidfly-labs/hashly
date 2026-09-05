@@ -15,7 +15,17 @@
       aria-controls="helpPopover">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-help"></use></svg>
     </button>
+    <button
+      class="help-btn"
+      id="quickSelectSettingsBtn"
+      aria-label="Settings"
+      aria-expanded="false"
+      aria-controls="settingsPopover">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-settings"></use></svg>
+    </button>
     <%- include('/src/core/features/help/help-popover.html') %>
+    <!-- -->
+    <%- include('/src/core/features/settings/settings-popover.html') %>
   </div>
 
   <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms">

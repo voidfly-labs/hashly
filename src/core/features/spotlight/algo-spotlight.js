@@ -15,25 +15,21 @@ function _showOnlyInSection(section, algoId, ALGORITHMS) {
   });
 }
 
-/** Puts `section`'s hidden algorithms back to `hidden` (a Set of ids). */
-function _restoreHidden(section, hidden, ALGORITHMS) {
+/** Puts `section`'s hidden algorithms to `hidden` (a Set of ids). */
+function _setHiddenTo(section, hidden, ALGORITHMS) {
   ALGORITHMS.forEach(({ id }) => {
     if (section.hiddenAlgos.has(id) !== hidden.has(id)) section._toggleAlgo(id, { resetSpotlight: false });
   });
 }
 
-/** Re-show every algorithm in `section` if it isn't already fully visible. */
-function _showAllInSection(section, ALGORITHMS) {
-  const allVisible = ALGORITHMS.every((a) => !section.hiddenAlgos.has(a.id));
-  if (!allVisible) section._toggleAll({ resetSpotlight: false });
-}
-
 /**
  * Header algo badges act as a spotlight control for the Text/File sections:
  * clicking one spotlights it (hiding every other algorithm in both
- * sections), clicking the spotlighted badge again puts back what each section
- * had hidden before.
- * The choice is remembered in the preferences and restored on the next visit.
+ * sections), clicking the spotlighted badge again puts each section back to
+ * the app's default view. Both are plain selections, saved like any manual
+ * show/hide: what the visitor had hidden before is not remembered.
+ * The choice is also kept as its own preference, only to light up the badge; it is
+ * honoured on the next visit while the sections still show exactly that algorithm.
  *
  * Any manual show/hide elsewhere (a row's own badge, "show/hide all", the
  * hidden-algorithms summary) clears the spotlight via reset() — once the
@@ -47,9 +43,6 @@ export const AlgoSpotlight = {
   _state: { spotlightedAlgo: null },
   _container: null,
   _onChange: null,
-  // What each section had hidden before the spotlight took over (Map<section, Set<id>>), so
-  // ending the spotlight puts that back rather than showing every algorithm.
-  _before: null,
   // The sections it spotlights in, for saving what they have hidden when it ends.
   _sections: [],
 
@@ -69,18 +62,17 @@ export const AlgoSpotlight = {
   reset() {
     if (this._state.spotlightedAlgo === null) return;
     this._state.spotlightedAlgo = null;
-    this._before = null;
     Preferences.set(PREF_NAME, null);
-    // While it lasted, the sections' hiding was the spotlight's and not saved (so what the visitor
-    // had comes back). Ended by a hand-pick in one section, that section saved what it shows, so the
-    // others save theirs too, or a reload would show them disagreeing.
+    // Ended by a hand-pick in one section, that section saved what it shows, so the others save
+    // theirs too, or a reload would show them disagreeing (a permalink's spotlight was never saved).
     this._sections.forEach((section) => section.saveHidden());
     this._updateBadgeClasses();
     this._onChange?.(null);
   },
 
   /** The spotlight the visitor left on, if it is still one of `ALGORITHMS`, else null. Nothing
-   *  is saved for a permalink view (see Preferences), which shows what the link says. */
+   *  is saved for a permalink view (see Preferences), which shows what the link says. Whether the
+   *  sections still agree with it is checked by init(), once they exist. */
   saved(ALGORITHMS) {
     const saved = Preferences.get(PREF_NAME);
     return ALGORITHMS.some((a) => a.id === saved) ? saved : null;
@@ -90,33 +82,31 @@ export const AlgoSpotlight = {
     return this._state.spotlightedAlgo;
   },
 
-  /** Spotlight algoId: hide every other algorithm, remember the choice (unless
-   *  persist is false), update badge classes. Shared by a direct click and by
-   *  restoring a persisted or permalink choice on init. */
-  _apply(algoId, ALGORITHMS, sections, { persist = true } = {}) {
-    // Taken once, when the spotlight starts, not when it moves from one algorithm to another.
-    if (this._state.spotlightedAlgo === null) {
-      this._before = new Map(sections.map((section) => [section, new Set(section.hiddenAlgos)]));
-    }
-    // The spotlight's own hiding is never saved as the visitor's hidden algorithms (their
-    // choice stays what it was before it, and is what comes back); a permalink's view isn't theirs either.
-    Preferences.silently(() => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS)));
+  /** Marks algoId as the spotlight and tells the badges and the Random section. */
+  _setSpotlighted(algoId, persist) {
     this._state.spotlightedAlgo = algoId;
     if (persist) Preferences.set(PREF_NAME, algoId);
     this._updateBadgeClasses();
     this._onChange?.(algoId);
   },
 
+  /** Spotlight algoId: hide every other algorithm in the sections (saved like a hand-pick, unless
+   *  persist is false: a permalink's view isn't the visitor's), remember the choice, update badge classes. */
+  _apply(algoId, ALGORITHMS, sections, { persist = true } = {}) {
+    const hide = () => sections.forEach((section) => _showOnlyInSection(section, algoId, ALGORITHMS));
+    if (persist) hide();
+    else Preferences.silently(hide);
+    this._setSpotlighted(algoId, persist);
+  },
+
+  /** Whether every section shows exactly algoId, which is what a spotlight on it leaves behind. */
+  _isShownAlone(algoId, ALGORITHMS, sections) {
+    return sections.every((section) => ALGORITHMS.every(({ id }) => section.hiddenAlgos.has(id) === (id !== algoId)));
+  },
+
   _toggle(algoId, ALGORITHMS, sections) {
     if (this._state.spotlightedAlgo === algoId) {
-      const before = this._before;
-      Preferences.silently(() =>
-        sections.forEach((section) => {
-          const hidden = before?.get(section);
-          if (hidden) _restoreHidden(section, hidden, ALGORITHMS);
-          else _showAllInSection(section, ALGORITHMS);
-        }),
-      );
+      sections.forEach((section) => _setHiddenTo(section, section.defaultHidden(), ALGORITHMS));
       this.reset();
       return;
     }
@@ -153,8 +143,14 @@ export const AlgoSpotlight = {
       return;
     }
 
+    // The sections have put back the hidden algorithms they saved; the spotlight is only still on if
+    // they show exactly that algorithm (the saved choice may be older than a hand-pick, or edited).
     const persisted = this.saved(ALGORITHMS);
-    if (persisted) this._apply(persisted, ALGORITHMS, sections);
+    if (persisted && this._isShownAlone(persisted, ALGORITHMS, sections)) this._setSpotlighted(persisted, false);
+    else if (persisted) {
+      Preferences.set(PREF_NAME, null);
+      this._onChange?.(null);
+    }
     this._updateBadgeClasses();
   },
 };

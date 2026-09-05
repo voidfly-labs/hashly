@@ -1,4 +1,4 @@
-import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/features/preferences/saved-view.js';
+import { initialHiddenAlgos, rememberRadioGroup, saveHiddenAlgos } from '~core/features/preferences/saved-view.js';
 import { downloadDigest } from '~core/features/results/export/download-digest.js';
 import { createHiddenAlgos } from '~core/features/results/hidden/hidden-algos.js';
 import { createHiddenSummary } from '~core/features/results/hidden/hidden-summary.js';
@@ -39,6 +39,7 @@ export const TextSection = {
     _ALGORITHMS = ALGORITHMS;
     _Hasher = Hasher;
 
+    this.hiddenAlgos = initialHiddenAlgos('textHidden', this.defaultHidden(), _ALGORITHMS);
     this._history = createTextHistory({
       hasDigests: () => this.rawHexMap.size > 0,
       getItems: () =>
@@ -94,11 +95,10 @@ export const TextSection = {
       onClear: (opts) => this.onClear(opts),
     });
 
-    // Put back the visitor's saved formats and hidden algorithms (and keep saving them).
+    // Put back the visitor's saved formats (and keep saving them).
     rememberRadioGroup('textInputFormat', 'textInputFormat');
     rememberRadioGroup('textFormat', 'textOutputFormat');
     this._input.refreshPlaceholder();
-    restoreHiddenAlgos(this, 'textHidden', _ALGORITHMS);
 
     this._counter.update('', selectedInputFormat());
 
@@ -145,6 +145,11 @@ export const TextSection = {
     saveHiddenAlgos(this, 'textHidden');
     this._fillMissing();
     if (resetSpotlight) AlgoSpotlight.reset();
+  },
+
+  /** The algorithms hidden in the app's default view: none for Text. */
+  defaultHidden() {
+    return new Set();
   },
 
   /** Persists which algorithms are hidden (the spotlight calls it for every section when it ends). */

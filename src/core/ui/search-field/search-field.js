@@ -9,7 +9,9 @@ const KEYBOARD_DEVICE = '(hover: hover) and (pointer: fine)';
 /** A search row: the field, a clear button and the match count. `label` names the field for
  *  assistive tech, `placeholder` (and `mobilePlaceholder`, for a narrow screen) is its hint, and
  *  `noun` ('entries', 'questions') is what the count counts while nothing is searched.
- *  `onChange(query)` is called as the visitor types or clears it.
+ *  `onChange(query)` is called as the visitor types or clears it. `el` is a row already in the
+ *  page's HTML (so it is there at first paint); without it the row is built here, and a row in a
+ *  template must have this same markup.
  *
  *  Returns a controller: `el` (to insert into the page), `value()`, `reset()`, `focus()`, and
  *  `update({ matched, total })`, which refreshes the count (the number of items, or of matches out
@@ -21,19 +23,8 @@ export function createSearchField({
   noun,
   shortcuts = '',
   onChange,
+  el = buildRow({ label, placeholder, mobilePlaceholder, shortcuts }),
 }) {
-  const el = document.createElement('div');
-  el.className = 'search-field';
-  el.setAttribute('role', 'search');
-  el.innerHTML = `
-    <svg class="search-field__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('search')}"></use></svg>
-    <input class="search-field__input" type="search" placeholder="${placeholder}" data-placeholder-mobile="${mobilePlaceholder}"
-      aria-label="${label}"${shortcuts ? ` aria-keyshortcuts="${shortcuts}"` : ''} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" />
-    <button class="search-field__clear" type="button" aria-label="Clear search" hidden>
-      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('close')}"></use></svg>
-    </button>
-    <span class="search-field__count" aria-live="polite"></span>`;
-
   const input = el.querySelector('.search-field__input');
   const clear = el.querySelector('.search-field__clear');
   const count = el.querySelector('.search-field__count');
@@ -81,4 +72,19 @@ export function createSearchField({
   });
 
   return controller;
+}
+
+function buildRow({ label, placeholder, mobilePlaceholder, shortcuts }) {
+  const el = document.createElement('div');
+  el.className = 'search-field';
+  el.setAttribute('role', 'search');
+  el.innerHTML = `
+    <svg class="search-field__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('search')}"></use></svg>
+    <input class="search-field__input" type="search" placeholder="${placeholder}" data-placeholder-mobile="${mobilePlaceholder}"
+      aria-label="${label}"${shortcuts ? ` aria-keyshortcuts="${shortcuts}"` : ''} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" />
+    <button class="search-field__clear" type="button" aria-label="Clear search" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('close')}"></use></svg>
+    </button>
+    <span class="search-field__count" aria-live="polite"></span>`;
+  return el;
 }

@@ -166,7 +166,12 @@
 
 .info__panel[data-active] {
   display: block;
-  animation: panelIn 0.2s ease both;
+  animation: var(--panel-animation, none);
+}
+
+/* Only once a tab has been picked: the panel the page opens with does not fade in. */
+.info--tab-picked {
+  --panel-animation: panelIn 0.2s ease both;
 }
 
 @keyframes panelIn {

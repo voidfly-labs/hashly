@@ -1,9 +1,6 @@
 import { createBatchSources } from './batch-sources.js';
 import { createStoredJson } from './stored-json.js';
 
-/** The most entries a history keeps. */
-export const MAX_ENTRIES = 1000;
-
 /** Whether something read back from storage can be used as a history entry. `algo` and `batchId`
  *  may be missing (older entries), but not of the wrong type; `ts` is what the time column and
  *  the sort of such older entries rest on. */
@@ -21,7 +18,8 @@ function isEntry(e) {
 
 /** One section's persisted history: its entries, newest first, in `entriesKey` of localStorage, and
  *  what each batch was made from (see ./batch-sources.js) in `sourcesKey`. `sourceIsFile` says an
- *  entry carries its own file name, where text entries only point at a batch's description.
+ *  entry carries its own file name, where text entries only point at a batch's description. `limit()`
+ *  is the most entries it keeps (a setting, so asked each time).
  *
  *  Anything unreadable is dropped on load, not repaired: the next save writes back what is left. A
  *  write the browser refuses (quota, private mode) is skipped silently.
@@ -29,7 +27,7 @@ function isEntry(e) {
  *  Other tabs of the app write the same keys. Every change first `load`s, which merges in what they
  *  saved (it only parses when the stored string differs from this tab's last, see ./stored-json.js),
  *  so a tab adds to the history it finds, not to the one it started with. */
-export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile }) {
+export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile, limit }) {
   const sources = createBatchSources(sourcesKey);
   const stored = createStoredJson(entriesKey);
   let entries = [];
@@ -44,7 +42,7 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile }) {
     sources.load();
     const parsed = stored.read();
     if (parsed === undefined) return;
-    entries = Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, MAX_ENTRIES) : [];
+    entries = Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, limit()) : [];
   }
 
   return {
@@ -68,8 +66,17 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile }) {
           filename: filename || '',
         });
       }
-      if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES;
+      if (entries.length > limit()) entries.length = limit();
       // A batch's description goes when its last entry does (trimmed by the cap).
+      sources.keepOnly(new Set(entries.map((e) => e.batchId)));
+      save();
+    },
+
+    /** Drops the oldest entries beyond the limit (after it was lowered). */
+    trim() {
+      load();
+      if (entries.length <= limit()) return;
+      entries.length = limit();
       sources.keepOnly(new Set(entries.map((e) => e.batchId)));
       save();
     },

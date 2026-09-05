@@ -4,6 +4,13 @@ import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { initConfirmClear } from './confirm-clear.js';
 
+// The faces are flex items in a grid cell, so the whitespace between their children is never rendered
+const clearFace = (label, modifier = '') => `
+              <span class="history-popover__clear-face${modifier}">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>
+                <span class="history-popover__clear-label">${label}</span>
+              </span>`;
+
 const footerMarkup = (ns) => `
           <div class="history-pagination" role="group" aria-label="History pagination">
             <button class="history-pagination__btn" data-dir="-1" aria-label="Previous page">
@@ -21,9 +28,9 @@ const footerMarkup = (ns) => `
               <span class="history-popover__export-label">Export<span class="history-popover__export-suffix"> CSV</span></span>
               <span class="tooltip">Exported</span>
             </button>
-            <button class="history-popover__clear" data-history-clear="${ns}">
-              <span class="history-popover__clear-face"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>Clear</span>
-              <span class="history-popover__clear-face history-popover__clear-face--confirm"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>Confirm</span>
+            <button class="history-popover__clear" data-history-clear="${ns}" aria-label="Clear history">
+              ${clearFace('Clear')}
+              ${clearFace('Confirm', ' history-popover__clear-face--confirm')}
             </button>
           </div>`;
 

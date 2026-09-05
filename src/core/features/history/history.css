@@ -268,6 +268,34 @@
   margin: -6px -9px -6px -6px;
 }
 
+/* An unseen hit area past the button's edges: 1px, so the 30px button is a 32px target (as the
+   other icon buttons), and 5px on phones, a 40px one. The button itself stays as it is: the header is about 39px tall, and a
+   visible box that tall would touch its borders. */
+.history-popover__close,
+.help-popover__close {
+  position: relative;
+}
+
+.history-popover__close::before,
+.help-popover__close::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+}
+
+@media (max-width: 630px) {
+  .history-popover__close::before,
+  .help-popover__close::before {
+    top: -5px;
+    right: -5px;
+    bottom: -5px;
+    left: -5px;
+  }
+}
+
 .history-popover__close:hover,
 .help-popover__close:hover,
 .file-drop__clear:hover,
@@ -372,17 +400,33 @@
   .history-popover__export-suffix {
     display: none;
   }
+
+  .history-popover__export,
+  .history-popover__clear {
+    min-height: 35px;
+    padding: 8px 10px;
+  }
 }
 
-/* Under 360px there is no room for the label: a square icon button */
-@media (max-width: 359px) {
+@media (max-width: 380px) {
   .history-popover__export {
     gap: 0;
-    padding: 5px;
   }
 
   .history-popover__export-label {
     display: none;
+  }
+}
+
+/* From 330px down Clear is an icon button too (its aria-label names it; armed, the ring, the draining
+   bar and the "Are you sure?" tooltip say so). Only the history's: Settings' keeps its label. */
+@media (max-width: 330px) {
+  .history-popover__footer-actions .history-popover__clear-label {
+    display: none;
+  }
+
+  .history-popover__footer-actions .history-popover__clear-face {
+    gap: 0;
   }
 }
 
@@ -424,7 +468,7 @@
 
 /* Pagination buttons adopt the same visual language as .btn (result section
        buttons): surface background, border, hover ring, disabled opacity.
-       The fixed 28×28 square (matching .history-popover__clear's height)
+       The fixed 28×28 square (matching .history-popover__clear's height; 35×35 on mobile)
        replaces the standard .btn padding for icon-only use. */
 .history-pagination__btn {
   display: flex;
@@ -460,6 +504,18 @@
   width: 18px;
   height: 18px;
   fill: currentColor;
+}
+
+@media (max-width: 630px) {
+  .history-pagination__btn {
+    width: 35px;
+    height: 35px;
+  }
+
+  .history-pagination__btn svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .history-pagination__info {

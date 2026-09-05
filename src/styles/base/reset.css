@@ -9,12 +9,12 @@
   padding: 0;
 }
 
-html {
+html.smooth-scroll {
   scroll-behavior: smooth;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
+  html.smooth-scroll {
     scroll-behavior: auto;
   }
 }

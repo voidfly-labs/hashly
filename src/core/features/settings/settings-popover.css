@@ -1,0 +1,150 @@
+/* =========================================================================
+       SETTINGS POPOVER
+       — The settings button's popover (see settings-popover.js). Its shell, header and body are the
+         help popover's (help-popover.css); this is what its body holds: groups of rows (a switch, see
+         ui/toggle, or a select) and the Clear all data row. Import after help-popover.css.
+       ========================================================================= */
+.settings-popover {
+  width: min(480px, calc(100vw - 48px));
+}
+
+@media (max-width: 630px) {
+  .settings-popover {
+    width: calc(max(100vw, 320px) - 32px);
+  }
+}
+
+.settings-popover__body {
+  padding-bottom: 20px;
+}
+
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.settings-group--last {
+  margin-bottom: 0;
+}
+
+/* A row with a control on the right (a select, the Clear button), as .toggle has its switch */
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setting__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Armed, Clear is overflow: hidden (confirm-clear.css), which lets a flex item shrink below its
+   content: it would squeeze "Confirm" in a row with a long label beside it. */
+.setting > .history-popover__clear {
+  flex-shrink: 0;
+}
+
+.setting__select {
+  flex-shrink: 0;
+  min-width: 84px;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.setting__select:focus {
+  border-color: var(--accent-border);
+  outline: none;
+}
+
+.setting__select:focus-visible {
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.setting__select:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.setting--disabled .setting__text {
+  opacity: 0.55;
+}
+
+@media (max-width: 630px) {
+  .setting__select {
+    height: 35px;
+    font-size: 13px;
+  }
+}
+
+/* Same iOS WebKit focus-zoom workaround as .random__select */
+@supports (-webkit-touch-callout: none) {
+  .setting__select {
+    font-size: 16px;
+  }
+}
+
+/* "Removes the N oldest entries" with its Remove and Cancel, under a size that would drop some */
+.settings-trim {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--danger-ring);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.settings-trim[hidden] {
+  display: none;
+}
+
+.settings-trim__text {
+  flex: 1 1 auto;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.settings-trim__btn {
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.settings-trim__btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.settings-trim__btn--confirm,
+.settings-trim__btn--confirm:hover {
+  color: #fff;
+  border-color: var(--danger-fill);
+  background: var(--danger-fill);
+}
+
+.settings-trim__btn--confirm:hover {
+  box-shadow: 0 4px 16px var(--danger-glow);
+  opacity: 0.88;
+}

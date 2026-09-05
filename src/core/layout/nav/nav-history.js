@@ -6,15 +6,9 @@ function formatCount(count) {
   return count > MAX_SHOWN ? `${MAX_SHOWN}+` : String(count);
 }
 
-/** Shows an entry's count, and hides the entry while there is nothing to open. */
+/** Shows an entry's count. */
 function syncItem(item, count) {
-  item.hidden = count === 0;
   item.querySelector('.nav-menu__count').textContent = formatCount(count);
-}
-
-/** The group goes with its last entry. */
-function syncGroup(group, items) {
-  group.hidden = items.every((item) => item.hidden);
 }
 
 /** An entry opens its section's history popover. */
@@ -27,7 +21,7 @@ function bindItem(item) {
 }
 
 /** Wires the hamburger menu's history entries: each opens its section's history popover, shows how
- *  many entries there are, and is hidden while there are none. */
+ *  many entries there are. */
 export function initNavHistory() {
   const group = document.getElementById('navHistory');
   if (!group) return;
@@ -37,12 +31,10 @@ export function initNavHistory() {
     syncItem(item, History.entries(item.dataset.historyNs).length);
     bindItem(item);
   }
-  syncGroup(group, items);
 
   document.addEventListener(HISTORY_CHANGE, ({ detail: { ns, count } }) => {
     const item = items.find((el) => el.dataset.historyNs === ns);
     if (!item) return;
     syncItem(item, count);
-    syncGroup(group, items);
   });
 }

@@ -8,6 +8,7 @@ import {
   showRow,
   wireResultRow,
 } from '~core/features/results/result-row.js';
+import { removeSkeleton } from '~core/features/results/skeleton/skeleton.js';
 import { Format } from '~core/lib/format.js';
 
 /** The result rows of the File section, one per algorithm, appended to `resultsEl`, and what each
@@ -22,6 +23,7 @@ import { Format } from '~core/lib/format.js';
  *  return the `[{ hash, algo }]` they now show, for the history. */
 export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handlers }) {
   const rows = new Map();
+  removeSkeleton(resultsEl);
 
   for (const { id } of algorithms) {
     const els = buildResultRow({ prefix: 'file', algoId: id, emptyText: 'no file selected', withStatus: true });

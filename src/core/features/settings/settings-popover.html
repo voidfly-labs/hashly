@@ -1,0 +1,98 @@
+<!-- ── SETTINGS POPOVER ── (wired in core/features/settings/settings-popover.js; its shell is the help popover's) -->
+<div class="help-popover settings-popover" id="settingsPopover" role="dialog" aria-labelledby="settingsPopoverTitle">
+  <div class="help-popover__header">
+    <span class="help-popover__title" id="settingsPopoverTitle">Settings</span>
+    <button class="help-popover__close" data-popover-close aria-label="Close settings">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
+    </button>
+  </div>
+  <div class="help-popover__body settings-popover__body">
+    <section class="settings-group" aria-labelledby="settingsDisplayTitle">
+      <h3 class="group-label" id="settingsDisplayTitle">
+        Display<svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-monitor"></use>
+        </svg>
+      </h3>
+      <!-- prettier-ignore -->
+      <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsRememberView', label: 'Remember view choices' }) %>
+    </section>
+
+    <section class="settings-group" aria-labelledby="settingsHistoryTitle">
+      <h3 class="group-label" id="settingsHistoryTitle">
+        History<svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-history"></use>
+        </svg>
+      </h3>
+      <!-- prettier-ignore -->
+      <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsHistoryEnabled', label: 'Save history' }) %>
+      <div class="setting">
+        <label class="setting__text" for="settingsHistoryLimit">
+          <span class="toggle__label">History size</span>
+          <span class="toggle__hint" id="settingsHistoryLimitHint"
+            >Entries kept in each of the text and file histories.</span
+          >
+        </label>
+        <select class="setting__select" id="settingsHistoryLimit" aria-describedby="settingsHistoryLimitHint"></select>
+      </div>
+      <div class="settings-trim" id="settingsTrim" hidden>
+        <span class="settings-trim__text" id="settingsTrimText" role="status"></span>
+        <button class="settings-trim__btn settings-trim__btn--confirm" id="settingsTrimConfirm" type="button">
+          Remove
+        </button>
+        <button class="settings-trim__btn" id="settingsTrimCancel" type="button">Cancel</button>
+      </div>
+      <!-- prettier-ignore -->
+      <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsHistoryFilenames', label: 'Remember filenames' }) %>
+      <!-- prettier-ignore -->
+      <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsHistoryPreviews', label: 'Remember text previews' }) %>
+    </section>
+
+    <section class="settings-group" aria-labelledby="settingsPerformanceTitle">
+      <h3 class="group-label" id="settingsPerformanceTitle">
+        Performance<svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-speed"></use>
+        </svg>
+      </h3>
+      <div class="setting">
+        <label class="setting__text" for="settingsMaxThreads">
+          <span class="toggle__label">Max threads</span>
+          <span class="toggle__hint" id="settingsMaxThreadsHint"></span>
+        </label>
+        <select class="setting__select" id="settingsMaxThreads" aria-describedby="settingsMaxThreadsHint"></select>
+      </div>
+      <div class="setting">
+        <label class="setting__text" for="settingsMaxChunk">
+          <span class="toggle__label">Max chunk size</span>
+          <span class="toggle__hint" id="settingsMaxChunkHint"></span>
+        </label>
+        <select class="setting__select" id="settingsMaxChunk" aria-describedby="settingsMaxChunkHint"></select>
+      </div>
+    </section>
+
+    <section class="settings-group settings-group--last" aria-labelledby="settingsDataTitle">
+      <h3 class="group-label" id="settingsDataTitle">
+        Data<svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-database"></use>
+        </svg>
+      </h3>
+      <div class="setting">
+        <div class="setting__text">
+          <span class="toggle__label">Clear all data</span>
+          <span class="toggle__hint" id="settingsUsage"></span>
+        </div>
+        <button class="history-popover__clear" id="settingsClearAll" type="button">
+          <span class="history-popover__clear-face"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-delete"></use></svg
+            >Clear</span
+          >
+          <span class="history-popover__clear-face history-popover__clear-face--confirm"
+            ><svg viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-delete"></use></svg
+            >Confirm</span
+          >
+        </button>
+      </div>
+    </section>
+  </div>
+</div>

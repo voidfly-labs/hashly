@@ -80,7 +80,9 @@
     </div>
 
     <!-- Result rows — one per algorithm, rendered by TextSection.init() -->
-    <div class="card__results" id="textResults"></div>
+    <div class="card__results" id="textResults">
+      <%- include('/src/core/features/results/skeleton/results-skeleton.html', { hiddenByDefault: [] }) %>
+    </div>
   </div>
 
   <!-- Format options — input (left) + output (right) -->

@@ -1,0 +1,139 @@
+/* =========================================================================
+       TOGGLE — an on/off switch (see toggle.html)
+       — A native checkbox with role="switch", so the keyboard and screen readers get it for free;
+         the track and thumb are drawn on the sibling after it (no :has(), see CLAUDE.md). The label
+         is the whole row's hit area. A disabled switch carries `.toggle--disabled` on its label too,
+         which dims the text (set from JS: there is no parent selector to do it from the input).
+       ========================================================================= */
+.toggle {
+  --toggle-width: 36px;
+  --toggle-height: 20px;
+  --toggle-gap: 2px;
+  --toggle-thumb: calc(var(--toggle-height) - 2 * var(--toggle-gap));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.toggle__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.toggle__hint {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+/* The checkbox stays focusable and in the accessibility tree, but is not drawn */
+.toggle__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  opacity: 0;
+  clip: rect(0 0 0 0);
+}
+
+.toggle__track {
+  position: relative;
+  flex-shrink: 0;
+  width: var(--toggle-width);
+  height: var(--toggle-height);
+  border-radius: calc(var(--toggle-height) / 2);
+  background: var(--border);
+  transition:
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.toggle__track::after {
+  content: '';
+  position: absolute;
+  top: var(--toggle-gap);
+  left: var(--toggle-gap);
+  width: var(--toggle-thumb);
+  height: var(--toggle-thumb);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.toggle__input:checked + .toggle__track {
+  background: var(--accent);
+}
+
+.toggle__input:checked + .toggle__track::after {
+  transform: translateX(calc(var(--toggle-width) - var(--toggle-thumb) - 2 * var(--toggle-gap)));
+}
+
+.toggle:hover .toggle__input:not(:disabled) + .toggle__track {
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.toggle__input:focus-visible + .toggle__track {
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.toggle__input:disabled + .toggle__track {
+  opacity: 0.45;
+}
+
+.toggle--disabled {
+  cursor: not-allowed;
+}
+
+.toggle--disabled .toggle__text {
+  opacity: 0.55;
+}
+
+/* Phones: the row is at least 44px tall, and the switch is scaled up to sit with the 35px inputs */
+@media (max-width: 630px) {
+  .toggle {
+    --toggle-width: 44px;
+    --toggle-height: 24px;
+    min-height: 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle__track,
+  .toggle__track::after {
+    transition: none;
+  }
+}
+
+/* Forced colours drop backgrounds: the track gets a border, and the state shows in the thumb's place */
+@media (forced-colors: active) {
+  .toggle__track {
+    border: 1px solid ButtonText;
+  }
+
+  .toggle__track::after {
+    background: ButtonText;
+  }
+
+  .toggle__input:checked + .toggle__track {
+    background: Highlight;
+  }
+
+  .toggle__input:checked + .toggle__track::after {
+    background: HighlightText;
+  }
+}

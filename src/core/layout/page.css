@@ -123,4 +123,8 @@ main > .section:last-child {
   .page-heading h1 {
     font-size: 22px;
   }
+
+  .section__label {
+    min-height: 40px;
+  }
 }

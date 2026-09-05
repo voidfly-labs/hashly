@@ -22,11 +22,14 @@ export function createHiddenSummary({ resultsEl, total, onShowAll }) {
   resultsEl.appendChild(btn);
 
   const label = btn.querySelector('.result-hidden__label');
+  let settled = false;
 
   return {
     /** Sync visibility and label with the section's current hidden count. */
     update(count) {
+      btn.classList.toggle('result-hidden--enter', settled && btn.hidden && count > 0);
       btn.hidden = count === 0;
+      settled = true;
       if (count === 0) {
         label.textContent = '';
         return;

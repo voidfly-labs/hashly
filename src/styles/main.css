@@ -16,6 +16,8 @@
 @import '../core/ui/options.css';
 @import '../core/ui/search-field/search-field.css';
 @import '../core/ui/hint/hint.css';
+@import '../core/ui/group-label/group-label.css';
+@import '../core/ui/toggle/toggle.css';
 @import '../core/ui/tooltip/tooltip.css';
 @import '../core/ui/warning-banner/warning-banner.css';
 @import '../core/ui/announcer/announcer.css';
@@ -48,7 +50,10 @@
 /* help-popover.css after history.css: it narrows the popover width history.css sets */
 @import '../core/features/help/help.css';
 @import '../core/features/help/help-popover.css';
+/* settings-popover.css after help-popover.css: it takes that popover's shell and sets its own width */
+@import '../core/features/settings/settings-popover.css';
 @import '../core/features/spotlight/quick-select.css';
+@import '../core/features/results/skeleton/skeleton.css';
 
 /* Sections */
 @import '../core/sections/text/counter/text-counter.css';
@@ -61,3 +66,5 @@
 @import '../core/sections/faq/faq-search.css';
 @import '../core/sections/faq/faq-tab-scroll.css';
 @import '../core/sections/faq/faq-links.css';
+
+@import '../core/app/init/loading.css';

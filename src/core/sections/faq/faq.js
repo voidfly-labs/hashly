@@ -15,6 +15,7 @@ export const FaqSection = {
     this._tabs.forEach((t) => (t.tabIndex = t.getAttribute('aria-selected') === 'true' ? 0 : -1));
     this._panels = [...document.querySelectorAll('.info__panel')];
     this._section = tablist.closest('.section');
+    this._info = tablist.closest('.info');
     initQuestionLinks({ tabs: this._tabs, panels: this._panels });
     this._search = createFaqSearch({ info: tablist.closest('.info'), tabs: this._tabs, panels: this._panels });
 
@@ -115,7 +116,10 @@ export const FaqSection = {
       tab.tabIndex = 0;
       if (!fromUrl) this._revealTab(tab, 'smooth');
     }
-    if (!fromUrl) this._syncUrl(tabId);
+    if (!fromUrl) {
+      this._info.classList.add('info--tab-picked');
+      this._syncUrl(tabId);
+    }
   },
 
   /** Scrolls the tab strip, sideways and nothing else (not the page, not the strip's 1px of

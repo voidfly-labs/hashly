@@ -42,11 +42,11 @@ export function initHasherServer(engines) {
   const withoutDropped = (hashers, job) =>
     job.dropped.size ? hashers.filter(({ algoId }) => !job.dropped.has(algoId)) : hashers;
 
-  async function hashFile({ id, file, ids }, job) {
+  async function hashFile({ id, file, ids, maxChunk }, job) {
     let hashers = await Promise.all(ids.map(async (algoId) => ({ algoId, hasher: await engineFor(algoId).create() })));
     let offset = 0;
     let lastPost = 0;
-    const sizer = createChunkSizer();
+    const sizer = createChunkSizer(maxChunk);
 
     // The next chunk is read while this one is hashed, so the worker is not idle during reads. It is
     // sized from the measurement before last. `catch` marks a read we abandon (cancel, every

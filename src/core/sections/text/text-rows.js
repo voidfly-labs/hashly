@@ -7,6 +7,7 @@ import {
   showRow,
   wireResultRow,
 } from '~core/features/results/result-row.js';
+import { removeSkeleton } from '~core/features/results/skeleton/skeleton.js';
 import { Format } from '~core/lib/format.js';
 
 const AWAITING = 'awaiting input…';
@@ -21,6 +22,7 @@ const AWAITING = 'awaiting input…';
  *  A row is `{ row, badge, hash, copy, download }`, see `get`. */
 export function createTextRows({ resultsEl, algorithms, isHidden, handlers }) {
   const rows = new Map();
+  removeSkeleton(resultsEl);
 
   for (const { id } of algorithms) {
     const els = buildResultRow({ prefix: 'text', algoId: id, emptyText: AWAITING });

@@ -39,14 +39,7 @@ export function createFaqSearch({ info, tabs, panels }) {
   empty.hidden = true;
   info.append(empty);
 
-  const field = createSearchField({
-    label: 'Search the FAQ',
-    placeholder: 'Search questions and answers',
-    mobilePlaceholder: 'Search the FAQ',
-    noun: 'questions',
-    onChange: run,
-  });
-  tabs[0].closest('.info__tabs-wrap').after(field.el);
+  const field = createSearchField({ el: info.querySelector('.search-field'), noun: 'questions', onChange: run });
   field.update({ matched: groups.length, total: groups.length });
 
   const input = field.el.querySelector('input');

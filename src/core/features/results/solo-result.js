@@ -14,7 +14,7 @@ export function createSoloResult({ resultsEl, algorithms }) {
 
   return {
     update() {
-      const rows = [...resultsEl.querySelectorAll('.result')];
+      const rows = [...resultsEl.querySelectorAll('.result:not([data-skeleton])')];
       const visible = rows.filter((row) => !row.classList.contains('result--hidden'));
       const solo = visible.length === 1 ? visible[0] : null;
 

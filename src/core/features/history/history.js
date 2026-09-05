@@ -2,6 +2,7 @@ import { createHistoryList } from '~core/features/history/list/history-list.js';
 import { createHistoryPopover } from '~core/features/history/popover/history-popover.js';
 import { initStorageSync } from '~core/features/history/storage-sync.js';
 import { createHistoryStore } from '~core/features/history/store/history-store.js';
+import { Settings } from '~core/features/settings/settings.js';
 
 /** Fired on `document` whenever a history's entries change; `detail` is `{ ns, count }`. */
 export const HISTORY_CHANGE = 'history:change';
@@ -41,7 +42,12 @@ export const History = {
     const prefix = `${_APP_CONFIG.appName}-history`;
     const entriesKey = `${prefix}-${ns}`;
     const sourcesKey = `${prefix}-source-${ns}`;
-    const store = createHistoryStore({ entriesKey, sourcesKey, sourceIsFile: ns === 'file' });
+    const store = createHistoryStore({
+      entriesKey,
+      sourcesKey,
+      sourceIsFile: ns === 'file',
+      limit: () => Settings.get('historyLimit'),
+    });
     store.load();
     this._stores[ns] = store;
     this._lists[ns] = createHistoryList({ store, algoOrder: _ALGO_ORDER, defaultAlgo: _DEFAULT_ALGO });
@@ -58,6 +64,16 @@ export const History = {
     this._stores[ns].clear();
     this._lists[ns].firstPage();
     this._notify(ns);
+  },
+
+  /** Applies a lowered size limit: each history drops its oldest entries beyond it. */
+  applyLimit() {
+    for (const [ns, store] of Object.entries(this._stores)) {
+      store.trim();
+      this._lists[ns].firstPage();
+      this._notify(ns);
+      this._popovers[ns]?.refreshIfVisible();
+    }
   },
 
   entries(ns) {
@@ -77,7 +93,8 @@ export const History = {
 
   /** Records what was hashed in a batch (call once per batch, before its entries). */
   setSource(ns, batchId, description) {
-    this._stores[ns].setSource(batchId, description);
+    // What was hashed is only kept as far as the visitor allows (see Settings).
+    this._stores[ns].setSource(batchId, Settings.get('historyPreviews') ? description : '');
   },
 
   /** Loads a section's history and wires its popover (opened by `btnId`) to the elements `popoverId`
@@ -99,8 +116,8 @@ export const History = {
 
   /** Call after hashes are produced: `items` is `[{ hash, algo }]`, all of one batch. */
   record(ns, items, batchId, filename) {
-    if (!items.length) return;
-    this._stores[ns].push(items, batchId, filename);
+    if (!items.length || !Settings.get('historyEnabled')) return;
+    this._stores[ns].push(items, batchId, Settings.get('historyFilenames') ? filename : '');
     this._notify(ns);
     // Live-refresh the popover if it's open (a no-op when closed, and when it is past its first page).
     this._popovers[ns]?.refreshIfVisible();

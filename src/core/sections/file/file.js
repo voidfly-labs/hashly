@@ -1,6 +1,6 @@
 import { TabTitle } from '~core/features/hashing/tab-title.js';
 import { History } from '~core/features/history/history.js';
-import { rememberRadioGroup, restoreHiddenAlgos, saveHiddenAlgos } from '~core/features/preferences/saved-view.js';
+import { initialHiddenAlgos, rememberRadioGroup, saveHiddenAlgos } from '~core/features/preferences/saved-view.js';
 import { downloadDigest } from '~core/features/results/export/download-digest.js';
 import { createHiddenAlgos } from '~core/features/results/hidden/hidden-algos.js';
 import { createHiddenSummary } from '~core/features/results/hidden/hidden-summary.js';
@@ -38,7 +38,7 @@ export const FileSection = {
     _ALGORITHMS = ALGORITHMS;
     _Hasher = Hasher;
 
-    this.hiddenAlgos = new Set(_APP_CONFIG.defaultHiddenAlgos ?? []);
+    this.hiddenAlgos = initialHiddenAlgos('fileHidden', this.defaultHidden(), _ALGORITHMS);
     this._hidden = createHiddenAlgos({
       algorithms: _ALGORITHMS,
       hiddenAlgos: this.hiddenAlgos,
@@ -81,9 +81,8 @@ export const FileSection = {
     this._hiddenSummary.update(this.hiddenAlgos.size);
     this._soloResult.update();
 
-    // Put back the visitor's saved output format and hidden algorithms (and keep saving them).
+    // Put back the visitor's saved output format (and keep saving it).
     rememberRadioGroup('fileFormat', 'fileOutputFormat');
-    restoreHiddenAlgos(this, 'fileHidden', _ALGORITHMS);
 
     this._drop = createFileDrop({
       hasFile: () => Boolean(this.currentFileName),
@@ -119,6 +118,11 @@ export const FileSection = {
     this._verify.refresh();
     this._cancelIfIdle();
     if (resetSpotlight) AlgoSpotlight.reset();
+  },
+
+  /** The algorithms hidden in the app's default view. */
+  defaultHidden() {
+    return new Set(_APP_CONFIG.defaultHiddenAlgos ?? []);
   },
 
   /** Persists which algorithms are hidden (the spotlight calls it for every section when it ends). */

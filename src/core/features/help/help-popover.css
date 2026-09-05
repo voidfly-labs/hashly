@@ -111,3 +111,18 @@
   height: 16px;
   fill: currentColor;
 }
+
+@media (max-width: 630px) {
+  .help-popover__link {
+    position: relative;
+  }
+
+  .help-popover__link::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: -8px;
+    bottom: -7px;
+    left: -8px;
+  }
+}

@@ -11,17 +11,14 @@ export function rememberRadioGroup(name, prefName) {
   radios.forEach((radio) => radio.addEventListener('change', () => Preferences.set(prefName, radio.value)));
 }
 
-/** Puts a section's hidden algorithms back as the visitor left them (`section` is a Text/File
- *  section). The saved list is the complete set, so it can also show algorithms that start
- *  hidden by default (`defaultHiddenAlgos`) when the visitor had turned them on. */
-export function restoreHiddenAlgos(section, prefName, algorithms) {
+/** The algorithms a section starts with hidden. The saved list is the complete set, so it can also
+ *  show algorithms that start hidden by default (`defaultHiddenAlgos`) when the visitor had turned
+ *  them on; with nothing saved it is `defaults`. Known before the rows are built, so they start in
+ *  their final state instead of animating into it. */
+export function initialHiddenAlgos(prefName, defaults, algorithms) {
   const saved = Preferences.get(prefName);
-  if (!Array.isArray(saved)) return;
-  Preferences.silently(() => {
-    algorithms
-      .filter(({ id }) => section.hiddenAlgos.has(id) !== saved.includes(id))
-      .forEach(({ id }) => section._toggleAlgo(id, { resetSpotlight: false }));
-  });
+  if (!Array.isArray(saved)) return new Set(defaults);
+  return new Set(algorithms.map(({ id }) => id).filter((id) => saved.includes(id)));
 }
 
 export function saveHiddenAlgos(section, prefName) {
