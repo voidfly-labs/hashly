@@ -31,7 +31,7 @@
       <%- include('/src/core/sections/random/random.html') %>
 
       <!-- ── ABOUT & FAQ ── -->
-      <%- include('/src/apps/hashly/sections/faq.html') %>
+      <%- include('/src/core/sections/faq/faq.html', { content: include('/src/apps/hashly/sections/faq.html') }) %>
     </main>
 
     <%- include('/src/core/layout/footer/footer.html') %>

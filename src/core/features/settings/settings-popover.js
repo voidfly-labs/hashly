@@ -1,3 +1,5 @@
+import { autoThreads } from '~core/features/hashing/workers/auto-threads.js';
+import { chunkCeiling } from '~core/features/hashing/workers/chunk-ceiling.js';
 import { History } from '~core/features/history/history.js';
 import { initConfirmClear } from '~core/features/history/popover/confirm-clear.js';
 import { createPopover } from '~core/ui/popover.js';
@@ -5,6 +7,8 @@ import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { clearSavedData, savedBytes } from './saved-data.js';
 import { CHUNK_OPTIONS_MIB, HISTORY_LIMITS, Settings, THREAD_OPTIONS } from './settings.js';
+
+const MIB = 1024 * 1024;
 
 const byId = (id) => document.getElementById(id);
 
@@ -54,8 +58,8 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   const usage = byId('settingsUsage');
 
   for (const [id, text] of Object.entries(HINTS)) byId(`${id}Hint`).textContent = text;
-  fillSelect(threads, [[0, 'Auto'], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
-  fillSelect(chunk, [[0, 'Auto'], ...CHUNK_OPTIONS_MIB.map((n) => [n, `${n} MiB`])]);
+  fillSelect(threads, [[0, `Auto (${autoThreads()}x)`], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
+  fillSelect(chunk, [[0, `Auto (${chunkCeiling(0) / MIB} MiB)`], ...CHUNK_OPTIONS_MIB.map((n) => [n, `${n} MiB`])]);
   fillSelect(
     limit,
     HISTORY_LIMITS.map((n) => [n, n.toLocaleString('en-US')]),

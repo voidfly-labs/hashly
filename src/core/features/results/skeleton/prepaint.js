@@ -47,12 +47,20 @@
     if (slugs.length - known.length === 1) solo.push(key);
   };
 
+  // What section-collapse.js applies once it runs, from the first paint on: the rules only hold
+  // while the page loads (html.is-loading, see app/init/loading.js), after which the real ones take over.
   const collapse = (ids) => {
     ids
       .filter((id) => typeof id === 'string' && /^[\w-]+$/.test(id))
-      .forEach((id) =>
-        rules.push(`#${id}>:not(.section__label-row):not(.section__label):not(.section__body){display:none}`),
-      );
+      .forEach((id) => {
+        const section = `html.is-loading #${id}`;
+        rules.push(
+          `${section}:not(:last-child){margin-bottom:var(--collapsed-mb)}`,
+          `${section}>.section__body{grid-template-rows:0fr}`,
+          `${section}>.section__body>.section__body-inner{visibility:hidden}`,
+          `${section} .section__toggle-chevron{transform:none}`,
+        );
+      });
   };
 
   const params = new URLSearchParams(location.search);

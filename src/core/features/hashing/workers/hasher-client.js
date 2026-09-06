@@ -2,14 +2,10 @@ import { randomDigest } from '~core/features/hashing/random-digest.js';
 import { Settings } from '~core/features/settings/settings.js';
 import { Format } from '~core/lib/format.js';
 
+import { autoThreads } from './auto-threads.js';
 import { chunkCeiling } from './chunk-ceiling.js';
 import { share } from './share.js';
 import { createWorkerChannel } from './worker-channel.js';
-
-// Threads hashing one file at once, unless the visitor chose a number (Settings): as many as the
-// machine has cores but one (the page needs a core too), up to this many. More stops paying off: a
-// file's time is that of its slowest share.
-const MAX_THREADS = 8;
 
 // File workers hold WebAssembly instances and read buffers, so a pool that has been idle this long is
 // stopped; the next file starts new ones (a moment's start-up, once).
@@ -27,10 +23,9 @@ const abortError = () => new DOMException('Aborted', 'AbortError');
 export function createHasherClient({ spawn, algorithms }) {
   const costs = new Map(algorithms.map(({ id, cost }) => [id, cost ?? 1]));
   const costOf = ({ id }) => costs.get(id) ?? 1;
-  const autoThreads = Math.min(MAX_THREADS, Math.max(1, (navigator.hardwareConcurrency ?? 2) - 1));
 
   // Read for each file, so a change in the settings applies to the next one.
-  const threadsFor = (algos) => Math.max(1, Math.min(Settings.get('maxThreads') || autoThreads, algos.length));
+  const threadsFor = (algos) => Math.max(1, Math.min(Settings.get('maxThreads') || autoThreads(), algos.length));
   // The channel itself while it works, else a new one (a dead one's worker is stopped first).
   const fresh = (channel) => {
     if (channel && !channel.dead) return channel;

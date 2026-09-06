@@ -1,3 +1,4 @@
+import { endLoading } from '~core/app/init/loading.js';
 import { Theme } from '~core/app/theme/manager.js';
 import { BackToTop } from '~core/layout/back-to-top/back-to-top.js';
 import { initReportTooltip } from '~core/layout/footer/report.js';
@@ -18,3 +19,4 @@ function initLegal() {
 }
 
 initLegal();
+endLoading();

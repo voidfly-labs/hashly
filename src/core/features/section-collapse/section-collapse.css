@@ -1,12 +1,12 @@
 /* =========================================================================
        SECTION COLLAPSE
-       — Turns every section heading into a disclosure toggle. The .section__toggle
-         button and its chevron are injected at runtime by
-         core/features/section-collapse/section-collapse.js (no template changes); this file
-         only styles the resulting markup. Body collapse reuses the
-         grid-template-rows technique from result.css — unlike .result, no
-         padding lives directly on the collapsing element, so there's no
-         padding-block pitfall to work around here.
+       — Every section heading is a disclosure toggle. The markup (.section__toggle in the
+         heading, .section__body wrapping the content) is in the section templates, so the
+         page does not restructure itself when scripts run;
+         core/features/section-collapse/section-collapse.js only wires it up and applies the
+         saved collapsed state. Body collapse reuses the grid-template-rows technique from
+         result.css — unlike .result, no padding lives directly on the collapsing element, so
+         there's no padding-block pitfall to work around here.
        ========================================================================= */
 /* width: 100% — the whole row (including the decorative fill line, moved
        here from .section__label::after so it's part of the clickable area)
@@ -34,26 +34,6 @@
   flex: 1;
   height: 1px;
   background: var(--border);
-}
-
-/* The line and the chevron are added by script, once the page is up: fading in keeps them from
-   popping in beside a heading that was already there. They are made once, so it runs once. */
-.section__toggle::after,
-.section__toggle-chevron {
-  animation: section-toggle-in 0.3s ease;
-}
-
-@keyframes section-toggle-in {
-  from {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .section__toggle::after,
-  .section__toggle-chevron {
-    animation: none;
-  }
 }
 
 /* Single Material "keyboard_arrow_down" glyph, rotated rather than swapped
@@ -99,11 +79,7 @@
 }
 
 .section--collapsed {
-  margin-bottom: 24px;
-}
-
-.section--with-actions.section--collapsed {
-  margin-bottom: 20px;
+  margin-bottom: var(--collapsed-mb);
 }
 
 #quick-select-section:not(.section--collapsed) {

@@ -1,0 +1,14 @@
+<section class="section" id="about-section" aria-labelledby="section-about-heading">
+  <h2 class="section__label" id="section-about-heading">
+    <button type="button" class="section__toggle" aria-expanded="true" aria-controls="about-section-body">
+      <svg class="section__label-icon section__label-icon--faq" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-info"></use>
+      </svg>
+      Frequently Asked Questions <%- include('/src/core/features/section-collapse/section-chevron.html') %>
+    </button>
+  </h2>
+
+  <div class="section__body" id="about-section-body">
+    <div class="section__body-inner"><%- content %></div>
+  </div>
+</section>

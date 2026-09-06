@@ -1,59 +1,64 @@
 <!-- ── RANDOM ── -->
 <section class="section" id="random-section" aria-labelledby="section-random-heading">
   <h2 class="section__label" id="section-random-heading">
-    <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
-      <use href="/src/assets/images/icons.svg#icon-dice"></use>
-    </svg>
-    <span class="section__label-text">
-      Random <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %>
-    </span>
+    <button type="button" class="section__toggle" aria-expanded="true" aria-controls="random-section-body">
+      <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-dice"></use>
+      </svg>
+      <span class="section__label-text">
+        Random <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %>
+      </span>
+      <%- include('/src/core/features/section-collapse/section-chevron.html') %>
+    </button>
   </h2>
 
-  <div class="random__body">
-    <div class="random__controls">
-      <button class="btn btn--primary" id="random-regenerate">
-        <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-refresh"></use></svg>
-        Regenerate
-      </button>
-      <!-- Options rebuilt by RandomSection.init() from ALGORITHMS; present here so the select has its final width -->
-      <select class="random__select" id="random-algo" aria-label="Algorithm for random <%= sectionNoun %> generation">
-        <% algorithmIds.forEach(function (id) { %> <% if (id === defaultAlgo) { %>
-        <option value="<%= id %>" selected><%= id %></option>
-        <% } else { %>
-        <option value="<%= id %>"><%= id %></option>
-        <% } %> <% }) %>
-      </select>
-      <select class="random__select" id="random-count" aria-label="Number of <%= sectionNounPlural %> to generate">
-        <option value="10" selected>10</option>
-        <option value="25">25</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-        <option value="200">200</option>
-        <option value="500">500</option>
-      </select>
-      <div class="random__controls-sep" aria-hidden="true"></div>
-      <div class="random__actions">
-        <button class="btn" id="random-copy-all" aria-label="Copy all hashes to clipboard">
-          <svg class="icon-action" viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
-          <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true">
-            <use href="/src/assets/images/icons.svg#icon-check"></use>
-          </svg>
-          Copy All<span class="tooltip">Copied!</span>
+  <div class="section__body" id="random-section-body">
+    <div class="section__body-inner">
+      <div class="random__controls">
+        <button class="btn btn--primary" id="random-regenerate">
+          <svg viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-refresh"></use></svg>
+          Regenerate
         </button>
-        <button class="btn" id="random-download-all">
-          <svg class="icon-action" viewBox="0 0 24 24">
-            <use href="/src/assets/images/icons.svg#icon-download"></use>
-          </svg>
-          <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true">
-            <use href="/src/assets/images/icons.svg#icon-check"></use>
-          </svg>
-          Download CSV<span class="tooltip">Exported</span>
-        </button>
+        <!-- Options rebuilt by RandomSection.init() from ALGORITHMS; present here so the select has its final width -->
+        <select class="random__select" id="random-algo" aria-label="Algorithm for random <%= sectionNoun %> generation">
+          <% algorithmIds.forEach(function (id) { %> <% if (id === defaultAlgo) { %>
+          <option value="<%= id %>" selected><%= id %></option>
+          <% } else { %>
+          <option value="<%= id %>"><%= id %></option>
+          <% } %> <% }) %>
+        </select>
+        <select class="random__select" id="random-count" aria-label="Number of <%= sectionNounPlural %> to generate">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="500">500</option>
+        </select>
+        <div class="random__controls-sep" aria-hidden="true"></div>
+        <div class="random__actions">
+          <button class="btn" id="random-copy-all" aria-label="Copy all hashes to clipboard">
+            <svg class="icon-action" viewBox="0 0 24 24"><use href="/src/assets/images/icons.svg#icon-copy"></use></svg>
+            <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-check"></use>
+            </svg>
+            Copy All<span class="tooltip">Copied!</span>
+          </button>
+          <button class="btn" id="random-download-all">
+            <svg class="icon-action" viewBox="0 0 24 24">
+              <use href="/src/assets/images/icons.svg#icon-download"></use>
+            </svg>
+            <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true">
+              <use href="/src/assets/images/icons.svg#icon-check"></use>
+            </svg>
+            Download CSV<span class="tooltip">Exported</span>
+          </button>
+        </div>
       </div>
-    </div>
 
-    <div class="random__list" id="random-list">
-      <%- include('/src/core/features/results/skeleton/random-skeleton.html') %>
+      <div class="random__list" id="random-list">
+        <%- include('/src/core/features/results/skeleton/random-skeleton.html') %>
+      </div>
     </div>
   </div>
 </section>

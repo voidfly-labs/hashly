@@ -28,7 +28,7 @@ import { TextSection } from '~core/sections/text/text.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 import { checkWasmSupport } from '~core/ui/warning-banner/warning-banner.js';
 
-import { endLoading, startLoading } from './loading.js';
+import { endLoading } from './loading.js';
 import { initSmoothScroll } from './smooth-scroll.js';
 
 function _initToggleAllBtn(btnId, section, ALGORITHMS) {
@@ -43,7 +43,6 @@ function _initToggleAllBtn(btnId, section, ALGORITHMS) {
 }
 
 export function initApp({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
-  startLoading();
   document.addEventListener('DOMContentLoaded', () => {
     try {
       _init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });

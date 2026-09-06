@@ -80,8 +80,7 @@ export const FaqSection = {
       if (question) whenScrollSettles(() => flashQuestion(question));
     };
     // Not right away. On a fresh load this runs mid-init: the other sections are still building
-    // their content (scrolling now would aim at where the FAQ is before that pushes it down), and
-    // section-collapse is about to re-parent the tab strip, which resets its scroll position. After
+    // their content (scrolling now would aim at where the FAQ is before that pushes it down). After
     // a collapsed section's expand animation the page is finally tall enough to scroll that far.
     if (wasCollapsed) setTimeout(finish, 320);
     else requestAnimationFrame(finish);

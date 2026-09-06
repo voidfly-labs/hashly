@@ -13,6 +13,11 @@
     <%- include('/src/core/app/theme/init.js') %>
   </script>
 
+  <!-- ── Nothing transitions while the page loads: ends with endLoading() (app/init/loading.js). ── -->
+  <script>
+    document.documentElement.classList.add('is-loading');
+  </script>
+
   <%- include('/src/core/features/results/skeleton/prepaint.html') %>
 
   <!-- ── Favicons ── -->

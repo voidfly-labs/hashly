@@ -2,10 +2,13 @@
 <section class="section section--with-actions" id="quick-select-section" aria-labelledby="section-quickselect-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-quickselect-heading">
-      <svg class="section__label-icon section__label-icon--bolt" viewBox="0 0 10 24" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-bolt"></use>
-      </svg>
-      <span class="section__label-text">Quick Select</span>
+      <button type="button" class="section__toggle" aria-expanded="true" aria-controls="quick-select-section-body">
+        <svg class="section__label-icon section__label-icon--bolt" viewBox="0 0 10 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-bolt"></use>
+        </svg>
+        <span class="section__label-text">Quick Select</span>
+        <%- include('/src/core/features/section-collapse/section-chevron.html') %>
+      </button>
     </h2>
     <button
       class="help-btn"
@@ -28,8 +31,12 @@
     <%- include('/src/core/features/settings/settings-popover.html') %>
   </div>
 
-  <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms">
-    <% algorithmIds.forEach(function (id) { %><button class="algo-badge" data-algo="<%= id %>"><%= id %></button>
-    <% }); %>
+  <div class="section__body" id="quick-select-section-body">
+    <div class="section__body-inner">
+      <div class="quick-select__grid" id="algoBadges" aria-label="Supported algorithms">
+        <% algorithmIds.forEach(function (id) { %><button class="algo-badge" data-algo="<%= id %>"><%= id %></button>
+        <% }); %>
+      </div>
+    </div>
   </div>
 </section>

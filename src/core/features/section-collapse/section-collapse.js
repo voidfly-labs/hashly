@@ -2,12 +2,6 @@ import { saveCollapsedSections, savedCollapsedSections } from '~core/features/pr
 
 const PREF_NAME = 'collapsedSections';
 
-// Material Icons "keyboard_arrow_down" — rotated 180° for the expanded
-// (pointing up) state rather than swapped for a separate "keyboard_arrow_up"
-// glyph, since the two are exact mirror images and rotation is what lets the
-// change animate smoothly (see section-collapse.css).
-const ICON_CHEVRON_DOWN = 'M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z';
-
 /** Apply (or clear) the collapsed state for one section entry, keeping
  *  aria-expanded and the inert body in sync. The chevron's rotation is
  *  driven purely by the .section--collapsed class in CSS. */
@@ -31,42 +25,10 @@ export function initSectionCollapse() {
   const savedCollapsed = savedCollapsedSections(PREF_NAME);
 
   document.querySelectorAll('.section').forEach((section) => {
-    const header = section.querySelector('.section__label-row') || section.querySelector(':scope > .section__label');
-    if (!header) return;
-    const heading = header.classList.contains('section__label') ? header : header.querySelector('.section__label');
-    if (!heading) return;
-
-    const toggleBtn = document.createElement('button');
-    toggleBtn.type = 'button';
-    toggleBtn.className = 'section__toggle';
-    toggleBtn.setAttribute('aria-expanded', 'true');
-    while (heading.firstChild) toggleBtn.appendChild(heading.firstChild);
-    heading.appendChild(toggleBtn);
-
-    const chevron = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    chevron.setAttribute('class', 'section__toggle-chevron');
-    chevron.setAttribute('viewBox', '0 0 24 24');
-    chevron.setAttribute('aria-hidden', 'true');
-    const chevronPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    chevronPath.setAttribute('d', ICON_CHEVRON_DOWN);
-    chevron.appendChild(chevronPath);
-    toggleBtn.appendChild(chevron);
-
-    const bodyInner = document.createElement('div');
-    bodyInner.className = 'section__body-inner';
-    let next = header.nextElementSibling;
-    while (next) {
-      const toMove = next;
-      next = next.nextElementSibling;
-      bodyInner.appendChild(toMove);
-    }
-
-    const body = document.createElement('div');
-    body.className = 'section__body';
-    body.id = `${section.id}-body`;
-    body.appendChild(bodyInner);
-    section.appendChild(body);
-    toggleBtn.setAttribute('aria-controls', body.id);
+    const toggleBtn = section.querySelector('.section__toggle');
+    const body = section.querySelector(':scope > .section__body');
+    if (!toggleBtn || !body) return;
+    const header = toggleBtn.closest('.section__label-row') || toggleBtn.closest('.section__label');
 
     const entry = { section, body, toggleBtn };
     entries.set(section.id, entry);
@@ -90,8 +52,8 @@ export function initSectionCollapse() {
     });
   });
 
-  const expandFromHash = () => {
-    const target = document.getElementById(location.hash.slice(1));
+  const expandTarget = (id) => {
+    const target = document.getElementById(id);
     const entry = entries.get(target?.closest('.section')?.id);
     if (!entry) return;
     const wasCollapsed = entry.section.classList.contains('section--collapsed');
@@ -99,6 +61,13 @@ export function initSectionCollapse() {
     // The browser's own focus attempt hit an inert target; retry once the expand animation settles.
     if (wasCollapsed && target !== entry.section) setTimeout(() => target.focus(), 300);
   };
+  const expandFromHash = () => expandTarget(location.hash.slice(1));
   window.addEventListener('hashchange', expandFromHash);
+  // A link to the hash the URL already has fires no hashchange, e.g. the menu's FAQ link after the
+  // visitor collapsed the FAQ.
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (link) expandTarget(link.getAttribute('href').slice(1));
+  });
   expandFromHash();
 }

@@ -52,7 +52,7 @@
 
 .setting__select {
   flex-shrink: 0;
-  min-width: 84px;
+  width: 108px;
   padding: 5px 8px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -92,6 +92,8 @@
 /* Same iOS WebKit focus-zoom workaround as .random__select */
 @supports (-webkit-touch-callout: none) {
   .setting__select {
+    width: auto;
+    min-width: 108px;
     font-size: 16px;
   }
 }

@@ -259,4 +259,40 @@
     font-size: 17px;
     letter-spacing: -0.75px;
   }
+
+  .footer__link {
+    padding: 6px 0;
+  }
+
+  .footer__social-icon:first-child {
+    padding-left: 5px;
+  }
+
+  .footer__social-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .footer__social-icon,
+  .footer__bar a {
+    position: relative;
+  }
+
+  .footer__social-icon::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: 0;
+    bottom: -7px;
+    left: 0;
+  }
+
+  .footer__bar a::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: -4px;
+    bottom: -6px;
+    left: -4px;
+  }
 }

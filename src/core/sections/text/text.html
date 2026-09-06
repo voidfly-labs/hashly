@@ -2,16 +2,19 @@
 <section class="section section--with-actions" id="text-section" aria-labelledby="section-text-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-text-heading">
-      <svg class="section__label-icon section__label-icon--stylus" viewBox="0 0 24 24" aria-hidden="true">
-        <use href="/src/assets/images/icons.svg#icon-stylus-note"></use>
-      </svg>
-      <span class="section__label-text"
-        >Text<!--
+      <button type="button" class="section__toggle" aria-expanded="true" aria-controls="text-section-body">
+        <svg class="section__label-icon section__label-icon--stylus" viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-stylus-note"></use>
+        </svg>
+        <span class="section__label-text"
+          >Text<!--
       --><svg class="section__label-arrow" viewBox="0 0 16 10" aria-hidden="true">
-          <use href="/src/assets/images/icons.svg#icon-arrow-right"></use></svg
-        ><!--
+            <use href="/src/assets/images/icons.svg#icon-arrow-right"></use></svg
+          ><!--
         --><%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %></span
-      >
+        >
+        <%- include('/src/core/features/section-collapse/section-chevron.html') %>
+      </button>
     </h2>
     <button class="toggle-all-btn" id="textToggleAllBtn" aria-label="Hide all text algorithms">
       <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -53,69 +56,79 @@
     </div>
   </div>
 
-  <div class="card card--unclipped">
-    <div class="text-input__wrap input-wrap">
-      <textarea
-        class="text-input__textarea"
-        id="textInput"
-        autocomplete="off"
-        autocapitalize="off"
-        autocorrect="off"
-        placeholder="Start typing or paste text…"
-        spellcheck="false"
-        aria-label="Text input for <%= sectionNoun %> calculation"></textarea>
-      <button class="text-input__clear" id="textInputClear" aria-label="Clear text input" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
-      </button>
-      <button class="text-input__paste" id="textPasteBtn" aria-label="Paste from clipboard" type="button">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
-      </button>
-      <span class="hint" id="textFormatHint" aria-live="polite"></span>
-      <div class="text-input__counter" id="textCounter">
-        <span id="textCounterChars">0 chars</span>
-        <span class="text-input__counter-sep" aria-hidden="true"></span>
-        <span id="textCounterBytes">0 bytes</span>
-        <span class="text-input__counter-notes" id="textCounterNotes" aria-live="polite"></span>
-      </div>
-    </div>
+  <div class="section__body" id="text-section-body">
+    <div class="section__body-inner">
+      <div class="card card--unclipped">
+        <div class="text-input__wrap input-wrap">
+          <textarea
+            class="text-input__textarea"
+            id="textInput"
+            autocomplete="off"
+            autocapitalize="off"
+            autocorrect="off"
+            placeholder="Start typing or paste text…"
+            spellcheck="false"
+            aria-label="Text input for <%= sectionNoun %> calculation"></textarea>
+          <button class="text-input__clear" id="textInputClear" aria-label="Clear text input" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
+          </button>
+          <button class="text-input__paste" id="textPasteBtn" aria-label="Paste from clipboard" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
+          </button>
+          <span class="hint" id="textFormatHint" aria-live="polite"></span>
+          <div class="text-input__counter" id="textCounter">
+            <span id="textCounterChars">0 chars</span>
+            <span class="text-input__counter-sep" aria-hidden="true"></span>
+            <span id="textCounterBytes">0 bytes</span>
+            <span class="text-input__counter-notes" id="textCounterNotes" aria-live="polite"></span>
+          </div>
+        </div>
 
-    <!-- Result rows — one per algorithm, rendered by TextSection.init() -->
-    <div class="card__results" id="textResults">
-      <%- include('/src/core/features/results/skeleton/results-skeleton.html', { hiddenByDefault: [] }) %>
-    </div>
-  </div>
-
-  <!-- Format options — input (left) + output (right) -->
-  <div class="options-row" role="group" aria-label="Input and output format">
-    <!-- Input format -->
-    <div class="options__group">
-      <div class="options options--input">
-        <div class="options__segment">
-          <span class="options__prefix">Input</span>
-          <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-utf8" value="utf-8" checked />
-          <label class="options__segment-label" for="textInFmt-utf8">UTF-8</label>
-          <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-hex" value="hex" />
-          <label class="options__segment-label" for="textInFmt-hex">Hex</label>
-          <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-base64" value="base64" />
-          <label class="options__segment-label" for="textInFmt-base64">Base64</label>
-          <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-binary" value="binary" />
-          <label class="options__segment-label" for="textInFmt-binary">Binary</label>
+        <!-- Result rows — one per algorithm, rendered by TextSection.init() -->
+        <div class="card__results" id="textResults">
+          <%- include('/src/core/features/results/skeleton/results-skeleton.html', { hiddenByDefault: [] }) %>
         </div>
       </div>
-    </div>
-    <!-- Output format -->
-    <div class="options__group">
-      <div class="options">
-        <div class="options__segment">
-          <span class="options__prefix">Output</span>
-          <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex" value="hex" checked />
-          <label class="options__segment-label" for="textFmt-hex">Hex</label>
-          <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex-upper" value="hex-upper" />
-          <label class="options__segment-label" for="textFmt-hex-upper">HEX</label>
-          <input class="options__radio" type="radio" name="textFormat" id="textFmt-base64" value="base64" />
-          <label class="options__segment-label" for="textFmt-base64">Base64</label>
-          <input class="options__radio" type="radio" name="textFormat" id="textFmt-binary" value="binary" />
-          <label class="options__segment-label" for="textFmt-binary">Binary</label>
+
+      <!-- Format options — input (left) + output (right) -->
+      <div class="options-row" role="group" aria-label="Input and output format">
+        <!-- Input format -->
+        <div class="options__group">
+          <div class="options options--input">
+            <div class="options__segment">
+              <span class="options__prefix">Input</span>
+              <input
+                class="options__radio"
+                type="radio"
+                name="textInputFormat"
+                id="textInFmt-utf8"
+                value="utf-8"
+                checked />
+              <label class="options__segment-label" for="textInFmt-utf8">UTF-8</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-hex" value="hex" />
+              <label class="options__segment-label" for="textInFmt-hex">Hex</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-base64" value="base64" />
+              <label class="options__segment-label" for="textInFmt-base64">Base64</label>
+              <input class="options__radio" type="radio" name="textInputFormat" id="textInFmt-binary" value="binary" />
+              <label class="options__segment-label" for="textInFmt-binary">Binary</label>
+            </div>
+          </div>
+        </div>
+        <!-- Output format -->
+        <div class="options__group">
+          <div class="options">
+            <div class="options__segment">
+              <span class="options__prefix">Output</span>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex" value="hex" checked />
+              <label class="options__segment-label" for="textFmt-hex">Hex</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-hex-upper" value="hex-upper" />
+              <label class="options__segment-label" for="textFmt-hex-upper">HEX</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-base64" value="base64" />
+              <label class="options__segment-label" for="textFmt-base64">Base64</label>
+              <input class="options__radio" type="radio" name="textFormat" id="textFmt-binary" value="binary" />
+              <label class="options__segment-label" for="textFmt-binary">Binary</label>
+            </div>
+          </div>
         </div>
       </div>
     </div>

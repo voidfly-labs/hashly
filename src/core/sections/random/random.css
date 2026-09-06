@@ -1,12 +1,6 @@
 /* =========================================================================
        RANDOM HASHES
        ========================================================================= */
-.random__body {
-  display: flex;
-  flex-direction: column;
-  gap: 14px; /* as section-collapse.css gives the body it wraps the children in, so nothing moves */
-}
-
 .random__controls {
   display: flex;
   align-items: center;

@@ -37,6 +37,7 @@ main {
        SECTION
        ========================================================================= */
 .section {
+  --collapsed-mb: 24px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -49,6 +50,7 @@ main > .section:last-child {
 }
 
 .section--with-actions {
+  --collapsed-mb: 20px;
   gap: 14px;
 }
 
@@ -122,9 +124,5 @@ main > .section:last-child {
 
   .page-heading h1 {
     font-size: 22px;
-  }
-
-  .section__label {
-    min-height: 40px;
   }
 }
