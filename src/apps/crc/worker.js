@@ -7,6 +7,7 @@ import {
   crc_8_dvb_s2,
   crc_8_maxim_dow,
   crc_8_smbus,
+  crc_16_arc,
   crc_16_dnp,
   crc_16_ibm_3740,
   crc_16_kermit,
@@ -23,44 +24,43 @@ import {
   crc_64_nvme,
   crc_64_redis,
   crc_82_darc,
-  crc16,
-} from './algos/crc-fns.js';
+} from './algos/crc-models.js';
 
-// Each CRC is as wide as its `hexLen` says; the digest is zero-padded to that.
-const crc = (fn, hexLen) => ({
-  once: (bytes) => fn(bytes).padStart(hexLen, '0'),
+// A CRC's digest comes zero-padded to its width (see algos/crc-engine.js).
+const crc = (fn) => ({
+  once: (bytes) => fn(bytes),
   async create() {
     const instance = fn.create();
-    return { update: (chunk) => instance.update(chunk), digest: () => instance.hex().padStart(hexLen, '0') };
+    return { update: (chunk) => instance.update(chunk), digest: () => instance.hex() };
   },
 });
 
 const CRC32C_POLY = 0x82f63b78; // Castagnoli, reflected
 
 // CRC-32, CRC-32C and CRC-64/XZ run on hash-wasm (it only varies the polynomial); the rest need
-// init/xorout/reflection it does not offer, so they stay on js-crc.
+// init/xorout/reflection it does not offer, so they run on algos/crc-engine.js.
 initHasherServer({
-  'CRC-8 (1-Wire)': crc(crc_8_maxim_dow, 2),
-  'CRC-8 (DVB-S2)': crc(crc_8_dvb_s2, 2),
-  'CRC-8 (SMBus)': crc(crc_8_smbus, 2),
-  'CRC-16': crc(crc16, 4),
-  'CRC-16 (CCITT)': crc(crc_16_ibm_3740, 4),
-  'CRC-16 (DNP)': crc(crc_16_dnp, 4),
-  'CRC-16 (Kermit)': crc(crc_16_kermit, 4),
-  'CRC-16 (Modbus)': crc(crc_16_modbus, 4),
-  'CRC-16 (USB)': crc(crc_16_usb, 4),
-  'CRC-16 (XMODEM)': crc(crc_16_xmodem, 4),
-  'CRC-24 (BLE)': crc(crc_24_ble, 6),
-  'CRC-24 (Intlkn)': crc(crc_24_interlaken, 6),
-  'CRC-24 (OpenPGP)': crc(crc_24_openpgp, 6),
+  'CRC-8 (1-Wire)': crc(crc_8_maxim_dow),
+  'CRC-8 (DVB-S2)': crc(crc_8_dvb_s2),
+  'CRC-8 (SMBus)': crc(crc_8_smbus),
+  'CRC-16': crc(crc_16_arc),
+  'CRC-16 (CCITT)': crc(crc_16_ibm_3740),
+  'CRC-16 (DNP)': crc(crc_16_dnp),
+  'CRC-16 (Kermit)': crc(crc_16_kermit),
+  'CRC-16 (Modbus)': crc(crc_16_modbus),
+  'CRC-16 (USB)': crc(crc_16_usb),
+  'CRC-16 (XMODEM)': crc(crc_16_xmodem),
+  'CRC-24 (BLE)': crc(crc_24_ble),
+  'CRC-24 (Intlkn)': crc(crc_24_interlaken),
+  'CRC-24 (OpenPGP)': crc(crc_24_openpgp),
   'CRC-32': wasmEngine({ fn: (bytes) => crc32Wasm(bytes), createFn: () => createCRC32() }),
   'CRC-32C': wasmEngine({ fn: (bytes) => crc32Wasm(bytes, CRC32C_POLY), createFn: () => createCRC32(CRC32C_POLY) }),
-  'CRC-32 (BZIP2)': crc(crc_32_bzip2, 8),
-  'CRC-32 (JamCRC)': crc(crc_32_jamcrc, 8),
-  'CRC-32 (MPEG-2)': crc(crc_32_mpeg_2, 8),
-  'CRC-64 (ECMA)': crc(crc_64_ecma_182, 16),
-  'CRC-64 (NVMe)': crc(crc_64_nvme, 16),
-  'CRC-64 (Redis)': crc(crc_64_redis, 16),
+  'CRC-32 (BZIP2)': crc(crc_32_bzip2),
+  'CRC-32 (JamCRC)': crc(crc_32_jamcrc),
+  'CRC-32 (MPEG-2)': crc(crc_32_mpeg_2),
+  'CRC-64 (ECMA)': crc(crc_64_ecma_182),
+  'CRC-64 (NVMe)': crc(crc_64_nvme),
+  'CRC-64 (Redis)': crc(crc_64_redis),
   'CRC-64 (XZ)': wasmEngine({ fn: (bytes) => crc64Wasm(bytes), createFn: () => createCRC64() }),
-  'CRC-82 (DARC)': crc(crc_82_darc, 21),
+  'CRC-82 (DARC)': crc(crc_82_darc),
 });
