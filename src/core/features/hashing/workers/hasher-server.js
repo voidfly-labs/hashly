@@ -52,7 +52,14 @@ export function initHasherServer(engines) {
     // sized from the measurement before last. `catch` marks a read we abandon (cancel, every
     // algorithm dropped) as handled; whoever awaits it still sees the rejection.
     const read = (from) => {
-      const pending = file.slice(from, from + sizer.bytes).arrayBuffer();
+      // `from` is short of the end, so an empty read means the file shrank under us; going on would read for ever.
+      const pending = file
+        .slice(from, from + sizer.bytes)
+        .arrayBuffer()
+        .then((buffer) => {
+          if (!buffer.byteLength) throw new Error('File changed while reading');
+          return buffer;
+        });
       pending.catch(() => {});
       return pending;
     };

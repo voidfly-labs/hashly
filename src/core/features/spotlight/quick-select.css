@@ -27,6 +27,17 @@
     filter 0.15s;
 }
 
+/* Hit area: half the grid gap on every side, so the badges' areas meet in the middle of each gap
+   (no dead zones, no overlap) and the look stays the same. Keep it in step with the gap above. */
+.quick-select__grid .algo-badge::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  bottom: -3px;
+  left: -3px;
+}
+
 .quick-select__grid .algo-badge:hover {
   opacity: 1;
   filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.08));

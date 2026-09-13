@@ -93,6 +93,16 @@ export function createHasherClient({ spawn, algorithms }) {
     /** How many threads a file would be hashed on with `algos` visible. */
     threadsFor,
 
+    /** Starts the text worker ahead of the first text request. A worker that fails to start is not
+     *  reported here: it is dead, and the first request replaces it. */
+    warmUp() {
+      try {
+        textChannel = fresh(textChannel);
+      } catch {
+        // the first request tries again
+      }
+    },
+
     /** A random digest as wide as algorithm `algoId`'s. */
     generateRandom(algoId) {
       return randomDigest(algorithms.find(({ id }) => id === algoId));

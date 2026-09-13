@@ -43,7 +43,7 @@ function formatElapsed(seconds) {
  *  early for speed), or null when it would read the same as the last one. The percentage moves
  *  with every whole percent; speed and time-left are refreshed every UPDATE_EVERY_MS.
  *  `summary()` returns "Hashed in 4.2 s · 38.2 MiB/s · 4 threads" for a finished run (just
- *  "Hashed in 0.2 s" when it was too short for a speed to mean anything).
+ *  "Hashed in 0.2 s" when it was too short for a speed to mean anything, or the file is empty).
  *
  *  `threads` is how many threads the run is spread over, named on every line it produces.
  *  `now` is injectable (ms) so the maths can be tested without waiting. */
@@ -95,7 +95,8 @@ export function createRunStats(totalBytes, { threads = 1, now = () => performanc
     summary() {
       const elapsedMs = now() - start;
       const took = `Hashed in ${formatElapsed(elapsedMs / 1000)}`;
-      if (elapsedMs < SPEED_AFTER_MS) return `${took} · ${onThreads}`;
+      // An empty file has no speed, however long it took.
+      if (elapsedMs < SPEED_AFTER_MS || totalBytes === 0) return `${took} · ${onThreads}`;
       return `${took} · ${formatRate(totalBytes / (elapsedMs / 1000))} · ${onThreads}`;
     },
   };

@@ -3,7 +3,7 @@ import { Storage } from '~core/lib/storage.js';
 /** What each setting can be, and what it is until the visitor changes it. `0` for a number that is
  *  chosen from a list means "Auto": the app's own behaviour. */
 export const HISTORY_LIMITS = [100, 250, 500, 1000, 2500];
-export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32, 64];
+export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32];
 export const CHUNK_OPTIONS_MIB = [2, 4, 8, 16, 32, 64];
 
 const SPECS = {

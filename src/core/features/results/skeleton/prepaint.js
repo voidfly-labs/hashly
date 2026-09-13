@@ -63,7 +63,9 @@
       });
   };
 
-  const params = new URLSearchParams(location.search);
+  // Same as Permalink: the params are in the fragment, told from an anchor by the `=`.
+  const hash = location.hash.slice(1);
+  const params = new URLSearchParams(hash.includes('=') ? hash : '');
   if (PERMALINK_PARAMS.some((name) => params.has(name))) {
     const target = slug(params.get('algorithm') ?? '');
     if (slugs.includes(target)) SECTIONS.forEach((section) => showOnly(section, target));

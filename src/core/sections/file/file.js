@@ -138,6 +138,10 @@ export const FileSection = {
     this._hidden.toggleAlgo(algoId, options);
   },
 
+  _setHiddenAlgos(hidden, options) {
+    this._hidden.setHiddenTo(hidden, options);
+  },
+
   // ── Digests ────────────────────────────────────────────────────────────
 
   getSelectedFormat() {

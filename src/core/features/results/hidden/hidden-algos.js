@@ -29,6 +29,21 @@ export function createHiddenAlgos({
       if (refreshTooltip) showToggleAllTooltip(toggleAllBtnId, hiddenAlgos, algorithms);
     },
 
+    /** Puts the hidden algorithms to `target` (a Set of ids) as one change: whatever it shows again is
+     *  handed to `applied` once and `afterChange` follows once, not per algorithm. */
+    setHiddenTo(target, { resetSpotlight = true } = {}) {
+      const results = [];
+      let changed = false;
+      for (const { id } of algorithms) {
+        if (hiddenAlgos.has(id) === target.has(id)) continue;
+        changed = true;
+        results.push(setHidden(id, target.has(id)));
+      }
+      if (!changed) return;
+      applied(results.filter(Boolean));
+      afterChange({ resetSpotlight });
+    },
+
     toggleAlgo(algoId, { refreshTooltip = false, resetSpotlight = true } = {}) {
       const result = setHidden(algoId, !hiddenAlgos.has(algoId));
       applied([result].filter(Boolean));

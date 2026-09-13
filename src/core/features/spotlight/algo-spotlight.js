@@ -9,17 +9,13 @@ const PREF_NAME = 'spotlight';
  *  resetSpotlight: false — these calls originate from AlgoSpotlight itself,
  *  so they must not immediately clear the very state they're setting. */
 function _showOnlyInSection(section, algoId, ALGORITHMS) {
-  ALGORITHMS.forEach(({ id }) => {
-    const shouldHide = id !== algoId;
-    if (section.hiddenAlgos.has(id) !== shouldHide) section._toggleAlgo(id, { resetSpotlight: false });
-  });
+  const hidden = new Set(ALGORITHMS.map(({ id }) => id).filter((id) => id !== algoId));
+  section._setHiddenAlgos(hidden, { resetSpotlight: false });
 }
 
 /** Puts `section`'s hidden algorithms to `hidden` (a Set of ids). */
-function _setHiddenTo(section, hidden, ALGORITHMS) {
-  ALGORITHMS.forEach(({ id }) => {
-    if (section.hiddenAlgos.has(id) !== hidden.has(id)) section._toggleAlgo(id, { resetSpotlight: false });
-  });
+function _setHiddenTo(section, hidden) {
+  section._setHiddenAlgos(hidden, { resetSpotlight: false });
 }
 
 /**
@@ -106,7 +102,7 @@ export const AlgoSpotlight = {
 
   _toggle(algoId, ALGORITHMS, sections) {
     if (this._state.spotlightedAlgo === algoId) {
-      sections.forEach((section) => _setHiddenTo(section, section.defaultHidden(), ALGORITHMS));
+      sections.forEach((section) => _setHiddenTo(section, section.defaultHidden()));
       this.reset();
       return;
     }

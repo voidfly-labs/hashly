@@ -1,6 +1,7 @@
 import { Permalink } from '~core/app/permalink/permalink.js';
 import { Theme } from '~core/app/theme/manager.js';
 import { TabTitle } from '~core/features/hashing/tab-title.js';
+import { initHasherWarmUp } from '~core/features/hashing/warm-up.js';
 import { createHelpPopover } from '~core/features/help/help.js';
 import { History } from '~core/features/history/history.js';
 import { initGlobalPaste } from '~core/features/input/global-paste.js';
@@ -95,6 +96,7 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
   _initToggleAllBtn('textToggleAllBtn', TextSection, ALGORITHMS);
   _initToggleAllBtn('fileToggleAllBtn', FileSection, ALGORITHMS);
   RandomSection.init({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher });
+  initHasherWarmUp(Hasher);
   HashSelect.init();
   initGlobalPaste({
     onText: (text) => TextSection.pasteText(text),
