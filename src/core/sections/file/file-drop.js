@@ -1,19 +1,25 @@
 import { trackPageDrag } from '~core/features/input/page-drag.js';
 import { Format } from '~core/lib/format.js';
 import { takesText } from '~core/lib/text-field.js';
+import { Announcer } from '~core/ui/announcer/announcer.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
+import { Tooltip } from '~core/ui/tooltip/tooltip.js';
+
+import { droppedFiles } from './dropped-files.js';
 
 /** The file drop zone (see file.html): how a file arrives, and the zone's own display of it.
  *
- *  A file arrives by being picked (the input), dropped on the zone, or dropped anywhere else on the
- *  page; each is passed to `onFile(file)`. The zone's ✕ button and Esc on the input call `onClear()`
+ *  Files arrive by being picked (the input), dropped on the zone, or dropped anywhere else on the
+ *  page; each way hands them to `onFiles(files, { truncated })` as `{ file, path }` (`path`: the name, or
+ *  the place in a dropped folder, which is read through, see dropped-files.js; `truncated`: there were
+ *  more than `getLimit()` files, so the rest were left out). The zone's ✕ button and Esc on the input call `onClear()`
  *  (Esc only while `hasFile()`). The zone lights up whenever a file is dragged anywhere over the
  *  window, and the page's own drop handler stops the browser from navigating to a dropped file.
  *
- *  Returns `{ section, mirrorInput, showFile, clearFile, setStats, showStats, hideStats }`: the
- *  section the zone is in, and what the section does to the zone's file name, ✕ button and status
- *  line (see file-stats.html: its text, and an icon picked by its `state`). */
-export function createFileDrop({ hasFile, onFile, onClear }) {
+ *  Returns `{ section, mirrorInput, notify, showFile, clearFile, setStats, showStats, hideStats }`: the
+ *  section the zone is in, `notify(message)` (a short notice at the zone), and what the section does
+ *  to the zone's file name, ✕ button and status line (see file-stats.html: its text, and an icon picked by its `state`). */
+export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
   const drop = document.getElementById('fileDrop');
   const input = document.getElementById('fileInput');
   const clearBtn = document.getElementById('fileDropClear');
@@ -23,23 +29,35 @@ export function createFileDrop({ hasFile, onFile, onClear }) {
   const stats = document.getElementById('fileStats');
   const statsText = document.getElementById('fileStatsText');
 
-  /** Mirrors a file that didn't come through the input itself (drop, paste) into it. */
-  function mirrorInput(file) {
+  /** Mirrors files that didn't come through the input itself (drop, paste) into it. */
+  function mirrorInput(files) {
     const dt = new DataTransfer();
-    dt.items.add(file);
+    files.forEach((file) => dt.items.add(file));
     input.files = dt.files;
   }
 
-  const acceptDropped = (file) => {
-    mirrorInput(file);
-    onFile(file);
+  /** A short notice at the zone, for what a drop could not do. */
+  function notify(message) {
+    Tooltip.show(drop, message, 3500);
+    Announcer.say(message);
+  }
+
+  /** Takes the files of a drop, the files of a folder in it included (see dropped-files.js). */
+  const acceptDrop = async (dataTransfer) => {
+    const { files, truncated, hadFolder } = await droppedFiles(dataTransfer, getLimit());
+    if (!files.length) {
+      if (hadFolder) notify('No files found in the folder');
+      return;
+    }
+    mirrorInput(files.map(({ file }) => file));
+    onFiles(files, { truncated });
   };
 
   input.addEventListener('change', (e) => {
     if (e.target.files.length) {
-      const file = e.target.files[0];
+      const files = [...e.target.files];
       e.target.value = '';
-      onFile(file);
+      onFiles(files.map((file) => ({ file, path: file.name })));
     }
   });
 
@@ -55,8 +73,7 @@ export function createFileDrop({ hasFile, onFile, onClear }) {
   drop.addEventListener('drop', (e) => {
     e.preventDefault();
     drop.classList.remove('file-drop--active');
-    const file = e.dataTransfer.files[0];
-    if (file) acceptDropped(file);
+    acceptDrop(e.dataTransfer);
   });
 
   // ── Whole-page drag indicator ──────────────────────────────────────
@@ -82,17 +99,18 @@ export function createFileDrop({ hasFile, onFile, onClear }) {
     // Prevent the browser from navigating to a dropped file
     e.preventDefault();
     // If the drop landed inside the zone itself, the zone's own handler
-    // already processed the file — don't process it a second time.
+    // already processed the files — don't process them a second time.
     if (drop.contains(e.target)) return;
-    // Drop landed outside the zone: extract the file and process it.
-    const file = e.dataTransfer?.files?.[0];
-    if (file) acceptDropped(file);
+    // Drop landed outside the zone: take its files.
+    acceptDrop(e.dataTransfer);
   });
 
   clearBtn.addEventListener('mouseenter', () => drop.classList.add('file-drop--clear-hover'));
   clearBtn.addEventListener('mouseleave', () => drop.classList.remove('file-drop--clear-hover'));
 
-  initButtonTooltip(clearBtn, 'Remove file');
+  // Clears every file of the drop, so it says so once there are several.
+  let several = false;
+  initButtonTooltip(clearBtn, () => (several ? 'Remove all files' : 'Remove file'));
 
   clearBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -111,9 +129,13 @@ export function createFileDrop({ hasFile, onFile, onClear }) {
   return {
     section: drop.closest('.section'),
     mirrorInput,
+    notify,
 
-    /** Shows `file`'s name and size in the zone, and its ✕ button. */
-    showFile(file) {
+    /** Shows `file`'s name and size in the zone, and its ✕ button. `count` is how many files the
+     *  zone stands for (it clears them all). */
+    showFile(file, count = 1) {
+      several = count > 1;
+      clearBtn.setAttribute('aria-label', several ? 'Remove all files' : 'Remove selected file');
       fileNameText.textContent = file.name;
       fileSize.textContent = ` · ${Format.fileSize(file.size)}`;
       fileName.classList.add('file-drop__filename--visible');

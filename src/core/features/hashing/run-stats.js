@@ -28,12 +28,32 @@ function formatRemaining(seconds) {
 }
 
 /** "<0.1 s", "4.2 s", "1 min 12 s". */
-function formatElapsed(seconds) {
+export function formatElapsed(seconds) {
   if (seconds < 0.05) return '<0.1 s';
   if (seconds < 60) return `${seconds.toFixed(1)} s`;
   const whole = Math.round(seconds);
   if (whole < 3600) return `${Math.floor(whole / 60)} min ${String(whole % 60).padStart(2, '0')} s`;
   return `${Math.floor(whole / 3600)} h ${String(Math.floor((whole % 3600) / 60)).padStart(2, '0')} min`;
+}
+
+const threadsLabel = (threads) => `${threads} ${threads === 1 ? 'thread' : 'threads'}`;
+
+/** "3 files " or "2 of 3 files " for a run over several, nothing for one. */
+function countLabel(files, of) {
+  if (of < 2) return '';
+  return files === of ? `${files} files ` : `${files} of ${of} files `;
+}
+
+/** How a finished run went: "Hashed in 4.2 s · 38.2 MiB/s · 4 threads", with the speed left out when
+ *  the run was too short (or empty) for it to mean anything. `files` is how many files `totalBytes`
+ *  and `elapsedMs` are for, `of` how many there were ("Hashed 2 of 3 files in …"); with one file the
+ *  count is not said. */
+export function describeRun({ totalBytes, elapsedMs, threads, files = 1, of = files }) {
+  const parts = [`Hashed ${countLabel(files, of)}in ${formatElapsed(elapsedMs / 1000)}`];
+  // An empty file has no speed, however long it took.
+  if (elapsedMs >= SPEED_AFTER_MS && totalBytes > 0) parts.push(formatRate(totalBytes / (elapsedMs / 1000)));
+  parts.push(threadsLabel(threads));
+  return parts.join(' · ');
 }
 
 /** Speed and time-left for one hashing run over `totalBytes`.
@@ -48,7 +68,7 @@ function formatElapsed(seconds) {
  *  `threads` is how many threads the run is spread over, named on every line it produces.
  *  `now` is injectable (ms) so the maths can be tested without waiting. */
 export function createRunStats(totalBytes, { threads = 1, now = () => performance.now() } = {}) {
-  const onThreads = `${threads} ${threads === 1 ? 'thread' : 'threads'}`;
+  const onThreads = threadsLabel(threads);
   const start = now();
   const samples = [{ time: start, bytes: 0 }];
   let numbersAt = -Infinity;
@@ -92,12 +112,6 @@ export function createRunStats(totalBytes, { threads = 1, now = () => performanc
       return line;
     },
 
-    summary() {
-      const elapsedMs = now() - start;
-      const took = `Hashed in ${formatElapsed(elapsedMs / 1000)}`;
-      // An empty file has no speed, however long it took.
-      if (elapsedMs < SPEED_AFTER_MS || totalBytes === 0) return `${took} · ${onThreads}`;
-      return `${took} · ${formatRate(totalBytes / (elapsedMs / 1000))} · ${onThreads}`;
-    },
+    summary: () => describeRun({ totalBytes, elapsedMs: now() - start, threads }),
   };
 }

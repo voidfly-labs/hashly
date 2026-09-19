@@ -18,6 +18,8 @@
   padding: 3px 8px;
   border-radius: 5px;
   white-space: pre-line;
+  overflow-wrap: anywhere; /* a long file name has no spaces to break at */
+  max-width: calc(100vw - 16px);
   font-family: var(--sans);
   font-size: 11px;
   color: var(--bg);

@@ -1,0 +1,294 @@
+/* =========================================================================
+       FILE LIST
+       — The files of a multi-file drop, under the drop zone: one line each with
+         a status icon, its name and size, and a button to remove it. Markup is built
+         by ./file-list.js into the list in file.html.
+       ========================================================================= */
+/* A box of its own, like the drop zone and the reference field it sits between: it holds the rows
+   together and marks where its scrolling ends. */
+.file-list {
+  position: relative; /* the offsetParent of its rows, for scrolling one into view */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 196px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.file-list[hidden] {
+  display: none;
+}
+
+.file-list__item {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border-radius: var(--radius);
+}
+
+/* The row is the unit: hover, selection and the keyboard's focus ring all take in the whole line, ✕
+   included, though only a click on the ✕ itself removes the file. */
+.file-list__item:hover {
+  background: var(--accent-muted);
+}
+
+.file-list__item--selected {
+  background: var(--accent-muted);
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+.file-list__select {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 36px; /* the height of a row with a verdict pill, so a row is as tall with or without one */
+  padding: 7px 10px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.file-list__item--selected .file-list__select {
+  color: var(--accent);
+}
+
+.file-list__select:focus-visible {
+  outline: none;
+}
+
+/* The button is not positioned, so this is laid over the whole row, not just the button. */
+.file-list__select:focus-visible::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 2px var(--accent-ring);
+  pointer-events: none;
+}
+
+.file-list__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* What the reference hash says of this file: a word, not only a colour. */
+.file-list__verdict {
+  flex-shrink: 0;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.file-list__verdict:empty {
+  display: none;
+}
+
+.file-list__verdict[data-verdict='match'] {
+  color: var(--success);
+  background: var(--success-surface);
+}
+
+.file-list__verdict[data-verdict='mismatch'] {
+  color: var(--danger);
+  background: var(--danger-surface);
+}
+
+.file-list__size {
+  flex-shrink: 0;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.file-list__status {
+  position: relative;
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+}
+
+/* One icon per state, as in the drop zone's status line: waiting is the empty ring, hashing the
+   spinning arc, done a ✓, anything that ended without digests a ⚠. */
+.file-list__status svg,
+.file-list__spinner {
+  display: none;
+}
+
+.file-list__status svg {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.file-list__spinner {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: 18px;
+  height: 18px;
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: file-drop-spin 0.8s linear infinite;
+}
+
+.file-list__status[data-state='hashing'] .file-list__spinner {
+  display: block;
+}
+
+.file-list__status[data-state='done'],
+.file-list__status[data-state='failed'],
+.file-list__status[data-state='stopped'],
+.file-list__status[data-state='skipped'],
+.file-list__status[data-state='hashing'] {
+  border-color: transparent;
+}
+
+.file-list__status[data-state='done'] {
+  color: var(--success);
+}
+
+.file-list__status[data-state='done'] svg:nth-of-type(1),
+.file-list__status[data-state='failed'] svg:nth-of-type(2),
+.file-list__status[data-state='stopped'] svg:nth-of-type(2),
+.file-list__status[data-state='skipped'] svg:nth-of-type(2) {
+  display: block;
+}
+
+.file-list__status[data-state='failed'],
+.file-list__status[data-state='stopped'] {
+  color: var(--danger);
+}
+
+.file-list__status[data-state='skipped'] {
+  color: var(--warning);
+}
+
+/* How far the file being hashed has got: a thin line along the bottom of its row. */
+.file-list__bar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 1px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--accent);
+  display: none;
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+}
+
+.file-list__item--hashing .file-list__bar {
+  display: block;
+}
+
+.file-list__remove {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.file-list__remove svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.file-list__remove:hover {
+  color: var(--danger);
+}
+
+.file-list__remove:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .file-list__spinner {
+    animation-duration: 2.4s;
+  }
+}
+
+/* On a narrow screen a file is a two-line card: the name on its own line, with the width the size and
+   the pill would otherwise take, and under it the size and the pill. */
+@media (max-width: 630px) {
+  .file-list {
+    max-height: 264px;
+  }
+
+  .file-list__select {
+    display: grid;
+    grid-template-columns: 18px auto minmax(0, 1fr);
+    grid-template-rows: auto 22px; /* the pill's height, so the name stays put when one appears */
+    grid-template-areas:
+      'status name name'
+      'status size verdict';
+    align-content: center;
+    align-items: center;
+    column-gap: 10px;
+    row-gap: 3px;
+    min-height: 60px; /* two lines, whether or not there is a pill */
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .file-list__status {
+    grid-area: status;
+    align-self: center;
+  }
+
+  .file-list__name {
+    grid-area: name;
+    font-size: 14px;
+  }
+
+  .file-list__size {
+    grid-area: size;
+    font-size: 12px;
+  }
+
+  .file-list__verdict {
+    grid-area: verdict;
+    justify-self: start;
+  }
+
+  .file-list__remove {
+    padding: 0 14px;
+  }
+}

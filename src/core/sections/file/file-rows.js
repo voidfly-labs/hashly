@@ -97,6 +97,7 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
         const hash = Format.applyFormat(hex, format);
         els.progress.stop();
         setHashText(els.hash, hash);
+        setHashEmpty(els.hash, false);
         setRowActions(els, true);
         items.push({ hash, algo: id });
       }
@@ -136,6 +137,16 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
         setHashEmpty(els.hash, true);
       }
       this.setActionsEnabled(false);
+    },
+
+    /** The file is in the queue, not hashed yet: the rows say so. */
+    showQueued() {
+      for (const { id } of visible()) {
+        const els = rows.get(id);
+        els.progress.stop();
+        setHashText(els.hash, 'waiting');
+        setHashEmpty(els.hash, true);
+      }
     },
 
     /** The visible rows without a digest in `hexMap` could not be computed: say so where it would be.

@@ -27,7 +27,7 @@ export const BackToTop = {
   _setVisible(visible) {
     this._btn.classList.toggle('back-to-top--visible', visible);
     clearTimeout(this._idleTimer);
-    if (!visible) Tooltip.hide();
+    if (!visible) Tooltip.hide(this._btn);
     if (visible) this._idleTimer = setTimeout(() => this._idleHide(), this._IDLE_HIDE_MS);
   },
 
@@ -55,7 +55,7 @@ export const BackToTop = {
   },
 
   _onClick() {
-    Tooltip.hide();
+    Tooltip.hide(this._btn);
     window.scrollTo({ top: 0 }); // smooth unless the user prefers reduced motion (see reset.css)
     // The button hides itself on arrival, so hand keyboard focus to the page heading.
     const heading = document.querySelector('main h1');
@@ -84,7 +84,7 @@ export const BackToTop = {
     const engage = (engaged) => {
       this._engaged = engaged;
       if (engaged) return;
-      Tooltip.hide();
+      Tooltip.hide(btn);
       if (btn.classList.contains('back-to-top--visible')) this._setVisible(true); // restart the countdown
     };
     btn.addEventListener('mouseenter', () => {

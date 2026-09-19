@@ -18,8 +18,10 @@ import { parseReference } from './reference.js';
  *  `getRow(id)` returns an algorithm's `.result` row; `isHidden(id)` says
  *  whether that algorithm is currently hidden (hidden ones aren't computed).
  *  Feed it digests via `setDigests` and re-render with `refresh` when the
- *  hidden set changes. */
-export function createVerify({ root, algorithms, getRow, isHidden, getFileName = () => '' }) {
+ *  hidden set changes.
+ *
+ *  `onChange()` is called whenever what the field says changes. */
+export function createVerify({ root, algorithms, getRow, isHidden, getFileName = () => '', onChange = () => {} }) {
   const input = root.querySelector('.verify__input');
   const clearBtn = root.querySelector('.verify__clear');
   initResponsivePlaceholder(input);
@@ -79,6 +81,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     }
 
     _showStatus(describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()) }));
+    onChange();
   }
 
   input.addEventListener('input', render);
@@ -139,6 +142,15 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
       digests = next;
       pending = new Set(stillHashing);
       render();
+    },
+    /** What the reference says of another file's finished `fileDigests` (`Map<algoId, hex>`): 'match',
+     *  'mismatch', or null when there is no reference or none of its size among the digests. */
+    verdictFor(fileDigests) {
+      const ref = parseReference(input.value);
+      if (!ref) return null;
+      const same = algorithms.filter(({ id, hexLen }) => hexLen === ref.hex.length && fileDigests.has(id));
+      if (!same.length) return null;
+      return same.some(({ id }) => fileDigests.get(id).toLowerCase() === ref.hex) ? 'match' : 'mismatch';
     },
     refresh: render,
     clear,

@@ -11,6 +11,7 @@ const VIEWPORT_MARGIN = 8;
 export const Tooltip = (() => {
   let el = null; // singleton DOM node
   let hideTimer = null;
+  let anchor = null; // the element the tooltip is showing for
   let lastPointerType = 'mouse';
 
   document.addEventListener('pointerdown', (e) => {
@@ -68,6 +69,7 @@ export const Tooltip = (() => {
   return {
     flash(anchorElement, text) {
       _ensureEl();
+      anchor = anchorElement;
 
       // Derive label: passed explicitly, or from the child .tooltip span's text
       const label = text ?? anchorElement.querySelector('.tooltip')?.textContent ?? 'Copied!';
@@ -95,6 +97,7 @@ export const Tooltip = (() => {
      *  for anchors against the right edge of the viewport. */
     show(anchorElement, text, duration, { align = 'center' } = {}) {
       _ensureEl();
+      anchor = anchorElement;
       clearTimeout(hideTimer);
       el.classList.remove('tooltip-singleton--visible');
       el.textContent = text;
@@ -109,7 +112,11 @@ export const Tooltip = (() => {
       }
     },
 
-    hide() {
+    /** Hides the tooltip. With `owner`, only if it is showing for that element: the leave or blur
+     *  of one element must not take down the tooltip another one has just opened (a tap on the next
+     *  row blurs the previous one), nor must a timer of the page's own, like the back-to-top button's. */
+    hide(owner) {
+      if (owner && owner !== anchor) return;
       if (el) el.classList.remove('tooltip-singleton--visible');
     },
   };

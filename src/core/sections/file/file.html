@@ -56,6 +56,7 @@
               class="file-drop__input"
               type="file"
               id="fileInput"
+              multiple
               aria-label="Upload file for <%= sectionNoun %> calculation" />
             <button class="file-drop__clear" id="fileDropClear" aria-label="Remove selected file" type="button">
               <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -66,8 +67,8 @@
               <use href="/src/assets/images/icons.svg#icon-upload"></use>
             </svg>
             <div class="file-drop__text">
-              <span class="file-drop__prompt-desktop">Drop a file here or <strong>browse</strong></span>
-              <span class="file-drop__prompt-mobile">Tap to <strong>choose a file</strong></span>
+              <span class="file-drop__prompt-desktop">Drop files here or <strong>browse</strong></span>
+              <span class="file-drop__prompt-mobile">Tap to <strong>choose files</strong></span>
             </div>
             <div class="file-drop__filename" id="fileName">
               <span id="fileNameText" class="file-drop__filename-name"></span>
@@ -75,6 +76,9 @@
             </div>
             <%- include('/src/core/sections/file/file-stats.html') %>
           </div>
+
+          <!-- The files of a multi-file drop, built by FileSection (file-list.js) -->
+          <ul class="file-list" id="fileList" aria-label="Files" hidden></ul>
 
           <%- include('/src/core/features/verify/verify.html') %>
         </div>

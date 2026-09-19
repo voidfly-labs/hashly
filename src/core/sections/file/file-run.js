@@ -6,7 +6,9 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
  *  hashing does besides producing digests. It keeps the status line (`setStats(text, state)`) and
  *  the tab title up to date, and can be abandoned. The shares it is split into report on their own:
  *  `onShareProgress(ids, ratio)` is how far one has got and `onShare(digests)` hands over its digests
- *  (`Map<id, hex>`) when it is done. Neither is called once the run is abandoned.
+ *  (`Map<id, hex>`) when it is done. Neither is called once the run is abandoned. `onProgress(ratio)`
+ *  is how far the file as a whole has got (its slowest share). A `quiet` run is one
+ *  of several: how it ends is not announced, nor left in the tab title (the caller does that for all).
  *
  *  Returns `{ ids, result, aborted, abort, dropHidden, isIdle, succeed, fail }`:
  *   - `ids`: the algorithms it still computes (a Set, shrinking as `dropHidden` takes some out).
@@ -16,7 +18,7 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
  *     it produces for them can be seen; they have no digest in `result`.
  *   - `isIdle()`: nothing is left in `ids`.
  *   - `succeed()` and `fail()` report how it ended, on the tab title and the status line. */
-export function startFileRun({ file, algos, hasher, setStats, onShare, onShareProgress }) {
+export function startFileRun({ file, algos, hasher, setStats, onShare, onShareProgress, onProgress, quiet = false }) {
   const controller = new AbortController();
   const ids = new Set(algos.map((a) => a.id));
   const title = TabTitle.track();
@@ -25,6 +27,7 @@ export function startFileRun({ file, algos, hasher, setStats, onShare, onSharePr
 
   const handle = {};
   const progress = (ratio) => {
+    onProgress?.(ratio);
     title.progress(ratio);
     const line = stats.update(ratio);
     if (line) setStats(line, 'busy');
@@ -56,13 +59,15 @@ export function startFileRun({ file, algos, hasher, setStats, onShare, onSharePr
     isIdle: () => ids.size === 0,
 
     succeed() {
-      title.done();
       setStats(stats.summary(), 'done');
+      if (quiet) return;
+      title.done();
       Announcer.say('File hashed');
     },
     fail() {
-      title.fail();
       setStats('Hashing failed', 'error');
+      if (quiet) return;
+      title.fail();
       Announcer.say('Hashing failed');
     },
   };

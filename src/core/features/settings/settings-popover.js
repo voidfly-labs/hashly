@@ -6,7 +6,7 @@ import { createPopover } from '~core/ui/popover.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { clearSavedData, savedBytes } from './saved-data.js';
-import { CHUNK_OPTIONS_MIB, HISTORY_LIMITS, Settings, THREAD_OPTIONS } from './settings.js';
+import { CHUNK_OPTIONS_MIB, HISTORY_LIMITS, MAX_FILES_OPTIONS, Settings, THREAD_OPTIONS } from './settings.js';
 
 const MIB = 1024 * 1024;
 
@@ -23,6 +23,7 @@ const HINTS = {
   settingsMaxThreads: 'Parallel hashing. Helps with multiple algorithms enabled.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
+  settingsMaxFiles: 'Files accepted from one drop.',
 };
 
 const fillSelect = (select, options) => {
@@ -52,6 +53,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   };
   const threads = byId('settingsMaxThreads');
   const chunk = byId('settingsMaxChunk');
+  const files = byId('settingsMaxFiles');
   const limit = byId('settingsHistoryLimit');
   const trim = byId('settingsTrim');
   const trimText = byId('settingsTrimText');
@@ -60,6 +62,10 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   for (const [id, text] of Object.entries(HINTS)) byId(`${id}Hint`).textContent = text;
   fillSelect(threads, [[0, `Auto (${autoThreads()}x)`], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
   fillSelect(chunk, [[0, `Auto (${chunkCeiling(0) / MIB} MiB)`], ...CHUNK_OPTIONS_MIB.map((n) => [n, `${n} MiB`])]);
+  fillSelect(
+    files,
+    MAX_FILES_OPTIONS.map((n) => [n, String(n)]),
+  );
   fillSelect(
     limit,
     HISTORY_LIMITS.map((n) => [n, n.toLocaleString('en-US')]),
@@ -82,6 +88,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     for (const [name, input] of Object.entries(toggles)) input.checked = Settings.get(name);
     threads.value = String(Settings.get('maxThreads'));
     chunk.value = String(Settings.get('maxChunkMiB'));
+    files.value = String(Settings.get('maxFiles'));
     limit.value = String(Settings.get('historyLimit'));
     const saving = Settings.get('historyEnabled');
     dim(limit, !saving);
@@ -114,6 +121,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   for (const [name, select] of [
     ['maxThreads', threads],
     ['maxChunkMiB', chunk],
+    ['maxFiles', files],
   ]) {
     select.addEventListener('change', () => {
       Settings.set(name, Number(select.value));

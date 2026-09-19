@@ -60,6 +60,7 @@
     <div class="footer__bar">
       <span
         >© <span id="footerYear"></span>&ensp;<a
+          class="footer__bar-link"
           href="https://www.github.com/voidfly-labs"
           target="_blank"
           rel="noopener noreferrer"
@@ -71,9 +72,15 @@
           >v<%= version %></span
         >
       </span>
-      <span><a href="/privacy">Privacy Policy</a>&ensp;·&ensp;<a href="/terms">Terms of Service</a></span>
+      <span
+        ><a class="footer__bar-link" href="/privacy">Privacy Policy</a>&ensp;·&ensp;<a
+          class="footer__bar-link"
+          href="/terms"
+          >Terms of Service</a
+        ></span
+      >
       <div class="footer__bar-right">
-        <a class="footer__report" href="mailto:report@voidfly.com">
+        <a class="footer__bar-link footer__report" href="mailto:report@voidfly.com">
           <svg class="footer__report-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
             <use href="/src/assets/images/icons.svg#icon-bug"></use>
           </svg>

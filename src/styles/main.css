@@ -60,6 +60,7 @@
 @import '../core/sections/text/text.css';
 @import '../core/sections/file/file-stats.css';
 @import '../core/sections/file/file.css';
+@import '../core/sections/file/file-list.css';
 @import '../core/sections/random/random.css';
 /* faq-search.css overrides the panel rules of faq.css, so it has to stay behind it */
 @import '../core/sections/faq/faq.css';
