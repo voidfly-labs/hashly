@@ -17,6 +17,15 @@ html.smooth-scroll {
   html.smooth-scroll {
     scroll-behavior: auto;
   }
+
+  /* Whatever slides, grows or fades takes no time. Transitions only: the animations that remain (the spinner,
+     the shimmer, the confirm button's countdown) show that something is happening, and each has its own rule
+     where it needs one. */
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
 }
 
 body {

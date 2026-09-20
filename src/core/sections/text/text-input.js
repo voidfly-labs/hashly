@@ -1,5 +1,6 @@
 import { initPasteButton } from '~core/features/input/paste-button.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
+import { scrollBehavior } from '~core/lib/motion.js';
 import { Hint } from '~core/ui/hint/hint.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
@@ -162,7 +163,7 @@ export function createTextInput({ onInput, onClear }) {
       el.focus({ preventScroll: true });
       const { top, bottom } = el.getBoundingClientRect();
       if (top < 0 || bottom > window.innerHeight) {
-        card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        card.closest('.section').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
       }
     },
 
@@ -171,7 +172,7 @@ export function createTextInput({ onInput, onClear }) {
     pasteText(raw) {
       moveCaretToEnd();
       insertText(raw);
-      card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      card.closest('.section').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     },
 
     /** Puts `text` in the field for the selected input format, minus what that format can't hold

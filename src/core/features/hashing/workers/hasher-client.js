@@ -9,7 +9,7 @@ import { createWorkerChannel } from './worker-channel.js';
 
 // File workers hold WebAssembly instances and read buffers, so a pool that has been idle this long is
 // stopped; the next file starts new ones (a moment's start-up, once).
-const POOL_IDLE_MS = 30_000;
+const POOL_IDLE_MS = 30000;
 
 const abortError = () => new DOMException('Aborted', 'AbortError');
 

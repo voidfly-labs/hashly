@@ -1,5 +1,6 @@
 import { trackPageDrag } from '~core/features/input/page-drag.js';
 import { Format } from '~core/lib/format.js';
+import { scrollBehavior } from '~core/lib/motion.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
@@ -84,7 +85,7 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
     accepts: (dt) => Boolean(dt?.types?.includes('Files')),
     onChange: (active, { internal }) => {
       drop.classList.toggle('file-drop--page-drag', active);
-      if (active && !internal) drop.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (active && !internal) drop.closest('.section').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     },
   });
 

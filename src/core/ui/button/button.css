@@ -62,8 +62,8 @@
 
 .btn--primary {
   color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
 }
 
 .btn--primary:hover {

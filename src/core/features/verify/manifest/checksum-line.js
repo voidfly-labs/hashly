@@ -7,13 +7,14 @@ export const BINARY_BYTE_RE = /^[01]{8}$/;
 
 const SEPARATOR = / {2,}|\t| \*/;
 
-const unescapeName = (name) => name.replaceAll(/\\([\\n])/g, (_, c) => (c === 'n' ? '\n' : '\\'));
+const UNESCAPED = { n: '\n', r: '\r', '\\': '\\' };
+const unescapeName = (name) => name.replaceAll(/\\([\\nr])/g, (_, c) => UNESCAPED[c]);
 
 /** Splits a checksum-file line at its separator: `{ digest, name }`, with `name` null when the line
  *  has none (a bare digest, or one with single-space groups). `name` is as written, bar the star. */
 export function splitChecksumLine(raw) {
   let line = raw.trim();
-  // A leading backslash says the name is escaped (`\\` and `\n`, as GNU writes a name holding either).
+  // A leading backslash says the name is escaped (`\\`, `\n` and `\r`, as GNU writes a name holding any of them).
   const escaped = line.startsWith('\\');
   if (escaped) line = line.slice(1);
   const at = line.search(SEPARATOR);

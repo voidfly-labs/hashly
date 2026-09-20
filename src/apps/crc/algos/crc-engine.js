@@ -203,7 +203,7 @@ export function createCrc({ width, poly, init, refin, xorout }) {
   let built = null; // the tables are made when first needed
 
   const create = () => {
-    built ??= buildTables({ width, poly, refin });
+    built = built ?? buildTables({ width, poly, refin });
     const { tbl, shift, limbOf } = built;
     const start = refin ? reflectBits(init, width) : init << shift;
     const s = new Uint32Array(limbs);

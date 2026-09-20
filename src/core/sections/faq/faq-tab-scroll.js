@@ -1,4 +1,5 @@
 import { iconHref } from '~core/lib/icon.js';
+import { scrollBehavior } from '~core/lib/motion.js';
 
 // How far a chevron click scrolls the strip, as a share of its visible width: far enough to
 // uncover new tabs, short enough that the last one in view stays in view as an anchor.
@@ -27,7 +28,7 @@ export function initTabScroll(wrap, tablist) {
     btn.innerHTML = `<svg viewBox="0 0 24 24"><use href="${iconHref('chevron-right')}"></use></svg>`;
     btn.addEventListener('click', () => {
       const sign = dir === 'next' ? 1 : -1;
-      tablist.scrollBy({ left: sign * tablist.clientWidth * PAGE_SHARE, behavior: 'smooth' });
+      tablist.scrollBy({ left: sign * tablist.clientWidth * PAGE_SHARE, behavior: scrollBehavior() });
     });
     return btn;
   };

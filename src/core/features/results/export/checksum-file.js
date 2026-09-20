@@ -1,9 +1,9 @@
 const HEX = /^[0-9a-f]+$/i;
 
-/** A name as GNU coreutils writes it when it holds a backslash or a newline: those are escaped
- *  (`\\`, `\n`) and the whole line gets a leading backslash, or `-c` would read the name wrong. */
-const needsEscape = (name) => /[\\\n]/.test(name);
-const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n');
+/** A name as GNU coreutils writes it when it holds a backslash, a newline or a carriage return: those
+ *  are escaped (`\\`, `\n`, `\r`) and the whole line gets a leading backslash, or `-c` would read the name wrong. */
+const needsEscape = (name) => /[\\\n\r]/.test(name);
+const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n').replaceAll('\r', '\\r');
 
 /** The file a "download hash" button should write for a named file, in the format `sha256sum -c`,
  *  `md5sum -c`, `b2sum -c` & co. read (GNU coreutils): one line `<digest>  <filename>`,
@@ -14,8 +14,8 @@ const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n
  *
  *  Every output format gets this layout, so downloads are named and shaped alike. Only a hex digest
  *  is something a checksum tool can read back; it is written in lowercase, the form every tool
- *  emits. A Base64 or binary digest is written as it is shown. A name with a backslash or newline in
- *  it is escaped the way coreutils does (see `escapeName`). */
+ *  emits. A Base64 or binary digest is written as it is shown. A name with a backslash, newline or
+ *  carriage return in it is escaped the way coreutils does (see `escapeName`). */
 export function toChecksumFile(hash, ext, sourceName) {
   if (!sourceName) return null;
   return { filename: `${sourceName}.${ext}`, content: `${checksumLine(hash, sourceName)}\n` };

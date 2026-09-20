@@ -1,4 +1,5 @@
 import { createBatchSources } from './batch-sources.js';
+import { clipFilename } from './clip-filename.js';
 import { createStoredJson } from './stored-json.js';
 
 const HEX = /^[0-9a-f]+$/;
@@ -25,7 +26,8 @@ function isEntry(e) {
  *  is the most entries it keeps (a setting, so asked each time).
  *
  *  Anything unreadable is dropped on load, not repaired: the next save writes back what is left. A
- *  write the browser refuses (quota, private mode) is skipped silently.
+ *  write the browser refuses for lack of quota drops the oldest entries until it fits (see `save`); any
+ *  other refusal (private mode) is skipped silently.
  *
  *  Other tabs of the app write the same keys. Every change first `load`s, which merges in what they
  *  saved (it only parses when the stored string differs from this tab's last, see ./stored-json.js),
@@ -35,8 +37,20 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile, limit
   const stored = createStoredJson(entriesKey);
   let entries = [];
 
+  /** Writes the entries. When the quota refuses them, the oldest half goes (repeatedly) until what is
+   *  left fits: the history shrinks to what the browser can hold instead of silently not being saved.
+   *  Any other failure (storage unavailable) keeps every entry in memory for the session. */
   function save() {
-    stored.write(entries);
+    let keep = entries.length;
+    let result = stored.write(entries);
+    while (result === 'full' && keep > 1) {
+      keep = Math.floor(keep / 2);
+      result = stored.write(entries.slice(0, keep));
+    }
+    if (result === 'ok' && keep < entries.length) {
+      entries.length = keep;
+      sources.keepOnly(new Set(entries.map((e) => e.batchId)));
+    }
   }
 
   /** Brings the entries and descriptions up to date with storage: what this tab last saw, plus
@@ -66,7 +80,7 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile, limit
           algo,
           batchId,
           ts: Date.now(),
-          filename: filename || '',
+          filename: clipFilename(filename),
         });
       }
       if (entries.length > limit()) entries.length = limit();

@@ -4,6 +4,7 @@ import { expandSection } from '~core/features/section-collapse/section-collapse.
 import { Settings } from '~core/features/settings/settings.js';
 import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
+import { scrollBehavior } from '~core/lib/motion.js';
 
 import { createFileDrop } from './drop/file-drop.js';
 import { createFileRows } from './file-rows.js';
@@ -16,7 +17,7 @@ import { createFileJobRunner } from './queue/file-job-runner.js';
 import { createJobView } from './queue/file-job-view.js';
 import { createFileQueue } from './queue/file-queue.js';
 import { createFileStatus } from './queue/file-status.js';
-import { describeDrop } from './queue/file-summary.js';
+import { describeComparison, describeDrop } from './queue/file-summary.js';
 
 let _APP_CONFIG, _ALGORITHMS;
 
@@ -58,6 +59,7 @@ export const FileSection = {
     _APP_CONFIG = APP_CONFIG;
     _ALGORITHMS = ALGORITHMS;
     const visibleAlgos = () => ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id));
+    const duplicateKey = createDuplicateKey({ algorithms: ALGORITHMS, isHidden: (id) => this.hiddenAlgos.has(id) });
 
     this._manifest = createManifestExport({
       algorithms: ALGORITHMS,
@@ -109,6 +111,8 @@ export const FileSection = {
       isHidden: (id) => this.hiddenAlgos.has(id),
       getManifestSummary: (manifest) =>
         describeManifest(manifest, this._queue.jobs, (job) => this._verify.verdictFor(job.rawHexMap, job.name)),
+      getFileNames: () => this._queue.jobs.map(({ name }) => name),
+      getComparison: () => describeComparison(this._queue.jobs, duplicateKey),
       onChange: () => this._renderList(),
     });
     this._view = createJobView({
@@ -129,7 +133,7 @@ export const FileSection = {
       onRemove: (id) => this._removeJob(id),
       onRetry: (id) => this._queue.retry(id),
       verdictOf: ({ rawHexMap, name }) => this._verify.verdictFor(rawHexMap, name),
-      keyOf: createDuplicateKey({ algorithms: _ALGORITHMS, isHidden: (id) => this.hiddenAlgos.has(id) }),
+      keyOf: duplicateKey,
       manifestRow: createManifestRow({
         onCopy: (button) => this._manifest.copy(button),
         onDownload: (button) => this._manifest.download(button),
@@ -197,7 +201,7 @@ export const FileSection = {
    *  into view since that's where the hashes appear. */
   pasteFile(file) {
     this._drop.mirrorInput([file]);
-    this._drop.section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this._drop.section.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     this.processFiles([{ file, path: file.name }]);
   },
 

@@ -8,6 +8,7 @@
   --surface-2: #ebedf0;
   --border: #c7cbd6;
   --accent: #4361ee;
+  --accent-fill: #4361ee; /* a fill under white text: the same in dark mode, where --accent is lighter */
   --accent-dim: #3651d4;
   --accent-muted: rgba(67, 97, 238, 0.07);
   --accent-surface: #f2f4fe; /* --accent-muted composited over --surface (#FFF); used

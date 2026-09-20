@@ -28,7 +28,7 @@ function formatRemaining(seconds) {
 }
 
 /** "<0.1 s", "4.2 s", "1 min 12 s". */
-export function formatElapsed(seconds) {
+function formatElapsed(seconds) {
   if (seconds < 0.05) return '<0.1 s';
   if (seconds < 60) return `${seconds.toFixed(1)} s`;
   const whole = Math.round(seconds);

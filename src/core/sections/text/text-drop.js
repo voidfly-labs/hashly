@@ -1,4 +1,5 @@
 import { trackPageDrag } from '~core/features/input/page-drag.js';
+import { scrollBehavior } from '~core/lib/motion.js';
 import { takesText } from '~core/lib/text-field.js';
 
 // Only text drags are handled; file drags are intentionally ignored so they still route to
@@ -19,7 +20,7 @@ export function initTextDrop({ card, onText }) {
     accepts: (dt) => Boolean(hasTextOnly(dt)),
     onChange: (active, { internal }) => {
       card.classList.toggle('card--text-drag', active);
-      if (active && !internal) card.closest('.section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (active && !internal) card.closest('.section').scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
     },
   });
 

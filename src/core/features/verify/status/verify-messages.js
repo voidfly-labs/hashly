@@ -1,7 +1,7 @@
 const MAX_NAMES = 3;
 
 /** "SHA-1, SHA-256, SHA3-256 +2 more" */
-export function listNames(ids) {
+function listNames(ids) {
   const shown = ids.slice(0, MAX_NAMES).join(', ');
   const more = ids.length - MAX_NAMES;
   return more > 0 ? `${shown} +${more} more` : shown;

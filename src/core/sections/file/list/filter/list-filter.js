@@ -11,9 +11,10 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
  *  makes it a duplicate of another (see ./duplicate-key.js), or null. `onChange()` runs after the
  *  visitor turns a filter on or off (which is also announced to screen readers).
  *
- *  Returns `{ apply, matches, twinsOf, active }`: `apply(jobs)` redraws the bar for `jobs` and returns the
+ *  Returns `{ apply, matches, twinNote, active }`: `apply(jobs)` redraws the bar for `jobs` and returns the
  *  ones to show, in the order to show them in; `matches(job)` says whether a job is among them (of the
- *  last `apply`), `twinsOf(job)` which other jobs are its duplicates, and `active` whether a filter is on.
+ *  last `apply`), `twinNote(job)` what the tooltip of a duplicate says of the files it is the same as, and
+ *  `active` whether a filter is on.
  *  Styles: ./list-filter.css. */
 export function createListFilter({ bar, verdictOf, keyOf, onChange }) {
   const chips = [...bar.querySelectorAll('.list-filter__chip')];
@@ -77,7 +78,15 @@ export function createListFilter({ bar, verdictOf, keyOf, onChange }) {
 
     matches: (job) => !only || Boolean(flags.get(job)?.[only]),
 
-    twinsOf: (job) => twins.get(job) ?? [],
+    /** What a duplicate's tooltip says, which file it is the same as ('' for a job that is not one). */
+    twinNote(job) {
+      const others = twins.get(job) ?? [];
+      if (!others.length) return '';
+      const rest = others.length - 1;
+      const count = rest === 1 ? '1 other' : `${rest} others`;
+      const more = rest ? ` and ${count}` : '';
+      return `Same as ${others[0].name}${more}`;
+    },
 
     apply(jobs) {
       const keys = analyse(jobs);

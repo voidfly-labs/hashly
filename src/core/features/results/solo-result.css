@@ -53,8 +53,8 @@
   padding: 6px 16px;
   font-weight: 600;
   color: #fff;
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--accent-fill);
+  border-color: var(--accent-fill);
 }
 
 .result--solo .result__actions .btn:first-child:hover {

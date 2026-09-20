@@ -2,7 +2,7 @@ import { Format } from '~core/lib/format.js';
 import { matchesTerms, searchTerms } from '~core/lib/search.js';
 
 /** How many rows a page of a history table has. */
-export const PAGE_SIZE = 10;
+const PAGE_SIZE = 10;
 
 /** The view of one history's entries that its popover shows: sorted, narrowed by a search, and cut
  *  into pages. It holds the search (the query as typed, and its words, see ~core/lib/search.js)

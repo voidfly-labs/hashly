@@ -62,7 +62,7 @@ function lineBreakNote(text) {
 
 /** The notes for `text` (UTF-8 input), as `[{ label, tip, tone? }]` in display order: hidden
  *  characters, padding, a trailing newline, then line breaks being LF. Empty for clean text. */
-export function textNotes(text) {
+function textNotes(text) {
   const found = edges(text);
   return [hiddenNote(text), paddedNote(found), newlineNote(found), lineBreakNote(text)].filter(Boolean);
 }

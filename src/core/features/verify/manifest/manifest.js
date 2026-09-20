@@ -57,24 +57,73 @@ export function parseManifest(text, hexLengths = new Set()) {
   return entries;
 }
 
-/** The entry for the file called `fileName` (its path, if it came in a folder): the one with that very
- *  name, else the one whose path ends the same way in the most folders (a list written in the
- *  folder's parent, or inside it), if one is ahead of the others, else the only one with that file
- *  name. Null when there is none or it is ambiguous. */
-export function findEntry(entries, fileName) {
-  const name = normalizeName(fileName);
-  const exact = entries.find((entry) => entry.name === name);
-  if (exact) return exact;
-  const related = entries.filter((entry) => endsAt(name, entry.name) || endsAt(entry.name, name));
-  const tail = (entry) => Math.min(segments(entry.name), segments(name));
+// What `resolveName` answers when two or more names fit equally well, as against null for none.
+const AMBIGUOUS = Symbol('ambiguous');
+const pick = (names) => (names.length === 1 ? names[0] : AMBIGUOUS);
+const asWritten = (text) => text;
+const lowerCase = (text) => text.toLowerCase();
+
+/** The names in `names` whose path ends the same way as `name`'s, in the most folders. */
+function closestNames(names, name, key) {
+  const related = names.filter((other) => endsAt(name, key(other)) || endsAt(key(other), name));
+  const tail = (other) => Math.min(segments(other), segments(name));
   const longest = Math.max(...related.map(tail));
-  const best = related.filter((entry) => tail(entry) === longest);
+  return related.filter((other) => tail(other) === longest);
+}
+
+/** The name in `names` (those of a list's entries) for the file called `fileName` (its path, if it came in
+ *  a folder): that very name, else the one whose path ends the same way in the most folders (a list
+ *  written in the folder's parent, or inside it), if one is ahead of the others, else the only one
+ *  with that file name. Null when there is none, `AMBIGUOUS` when several fit equally. `key` is what
+ *  names are compared by (as written, or lower case). */
+function resolveName(names, fileName, key = asWritten) {
+  const name = key(normalizeName(fileName));
+  const exact = names.filter((other) => key(other) === name);
+  if (exact.length) return pick(exact);
+  const best = closestNames(names, name, key);
   if (best.length === 1) return best[0];
-  const sameFile = entries.filter((entry) => baseName(entry.name) === baseName(name));
-  return sameFile.length === 1 ? sameFile[0] : null;
+  const sameFile = names.filter((other) => baseName(key(other)) === baseName(name));
+  if (sameFile.length === 1) return sameFile[0];
+  return best.length || sameFile.length ? AMBIGUOUS : null;
+}
+
+/** The entry name for `fileName` as `resolveName` says, or else, when nothing fits, the one that fits
+ *  without regard to case (a list made on Windows or macOS need not spell a name as the file does;
+ *  names that differ only in case stay two, as they are on Linux). Null when there is none or it is ambiguous. */
+function lookUpName(names, fileName) {
+  let name = resolveName(names, fileName);
+  if (name === null) name = resolveName(names, fileName, lowerCase);
+  return name === AMBIGUOUS ? null : name;
+}
+
+/** Which entries of a list each of the dropped files is listed under, as a `Map` from `fileNames` to
+ *  entries (a file a list holds under several algorithms has one for each). A file is listed under an
+ *  entry of its own path, or else, as `resolveName` says, under one that ends the same way (ignoring case,
+ *  if nothing does with it), which only
+ *  one file can have: where an entry is the path of one file it is not another's, and where several
+ *  files would end the same way as it, none is listed under it (`a/x.txt` and `b/x.txt` with an entry
+ *  `x.txt`). A file with no entry is left out. */
+export function assignEntries(entries, fileNames) {
+  const names = [...new Set(entries.map((entry) => entry.name))];
+  const paths = new Map(fileNames.map((fileName) => [fileName, normalizeName(fileName)]));
+  const own = new Set([...paths.values()].filter((path) => names.includes(path)));
+  const others = names.filter((name) => !own.has(name));
+  const claims = new Map(); // entry name → the files that end the same way as it
+  for (const [fileName, path] of paths) {
+    const name = own.has(path) ? null : lookUpName(others, fileName);
+    if (name !== null) claims.set(name, [...(claims.get(name) ?? []), fileName]);
+  }
+  const under = (name) => entries.filter((entry) => entry.name === name);
+  const assigned = new Map();
+  for (const [fileName, path] of paths) if (own.has(path)) assigned.set(fileName, under(path));
+  for (const [name, files] of claims) if (files.length === 1) assigned.set(files[0], under(name));
+  return assigned;
 }
 
 const FINISHED = new Set(['done', 'failed', 'stopped', 'skipped']);
+
+/** How many files `entries` are for: a list may hold a file once for each algorithm. */
+export const countFiles = (entries) => new Set(entries.map((entry) => entry.name)).size;
 
 /** What the notice says while a manifest of `count` files has no files to check yet. */
 function describeWaiting(count) {
@@ -84,23 +133,28 @@ function describeWaiting(count) {
 
 /** What a manifest says of the files of a queue, as `{ text, lead, kind }` for the notice under the
  *  field (see status/verify-messages.js). `verdictOf(job)` is 'match', 'mismatch', 'unlisted' (not in
- *  the list) or null (nothing to compare it with) for a finished job. A single file the list covers has
+ *  the list) or 'unchecked' (nothing to compare it with) for a finished job. A single file the list covers has
  *  the usual notice of its own, so that gives null. */
 export function describeManifest({ entries }, jobs, verdictOf) {
-  if (jobs.length === 1 && findEntry(entries, jobs[0].name)) return null;
-  if (!jobs.length) return { text: describeWaiting(entries.length) };
+  const assigned = assignEntries(
+    entries,
+    jobs.map((job) => job.name),
+  );
+  const entriesOf = (job) => assigned.get(job.name) ?? [];
+  if (jobs.length === 1 && entriesOf(jobs[0]).length) return null;
+  if (!jobs.length) return { text: describeWaiting(countFiles(entries)) };
   const finished = jobs.filter((job) => FINISHED.has(job.status));
   if (jobs.length > 1 && finished.length < jobs.length)
     return { text: `Checking – ${finished.length} of ${jobs.length} files` };
 
   const tally = { match: 0, mismatch: 0, unlisted: 0, unchecked: 0 };
   for (const job of jobs) {
-    if (!findEntry(entries, job.name)) tally.unlisted++;
-    else if (job.status === 'done') tally[verdictOf(job) ?? 'unchecked']++;
+    if (!entriesOf(job).length) tally.unlisted++;
+    else if (job.status === 'done') tally[verdictOf(job)]++;
     else tally.unchecked++;
   }
-  const listed = new Set(jobs.map((job) => findEntry(entries, job.name)).filter(Boolean));
-  const missing = entries.length - listed.size;
+  const listed = new Set(jobs.flatMap(entriesOf).map((entry) => entry.name));
+  const missing = countFiles(entries) - listed.size;
 
   const parts = [
     [tally.match, 'match'],

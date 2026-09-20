@@ -3,7 +3,7 @@ import { mergeManifests, parseManifest } from '~core/features/verify/manifest/ma
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.
-export const MAX_REFERENCE_BYTES = 256 * 1024;
+const MAX_REFERENCE_BYTES = 256 * 1024;
 // A real reference line is far shorter; this just keeps garbage out of the field.
 const MAX_LINE_LENGTH = 1024;
 
@@ -23,7 +23,7 @@ function _parseLine(raw) {
  *  prefer the line for `fileName` (the file being hashed); otherwise the first
  *  line. Blank lines and `#` / `;` comments are skipped. Returns '' for a file
  *  with nothing in it. */
-export function pickReferenceLine(text, fileName = '') {
+function pickReferenceLine(text, fileName = '') {
   const entries = text
     .split(/\r?\n/)
     .map((raw) => raw.trim())
@@ -39,7 +39,7 @@ export function pickReferenceLine(text, fileName = '') {
 /** The text of `buffer`. UTF-16 is read when its byte order mark says so: Windows PowerShell's `>`
  *  and `Out-File` write checksum lists that way, and read as UTF-8 they come out as nothing but NULs.
  *  Anything else is UTF-8 (a BOM there is dropped by the decoder). */
-export function decodeText(buffer) {
+function decodeText(buffer) {
   const [a, b] = new Uint8Array(buffer, 0, Math.min(2, buffer.byteLength));
   if (a === 0xff && b === 0xfe) return new TextDecoder('utf-16le').decode(buffer);
   if (a === 0xfe && b === 0xff) return new TextDecoder('utf-16be').decode(buffer);
@@ -49,7 +49,7 @@ export function decodeText(buffer) {
 /** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the reference to use,
  *  `{ manifest }` for a list of several files (see ../manifest.js), or `{ error }` with a message for the
  *  user when it can't be used. `hexLengths` are the digest lengths of the app (see ../manifest.js). */
-export async function readReferenceFile(file, fileName = '', hexLengths) {
+async function readReferenceFile(file, fileName = '', hexLengths) {
   if (file.size > MAX_REFERENCE_BYTES) {
     return { error: `File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
   }
@@ -73,7 +73,7 @@ export async function readReferenceFiles(files, fileName = '', hexLengths) {
   if (files.length === 1) return readReferenceFile(files[0], fileName, hexLengths);
   const lists = await Promise.all(files.map((file) => readManifest(file, hexLengths)));
   const manifest = mergeManifests(lists.filter(Boolean));
-  return manifest ? { manifest } : { error: 'None of those files is a checksum list' };
+  return manifest ? { manifest } : { error: 'No hash manifests detected' };
 }
 
 /** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is

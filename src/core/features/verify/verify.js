@@ -7,7 +7,7 @@ import { createVerifyStatus } from '~core/features/verify/status/verify-status.j
 import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
-import { findEntry, hexLengthsOf } from './manifest/manifest.js';
+import { assignEntries, hexLengthsOf } from './manifest/manifest.js';
 import { parseReference } from './reference.js';
 
 /** Reference-hash field for a results list. The reference's size says which
@@ -23,7 +23,11 @@ import { parseReference } from './reference.js';
  *
  *  The field may instead hold a checksum list of several files (`setManifest`, or one uploaded or dropped
  *  on it): each file is then checked against its own line, and `getManifestSummary(manifest)` says
- *  what the notice shows for the files together (null to show the one for the file on view).
+ *  what the notice shows for the files together (null to show the one for the file on view), and
+ *  `getFileNames()` the names of all the files, so that a list entry is not taken by two of them.
+ *
+ *  With nothing in the field, `getComparison()` may say something about the files themselves ({ text }, or
+ *  null), as the neutral notice.
  *
  *  `onChange()` is called whenever what the field says changes. */
 export function createVerify({
@@ -33,6 +37,8 @@ export function createVerify({
   isHidden,
   getFileName = () => '',
   getManifestSummary = () => null,
+  getFileNames = () => [],
+  getComparison = () => null,
   onChange = () => {},
 }) {
   const input = root.querySelector('.verify__input');
@@ -47,10 +53,28 @@ export function createVerify({
   // A checksum list of several files, `{ name, entries }`, or null: the reference is then one line of it.
   let manifest = null;
 
-  /** The reference that `fileName` is to be compared with: the field's, or its line of the manifest. */
-  function _referenceFor(fileName) {
+  // Which manifest entries go with which files, for the manifest and the files it was last worked out for.
+  let assignment = null;
+
+  /** The entries of the manifest that go with `fileName`, among the files `getFileNames()` gives. */
+  function _entriesFor(fileName) {
+    const names = getFileNames();
+    const all = names.includes(fileName) ? names : [...names, fileName];
+    const key = all.join('\n');
+    if (assignment?.manifest !== manifest || assignment.key !== key) {
+      assignment = { manifest, key, map: assignEntries(manifest.entries, all) };
+    }
+    return assignment.map.get(fileName) ?? [];
+  }
+
+  /** The reference that `fileName` is to be compared with: the field's, or its line of the manifest. A
+   *  file the manifest lists under several algorithms has several: the one of a size that `hasDigest(id)`
+   *  says an algorithm has a digest for is taken, else the first. */
+  function _referenceFor(fileName, hasDigest = (id) => !isHidden(id)) {
     if (!manifest) return parseReference(input.value);
-    const entry = findEntry(manifest.entries, fileName);
+    const entries = _entriesFor(fileName);
+    const fits = (entry) => algorithms.some(({ id, hexLen }) => hexLen === entry.hex.length && hasDigest(id));
+    const entry = entries.find(fits) ?? entries[0];
     return entry ? { hex: entry.hex } : null;
   }
 
@@ -89,7 +113,10 @@ export function createVerify({
 
   /** What the notice says: for a manifest, the files together, or the file on view with its line. */
   function _describe(result) {
-    if (!manifest) return describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()) });
+    if (!manifest) {
+      const hasInput = Boolean(input.value.trim());
+      return (!hasInput && getComparison()) || describeVerifyState({ ...result, hasInput });
+    }
     const summary = getManifestSummary(manifest);
     if (summary) return summary;
     return describeVerifyState({ ...result, hasInput: true });
@@ -194,13 +221,13 @@ export function createVerify({
       render();
     },
     /** What the reference says of the file `fileName`, whose finished digests are `fileDigests`
-     *  (`Map<algoId, hex>`): 'match', 'mismatch', 'unlisted' (a manifest without the file), or null when
-     *  there is no reference or none of its size among the digests. */
+     *  (`Map<algoId, hex>`): 'match', 'mismatch', 'unlisted' (a manifest without the file), 'unchecked' (a
+     *  reference, but none of its size among the digests), or null when there is no reference. */
     verdictFor(fileDigests, fileName) {
-      const ref = _referenceFor(fileName);
+      const ref = _referenceFor(fileName, (id) => fileDigests.has(id));
       if (!ref) return manifest ? 'unlisted' : null;
       const same = algorithms.filter(({ id, hexLen }) => hexLen === ref.hex.length && fileDigests.has(id));
-      if (!same.length) return null;
+      if (!same.length) return 'unchecked';
       return same.some(({ id }) => fileDigests.get(id).toLowerCase() === ref.hex) ? 'match' : 'mismatch';
     },
     refresh: render,

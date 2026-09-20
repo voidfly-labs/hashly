@@ -18,7 +18,7 @@ const MIN_DIFF_ALLOWED = 2;
  *  `[{ length, differs }]` covering the whole digest, or null when they are
  *  identical, differ in length, or differ too much to be worth marking.
  *  `hex` is the digest (lowercase) the runs were computed against. */
-export function diffHex(reference, digest) {
+function diffHex(reference, digest) {
   const a = reference.toLowerCase();
   const b = digest.toLowerCase();
   if (a.length !== b.length || a === b) return null;

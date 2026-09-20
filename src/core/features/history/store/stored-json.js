@@ -1,3 +1,10 @@
+// Firefox names its quota error differently, and old engines only set the code.
+const isQuotaError = (error) =>
+  error?.name === 'QuotaExceededError' ||
+  error?.name === 'NS_ERROR_DOM_QUOTA_REACHED' ||
+  error?.code === 22 ||
+  error?.code === 1014;
+
 /** One JSON value in localStorage that several tabs of the same app may write.
  *
  *  `read()` is cheap while nobody else has written: it fetches the stored string and compares it
@@ -32,7 +39,8 @@ export function createStoredJson(key) {
       }
     },
 
-    /** Stores `value`, or removes the key for `null`. */
+    /** Stores `value`, or removes the key for `null`. Returns `'ok'`, `'full'` when the browser refused
+     *  it for lack of quota (a smaller value may fit) or `'failed'` for any other reason. */
     write(value) {
       try {
         if (value === null) {
@@ -43,8 +51,10 @@ export function createStoredJson(key) {
           localStorage.setItem(key, raw);
           seen = raw;
         }
-      } catch {
-        /* storage full or unavailable: skip, the caller keeps it in memory */
+        return 'ok';
+      } catch (error) {
+        // Storage full or unavailable: skip, the caller keeps it in memory.
+        return isQuotaError(error) ? 'full' : 'failed';
       }
     },
   };

@@ -1,23 +1,6 @@
-import { el } from '~core/lib/dom.js';
-import { Format } from '~core/lib/format.js';
-import { svgIcon } from '~core/lib/icon.js';
-import { createIconButton } from '~core/ui/icon-button/icon-button.js';
-import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
-import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
-
 import { createListFilter } from './filter/list-filter.js';
-
-const STATE_LABELS = {
-  queued: 'waiting',
-  hashing: 'hashing',
-  done: 'done',
-  failed: 'failed',
-  stopped: 'stopped',
-  skipped: 'nothing to hash',
-};
-// How far from the edge of the list a row is scrolled to.
-const REVEAL_GAP = 4;
-const VERDICT_LABELS = { match: 'Match', mismatch: 'No match', unlisted: 'Not listed' };
+import { createListLine } from './list-line.js';
+import { createListNavigation } from './list-navigation.js';
 
 /** The list of files of a multi-file drop (see file.html), one line per job: its name and size, how it
  *  is doing, what the reference hash says of it, and a button to take it out (or stop it), with another
@@ -32,6 +15,8 @@ const VERDICT_LABELS = { match: 'Match', mismatch: 'No match', unlisted: 'Not li
  *
  *  The list is one stop for the Tab key (the selected line); ↑ ↓ Home and End move the selection, and
  *  Delete takes the line out. The ✕ buttons are for the pointer and assistive technology.
+ *
+ *  A line is ./list-line.js, the keys and the scrolling ./list-navigation.js.
  *
  *  Returns `{ render, setProgress }`. `render({ jobs, selectedId, manifest })` brings the list up to date. Lines
  *  are kept between renders, so the focus stays where it is while a run changes their
@@ -49,7 +34,7 @@ export function createFileList({
   keyOf,
   manifestRow,
 }) {
-  const lines = new Map(); // job id → { item, select, status, verdict, bar, retry, remove }
+  const lines = new Map(); // job id → line, see ./list-line.js
   let jobs = [];
   // The jobs on show: all of them, or those of the filter that is on.
   let shown = [];
@@ -67,59 +52,13 @@ export function createFileList({
       draw();
     },
   });
-
-  function build(job) {
-    const item = el('li', 'file-list__item');
-    item.dataset.job = job.id;
-    const select = el('button', 'file-list__select');
-    select.type = 'button';
-    select.setAttribute('aria-keyshortcuts', 'Delete');
-    const status = el('span', 'file-list__status');
-    status.setAttribute('aria-hidden', 'true');
-    status.append(el('span', 'spinner file-list__spinner'), svgIcon('check'), svgIcon('close'), svgIcon('warning'));
-    const verdict = el('span', 'file-list__verdict');
-    verdict.setAttribute('aria-hidden', 'true');
-    select.append(
-      status,
-      el('span', 'file-list__name', job.name),
-      verdict,
-      el('span', 'file-list__size', Format.fileSize(job.size)),
-    );
-    // The full name, for a long one the row cuts off, and which files it is a duplicate of: on hover, and for a
-    // while after a tap.
-    const tip = () => [job.name, twinNote(job)].filter(Boolean).join('\n');
-    initButtonTooltip(select, tip, { hideOnClick: false });
-    select.addEventListener('click', (e) => {
-      Tooltip.show(select, tip(), e.pointerType === 'mouse' ? undefined : TAP_TOOLTIP_MS);
-      onSelect(job.id);
-    });
-
-    const remove = createIconButton({
-      icon: 'close',
-      label: 'Remove',
-      tip: () => (job.status === 'hashing' ? 'Stop and remove' : 'Remove'),
-      danger: true,
-      className: 'file-list__remove',
-      onClick: () => onRemove(job.id),
-    });
-    remove.tabIndex = -1;
-
-    const retry = createIconButton({
-      icon: 'refresh',
-      label: 'Retry',
-      className: 'file-list__retry',
-      onClick: () => {
-        onRetry(job.id);
-        select.focus();
-      },
-    });
-    retry.tabIndex = -1;
-    retry.hidden = true;
-
-    const bar = el('span', 'file-list__bar');
-    item.append(select, retry, remove, bar);
-    return { item, select, status, verdict, bar, retry, remove };
-  }
+  const { reveal } = createListNavigation({
+    root,
+    getShown: () => shown,
+    getLine: (id) => lines.get(id),
+    onSelect,
+    onRemove,
+  });
 
   /** Shows the manifest row at the end of the list, or takes it out when there is no manifest. */
   function renderManifest(manifest) {
@@ -134,46 +73,18 @@ export function createFileList({
   }
 
   function lineFor(job) {
-    if (!lines.has(job.id)) lines.set(job.id, build(job));
+    if (!lines.has(job.id)) {
+      lines.set(
+        job.id,
+        createListLine(job, {
+          noteOf: () => listFilter.twinNote(job),
+          onSelect: () => onSelect(job.id),
+          onRemove: () => onRemove(job.id),
+          onRetry: () => onRetry(job.id),
+        }),
+      );
+    }
     return lines.get(job.id);
-  }
-
-  /** Brings one line up to date with its job. */
-  function update(line, job, selected) {
-    const verdict = job.status === 'done' ? verdictOf(job) : null;
-    line.item.classList.toggle('file-list__item--selected', selected);
-    line.item.classList.toggle('file-list__item--hashing', job.status === 'hashing');
-    line.select.tabIndex = selected ? 0 : -1;
-    if (selected) line.select.setAttribute('aria-current', 'true');
-    else line.select.removeAttribute('aria-current');
-    line.status.dataset.state = job.status;
-    line.status.toggleAttribute('data-judged', Boolean(verdict));
-    line.verdict.dataset.verdict = verdict ?? '';
-    line.verdict.textContent = verdict ? VERDICT_LABELS[verdict] : '';
-    const spoken = [job.name, Format.fileSize(job.size), STATE_LABELS[job.status], verdict && VERDICT_LABELS[verdict]];
-    line.select.setAttribute('aria-label', spoken.filter(Boolean).join(', '));
-    line.remove.setAttribute('aria-label', `${job.status === 'hashing' ? 'Stop and remove' : 'Remove'} ${job.name}`);
-    line.retry.hidden = job.status !== 'failed';
-    line.retry.setAttribute('aria-label', `Retry ${job.name}`);
-    if (job.status !== 'hashing') line.bar.style.transform = 'scaleX(0)';
-  }
-
-  /** Scrolls the list (not the page) just far enough to show `item`, with its gap to the edge. */
-  function reveal(item) {
-    const top = item.offsetTop - REVEAL_GAP;
-    const bottom = item.offsetTop + item.offsetHeight + REVEAL_GAP;
-    if (top < root.scrollTop) root.scrollTop = top;
-    else if (bottom > root.scrollTop + root.clientHeight) root.scrollTop = bottom - root.clientHeight;
-  }
-
-  /** Which files `job` is a duplicate of, for its tooltip. */
-  function twinNote(job) {
-    const twins = listFilter.twinsOf(job);
-    if (!twins.length) return '';
-    const rest = twins.length - 1;
-    const others = rest === 1 ? '1 other' : `${rest} others`;
-    const more = rest ? ` and ${others}` : '';
-    return `Same as ${twins[0].name}${more}`;
   }
 
   /** Puts the lines in the order of `order`, moving only those that are not already in place (a move
@@ -188,32 +99,6 @@ export function createFileList({
       previous = item;
     }
   }
-
-  function focusJob(id) {
-    const line = lines.get(id);
-    line?.select.focus();
-    if (line) reveal(line.item);
-  }
-
-  // Arrow keys move the selection (and so the digests shown), Delete takes a file out.
-  root.addEventListener('keydown', (e) => {
-    const item = e.target.closest?.('.file-list__select')?.parentNode;
-    if (!item) return;
-    const index = shown.findIndex((job) => job.id === Number(item.dataset.job));
-    const target = { ArrowDown: index + 1, ArrowUp: index - 1, Home: 0, End: shown.length - 1 }[e.key];
-    if (target !== undefined) {
-      e.preventDefault();
-      const job = shown[target];
-      if (!job) return;
-      onSelect(job.id);
-      focusJob(job.id);
-    } else if (e.key === 'Delete') {
-      e.preventDefault();
-      const next = shown[index + 1] ?? shown[index - 1];
-      onRemove(shown[index].id);
-      if (next) focusJob(next.id);
-    }
-  });
 
   /** Brings the list up to date with `jobs` and the state of the filter. */
   function draw() {
@@ -234,7 +119,7 @@ export function createFileList({
       const line = lineFor(job);
       const selected = job.id === selectedId;
       line.item.hidden = !onShow.has(job.id);
-      update(line, job, selected);
+      line.update(job, { selected, verdict: job.status === 'done' ? verdictOf(job) : null });
       if (selected && job.status === 'hashing' && !line.item.hidden) reveal(line.item);
     }
     renderManifest(jobs.length > 1 ? manifest : null);
@@ -248,8 +133,7 @@ export function createFileList({
     },
 
     setProgress(id, ratio) {
-      const line = lines.get(id);
-      if (line) line.bar.style.transform = `scaleX(${ratio})`;
+      lines.get(id)?.setProgress(ratio);
     },
   };
 }

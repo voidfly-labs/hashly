@@ -66,7 +66,7 @@ export default [
   {
     files: ['src/core/**/*.js', 'src/apps/**/*.js'],
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2020,
       sourceType: 'module',
       globals: globals.browser,
     },

@@ -16,7 +16,7 @@ import { createStallWatchdog } from './stall-watchdog.js';
 let nextId = 0;
 
 // How long a request may hear nothing from its worker, and how often that is looked at.
-const STALL_MS = 30_000;
+const STALL_MS = 30000;
 const CHECK_MS = 5000;
 
 export function createWorkerChannel(worker, { stallMs = STALL_MS, checkMs = CHECK_MS } = {}) {

@@ -7,6 +7,18 @@ export function describeDrop(jobs) {
   return { name: `${jobs.length} files`, size: jobs.reduce((sum, { size }) => sum + size, 0) };
 }
 
+/** What the files of the queue say of one another when no reference is set, as `{ text, lead }` for the
+ *  notice under the Verify field, or null: that they are all identical. Different files are the usual case
+ *  and get no notice. `keyOf(job)` is what makes a file the same as another (see
+ *  ../list/filter/duplicate-key.js), null where nothing can be said, as for an empty file or with only a
+ *  short checksum shown. Said once every file is hashed. */
+export function describeComparison(jobs, keyOf) {
+  if (jobs.length < 2 || jobs.some(({ status }) => status !== 'done')) return null;
+  const keys = jobs.map(keyOf);
+  if (keys.includes(null) || !keys.every((key) => key === keys[0])) return null;
+  return { text: `Identical – all ${jobs.length} files`, lead: 'Identical' };
+}
+
 /** How a queue of several files ended, as `{ text, state }` for the status line (`state` as in the
  *  drop zone's `setStats`): the same line as for one file, over the files that were hashed, with the
  *  time the whole queue took, over `threads` threads (the most any of its files used, if left out). A
