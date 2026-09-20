@@ -1,10 +1,10 @@
+import { el } from '~core/lib/dom.js';
 import { Format } from '~core/lib/format.js';
 import { svgIcon } from '~core/lib/icon.js';
 import { createIconButton } from '~core/ui/icon-button/icon-button.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
 
-import { el } from './dom.js';
 import { createListFilter } from './filter/list-filter.js';
 
 const STATE_LABELS = {

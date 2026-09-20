@@ -1,6 +1,6 @@
 import { Format } from '~core/lib/format.js';
 
-import { BINARY_BYTE_RE, splitChecksumLine } from './checksum-line.js';
+import { BINARY_BYTE_RE, splitChecksumLine } from './manifest/checksum-line.js';
 
 const HEX_RE = /^(?:0x)?[\da-f]+$/i;
 const BASE64_RE = /^[\w+/-]+={0,2}$/;

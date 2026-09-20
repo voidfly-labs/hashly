@@ -1,5 +1,6 @@
+import { parseReference } from '~core/features/verify/reference.js';
+
 import { parseChecksumLine } from './checksum-line.js';
-import { parseReference } from './reference.js';
 
 // What a list of the checksums of many files is usually called: SHA256SUMS, sha256sum.txt, SHASUMS256.txt,
 // checksums.txt. Only a hint, the text is read before it is taken for one. A checksum file named after

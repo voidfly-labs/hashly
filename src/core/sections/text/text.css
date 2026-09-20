@@ -2,7 +2,7 @@
        TEXT INPUT
        ========================================================================= */
 /* The focus ring, border + padding and dismiss-button anchor come from
-       .input-wrap (core/ui/input-wrap.css). */
+       .input-wrap (core/ui/input-wrap/input-wrap.css). */
 .text-input__wrap {
   /* Bottom corners square, not rounded — the wrap sits flush against
        #textResults below (no gap, by design; see result.css) so a rounded

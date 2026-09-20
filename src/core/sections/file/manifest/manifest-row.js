@@ -1,6 +1,6 @@
+import { el } from '~core/lib/dom.js';
 import { Format } from '~core/lib/format.js';
 import { svgIcon } from '~core/lib/icon.js';
-import { el } from '~core/sections/file/dom.js';
 import { createIconButton } from '~core/ui/icon-button/icon-button.js';
 
 /** The last row of the file list: the checksum file of all the files (see manifest-export.js), with its

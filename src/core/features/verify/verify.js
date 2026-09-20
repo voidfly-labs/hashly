@@ -4,10 +4,10 @@ import { initReferenceFileButton } from '~core/features/verify/reference-file/re
 import { initReferenceFileDrop } from '~core/features/verify/reference-file/reference-file-drop.js';
 import { describeVerifyState } from '~core/features/verify/status/verify-messages.js';
 import { createVerifyStatus } from '~core/features/verify/status/verify-status.js';
-import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder.js';
+import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
-import { findEntry, hexLengthsOf } from './manifest.js';
+import { findEntry, hexLengthsOf } from './manifest/manifest.js';
 import { parseReference } from './reference.js';
 
 /** Reference-hash field for a results list. The reference's size says which

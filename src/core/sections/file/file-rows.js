@@ -1,4 +1,3 @@
-import { createHashProgress } from '~core/features/results/hash-progress.js';
 import { setHashEmpty } from '~core/features/results/result.js';
 import {
   buildResultRow,
@@ -10,6 +9,7 @@ import {
 } from '~core/features/results/result-row.js';
 import { removeSkeleton } from '~core/features/results/skeleton/skeleton.js';
 import { Format } from '~core/lib/format.js';
+import { createHashProgress } from '~core/sections/file/hash-progress.js';
 
 /** The result rows of the File section, one per algorithm, appended to `resultsEl`, and what each
  *  says as a file is hashed: a progress bar while computing, then its digest, or why there is none.
@@ -63,7 +63,7 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
     show: (id, digest) => showRow(rows.get(id), digest, emptyText()),
 
     /** Enters computing state: each visible row shows a progress fill and its hash cell scrambled
-     *  characters in place of the digest (see features/results/hash-progress.js). */
+     *  characters in place of the digest (see sections/file/hash-progress.js). */
     startComputing() {
       for (const { id } of visible()) {
         const els = rows.get(id);

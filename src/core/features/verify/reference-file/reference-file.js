@@ -1,5 +1,5 @@
-import { parseChecksumLine } from '~core/features/verify/checksum-line.js';
-import { mergeManifests, parseManifest } from '~core/features/verify/manifest.js';
+import { parseChecksumLine } from '~core/features/verify/manifest/checksum-line.js';
+import { mergeManifests, parseManifest } from '~core/features/verify/manifest/manifest.js';
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.

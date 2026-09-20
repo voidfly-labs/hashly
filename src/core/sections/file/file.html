@@ -78,13 +78,13 @@
               <span id="fileNameText" class="file-drop__filename-name"></span>
               <span class="file-drop__filesize" id="fileSize"></span>
             </div>
-            <%- include('/src/core/sections/file/file-stats.html') %>
+            <%- include('/src/core/sections/file/drop/file-stats.html') %>
           </div>
 
           <!-- The files of a multi-file drop, built by FileSection (file-list.js); the manifest row stands
                below the scrolling list, so the scrollbar never crosses it -->
           <div class="file-list-box" id="fileListBox" hidden>
-            <%- include('/src/core/sections/file/filter/list-filter.html') %>
+            <%- include('/src/core/sections/file/list/filter/list-filter.html') %>
             <ul class="file-list" id="fileList" aria-label="Files"></ul>
             <ul class="file-list-manifest" id="fileManifest" aria-label="Checksum list"></ul>
           </div>

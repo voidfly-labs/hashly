@@ -2,21 +2,21 @@ import { rememberRadioGroup } from '~core/features/preferences/saved-view.js';
 import { createResultsPanel } from '~core/features/results/results-panel.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { Settings } from '~core/features/settings/settings.js';
-import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest.js';
+import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
 
-import { createFileDrop } from './file-drop.js';
-import { createFileJobRunner } from './file-job-runner.js';
-import { createJobView } from './file-job-view.js';
-import { createFileList } from './file-list.js';
-import { createFileQueue } from './file-queue.js';
+import { createFileDrop } from './drop/file-drop.js';
 import { createFileRows } from './file-rows.js';
-import { createFileStatus } from './file-status.js';
-import { describeDrop } from './file-summary.js';
-import { createDuplicateKey } from './filter/duplicate-key.js';
+import { createFileList } from './list/file-list.js';
+import { createDuplicateKey } from './list/filter/duplicate-key.js';
 import { createManifestExport } from './manifest/manifest-export.js';
 import { createManifestRow } from './manifest/manifest-row.js';
 import { takeManifest } from './manifest/take-manifest.js';
+import { createFileJobRunner } from './queue/file-job-runner.js';
+import { createJobView } from './queue/file-job-view.js';
+import { createFileQueue } from './queue/file-queue.js';
+import { createFileStatus } from './queue/file-status.js';
+import { describeDrop } from './queue/file-summary.js';
 
 let _APP_CONFIG, _ALGORITHMS;
 
@@ -24,11 +24,11 @@ let _APP_CONFIG, _ALGORITHMS;
 const NO_DIGESTS = new Map();
 
 /** The File section: hashes the files of a drop, as many at a time as the thread budget has room for,
- *  with every visible algorithm, and shows the digests of the selected one. The drop zone is ./file-drop.js, the queue of files
- *  ./file-queue.js (and its list ./file-list.js), the rows ./file-rows.js (with what they share with the
- *  Text section, in features/results/results-panel.js), how a file looks on them ./file-job-view.js, the
- *  pass that reads a file ./file-run.js, what is said about the files as they go ./file-status.js and
- *  the hashing of each of them ./file-job-runner.js. */
+ *  with every visible algorithm, and shows the digests of the selected one. The drop zone is ./drop/file-drop.js, the queue of files
+ *  ./queue/file-queue.js (and its list ./list/file-list.js), the rows ./file-rows.js (with what they share with the
+ *  Text section, in features/results/results-panel.js), how a file looks on them ./queue/file-job-view.js, the
+ *  pass that reads a file ./queue/file-run.js, what is said about the files as they go ./queue/file-status.js and
+ *  the hashing of each of them ./queue/file-job-runner.js. */
 export const FileSection = {
   hiddenAlgos: new Set(),
   _queue: null,

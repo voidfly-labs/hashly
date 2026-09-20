@@ -8,7 +8,7 @@ import { describeQueueEnd } from './file-summary.js';
  *  zone, and for a queue of several files the progress of them all together (./file-queue-progress.js,
  *  the status line and the tab's title) and how it ended.
  *
- *  `queue` is ./file-queue.js, `drop` ./file-drop.js, `Hasher` the app's client and `visibleAlgos()` the
+ *  `queue` is ./file-queue.js, `drop` ../drop/file-drop.js, `Hasher` the app's client and `visibleAlgos()` the
  *  algorithms a file is hashed with.
  *
  *  Returns `{ aggregating, setJobStats, update, resetTitle, refresh, clear, onQueueStart, onQueueDone }`. */

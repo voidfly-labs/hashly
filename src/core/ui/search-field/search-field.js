@@ -1,5 +1,5 @@
 import { iconHref } from '~core/lib/icon.js';
-import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder.js';
+import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
 // Mouse-and-keyboard devices only: on a phone, focusing the field on open raises the keyboard

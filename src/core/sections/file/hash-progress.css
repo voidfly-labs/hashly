@@ -1,15 +1,10 @@
 /* ── Hash progress ────────────────────────────────────────────────────────
-       While a file is hashed, each row's hash cell (see core/features/results/hash-progress.js)
+       While a file is hashed, each row's hash cell (see core/sections/file/hash-progress.js)
        holds a bar and its percentage. The row is as tall as the bar and grows to the
        digest's height when it lands, as a text hash's row does. The fill moves by transform,
        which runs on the compositor and stays smooth while the main thread is busy
        hashing. */
-.result--computing {
-  cursor: default;
-}
-
 .result__hash--computing {
-  cursor: default;
   user-select: none;
 }
 

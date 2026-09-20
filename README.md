@@ -36,7 +36,7 @@ _"The best tool for the job is often the simplest one."_
 Hashly uses no frameworks, component libraries, or CDN dependencies.
 Vendor libraries are used for hash calculation only, as WASM-backed implementations
 offer significant performance gains over pure JS. Graphics are all SVG-based, keeping the bundle
-lightweight. The target budget is 150–250 kB per app, fully loaded.
+lightweight. The target budget is 200–300 kB per app, fully loaded.
 
 ## Requirements
 

@@ -10,7 +10,7 @@ import { Tooltip } from '~core/ui/tooltip/tooltip.js';
  *  file holds one algorithm's digests, so there is none when more than one is visible.
  *
  *  `algorithms` are the app's, `isHidden(id)` says whether one is hidden, `getJobs()` the files of the
- *  queue (see ../file-queue.js), `getFormat()` the output format the digests are written in, and
+ *  queue (see ../queue/file-queue.js), `getFormat()` the output format the digests are written in, and
  *  `slugify(id)` the app's slug of an algorithm (the file's name comes from it).
  *
  *  Returns `{ row, copy, download }`:

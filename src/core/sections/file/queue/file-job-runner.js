@@ -8,7 +8,7 @@ import { startFileRun } from './file-run.js';
  *  file on show, on `rows` and `view` (./file-job-view.js).
  *
  *  `Hasher` is the app's client, `hiddenAlgos` the section's Set of hidden ids, `visibleAlgos()` the
- *  algorithms a file is hashed with and `list` ./file-list.js. */
+ *  algorithms a file is hashed with and `list` ../list/file-list.js. */
 export function createFileJobRunner({
   algorithms,
   Hasher,
