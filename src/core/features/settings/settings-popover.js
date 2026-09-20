@@ -23,7 +23,7 @@ const HINTS = {
   settingsMaxThreads: 'Parallel hashing. Helps with multiple algorithms enabled.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
-  settingsMaxFiles: 'Files accepted from one drop.',
+  settingsMaxFiles: 'Files accepted from a single drop.',
 };
 
 const fillSelect = (select, options) => {

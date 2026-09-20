@@ -45,10 +45,7 @@ export const TextSection = {
       getItems: () =>
         _ALGORITHMS
           .filter(({ id }) => !this.hiddenAlgos.has(id))
-          .map(({ id }) => ({
-            hash: this._formattedHash(id),
-            algo: id,
-          })),
+          .map(({ id }) => ({ hash: this.rawHexMap.get(id), algo: id })),
     });
     this._hidden = createHiddenAlgos({
       algorithms: _ALGORITHMS,
@@ -184,7 +181,7 @@ export const TextSection = {
       if (this.hiddenAlgos.has(id)) continue;
       const hash = this._formattedHash(id);
       this._rows.show(id, hash);
-      items.push({ hash, algo: id });
+      items.push({ hash: hex, algo: id });
     }
     this._history.recordRestored(items);
   },
@@ -218,7 +215,6 @@ export const TextSection = {
   /** Re-render all rows from the stored raw hex values (format change). */
   _reformatAll() {
     this._rows.reformat(this.rawHexMap, this.getSelectedFormat());
-    this._history.recordNow();
   },
 
   _setActionsEnabled(enabled) {

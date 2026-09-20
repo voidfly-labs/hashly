@@ -38,7 +38,7 @@ export const History = {
     return this._lastBatchId;
   },
 
-  _load(ns) {
+  _load(ns, getFormat) {
     const prefix = `${_APP_CONFIG.appName}-history`;
     const entriesKey = `${prefix}-${ns}`;
     const sourcesKey = `${prefix}-source-${ns}`;
@@ -50,7 +50,7 @@ export const History = {
     });
     store.load();
     this._stores[ns] = store;
-    this._lists[ns] = createHistoryList({ store, algoOrder: _ALGO_ORDER, defaultAlgo: _DEFAULT_ALGO });
+    this._lists[ns] = createHistoryList({ store, algoOrder: _ALGO_ORDER, defaultAlgo: _DEFAULT_ALGO, getFormat });
     // Another tab recorded or cleared: take in its changes and redraw what shows them.
     initStorageSync([entriesKey, sourcesKey], () => {
       store.load();
@@ -98,9 +98,10 @@ export const History = {
   },
 
   /** Loads a section's history and wires its popover (opened by `btnId`) to the elements `popoverId`
-   *  and `bodyId`. */
-  initPopover(ns, btnId, popoverId, bodyId) {
-    this._load(ns);
+   *  and `bodyId`. `getFormat()` is the output format the section shows its hashes in, which the
+   *  popover shows them in too (see ./list). */
+  initPopover(ns, btnId, popoverId, bodyId, getFormat) {
+    this._load(ns, getFormat);
     this._popovers[ns] = createHistoryPopover({
       ns,
       trigger: document.getElementById(btnId),
@@ -114,7 +115,8 @@ export const History = {
     });
   },
 
-  /** Call after hashes are produced: `items` is `[{ hash, algo }]`, all of one batch. */
+  /** Call after hashes are produced: `items` is `[{ hash, algo }]`, all of one batch, each hash as
+   *  lowercase hex (never in the shown format: a new format is not a new calculation). */
   record(ns, items, batchId, filename) {
     if (!items.length || !Settings.get('historyEnabled')) return;
     this._stores[ns].push(items, batchId, Settings.get('historyFilenames') ? filename : '');

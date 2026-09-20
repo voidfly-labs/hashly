@@ -1,3 +1,4 @@
+import { Format } from '~core/lib/format.js';
 import { matchesTerms, searchTerms } from '~core/lib/search.js';
 
 /** How many rows a page of a history table has. */
@@ -9,8 +10,12 @@ export const PAGE_SIZE = 10;
  *
  *  Sorted by batch, newest calculation first, then by the algorithm's place in `algoOrder` (an
  *  `id → index` Map), so a batch reads in the app's own order. Entries without a batch id (older
- *  data) fall back to their time. `defaultAlgo` names the algorithm of an entry without one. */
-export function createHistoryList({ store, algoOrder, defaultAlgo }) {
+ *  data) fall back to their time. `defaultAlgo` names the algorithm of an entry without one.
+ *
+ *  The store keeps every hash as hex; the entries of this view carry it in the format `getFormat()`
+ *  gives (the section's output format), so the search, the table, copying and the export all see
+ *  what the page shows. */
+export function createHistoryList({ store, algoOrder, defaultAlgo, getFormat }) {
   let query = '';
   let terms = [];
   let page = 0;
@@ -20,7 +25,7 @@ export function createHistoryList({ store, algoOrder, defaultAlgo }) {
   const sorted = () =>
     store
       .entries()
-      .slice()
+      .map((e) => ({ ...e, hash: Format.applyFormat(e.hash, getFormat()) }))
       .sort((a, b) => {
         const batchA = a.batchId ?? -a.ts;
         const batchB = b.batchId ?? -b.ts;

@@ -80,9 +80,7 @@ export const Permalink = {
         Tooltip.show(btn, 'Text too long – not copied', 2500);
         return;
       }
-      if (!(await copyWithFeedback(url, { anchor: btn }))) return;
-      btn.classList.add('permalink-btn--copied');
-      setTimeout(() => btn.classList.remove('permalink-btn--copied'), 1500);
+      await copyWithFeedback(url, { button: btn });
     });
     btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'Permalink'));
     btn.addEventListener('mouseleave', () => Tooltip.hide());

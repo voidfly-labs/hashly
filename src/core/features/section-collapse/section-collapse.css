@@ -38,7 +38,7 @@
 
 /* Single Material "keyboard_arrow_down" glyph, rotated rather than swapped
        for a smooth animation (same transform + 0.2s ease as the rest of the
-       app's icon transitions, e.g. .toggle-all-btn:active, .algo-badge:hover)
+       app's icon transitions, e.g. .outline-btn:active, .algo-badge:hover)
        — up/down is 180° of the same glyph, so rotation reads identically to
        swapping between the two official icons. Coloured like the other
        end-of-row icons (muted, not the heading's own accent-dim) since it's

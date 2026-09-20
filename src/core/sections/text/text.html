@@ -16,22 +16,21 @@
         <%- include('/src/core/features/section-collapse/section-chevron.html') %>
       </button>
     </h2>
-    <button class="toggle-all-btn" id="textToggleAllBtn" aria-label="Hide all text algorithms">
+    <button class="outline-btn" id="textToggleAllBtn" aria-label="Hide all text algorithms">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-checkbox-checked"></use>
       </svg>
     </button>
-    <button class="permalink-btn" id="textPermalinkBtn" aria-label="Copy permalink to current text hash" type="button">
-      <svg class="permalink-btn__icon-link" viewBox="0 0 24 24" aria-hidden="true">
+    <button class="outline-btn" id="textPermalinkBtn" aria-label="Copy permalink to current text hash" type="button">
+      <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-link"></use>
       </svg>
-      <svg class="permalink-btn__icon-check" viewBox="0 0 24 24" aria-hidden="true">
+      <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-check"></use>
       </svg>
-      <span class="tooltip">Copied!</span>
     </button>
     <button
-      class="history-btn"
+      class="outline-btn outline-btn--expands"
       id="textHistoryBtn"
       aria-label="Show text <%= sectionNoun %> history"
       aria-expanded="false"

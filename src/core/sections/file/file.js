@@ -154,7 +154,7 @@ export const FileSection = {
 
     document
       .querySelectorAll('input[name="fileFormat"]')
-      .forEach((radio) => radio.addEventListener('change', () => this._reformatAll(true)));
+      .forEach((radio) => radio.addEventListener('change', () => this._reformatAll()));
   },
 
   // ── Showing and hiding algorithms ──────────────────────────────────────
@@ -216,21 +216,17 @@ export const FileSection = {
     return hex ? Format.applyFormat(hex, this.getSelectedFormat()) : '';
   },
 
-  _reformatAll(record = false) {
-    const items = this._rows.reformat(this.rawHexMap, this.getSelectedFormat());
-    // While the file is still being hashed the digests are not recorded again: each is, once it is in.
-    const job = this._job;
-    if (record && job && !job.run) History.record('file', items, job.batchId, job.name);
+  _reformatAll() {
+    this._rows.reformat(this.rawHexMap, this.getSelectedFormat());
     // Rewriting the text drops any marks showing where a hash differs from the reference.
     this._verify.refresh();
   },
 
-  /** The `[{ hash, algo }]` of the visible algorithms among `digests` (`Map<id, hex>`), as shown. */
+  /** The `[{ hash, algo }]` of the visible algorithms among `digests` (`Map<id, hex>`). */
   _digestItems(digests) {
-    const format = this.getSelectedFormat();
     return _ALGORITHMS
       .filter(({ id }) => !this.hiddenAlgos.has(id) && digests.get(id))
-      .map(({ id }) => ({ hash: Format.applyFormat(digests.get(id), format), algo: id }));
+      .map(({ id }) => ({ hash: digests.get(id), algo: id }));
   },
 
   /** One share of `job`'s hashing is done, while the others go on: its digests are recorded (in the

@@ -19,8 +19,7 @@ import { Format } from '~core/lib/format.js';
  *  buttons and click do: `onToggle(id)`, `onCopy(id)`, `onDownload(id)` and `getHash(id)` (the digest
  *  as shown, '' while there is none).
  *
- *  A row is `{ row, badge, hash, copy, download, progress }`, see `get`. `showDigests` and `reformat`
- *  return the `[{ hash, algo }]` they now show, for the history. */
+ *  A row is `{ row, badge, hash, copy, download, progress }`, see `get`. */
 export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handlers }) {
   const rows = new Map();
   removeSkeleton(resultsEl);
@@ -89,19 +88,15 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
      *  file's hashing came to, or all of it) in `format`, and lets their digests be copied. Rows
      *  without one are left as they are. */
     showDigests(hexMap, format) {
-      const items = [];
       for (const { id } of visible()) {
         const hex = hexMap.get(id);
         if (!hex) continue;
         const els = rows.get(id);
-        const hash = Format.applyFormat(hex, format);
         els.progress.stop();
-        setHashText(els.hash, hash);
+        setHashText(els.hash, Format.applyFormat(hex, format));
         setHashEmpty(els.hash, false);
         setRowActions(els, true);
-        items.push({ hash, algo: id });
       }
-      return items;
     },
 
     /** The file is hashed: a visible row still without a digest was hidden while it ran, and says so. */
@@ -117,15 +112,10 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
 
     /** Rewrites the digests already shown in another `format`. */
     reformat(hexMap, format) {
-      const items = [];
       for (const { id } of visible()) {
         const hex = hexMap.get(id);
-        if (!hex) continue;
-        const hash = Format.applyFormat(hex, format);
-        setHashText(rows.get(id).hash, hash);
-        items.push({ hash, algo: id });
+        if (hex) setHashText(rows.get(id).hash, Format.applyFormat(hex, format));
       }
-      return items;
     },
 
     /** Every algorithm is hidden, so a file was taken but nothing is computed for it. */

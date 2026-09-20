@@ -9,11 +9,11 @@ const IDLE_MS = 1000;
  *  (see History.nextBatch) with a description of what was hashed (see ./text-preview.js).
  *
  *  `hasDigests()` says whether there are digests to record, and `getItems()` returns what is shown
- *  now, `[{ hash, algo }]`: the visible algorithms, in the shown format.
+ *  now, `[{ hash, algo }]`: the visible algorithms, each digest as hex.
  *
  *  `begin(description)` starts the batch of a newly hashed input, and `queue()` says it is to be
  *  recorded once the input is left alone. `flush()` records it now, if it is waiting; `cancel()` drops
- *  it; `recordNow()` records the current batch now (a new output format: see below).
+ *  it.
  *  `recordRestored(items)` records algorithms shown again, in a batch of their own. */
 export function createTextHistory({ hasDigests, getItems }) {
   let batchId = null;
@@ -62,14 +62,6 @@ export function createTextHistory({ hasDigests, getItems }) {
 
     flush,
     cancel,
-
-    /** Reuses the existing batchId so format changes don't create new history batches — the
-     *  batch identity belongs to the computation, not the format. This also covers input
-     *  still waiting for the history, which is recorded in the new format. */
-    recordNow() {
-      cancel();
-      record();
-    },
 
     /** Puts algorithms shown again (`[{ hash, algo }]`) in the history, in a batch of their own that
      *  carries the input's description. A fresh batchId, not the stale original: History.record()

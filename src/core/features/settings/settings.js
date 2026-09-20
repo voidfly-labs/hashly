@@ -5,7 +5,7 @@ import { Storage } from '~core/lib/storage.js';
 export const HISTORY_LIMITS = [100, 250, 500, 1000, 2500];
 export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32];
 export const CHUNK_OPTIONS_MIB = [2, 4, 8, 16, 32, 64];
-export const MAX_FILES_OPTIONS = [25, 50, 100, 200, 500];
+export const MAX_FILES_OPTIONS = [25, 50, 100, 250, 500, 1000];
 
 const SPECS = {
   historyEnabled: { fallback: true, valid: (v) => typeof v === 'boolean' },
@@ -15,7 +15,7 @@ const SPECS = {
   rememberView: { fallback: true, valid: (v) => typeof v === 'boolean' },
   maxThreads: { fallback: 0, valid: (v) => v === 0 || THREAD_OPTIONS.includes(v) },
   maxChunkMiB: { fallback: 0, valid: (v) => v === 0 || CHUNK_OPTIONS_MIB.includes(v) },
-  maxFiles: { fallback: 200, valid: (v) => MAX_FILES_OPTIONS.includes(v) },
+  maxFiles: { fallback: 100, valid: (v) => MAX_FILES_OPTIONS.includes(v) },
 };
 
 /** The visitor's settings: how the app behaves (as opposed to what it shows, see Preferences), kept as

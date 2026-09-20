@@ -1,6 +1,6 @@
 import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
 
-/** Renders short notes (`[{ label, tip }]`, see ./text-notes.js) after a counter's
+/** Renders short notes (`[{ label, tip, tone? }]`, see ./text-notes.js) after a counter's
  *  figures, each as a small pill with its `tip` as a tooltip on hover or tap.
  *  `container` is the element the notes go into; it should lay its children out inline. */
 export function createCounterNotes(container) {
@@ -15,9 +15,10 @@ export function createCounterNotes(container) {
       Tooltip.hide();
 
       container.replaceChildren(
-        ...notes.flatMap(({ label, tip }) => {
+        ...notes.flatMap(({ label, tip, tone }) => {
           const note = document.createElement('span');
           note.className = 'text-input__counter-note';
+          if (tone) note.classList.add(`text-input__counter-note--${tone}`);
           note.textContent = label;
           note.addEventListener('mouseenter', () => Tooltip.show(note, tip));
           note.addEventListener('mouseleave', () => Tooltip.hide());

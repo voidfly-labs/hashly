@@ -58,7 +58,7 @@ export function createVerify({
   function _setManifest(next) {
     manifest = next;
     input.readOnly = Boolean(next);
-    input.value = next ? `${next.name} · ${next.entries.length} files` : '';
+    input.value = next ? next.name : '';
     root.classList.toggle('verify--manifest', Boolean(next));
   }
 

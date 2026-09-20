@@ -7,8 +7,9 @@
  *
  *  A request whose worker has said nothing for `stallMs` is taken for lost (see ./stall-watchdog.js): the
  *  channel is stopped and its requests reject like any other failure. A file job reports after every
- *  chunk (some tens of milliseconds) and a text request is done in moments, so the limit is far past
- *  anything a healthy worker takes; only a read from a very slow disk comes close. */
+ *  chunk (some tens of milliseconds) and says it is alive every few seconds, even while one read
+ *  takes long, and a text request is done in moments. Only a worker that is blocked, and so cannot
+ *  send either, goes quiet. */
 
 import { createStallWatchdog } from './stall-watchdog.js';
 
@@ -43,6 +44,7 @@ export function createWorkerChannel(worker, { stallMs = STALL_MS, checkMs = CHEC
     const request = pending.get(data.id);
     if (!request) return; // answered a request that was cancelled
     request.heardAt = performance.now();
+    if (data.type === 'alive') return;
     if (data.type === 'progress') {
       request.onProgress?.(data.ratio);
       return;

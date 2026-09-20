@@ -85,8 +85,12 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
     ALGO_ORDER: new Map(ALGORITHMS.map(({ id }, i) => [id, i])),
   });
   TabTitle.init();
-  History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody');
-  History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody');
+  History.initPopover('text', 'textHistoryBtn', 'textHistoryPopover', 'textHistoryBody', () =>
+    TextSection.getSelectedFormat(),
+  );
+  History.initPopover('file', 'fileHistoryBtn', 'fileHistoryPopover', 'fileHistoryBody', () =>
+    FileSection.getSelectedFormat(),
+  );
   initNavHistory();
   TextSection.init({ APP_CONFIG, ALGORITHMS, Hasher });
   Permalink.init();

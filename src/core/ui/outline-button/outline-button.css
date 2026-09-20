@@ -1,0 +1,67 @@
+/* =========================================================================
+       OUTLINE BUTTON
+       — The bordered icon-only square of a section's header row (hide all, permalink, history,
+         help, settings): a muted icon that takes the accent, with a soft glow, on hover. Pressing it
+         shrinks it. `.outline-btn--expands` is for one that opens a popover: it keeps the hover
+         look while `aria-expanded` is true. Its checkmark morph is `.btn--done` (button.css) with an
+         `.icon-action` / `.icon-check` pair of svgs. In a template:
+         `<button class="outline-btn" aria-label="…"><svg>…</svg></button>`.
+       ========================================================================= */
+.outline-btn {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s,
+    box-shadow 0.2s,
+    transform 0.2s;
+}
+
+.outline-btn svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.outline-btn:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.outline-btn--expands[aria-expanded='true'],
+.outline-btn.btn--done {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.outline-btn:active {
+  transform: scale(0.9);
+}
+
+/* Its own rule: a selector list with a pseudo-class the browser doesn't know (:focus-visible,
+   Safari < 15.4) is dropped whole. */
+.outline-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}
+
+/* Larger touch target: 40px (was 32px) */
+@media (max-width: 630px) {
+  .outline-btn {
+    padding: 9px;
+  }
+
+  .outline-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+}

@@ -7,8 +7,8 @@
  *
  *  Messages in:  `{ type: 'text', id, bytes, ids }`, `{ type: 'file', id, file, ids }`, `{ type: 'cancel', id }`
  *  and `{ type: 'drop', id, ids }` (a running file job stops computing `ids`, and has no digest for them).
- *  Messages out: `{ type: 'progress', id, ratio }`, `{ type: 'result', id, digests }` (`[[algoId, hex]]`)
- *  or `{ type: 'error', id, message }`. A cancelled file job says nothing more.
+ *  Messages out: `{ type: 'progress', id, ratio }`, `{ type: 'alive', id }` (a file job, while it runs),
+ *  `{ type: 'result', id, digests }` (`[[algoId, hex]]`) or `{ type: 'error', id, message }`. A cancelled file job says nothing more.
  *
  *  A file is read here, by the worker, in chunks (a `File` can be sent to a worker), so no
  *  chunk is ever copied between threads. Every file job gets hashers of its own, which is what lets a
@@ -17,6 +17,9 @@
 import { createChunkSizer } from './chunk-sizer.js';
 
 const PROGRESS_EVERY_MS = 50;
+// A file job says it is alive this often, so a single read that takes long (a cloud file being
+// downloaded, a slow share) is not mistaken for a worker that has stopped (see worker-channel.js).
+const HEARTBEAT_MS = 5000;
 
 export function initHasherServer(engines) {
   /** Jobs that may still be cancelled or trimmed: `id → { cancelled, dropped }`. */
@@ -111,10 +114,12 @@ export function initHasherServer(engines) {
       } else if (type === 'file') {
         const job = { cancelled: false, dropped: new Set() };
         fileJobs.set(id, job);
+        const heartbeat = setInterval(() => self.postMessage({ type: 'alive', id }), HEARTBEAT_MS);
         try {
           const digests = await hashFile(data, job);
           if (digests) self.postMessage({ type: 'result', id, digests });
         } finally {
+          clearInterval(heartbeat);
           fileJobs.delete(id);
         }
       }

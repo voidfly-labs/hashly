@@ -54,11 +54,17 @@ function newlineNote({ newlines }) {
   return { label: '↵ at end', tip: newlines === 1 ? 'Trailing newline' : `${newlines} trailing newlines` };
 }
 
-/** The notes for `text` (UTF-8 input), as `[{ label, tip }]` in display order: hidden
- *  characters, padding, then a trailing newline. Empty for clean text. */
+// A textarea turns every line break into LF as it is typed or pasted, so text from a Windows file
+// (CRLF) is hashed as LF and will not match the hash of the file itself.
+function lineBreakNote(text) {
+  return text.includes('\n') ? { label: 'LF', tip: 'Unix endings', tone: 'info' } : null;
+}
+
+/** The notes for `text` (UTF-8 input), as `[{ label, tip, tone? }]` in display order: hidden
+ *  characters, padding, a trailing newline, then line breaks being LF. Empty for clean text. */
 export function textNotes(text) {
   const found = edges(text);
-  return [hiddenNote(text), paddedNote(found), newlineNote(found)].filter(Boolean);
+  return [hiddenNote(text), paddedNote(found), newlineNote(found), lineBreakNote(text)].filter(Boolean);
 }
 
 // What each structured input format may contain. The keyboard, paste and drop are filtered to

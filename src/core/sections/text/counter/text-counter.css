@@ -43,6 +43,13 @@
 }
 
 /* A little more room between the figures and the first pill than between pills. */
+/* A note that is information, not a warning: the same pill, muted. */
+.text-input__counter-note--info {
+  color: var(--text-muted);
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--border);
+}
+
 .text-input__counter-note:first-child {
   margin-left: 4px;
 }

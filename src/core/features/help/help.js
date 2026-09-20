@@ -1,7 +1,7 @@
 import { createPopover } from '~core/ui/popover.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
-/** Wires a .help-btn to its popover (see core/features/help/help-popover.html). Returns the
+/** Wires an .outline-btn to its popover (see core/features/help/help-popover.html). Returns the
  *  popover's controller, or null when either is missing from the page. */
 export function createHelpPopover(buttonId, popoverId) {
   const btn = document.getElementById(buttonId);

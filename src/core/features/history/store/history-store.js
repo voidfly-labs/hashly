@@ -1,14 +1,17 @@
 import { createBatchSources } from './batch-sources.js';
 import { createStoredJson } from './stored-json.js';
 
-/** Whether something read back from storage can be used as a history entry. `algo` and `batchId`
- *  may be missing (older entries), but not of the wrong type; `ts` is what the time column and
- *  the sort of such older entries rest on. */
+const HEX = /^[0-9a-f]+$/;
+
+/** Whether something read back from storage can be used as a history entry. The hash is the digest
+ *  as lowercase hex, whatever format the page shows (entries of an older version, kept in Base64,
+ *  binary or upper case, are left out). `algo` and `batchId` may be missing (older entries), but not
+ *  of the wrong type; `ts` is what the time column and the sort of such older entries rest on. */
 function isEntry(e) {
   return (
     Boolean(e) &&
     typeof e.hash === 'string' &&
-    e.hash !== '' &&
+    HEX.test(e.hash) &&
     Number.isFinite(e.ts) &&
     (e.algo === undefined || typeof e.algo === 'string') &&
     (e.batchId === undefined || Number.isFinite(e.batchId)) &&
@@ -50,7 +53,7 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile, limit
 
     entries: () => entries,
 
-    /** Puts `items` (`[{ hash, algo }]`, one batch) at the top with a single write, however many
+    /** Puts `items` (`[{ hash, algo }]`, one batch, each hash as lowercase hex) at the top with a single write, however many
      *  there are: a batch holds an entry per algorithm, and writing the whole store for each of them
      *  would stall the page. */
     push(items, batchId, filename) {

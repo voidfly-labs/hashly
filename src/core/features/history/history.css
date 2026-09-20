@@ -1,47 +1,5 @@
-/* ── Hover tooltips for icon-only buttons ─────────────────────────────────
-       history-btn
-       Tooltip.show() / hide() are wired in JS; these declarations are no-ops
-       at rest (the singleton does all rendering) but serve as a reminder that
-       these elements participate in the tooltip system. */
-.history-btn {
-  position: relative; /* already set elsewhere; harmless repeat */
-}
-
 .section__label-row {
   gap: 6px;
-}
-
-.toggle-all-btn {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 6px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  background: var(--surface);
-  cursor: pointer;
-  transition:
-    color 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
-}
-
-.toggle-all-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-muted);
-}
-
-.toggle-all-btn:active {
-  transform: scale(0.9);
-}
-
-.toggle-all-btn svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
 }
 
 /* =========================================================================
@@ -56,83 +14,6 @@
 .section__label-row .section__label {
   flex: 1;
   margin: 0;
-}
-
-.history-btn {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 6px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  background: var(--surface);
-  cursor: pointer;
-  transition:
-    color 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
-}
-
-.history-btn:hover,
-.history-btn[aria-expanded='true'] {
-  color: var(--accent);
-  border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-muted);
-}
-
-.history-btn:active {
-  transform: scale(0.9);
-}
-
-.history-btn svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-.permalink-btn {
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding: 6px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  background: var(--surface);
-  cursor: pointer;
-  transition:
-    color 0.2s,
-    border-color 0.2s,
-    box-shadow 0.2s,
-    transform 0.2s;
-}
-
-.permalink-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-muted);
-}
-
-.permalink-btn:active {
-  transform: scale(0.9);
-}
-
-.permalink-btn svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-.permalink-btn__icon-check {
-  display: none;
-}
-.permalink-btn--copied .permalink-btn__icon-link {
-  display: none;
-}
-.permalink-btn--copied .permalink-btn__icon-check {
-  display: block;
 }
 
 /* =========================================================================
@@ -177,20 +58,6 @@
 @media (max-width: 630px) {
   .history-popover {
     width: calc(max(100vw, 320px) - 32px);
-  }
-
-  /* Larger touch target: 40px (was 32px) */
-  .toggle-all-btn,
-  .history-btn,
-  .permalink-btn {
-    padding: 9px;
-  }
-
-  .toggle-all-btn svg,
-  .history-btn svg,
-  .permalink-btn svg {
-    width: 20px;
-    height: 20px;
   }
 }
 
