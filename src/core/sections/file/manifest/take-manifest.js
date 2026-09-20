@@ -4,11 +4,12 @@ import { readManifest } from '~core/features/verify/reference-file/reference-fil
 /** A checksum list dropped among other files is taken out of them, to check the others against (see
  *  ~core/features/verify/manifest.js). `entries` are the `{ file, path }` of a drop. Resolves
  *  `{ manifest, files }`: the list as `{ name, entries }` and the other files, or no manifest and
- *  all of them. A single file is always taken for a file to hash, whatever it is called. */
-export async function takeManifest(entries) {
+ *  all of them. A single file is always taken for a file to hash, whatever it is called. `hexLengths`
+ *  are the digest lengths of the app (see ~core/features/verify/manifest.js). */
+export async function takeManifest(entries, hexLengths) {
   if (entries.length < 2) return { manifest: null, files: entries };
   for (const entry of entries.filter(({ path }) => looksLikeManifestName(path))) {
-    const manifest = await readManifest(entry.file);
+    const manifest = await readManifest(entry.file, hexLengths);
     if (manifest) return { manifest, files: entries.filter((other) => other !== entry) };
   }
   return { manifest: null, files: entries };

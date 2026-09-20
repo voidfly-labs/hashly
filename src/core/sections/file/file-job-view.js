@@ -20,7 +20,6 @@ export function createJobView({ rows, verify, getFormat }) {
     const { rawHexMap, status } = job;
     if (status === 'done') {
       rows.settle(rawHexMap);
-      rows.setActionsEnabled(true);
       verify.setDigests(rawHexMap);
       return;
     }

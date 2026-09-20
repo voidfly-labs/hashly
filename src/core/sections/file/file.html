@@ -30,16 +30,16 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-history"></use></svg>
     </button>
     <div
-      class="history-popover"
+      class="popover history-popover"
       id="fileHistoryPopover"
       role="dialog"
       aria-modal="true"
       aria-labelledby="fileHistoryTitle">
-      <div class="history-popover__header">
-        <span class="history-popover__title" id="fileHistoryTitle"
+      <div class="popover__header">
+        <span class="popover__title" id="fileHistoryTitle"
           >History – File <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %></span
         >
-        <button class="icon-btn history-popover__close" data-popover-close aria-label="Close history">
+        <button class="icon-btn popover__close" data-popover-close aria-label="Close history">
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
         </button>
       </div>
@@ -59,7 +59,7 @@
               multiple
               aria-label="Upload file for <%= sectionNoun %> calculation" />
             <button
-              class="icon-btn icon-btn--danger file-drop__clear"
+              class="icon-btn icon-btn--corner icon-btn--danger file-drop__clear"
               id="fileDropClear"
               aria-label="Remove selected file"
               type="button">

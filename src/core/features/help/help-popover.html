@@ -1,8 +1,8 @@
 <!-- ── HELP POPOVER ── -->
-<div class="help-popover" id="helpPopover" role="dialog" aria-labelledby="helpPopoverTitle">
-  <div class="help-popover__header">
-    <span class="help-popover__title" id="helpPopoverTitle">Help</span>
-    <button class="icon-btn help-popover__close" data-popover-close aria-label="Close help">
+<div class="popover help-popover" id="helpPopover" role="dialog" aria-modal="true" aria-labelledby="helpPopoverTitle">
+  <div class="popover__header">
+    <span class="popover__title" id="helpPopoverTitle">Help</span>
+    <button class="icon-btn popover__close" data-popover-close aria-label="Close help">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
     </button>
   </div>
@@ -23,7 +23,7 @@
       </li>
       <li class="help-popover__item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-check"></use></svg>
-        <span><strong>Verify</strong> – check a file against a known hash</span>
+        <span><strong>Verify</strong> – check a file against a known hash or manifest</span>
       </li>
       <li class="help-popover__item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-dice"></use></svg>
@@ -36,6 +36,10 @@
       <li class="help-popover__item">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-link"></use></svg>
         <span><strong>Permalink</strong> – copy a shareable link to the current text</span>
+      </li>
+      <li class="help-popover__item">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-settings"></use></svg>
+        <span><strong>Settings</strong> – tune history, file limits and performance</span>
       </li>
     </ul>
     <div class="help-popover__footer">

@@ -121,15 +121,11 @@
 }
 
 /* Dismiss button — top-right corner of the drop zone.
-       Shares all visual styles with .history-popover__close (see grouped ruleset above).
+       A ghost icon button (ui/icon-button/).
        Hidden by default; revealed once a file is loaded.
        z-index must exceed the invisible file input overlay (no explicit z-index,
        so any positive value suffices) so click events reach this button first. */
 .file-drop__clear {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 1;
   display: none; /* hidden until a file is loaded */
 }
 

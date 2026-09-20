@@ -13,11 +13,18 @@ const DIGEST_BYTES = new Set([4, 8, 16, 20, 28, 32, 48, 64]);
 const normalizeName = (name) => name.replaceAll('\\', '/').replace(/^(?:\.\/)+/, '');
 const baseName = (name) => name.split('/').pop();
 const endsAt = (path, tail) => path === tail || path.endsWith(`/${tail}`);
+const segments = (path) => path.split('/').length;
+
+/** The hex lengths of the digests of `algorithms` (their `hexLen`), which a list of this app may hold
+ *  though they are shorter than MIN_HEX_LENGTH (CRC-8, 16, 24) or odd (CRC-82). */
+export const hexLengthsOf = (algorithms) => new Set(algorithms.map(({ hexLen }) => hexLen));
 
 /** Whether `digest`, as written, plausibly is a hash whose hex is `hex`. */
-function isDigest(digest, hex) {
+function isDigest(digest, hex, hexLengths) {
   const token = digest.replace(/^0x/i, '');
-  if (/^[\da-f]+$/i.test(token)) return token.length >= MIN_HEX_LENGTH && token.length % 2 === 0;
+  if (/^[\da-f]+$/i.test(token)) {
+    return hexLengths.has(token.length) || (token.length >= MIN_HEX_LENGTH && token.length % 2 === 0);
+  }
   return DIGEST_BYTES.has(hex.length / 2);
 }
 
@@ -26,28 +33,33 @@ export const looksLikeManifestName = (name) => MANIFEST_NAME.test(baseName(norma
 
 /** The `{ name, hex }` entries of a checksum list's text (see ./checksum-line.js for the layouts): one
  *  per line that holds a file name and a hash, the hash as lowercase hex. Blank lines, `#` and `;`
- *  comments and anything else are left out. */
-export function parseManifest(text) {
+ *  comments and anything else are left out. `hexLengths` (see hexLengthsOf) are the digest lengths
+ *  the app produces, which are taken for hashes whatever their size. */
+export function parseManifest(text, hexLengths = new Set()) {
   const entries = [];
   for (const raw of text.split(/\r?\n/)) {
     const line = raw.trim();
     if (!line || line.length > MAX_LINE_LENGTH || line.startsWith('#') || line.startsWith(';')) continue;
     const { digest, name } = parseChecksumLine(line);
     const ref = name && parseReference(digest);
-    if (ref && isDigest(digest, ref.hex)) entries.push({ name: normalizeName(name), hex: ref.hex });
+    if (ref && isDigest(digest, ref.hex, hexLengths)) entries.push({ name: normalizeName(name), hex: ref.hex });
   }
   return entries;
 }
 
 /** The entry for the file called `fileName` (its path, if it came in a folder): the one with that very
- *  name, else the only one whose path ends the same way (a list written in the folder's parent, or
- *  inside it), else the only one with that file name. Null when there is none or it is ambiguous. */
+ *  name, else the one whose path ends the same way in the most folders (a list written in the
+ *  folder's parent, or inside it), if one is ahead of the others, else the only one with that file
+ *  name. Null when there is none or it is ambiguous. */
 export function findEntry(entries, fileName) {
   const name = normalizeName(fileName);
   const exact = entries.find((entry) => entry.name === name);
   if (exact) return exact;
   const related = entries.filter((entry) => endsAt(name, entry.name) || endsAt(entry.name, name));
-  if (related.length === 1) return related[0];
+  const tail = (entry) => Math.min(segments(entry.name), segments(name));
+  const longest = Math.max(...related.map(tail));
+  const best = related.filter((entry) => tail(entry) === longest);
+  if (best.length === 1) return best[0];
   const sameFile = entries.filter((entry) => baseName(entry.name) === baseName(name));
   return sameFile.length === 1 ? sameFile[0] : null;
 }

@@ -28,6 +28,14 @@
   display: flex;
 }
 
+/* In the top-right corner of its positioned parent (a drop zone, a text field), above what it covers */
+.icon-btn--corner {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 1;
+}
+
 /* The icon, with the chip as its own padding: 28px square around an 18px icon, however large the button. */
 .icon-btn svg {
   box-sizing: content-box;

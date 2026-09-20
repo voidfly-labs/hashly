@@ -7,7 +7,7 @@ import { createVerifyStatus } from '~core/features/verify/status/verify-status.j
 import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
-import { findEntry } from './manifest.js';
+import { findEntry, hexLengthsOf } from './manifest.js';
 import { parseReference } from './reference.js';
 
 /** Reference-hash field for a results list. The reference's size says which
@@ -159,6 +159,7 @@ export function createVerify({
   // list, from which the hashed file's own line is picked). Same no-focus rule as paste.
   const reference = {
     getFileName,
+    hexLengths: hexLengthsOf(algorithms),
     onText: _setText,
     onManifest(next) {
       _setManifest(next);

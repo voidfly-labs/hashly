@@ -12,7 +12,7 @@ const hasFiles = (e) => Boolean(e.dataTransfer?.types?.includes('Files'));
  *  handlers in FileSection. Those would otherwise light up the main drop zone and hash
  *  the file, which is exactly what a drop on this field must not do. Dragging text onto
  *  the field is left to the browser. */
-export function initReferenceFileDrop(field, { getFileName, onText, onManifest, onRejected }) {
+export function initReferenceFileDrop(field, { getFileName, hexLengths, onText, onManifest, onRejected }) {
   if (!field) return;
   let depth = 0; // dragenter/dragleave also fire for the field's children
 
@@ -48,7 +48,7 @@ export function initReferenceFileDrop(field, { getFileName, onText, onManifest, 
 
     const [file] = e.dataTransfer.files;
     if (!file) return;
-    const { line, manifest, error } = await readReferenceFile(file, getFileName());
+    const { line, manifest, error } = await readReferenceFile(file, getFileName(), hexLengths);
     if (error) onRejected(error);
     else if (manifest) onManifest(manifest);
     else onText(line);

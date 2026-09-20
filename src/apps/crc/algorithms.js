@@ -1,7 +1,7 @@
 // `cost` is the time a byte takes, relative to the others (tenths of a ms per MiB, as measured in
 // the worker, reading the file included): it is how a file's algorithms are shared out over the threads.
-// CRC-32, CRC-32C and CRC-64/XZ run on WebAssembly; the rest run on algos/crc-engine.js (table-driven
-// JavaScript), a little slower, and the wider the slower.
+// CRC-32, CRC-32C and CRC-64/XZ run on WebAssembly (on algos/crc-engine.js where there is none); the
+// rest run on algos/crc-engine.js (table-driven JavaScript), a little slower, and the wider the slower.
 export const ALGORITHMS = [
   // CRC-8 — ordered alphabetically within the group
   { id: 'CRC-8 (1-Wire)', bits: 8, hexLen: 2, cost: 18 },

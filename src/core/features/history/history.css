@@ -1,58 +1,8 @@
-.section__label-row {
-  gap: 6px;
-}
-
-/* =========================================================================
-       SECTION LABEL ROW (label + history toggle)
-       ========================================================================= */
-.section__label-row {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.section__label-row .section__label {
-  flex: 1;
-  margin: 0;
-}
-
 /* =========================================================================
        HISTORY POPOVER
        ========================================================================= */
-.history-popover,
-.help-popover {
-  position: fixed;
-  inset: 0;
-  margin: auto;
-  z-index: 120;
+.history-popover {
   width: min(912px, calc(100vw - 48px));
-  height: fit-content;
-  /* Never taller than the screen: a column whose body (the one part that can) gives way and
-     scrolls, whatever the screen's height and whatever the header, search and footer take. */
-  display: flex;
-  flex-direction: column;
-  max-height: calc(100vh - 32px);
-  max-height: calc(100dvh - 32px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.72);
-  -webkit-backdrop-filter: blur(20px) saturate(1.8);
-  backdrop-filter: blur(20px) saturate(1.8);
-  box-shadow: var(--shadow-lg);
-  /* Opacity + slide-up animation; visibility keeps it out of tab order when closed */
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-4px);
-  pointer-events: none;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    visibility 0.18s;
-}
-
-[data-theme='dark'] .history-popover,
-[data-theme='dark'] .help-popover {
-  background: rgba(28, 32, 48, 0.78);
 }
 
 @media (max-width: 630px) {
@@ -61,80 +11,8 @@
   }
 }
 
-.history-popover--visible,
-.help-popover--visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-  /* Visible at once when opening (so the search field can take focus then); closing still fades out first */
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    visibility 0s;
-}
-
-.history-popover__header,
-.help-popover__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  border-radius: var(--radius) var(--radius) 0 0;
-  background: var(--accent-surface);
-}
-
-.history-popover__title,
-.help-popover__title {
-  font-family: var(--mono);
-  font-size: 11.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  line-height: 1;
-  letter-spacing: 1.5px;
-  color: var(--accent-dim);
-}
-
-/* The popover's dismiss button is a ghost icon button (ui/icon-button/). Its own layout: */
-.history-popover__close,
-.help-popover__close {
-  display: flex;
-  padding: 6px;
-  margin: -6px -9px -6px -6px;
-}
-
-/* An unseen hit area past the button's edges: 1px, so the 30px button is a 32px target (as the
-   other icon buttons), and 5px on phones, a 40px one. The button itself stays as it is: the header is about 39px tall, and a
-   visible box that tall would touch its borders. */
-.history-popover__close,
-.help-popover__close {
-  position: relative;
-}
-
-.history-popover__close::before,
-.help-popover__close::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  right: -1px;
-  bottom: -1px;
-  left: -1px;
-}
-
-@media (max-width: 630px) {
-  .history-popover__close::before,
-  .help-popover__close::before {
-    top: -5px;
-    right: -5px;
-    bottom: -5px;
-    left: -5px;
-  }
-}
-
 /* Matches .btn exactly — same surface, border, sizing, transitions */
-.history-popover__export,
-.history-popover__clear {
+.history-popover__export {
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -151,8 +29,7 @@
   transition: all 0.15s;
 }
 
-.history-popover__export svg,
-.history-popover__clear svg {
+.history-popover__export svg {
   width: 16px;
   height: 16px;
   fill: currentColor;
@@ -164,8 +41,7 @@
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
-.history-popover__export:active:not(:disabled),
-.history-popover__clear:active:not(:disabled) {
+.history-popover__export:active:not(:disabled) {
   transform: scale(0.96);
 }
 
@@ -181,8 +57,7 @@
   border-color: var(--accent-border);
 }
 
-.history-popover__export:disabled,
-.history-popover__clear:disabled {
+.history-popover__export:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -192,8 +67,7 @@
     display: none;
   }
 
-  .history-popover__export,
-  .history-popover__clear {
+  .history-popover__export {
     min-height: 35px;
     padding: 8px 10px;
   }
@@ -212,11 +86,11 @@
 /* From 330px down Clear is an icon button too (its aria-label names it; armed, the ring, the draining
    bar and the "Are you sure?" tooltip say so). Only the history's: Settings' keeps its label. */
 @media (max-width: 330px) {
-  .history-popover__footer-actions .history-popover__clear-label {
+  .history-popover__footer-actions .confirm-btn__label {
     display: none;
   }
 
-  .history-popover__footer-actions .history-popover__clear-face {
+  .history-popover__footer-actions .confirm-btn__face {
     gap: 0;
   }
 }
@@ -231,7 +105,6 @@
   background: var(--surface);
 }
 
-.history-popover__header,
 .search-field,
 .history-popover__footer {
   flex-shrink: 0;
@@ -259,7 +132,7 @@
 
 /* Pagination buttons adopt the same visual language as .btn (result section
        buttons): surface background, border, hover ring, disabled opacity.
-       The fixed 28×28 square (matching .history-popover__clear's height; 35×35 on mobile)
+       The fixed 28×28 square (matching .confirm-btn's height; 35×35 on mobile)
        replaces the standard .btn padding for icon-only use. */
 .history-pagination__btn {
   display: flex;
@@ -316,37 +189,4 @@
   font-size: 12px;
   line-height: 28px;
   color: var(--text-muted);
-}
-
-/* =========================================================================
-       HISTORY BACKDROP
-       — Fullscreen overlay rendered behind all popovers but above page content.
-         Provides the visual "focus" effect (blur + darken) when a popover is open.
-       =========================================================================  */
-.history-backdrop {
-  position: fixed;
-  inset: 0;
-  /* z-index above the sticky header (100) so the header is also dimmed/blurred,
-         but below the popover (z-index: 120) so the popover stays fully visible. */
-  z-index: 110;
-  /* Subtle darkened + blurred backdrop — dims content without being obtrusive */
-  background: rgba(0, 0, 0, 0.28);
-  -webkit-backdrop-filter: blur(3px) brightness(0.85);
-  backdrop-filter: blur(3px) brightness(0.85);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    opacity 0.2s ease,
-    visibility 0.2s ease;
-}
-
-.history-backdrop--visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-}
-
-[data-theme='dark'] .history-backdrop {
-  background: rgba(0, 0, 0, 0.45);
 }

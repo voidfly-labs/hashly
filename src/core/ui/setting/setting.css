@@ -1,0 +1,36 @@
+/* =========================================================================
+       SETTING ROW
+       — One setting of a list: its text on the left (`.setting__label` and a `.setting__hint`) and
+         its control on the right, a switch (ui/toggle/, which is a `.setting` too) or a select. Its
+         switch-off state is `.setting--disabled`, which dims the text (set from JS: there is no parent
+         selector to do it from the control).
+       ========================================================================= */
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.setting__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.setting__label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.setting__hint {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.setting--disabled .setting__text {
+  opacity: 0.55;
+}

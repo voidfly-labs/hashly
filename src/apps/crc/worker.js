@@ -2,6 +2,7 @@ import { crc32 as crc32Wasm, crc64 as crc64Wasm, createCRC32, createCRC64 } from
 
 import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
 import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
+import { hasWasmSupport } from '~core/lib/wasm.js';
 
 import {
   crc_8_dvb_s2,
@@ -18,11 +19,14 @@ import {
   crc_24_interlaken,
   crc_24_openpgp,
   crc_32_bzip2,
+  crc_32_iscsi,
+  crc_32_iso_hdlc,
   crc_32_jamcrc,
   crc_32_mpeg_2,
   crc_64_ecma_182,
   crc_64_nvme,
   crc_64_redis,
+  crc_64_xz,
   crc_82_darc,
 } from './algos/crc-models.js';
 
@@ -36,6 +40,9 @@ const crc = (fn) => ({
 });
 
 const CRC32C_POLY = 0x82f63b78; // Castagnoli, reflected
+
+// Where WebAssembly is not available, the three that use it run on algos/crc-engine.js too.
+const wasmOr = (wasm, model) => (hasWasmSupport() ? wasm : crc(model));
 
 // CRC-32, CRC-32C and CRC-64/XZ run on hash-wasm (it only varies the polynomial); the rest need
 // init/xorout/reflection it does not offer, so they run on algos/crc-engine.js.
@@ -53,14 +60,17 @@ initHasherServer({
   'CRC-24 (BLE)': crc(crc_24_ble),
   'CRC-24 (Intlkn)': crc(crc_24_interlaken),
   'CRC-24 (OpenPGP)': crc(crc_24_openpgp),
-  'CRC-32': wasmEngine({ fn: (bytes) => crc32Wasm(bytes), createFn: () => createCRC32() }),
-  'CRC-32C': wasmEngine({ fn: (bytes) => crc32Wasm(bytes, CRC32C_POLY), createFn: () => createCRC32(CRC32C_POLY) }),
+  'CRC-32': wasmOr(wasmEngine({ fn: (bytes) => crc32Wasm(bytes), createFn: () => createCRC32() }), crc_32_iso_hdlc),
+  'CRC-32C': wasmOr(
+    wasmEngine({ fn: (bytes) => crc32Wasm(bytes, CRC32C_POLY), createFn: () => createCRC32(CRC32C_POLY) }),
+    crc_32_iscsi,
+  ),
   'CRC-32 (BZIP2)': crc(crc_32_bzip2),
   'CRC-32 (JamCRC)': crc(crc_32_jamcrc),
   'CRC-32 (MPEG-2)': crc(crc_32_mpeg_2),
   'CRC-64 (ECMA)': crc(crc_64_ecma_182),
   'CRC-64 (NVMe)': crc(crc_64_nvme),
   'CRC-64 (Redis)': crc(crc_64_redis),
-  'CRC-64 (XZ)': wasmEngine({ fn: (bytes) => crc64Wasm(bytes), createFn: () => createCRC64() }),
+  'CRC-64 (XZ)': wasmOr(wasmEngine({ fn: (bytes) => crc64Wasm(bytes), createFn: () => createCRC64() }), crc_64_xz),
   'CRC-82 (DARC)': crc(crc_82_darc),
 });

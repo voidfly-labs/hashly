@@ -9,8 +9,9 @@ const TIP = 'Browse';
  *  `onText(line)` gets the reference picked from the file (see ./reference-file.js), `onManifest(manifest)`
  *  the list, when it names several files;
  *  `onRejected(message)` runs when the file can't be used. `getFileName()` names the
- *  file currently being hashed, so a checksum list yields that file's own line. */
-export function initReferenceFileButton(btn, fileInput, { getFileName, onText, onManifest, onRejected }) {
+ *  file currently being hashed, so a checksum list yields that file's own line. `hexLengths` are the
+ *  digest lengths of the app (see ../manifest.js). */
+export function initReferenceFileButton(btn, fileInput, { getFileName, hexLengths, onText, onManifest, onRejected }) {
   if (!btn || !fileInput) return;
 
   btn.addEventListener('click', () => fileInput.click());
@@ -21,7 +22,7 @@ export function initReferenceFileButton(btn, fileInput, { getFileName, onText, o
     fileInput.value = '';
     if (!file) return;
 
-    const { line, manifest, error } = await readReferenceFile(file, getFileName());
+    const { line, manifest, error } = await readReferenceFile(file, getFileName(), hexLengths);
     if (error) onRejected(error);
     else if (manifest) onManifest(manifest);
     else onText(line);

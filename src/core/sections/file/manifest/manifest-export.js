@@ -15,7 +15,8 @@ import { Tooltip } from '~core/ui/tooltip/tooltip.js';
  *
  *  Returns `{ row, copy, download }`:
  *   - `row()`: how the manifest row stands, `{ name, size, ready }`, or null when there is no manifest.
- *     It is `ready` once every file is done and there is a digest to put in it.
+ *     It is `ready` once every file is done (a failed one keeps it from being, so the list is never
+ *     short of a file without saying so) and there is a digest to put in it.
  *   - `copy(button)` and `download(button)`: the buttons' clicks. */
 export function createManifestExport({ algorithms, isHidden, getJobs, getFormat, slugify }) {
   /** The algorithm of the manifest: the one that is visible, if it is the only one. */
@@ -43,7 +44,7 @@ export function createManifestExport({ algorithms, isHidden, getJobs, getFormat,
       const algo = singleAlgorithm();
       if (jobs.length < 2 || !algo) return null;
       const ext = slugify(algo.id);
-      const finished = jobs.every(({ status }) => status !== 'queued' && status !== 'hashing');
+      const finished = jobs.every(({ status }) => status === 'done');
       const entries = entriesOf(algo);
       if (!finished || !entries.length) return { name: checksumListName(ext), size: 0, ready: false };
       const { filename, content } = toChecksumList(entries, ext);

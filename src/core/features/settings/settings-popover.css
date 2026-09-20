@@ -1,8 +1,9 @@
 /* =========================================================================
        SETTINGS POPOVER
-       — The settings button's popover (see settings-popover.js). Its shell, header and body are the
-         help popover's (help-popover.css); this is what its body holds: groups of rows (a switch, see
-         ui/toggle, or a select) and the Clear all data row. Import after help-popover.css.
+       — The settings button's popover (see settings-popover.js). Its shell and header are the shared
+         popover's (ui/popover/popover.css) and its body the help popover's (help-popover.css); this is
+         its width and what its body holds: groups of rows (a switch, see ui/toggle, or a select) and
+         the Clear all data row. Import after help-popover.css.
        ========================================================================= */
 .settings-popover {
   width: min(480px, calc(100vw - 48px));
@@ -29,24 +30,9 @@
   margin-bottom: 0;
 }
 
-/* A row with a control on the right (a select, the Clear button), as .toggle has its switch */
-.setting {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.setting__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-/* Armed, Clear is overflow: hidden (confirm-clear.css), which lets a flex item shrink below its
+/* Armed, Clear is overflow: hidden (ui/confirm-button/), which lets a flex item shrink below its
    content: it would squeeze "Confirm" in a row with a long label beside it. */
-.setting > .history-popover__clear {
+.setting > .confirm-btn {
   flex-shrink: 0;
 }
 
@@ -76,10 +62,6 @@
 .setting__select:disabled {
   opacity: 0.45;
   cursor: not-allowed;
-}
-
-.setting--disabled .setting__text {
-  opacity: 0.55;
 }
 
 @media (max-width: 630px) {

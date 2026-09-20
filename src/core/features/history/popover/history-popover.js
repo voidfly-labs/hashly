@@ -7,14 +7,14 @@ import { slideIn } from '~core/lib/slide-in.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
-import { createPopover } from '~core/ui/popover.js';
+import { createPopover } from '~core/ui/popover/popover.js';
 import { createSearchField } from '~core/ui/search-field/search-field.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { createHistoryFooter } from './history-footer.js';
 
-const VISIBLE_CLASS = 'history-popover--visible';
+const VISIBLE_CLASS = 'popover--visible';
 
 /** The popover of one section's history (`ns`: 'text', 'file'): its search field, the table of the
  *  current page and its footer, opened by `trigger`. `store` and `list` (see ../store and ../list) are

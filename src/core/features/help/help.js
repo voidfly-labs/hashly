@@ -1,4 +1,4 @@
-import { createPopover } from '~core/ui/popover.js';
+import { createPopover } from '~core/ui/popover/popover.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 /** Wires an .outline-btn to its popover (see core/features/help/help-popover.html). Returns the
@@ -8,7 +8,7 @@ export function createHelpPopover(buttonId, popoverId) {
   const popover = document.getElementById(popoverId);
   if (!btn || !popover) return null;
 
-  const help = createPopover({ trigger: btn, el: popover, visibleClass: 'help-popover--visible' });
+  const help = createPopover({ trigger: btn, el: popover, visibleClass: 'popover--visible' });
 
   btn.addEventListener('mouseenter', () => Tooltip.show(btn, 'Help'));
   btn.addEventListener('mouseleave', () => Tooltip.hide());

@@ -9,7 +9,7 @@ import { createSoloResult } from '~core/features/results/solo-result.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { Settings } from '~core/features/settings/settings.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
-import { describeManifest } from '~core/features/verify/manifest.js';
+import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
 import { Format } from '~core/lib/format.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
@@ -254,7 +254,7 @@ export const FileSection = {
   async processFiles(dropped, { truncated = false } = {}) {
     // Files dropped or pasted into a collapsed section open it, to show what happens to them.
     expandSection(this._drop.section);
-    const { manifest, files } = await takeManifest(dropped);
+    const { manifest, files } = await takeManifest(dropped, hexLengthsOf(_ALGORITHMS));
     if (manifest) this._verify.setManifest(manifest);
     const limit = Settings.get('maxFiles');
     const taken = files.slice(0, limit);
@@ -337,10 +337,13 @@ export const FileSection = {
 
   /** A file's ✕ in the list: stops it if it is being hashed and takes it out. */
   _removeJob(id) {
+    const wasRunning = this._queue.running?.id === id;
     if (this._queue.remove(id) === 0) {
       this.onClear();
       return;
     }
+    // The aborted run never reports its end: drop its progress from the tab title.
+    if (wasRunning) TabTitle.reset();
     this._drop.showFile(describeDrop(this._queue.jobs), this._queue.jobs.length);
     this._refreshStats();
   },

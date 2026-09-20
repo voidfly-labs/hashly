@@ -48,8 +48,8 @@ export function decodeText(buffer) {
 
 /** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the reference to use,
  *  `{ manifest }` for a list of several files (see ../manifest.js), or `{ error }` with a message for the
- *  user when it can't be used. */
-export async function readReferenceFile(file, fileName = '') {
+ *  user when it can't be used. `hexLengths` are the digest lengths of the app (see ../manifest.js). */
+export async function readReferenceFile(file, fileName = '', hexLengths) {
   if (file.size > MAX_REFERENCE_BYTES) {
     return { error: `File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
   }
@@ -60,7 +60,7 @@ export async function readReferenceFile(file, fileName = '') {
     return { error: "Couldn't read that file" };
   }
   // A list of several files is kept whole, to check each file against its own line.
-  const entries = parseManifest(text);
+  const entries = parseManifest(text, hexLengths);
   if (entries.length > 1) return { manifest: { name: file.name, entries } };
   const line = pickReferenceLine(text, fileName);
   return line ? { line } : { error: 'That file has no hash in it' };
@@ -68,10 +68,10 @@ export async function readReferenceFile(file, fileName = '') {
 
 /** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is
  *  too big, unreadable or holds no file name with a hash. */
-export async function readManifest(file) {
+export async function readManifest(file, hexLengths) {
   if (file.size > MAX_REFERENCE_BYTES) return null;
   try {
-    const entries = parseManifest(decodeText(await file.arrayBuffer()));
+    const entries = parseManifest(decodeText(await file.arrayBuffer()), hexLengths);
     return entries.length ? { name: file.name, entries } : null;
   } catch {
     return null;

@@ -7,7 +7,7 @@ export const Format = {
     // Strip existing padding, re-pad to the next multiple of 4.
     // A try/catch covers the length % 4 === 1 residue, which is
     // structurally invalid and cannot be salvaged by padding alone.
-    // eslint-disable-next-line sonarjs/slow-regex
+    // eslint-disable-next-line sonarjs/super-linear-regex
     const stripped = b64.replace(/=+$/, '');
     const padded = stripped + '==='.slice((stripped.length + 3) % 4);
     try {

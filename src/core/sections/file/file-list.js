@@ -46,7 +46,7 @@ export function createFileList({ root, onSelect, onRemove, verdictOf, manifestRo
     select.setAttribute('aria-keyshortcuts', 'Delete');
     const status = el('span', 'file-list__status');
     status.setAttribute('aria-hidden', 'true');
-    status.append(el('span', 'file-list__spinner'), svgIcon('check'), svgIcon('warning'));
+    status.append(el('span', 'spinner file-list__spinner'), svgIcon('check'), svgIcon('warning'));
     const verdict = el('span', 'file-list__verdict');
     verdict.setAttribute('aria-hidden', 'true');
     select.append(

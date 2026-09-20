@@ -44,9 +44,8 @@
 }
 
 /* Dismiss button — top-right corner of the textarea wrapper.
-       Identical position/behaviour to .file-drop__clear; shares visual
-       styles via the grouped selector with .history-popover__close and
-       .file-drop__clear defined further below. */
+       Identical position/behaviour to .file-drop__clear, a ghost icon
+       button (ui/icon-button/). */
 .text-input__wrap .hint {
   position: absolute;
   bottom: 3px;
@@ -55,18 +54,10 @@
 }
 
 .text-input__clear {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 1;
   display: none; /* hidden until input has content */
 }
 
 .text-input__paste {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  z-index: 1;
   display: flex;
 }
 

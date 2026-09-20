@@ -159,11 +159,6 @@
   left: -2px;
   width: 18px;
   height: 18px;
-  box-sizing: border-box;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: file-drop-spin 0.8s linear infinite;
 }
 
 .file-list__status[data-state='hashing'] .file-list__spinner {
@@ -227,12 +222,6 @@
    Upload and Paste): its centre 22px from the right edge of the box. */
 .file-list__remove {
   padding: 0 8px 0 10px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .file-list__spinner {
-    animation-duration: 2.4s;
-  }
 }
 
 /* On a narrow screen a file is a two-line card: the name on its own line, with the width the size and

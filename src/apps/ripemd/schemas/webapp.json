@@ -3,7 +3,7 @@
   "@type": "WebApplication",
   "name": "RIPEMDKit",
   "url": "https://ripemd.com/",
-  "description": "Browser-based RIPEMD hash calculator supporting RIPEMD, RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320. All computation is local — no data is transmitted.",
+  "description": "Browser-based RIPEMD hash calculator supporting RIPEMD-128, RIPEMD-160, RIPEMD-256, and RIPEMD-320. All computation is local — no data is transmitted.",
   "headline": "RIPEMD-160 Hash Calculator",
   "featureList": "Text hashing, File hashing, Hex output, Base64 output, Binary output, Hash history, Random hash generation",
   "applicationCategory": "DeveloperApplication",

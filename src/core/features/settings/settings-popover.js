@@ -1,8 +1,8 @@
 import { autoThreads } from '~core/features/hashing/workers/auto-threads.js';
 import { chunkCeiling } from '~core/features/hashing/workers/chunk-ceiling.js';
 import { History } from '~core/features/history/history.js';
-import { initConfirmClear } from '~core/features/history/popover/confirm-clear.js';
-import { createPopover } from '~core/ui/popover.js';
+import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
+import { createPopover } from '~core/ui/popover/popover.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { clearSavedData, savedBytes } from './saved-data.js';
@@ -73,8 +73,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
 
   const dim = (input, disabled) => {
     input.disabled = disabled;
-    const row = input.closest('.toggle, .setting');
-    row.classList.toggle(row.classList.contains('toggle') ? 'toggle--disabled' : 'setting--disabled', disabled);
+    input.closest('.setting').classList.toggle('setting--disabled', disabled);
   };
 
   function showUsage() {
@@ -153,7 +152,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   });
 
   const clearBtn = byId('settingsClearAll');
-  const disarm = initConfirmClear(
+  const disarm = initConfirmButton(
     clearBtn,
     () => clearSavedData(appConfig.appName, themeKey),
     'Press again to delete all saved data',
@@ -162,7 +161,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   const popover = createPopover({
     trigger,
     el,
-    visibleClass: 'help-popover--visible',
+    visibleClass: 'popover--visible',
     onOpen: sync,
     onClose() {
       disarm();

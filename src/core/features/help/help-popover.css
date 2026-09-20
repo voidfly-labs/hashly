@@ -1,9 +1,8 @@
 /* =========================================================================
        HELP POPOVER
-       — The help button's popover (see core/features/help/help.js). Its shell,
-         header and close button are shared with the history popover (see
-         history.css); this is its width and its body. Import after history.css:
-         the width overrides the shell's.
+       — The help button's popover (see core/features/help/help.js). Its shell, header and
+         close button are the shared popover's (ui/popover/popover.css); this is its width
+         and its body.
        ========================================================================= */
 .help-popover {
   width: min(460px, calc(100vw - 48px));
@@ -13,10 +12,6 @@
   .help-popover {
     width: calc(max(100vw, 320px) - 32px);
   }
-}
-
-.help-popover__header {
-  flex-shrink: 0;
 }
 
 .help-popover__body {

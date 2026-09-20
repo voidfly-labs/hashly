@@ -47,7 +47,7 @@ export function initSectionCollapse() {
       // it's anchored to the header, which stays visible, but its content
       // (e.g. the just-hidden result rows) no longer makes sense to show.
       if (collapsed) {
-        header.querySelector('.history-popover--visible [data-popover-close]')?.click();
+        header.querySelector('.history-popover.popover--visible [data-popover-close]')?.click();
       }
     });
   });

@@ -2,39 +2,16 @@
        TOGGLE — an on/off switch (see toggle.html)
        — A native checkbox with role="switch", so the keyboard and screen readers get it for free;
          the track and thumb are drawn on the sibling after it (no :has(), see CLAUDE.md). The label
-         is the whole row's hit area. A disabled switch carries `.toggle--disabled` on its label too,
-         which dims the text (set from JS: there is no parent selector to do it from the input).
+         is the whole row's hit area, and a row of ui/setting/ (`.setting.toggle`): its text, and its
+         disabled look (`.setting--disabled` on the label too), are the setting row's.
        ========================================================================= */
 .toggle {
   --toggle-width: 36px;
   --toggle-height: 20px;
   --toggle-gap: 2px;
   --toggle-thumb: calc(var(--toggle-height) - 2 * var(--toggle-gap));
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
   cursor: pointer;
   user-select: none;
-}
-
-.toggle__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.toggle__label {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
-.toggle__hint {
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: var(--text-muted);
 }
 
 /* The checkbox stays focusable and in the accessibility tree, but is not drawn */
@@ -95,12 +72,8 @@
   opacity: 0.45;
 }
 
-.toggle--disabled {
+.toggle.setting--disabled {
   cursor: not-allowed;
-}
-
-.toggle--disabled .toggle__text {
-  opacity: 0.55;
 }
 
 /* Phones: the row is at least 44px tall, and the switch is scaled up to sit with the 35px inputs */

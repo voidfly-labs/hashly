@@ -1,8 +1,13 @@
 <!-- ── SETTINGS POPOVER ── (wired in core/features/settings/settings-popover.js; its shell is the help popover's) -->
-<div class="help-popover settings-popover" id="settingsPopover" role="dialog" aria-labelledby="settingsPopoverTitle">
-  <div class="help-popover__header">
-    <span class="help-popover__title" id="settingsPopoverTitle">Settings</span>
-    <button class="icon-btn help-popover__close" data-popover-close aria-label="Close settings">
+<div
+  class="popover settings-popover"
+  id="settingsPopover"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="settingsPopoverTitle">
+  <div class="popover__header">
+    <span class="popover__title" id="settingsPopoverTitle">Settings</span>
+    <button class="icon-btn popover__close" data-popover-close aria-label="Close settings">
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
     </button>
   </div>
@@ -27,8 +32,8 @@
       <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsHistoryEnabled', label: 'Save history' }) %>
       <div class="setting">
         <label class="setting__text" for="settingsHistoryLimit">
-          <span class="toggle__label">History size</span>
-          <span class="toggle__hint" id="settingsHistoryLimitHint"
+          <span class="setting__label">History size</span>
+          <span class="setting__hint" id="settingsHistoryLimitHint"
             >Entries kept in each of the text and file histories.</span
           >
         </label>
@@ -55,22 +60,22 @@
       </h3>
       <div class="setting">
         <label class="setting__text" for="settingsMaxThreads">
-          <span class="toggle__label">Max threads</span>
-          <span class="toggle__hint" id="settingsMaxThreadsHint"></span>
+          <span class="setting__label">Max threads</span>
+          <span class="setting__hint" id="settingsMaxThreadsHint"></span>
         </label>
         <select class="setting__select" id="settingsMaxThreads" aria-describedby="settingsMaxThreadsHint"></select>
       </div>
       <div class="setting">
         <label class="setting__text" for="settingsMaxChunk">
-          <span class="toggle__label">Max chunk size</span>
-          <span class="toggle__hint" id="settingsMaxChunkHint"></span>
+          <span class="setting__label">Max chunk size</span>
+          <span class="setting__hint" id="settingsMaxChunkHint"></span>
         </label>
         <select class="setting__select" id="settingsMaxChunk" aria-describedby="settingsMaxChunkHint"></select>
       </div>
       <div class="setting">
         <label class="setting__text" for="settingsMaxFiles">
-          <span class="toggle__label">Max files per drop</span>
-          <span class="toggle__hint" id="settingsMaxFilesHint"></span>
+          <span class="setting__label">Max files per drop</span>
+          <span class="setting__hint" id="settingsMaxFilesHint"></span>
         </label>
         <select class="setting__select" id="settingsMaxFiles" aria-describedby="settingsMaxFilesHint"></select>
       </div>
@@ -84,16 +89,16 @@
       </h3>
       <div class="setting">
         <div class="setting__text">
-          <span class="toggle__label">Clear all data</span>
-          <span class="toggle__hint" id="settingsUsage"></span>
+          <span class="setting__label">Clear all data</span>
+          <span class="setting__hint" id="settingsUsage"></span>
         </div>
-        <button class="history-popover__clear" id="settingsClearAll" type="button">
-          <span class="history-popover__clear-face"
+        <button class="confirm-btn" id="settingsClearAll" type="button">
+          <span class="confirm-btn__face"
             ><svg viewBox="0 0 24 24" aria-hidden="true">
               <use href="/src/assets/images/icons.svg#icon-delete"></use></svg
             >Clear</span
           >
-          <span class="history-popover__clear-face history-popover__clear-face--confirm"
+          <span class="confirm-btn__face confirm-btn__face--confirm"
             ><svg viewBox="0 0 24 24" aria-hidden="true">
               <use href="/src/assets/images/icons.svg#icon-delete"></use></svg
             >Confirm</span

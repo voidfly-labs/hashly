@@ -94,6 +94,7 @@ export const History = {
   /** Records what was hashed in a batch (call once per batch, before its entries). */
   setSource(ns, batchId, description) {
     // What was hashed is only kept as far as the visitor allows (see Settings).
+    if (!Settings.get('historyEnabled')) return;
     this._stores[ns].setSource(batchId, Settings.get('historyPreviews') ? description : '');
   },
 

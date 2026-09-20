@@ -29,6 +29,22 @@ export const crc_24_openpgp = createCrc({
   refin: false,
   xorout: 0x000000n,
 });
+// CRC-32, CRC-32C and CRC-64/XZ run on hash-wasm; these are what stands in for them where WebAssembly
+// is not available (see ../worker.js).
+export const crc_32_iso_hdlc = createCrc({
+  width: 32,
+  poly: 0x04c11db7n,
+  init: 0xffffffffn,
+  refin: true,
+  xorout: 0xffffffffn,
+});
+export const crc_32_iscsi = createCrc({
+  width: 32,
+  poly: 0x1edc6f41n,
+  init: 0xffffffffn,
+  refin: true,
+  xorout: 0xffffffffn,
+});
 export const crc_32_bzip2 = createCrc({
   width: 32,
   poly: 0x04c11db7n,
@@ -51,6 +67,7 @@ export const crc_32_mpeg_2 = createCrc({
   xorout: 0x00000000n,
 });
 export const crc_64_ecma_182 = createCrc({ width: 64, poly: 0x42f0e1eba9ea3693n, init: 0n, refin: false, xorout: 0n });
+export const crc_64_xz = createCrc({ width: 64, poly: 0x42f0e1eba9ea3693n, init: F64, refin: true, xorout: F64 });
 export const crc_64_nvme = createCrc({ width: 64, poly: 0xad93d23594c93659n, init: F64, refin: true, xorout: F64 });
 export const crc_64_redis = createCrc({ width: 64, poly: 0xad93d23594c935a9n, init: 0n, refin: true, xorout: 0n });
 export const crc_82_darc = createCrc({ width: 82, poly: 0x0308c0111011401440411n, init: 0n, refin: true, xorout: 0n });

@@ -2,17 +2,18 @@
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
 
-export const OPEN_POPOVER = '.history-popover--visible, .help-popover--visible';
+export const OPEN_POPOVER = '.popover--visible';
 
 const BACKDROP_ID = 'historyBackdrop';
-const BACKDROP_VISIBLE_CLASS = 'history-backdrop--visible';
+const BACKDROP_VISIBLE_CLASS = 'popover-backdrop--visible';
 
 /** The open/close behaviour the page's popovers share: the visible class, `aria-expanded` on the
  *  trigger, the backdrop, a click on the trigger toggling it, a click outside, the backdrop or a
  *  `[data-popover-close]` button closing it, and Escape, which hands focus back to the trigger.
  *
  *  Hooks, for what a popover does of its own: `onOpen` runs before it is shown, `onShown` once it
- *  is (a hidden element can't take focus), `onClose` before it is hidden. `onEscape` runs on Escape
+ *  is (a hidden element can't take focus; when it leaves focus outside, the close button gets it),
+ *  `onClose` before it is hidden. `onEscape` runs on Escape
  *  while it is open, and returns true when it backed out of something inside the popover, which
  *  leaves the popover itself open. */
 export function createPopover({ trigger, el, visibleClass, onOpen, onShown, onClose, onEscape }) {
@@ -23,6 +24,7 @@ export function createPopover({ trigger, el, visibleClass, onOpen, onShown, onCl
     onOpen?.();
     el.classList.add(visibleClass);
     onShown?.();
+    if (!el.contains(document.activeElement)) el.querySelector('[data-popover-close]')?.focus();
     trigger.setAttribute('aria-expanded', 'true');
     backdrop().classList.add(BACKDROP_VISIBLE_CLASS);
   };

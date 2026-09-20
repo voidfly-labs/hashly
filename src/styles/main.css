@@ -24,12 +24,19 @@
 /* UI, form details */
 @import '../core/ui/hint/hint.css';
 @import '../core/ui/group-label/group-label.css';
+@import '../core/ui/setting/setting.css';
 @import '../core/ui/toggle/toggle.css';
 
 /* UI, feedback */
 @import '../core/ui/tooltip/tooltip.css';
 @import '../core/ui/warning-banner/warning-banner.css';
 @import '../core/ui/announcer/announcer.css';
+@import '../core/ui/spinner/spinner.css';
+
+/* UI, overlays */
+/* popover.css after ui/icon-button/: its close button overrides the padding of .icon-btn */
+@import '../core/ui/popover/popover.css';
+@import '../core/ui/confirm-button/confirm-button.css';
 
 /* Layout, the page frame */
 @import '../core/layout/page.css';
@@ -48,7 +55,6 @@
 /* history.css first: the other popovers, the clear buttons of the inputs and the verify field
    override parts of it */
 @import '../core/features/history/history.css';
-@import '../core/features/history/popover/confirm-clear.css';
 @import '../core/features/history/table/history-table.css';
 
 /* Features, results */

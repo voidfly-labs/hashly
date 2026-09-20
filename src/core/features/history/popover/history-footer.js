@@ -1,14 +1,13 @@
 import { iconHref } from '~core/lib/icon.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
+import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
-
-import { initConfirmClear } from './confirm-clear.js';
 
 // The faces are flex items in a grid cell, so the whitespace between their children is never rendered
 const clearFace = (label, modifier = '') => `
-              <span class="history-popover__clear-face${modifier}">
+              <span class="confirm-btn__face${modifier}">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('delete')}"></use></svg>
-                <span class="history-popover__clear-label">${label}</span>
+                <span class="confirm-btn__label">${label}</span>
               </span>`;
 
 const footerMarkup = (ns) => `
@@ -28,9 +27,9 @@ const footerMarkup = (ns) => `
               <span class="history-popover__export-label">Export<span class="history-popover__export-suffix"> CSV</span></span>
               <span class="tooltip">Exported</span>
             </button>
-            <button class="history-popover__clear" data-history-clear="${ns}" aria-label="Clear history">
+            <button class="confirm-btn" data-history-clear="${ns}" aria-label="Clear history">
               ${clearFace('Clear')}
-              ${clearFace('Confirm', ' history-popover__clear-face--confirm')}
+              ${clearFace('Confirm', ' confirm-btn__face--confirm')}
             </button>
           </div>`;
 
@@ -45,7 +44,7 @@ const CLEAR_SEARCHING_TITLE = 'Clear the search to delete the history';
  *  The controls stay in place, so focus stays on the one that has it; an arrow that is now disabled
  *  (the first or last page reached) hands it to the first enabled control, as a disabled button
  *  can't keep it. An update also takes Clear out of its "Confirm" state. `disarm()` does that
- *  alone (see ./confirm-clear.js) and returns whether Clear was armed. */
+ *  alone (see ui/confirm-button/confirm-button.js) and returns whether Clear was armed. */
 export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) {
   const footer = document.createElement('div');
   footer.className = 'history-popover__footer';
@@ -74,7 +73,7 @@ export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) 
     Checkmark.flash(exportBtn);
   });
 
-  const disarm = initConfirmClear(clearBtn, onClear);
+  const disarm = initConfirmButton(clearBtn, onClear, 'Press again to delete the history');
 
   return {
     disarm,

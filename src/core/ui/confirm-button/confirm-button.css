@@ -1,0 +1,106 @@
+/* =========================================================================
+       CONFIRM BUTTON
+       — A red two-click button for what deletes (see confirm-button.js): its first click arms it, and
+         the second one confirms. Two faces share its one cell, `.confirm-btn__face` and
+         `.confirm-btn__face--confirm`, each an icon and a `.confirm-btn__label`, so it keeps its width
+         when armed. Armed (`.confirm-btn--armed`), it gets a ring and a layer that drains across it
+         for as long as it stays armed.
+       ========================================================================= */
+/* Matches .btn's box (same surface, border, sizing, transitions), in .btn--primary's recipe
+   (button.css) in red: what it does deletes. */
+.confirm-btn {
+  display: inline-grid;
+  align-items: center;
+  gap: 2px;
+  white-space: nowrap;
+  padding: 5px 11px;
+  border: 1px solid var(--danger-fill);
+  border-radius: var(--radius-sm);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--danger-fill);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.confirm-btn svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.confirm-btn:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.confirm-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 630px) {
+  .confirm-btn {
+    min-height: 35px;
+    padding: 8px 10px;
+  }
+}
+
+.confirm-btn:hover:not(:disabled) {
+  color: #fff;
+  box-shadow: 0 4px 16px var(--danger-glow);
+  opacity: 0.88;
+}
+
+.confirm-btn__face {
+  position: relative; /* above the armed button's draining layer, so the label stays at full strength */
+  z-index: 1;
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.confirm-btn__face--confirm,
+.confirm-btn--armed .confirm-btn__face:first-child {
+  visibility: hidden;
+}
+
+.confirm-btn--armed .confirm-btn__face--confirm {
+  visibility: visible;
+}
+
+/* Armed: the next click deletes. The button keeps its colours; a ring and a darker layer that drains
+   across it for as long as it stays armed (--confirm-ms) show that this is a short-lived state, not
+   the same button once more. */
+.confirm-btn--armed,
+.confirm-btn--armed:hover:not(:disabled) {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px var(--danger-ring);
+  opacity: 1;
+}
+
+.confirm-btn--armed::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.22);
+  transform-origin: left;
+  animation: confirm-btn-drain var(--confirm-ms) linear forwards;
+}
+
+@keyframes confirm-btn-drain {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}

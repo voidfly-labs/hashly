@@ -1,0 +1,22 @@
+/* In-progress ring: a track with one accent arc, rotated by a transform animation, which
+   runs on the compositor and so keeps turning smoothly while the main thread is busy
+   hashing. Size and place are the user's: `<span class="spinner my-spinner">`. */
+.spinner {
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spinner-spin 0.8s linear infinite;
+}
+
+@keyframes spinner-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}
