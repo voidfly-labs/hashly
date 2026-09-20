@@ -92,6 +92,7 @@
 @import '../core/sections/file/file.css';
 @import '../core/sections/file/file-list.css';
 @import '../core/sections/file/manifest/manifest-row.css';
+@import '../core/sections/file/filter/list-filter.css';
 
 /* Sections, random */
 @import '../core/sections/random/random.css';

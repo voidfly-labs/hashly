@@ -25,7 +25,10 @@ export function createHasherClient({ spawn, algorithms }) {
   const costOf = ({ id }) => costs.get(id) ?? 1;
 
   // Read for each file, so a change in the settings applies to the next one.
-  const threadsFor = (algos) => Math.max(1, Math.min(Settings.get('maxThreads') || autoThreads(), algos.length));
+  const threadBudget = () => Settings.get('maxThreads') || autoThreads();
+  const threadsFor = (algos) => Math.max(1, Math.min(threadBudget(), algos.length));
+  // Files that can be hashed at once within the thread budget, each on its own threads.
+  const concurrencyFor = (algos) => Math.max(1, Math.floor(threadBudget() / threadsFor(algos)));
   // The channel itself while it works, else a new one (a dead one's worker is stopped first).
   const fresh = (channel) => {
     if (channel && !channel.dead) return channel;
@@ -71,9 +74,25 @@ export function createHasherClient({ spawn, algorithms }) {
   }
 
   // ── Files ───────────────────────────────────────────────────────────────
+  // The workers a file hashes on are slots of the pool, and a file keeps its slots until it is over, so
+  // files hashed at once are on workers of their own (`takeSlots`).
   const pool = [];
+  const slotsInUse = new Set();
   let filesRunning = 0;
   let idleTimer = null;
+
+  function takeSlots(count) {
+    const slots = [];
+    let slot = 0;
+    while (slots.length < count) {
+      if (!slotsInUse.has(slot)) {
+        slotsInUse.add(slot);
+        slots.push(slot);
+      }
+      slot++;
+    }
+    return slots;
+  }
 
   function startFile() {
     filesRunning++;
@@ -92,6 +111,10 @@ export function createHasherClient({ spawn, algorithms }) {
   return {
     /** How many threads a file would be hashed on with `algos` visible. */
     threadsFor,
+
+    /** How many files can be hashed at once with `algos` visible: as many as the thread budget has
+     *  room for, one if a single file already uses it all. */
+    concurrencyFor,
 
     /** Starts the text worker ahead of the first text request. A worker that fails to start is not
      *  reported here: it is dead, and the first request replaces it. */
@@ -141,16 +164,19 @@ export function createHasherClient({ spawn, algorithms }) {
      *  `onProgress(ratio)` is how far along the file is: as far as its slowest share. The shares work on
      *  their own, so `onShareProgress(ids, ratio)` tells how far one has got, and `onShare(digests)` hands
      *  over its digests (`Map<id, hex>`) when it is done, before the shares still running are. All of the
-     *  latter come before the result, which is still every digest at once. */
+     *  latter come before the result, which is still every digest at once. Several files can be hashed at
+     *  once (see `concurrencyFor`): each is on workers of its own. */
     async fromFileAll(file, onProgress, algos = algorithms, signal, handle = {}, { onShare, onShareProgress } = {}) {
       if (signal?.aborted) throw abortError();
       const groups = share(algos, threadsFor(algos), costOf);
       const maxChunk = chunkCeiling(Settings.get('maxChunkMiB'));
+      const slots = takeSlots(groups.length);
       startFile();
       let ended = false;
       const finish = () => {
         if (ended) return;
         ended = true;
+        slots.forEach((slot) => slotsInUse.delete(slot));
         endFile();
       };
 
@@ -159,8 +185,8 @@ export function createHasherClient({ spawn, algorithms }) {
       const runs = [];
       try {
         groups.forEach((ids, i) => {
-          pool[i] = fresh(pool[i]);
-          const run = pool[i].request(
+          pool[slots[i]] = fresh(pool[slots[i]]);
+          const run = pool[slots[i]].request(
             { type: 'file', file, ids, maxChunk },
             {
               onProgress(ratio) {

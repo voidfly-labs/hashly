@@ -20,7 +20,7 @@ const HINTS = {
   settingsHistoryFilenames: 'Keeps a filename alongside each hash.',
   settingsHistoryPreviews: 'Keeps a text preview alongside each hash.',
   settingsRememberView: 'Formats, hidden algorithms, collapsed sections and more.',
-  settingsMaxThreads: 'Parallel hashing. Helps with multiple algorithms enabled.',
+  settingsMaxThreads: 'Parallel hashing. Helps with multiple files or algorithms.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
   settingsMaxFiles: 'Files accepted from a single drop.',

@@ -5,23 +5,39 @@
          by ./file-list.js into the list in file.html.
        ========================================================================= */
 /* A box of its own, like the drop zone and the reference field it sits between: it holds the rows
-   together and marks where its scrolling ends. */
+   together, and under them the manifest row, which stays out of the scrolling. */
+.file-list-box {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden; /* rounds the corners of the manifest row too */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.file-list-box[hidden] {
+  display: none;
+}
+
+.file-list,
+.file-list-manifest {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The scrolling part: the files. */
 .file-list {
   position: relative; /* the offsetParent of its rows, for scrolling one into view */
   display: flex;
   flex-direction: column;
   gap: 2px;
   max-height: 196px;
-  margin: 0;
   padding: 4px;
   overflow-y: auto;
-  list-style: none;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
 }
 
-.file-list[hidden] {
+.file-list-manifest:empty {
   display: none;
 }
 
@@ -30,6 +46,10 @@
   display: flex;
   align-items: stretch;
   border-radius: var(--radius);
+}
+
+.file-list__item[hidden] {
+  display: none;
 }
 
 /* The row is the unit: hover, selection and the keyboard's focus ring all take in the whole line, ✕
@@ -138,7 +158,7 @@
 }
 
 /* One icon per state, as in the drop zone's status line: waiting is the empty ring, hashing the
-   spinning arc, done a ✓, anything that ended without digests a ⚠. */
+   spinning arc, done a ✓, failed or stopped a ✕, nothing to hash a ⚠. */
 .file-list__status svg,
 .file-list__spinner {
   display: none;
@@ -185,7 +205,7 @@
 .file-list__status[data-state='done'] svg:nth-of-type(1),
 .file-list__status[data-state='failed'] svg:nth-of-type(2),
 .file-list__status[data-state='stopped'] svg:nth-of-type(2),
-.file-list__status[data-state='skipped'] svg:nth-of-type(2) {
+.file-list__status[data-state='skipped'] svg:nth-of-type(3) {
   display: block;
 }
 
@@ -222,6 +242,15 @@
    Upload and Paste): its centre 22px from the right edge of the box. */
 .file-list__remove {
   padding: 0 8px 0 10px;
+}
+
+/* Shown only for a file that failed: the `display` of `.icon-btn--flex` would win over `hidden`. */
+.file-list__retry {
+  padding: 0 2px 0 10px;
+}
+
+.file-list__retry[hidden] {
+  display: none;
 }
 
 /* On a narrow screen a file is a two-line card: the name on its own line, with the width the size and
@@ -261,6 +290,7 @@
 
   .file-list__status svg,
   .file-list__spinner,
+  .file-list__retry svg,
   .file-list__remove svg {
     width: 20px;
     height: 20px;

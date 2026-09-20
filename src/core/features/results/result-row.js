@@ -58,7 +58,7 @@ export function buildResultRow({ prefix, algoId, emptyText, withStatus = false }
 
 /** Wires a row built by `buildResultRow`: its badge shows or hides the algorithm (`onToggle`), its
  *  buttons copy and download (`onCopy`, `onDownload`), and a click on the row copies the digest
- *  (`getHash()`, '' while there is none). */
+ *  (`getHash()`, '' while there is none) and, like a click on Copy, turns the Copy button's icon into a check. */
 export function wireResultRow(els, { isHidden, onToggle, onCopy, onDownload, getHash }) {
   const { row, badge, hash, copy, download } = els;
   const tipText = () => (isHidden() ? 'Show' : 'Hide');
@@ -81,7 +81,7 @@ export function wireResultRow(els, { isHidden, onToggle, onCopy, onDownload, get
     if (e.target.closest('.algo-badge, .result__actions')) return;
     if (HashSelect.isSelectClick(e)) return; // Ctrl/⌘ is for selecting part of the hash
     const digest = getHash();
-    if (digest) copyWithFeedback(digest, { anchor: hash });
+    if (digest) copyWithFeedback(digest, { anchor: hash, button: copy });
   });
 }
 

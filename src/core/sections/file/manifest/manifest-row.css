@@ -4,20 +4,32 @@
          buttons. See ./manifest-row.js. It is a .file-list__item, so it borrows the list's row layout
          (the name, the size, the label that holds them); after file-list.css, which defines those.
        ========================================================================= */
-/* Always the last row of the list, kept in view at the bottom when the list scrolls. It is not a file to
-   select, so it takes no hover or selection colour; it reads as unavailable until every file is hashed. */
+/* The row under the list, outside its scrolling (see .file-list-box), across the whole width of the box.
+   It is not a file to select: the page's own tint sets it apart from the files above it, it reads as
+   unavailable until every file is hashed, and once ready a click anywhere on it copies the list, as a click
+   on a result row copies its digest. */
 .manifest-row {
-  position: sticky;
-  bottom: -4px; /* the list's own padding */
-  margin: 2px -4px -4px; /* across the whole width of the box, down to its bottom edge */
   padding: 0 4px;
   border-top: 1px solid var(--border);
   border-radius: 0;
-  background: var(--surface);
+  background: var(--bg);
 }
 
 .manifest-row:hover {
-  background: var(--surface);
+  background: var(--bg);
+}
+
+.manifest-row:not(.manifest-row--waiting) {
+  cursor: pointer;
+}
+
+/* The label of a file's row has a cursor of its own; here it is the row's. */
+.manifest-row .file-list__label {
+  cursor: inherit;
+}
+
+.manifest-row:not(.manifest-row--waiting):hover {
+  background: var(--accent-muted);
 }
 
 .manifest-row--waiting .file-list__label {
@@ -44,7 +56,7 @@
 }
 
 .manifest-row .file-list__size:not(:empty)::before {
-  content: '•';
+  content: '·';
   margin-right: 7px;
 }
 
@@ -60,7 +72,7 @@
   padding-right: 8px;
 }
 
-/* On a narrow screen the row is a two-line card like the others: the name, then "Manifest • 888 B". */
+/* On a narrow screen the row is a two-line card like the others: the name, then "Manifest · 888 B". */
 @media (max-width: 630px) {
   .manifest-row__icon {
     grid-area: status;

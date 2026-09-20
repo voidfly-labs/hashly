@@ -21,9 +21,10 @@ import { createFileDrop } from './file-drop.js';
 import { createJobView } from './file-job-view.js';
 import { createFileList } from './file-list.js';
 import { createFileQueue } from './file-queue.js';
+import { createQueueProgress } from './file-queue-progress.js';
 import { createFileRows } from './file-rows.js';
 import { startFileRun } from './file-run.js';
-import { describeDrop, describeQueueEnd, statsPrefix } from './file-summary.js';
+import { describeDrop, describeQueueEnd } from './file-summary.js';
 import { createManifestExport } from './manifest/manifest-export.js';
 import { createManifestRow } from './manifest/manifest-row.js';
 import { takeManifest } from './manifest/take-manifest.js';
@@ -33,13 +34,15 @@ let _APP_CONFIG, _ALGORITHMS, _Hasher;
 // What `rawHexMap` is with no file: never written to.
 const NO_DIGESTS = new Map();
 
-/** The File section: hashes the files of a drop, one after the other, with every visible algorithm,
- *  and shows the digests of the selected one. The drop zone is ./file-drop.js, the queue of files
+/** The File section: hashes the files of a drop, as many at a time as the thread budget has room for,
+ *  with every visible algorithm, and shows the digests of the selected one. The drop zone is ./file-drop.js, the queue of files
  *  ./file-queue.js (and its list ./file-list.js), the rows ./file-rows.js, how a file looks on them
  *  ./file-job-view.js and the pass that reads a file ./file-run.js. */
 export const FileSection = {
   hiddenAlgos: new Set(),
   _queue: null,
+  // How far the files of a drop of several have got as a whole (see ./file-queue-progress.js), or null.
+  _progress: null,
 
   _renderList() {
     // The verify field renders while it is built, before there is a list.
@@ -76,6 +79,8 @@ export const FileSection = {
     });
     this._queue = createFileQueue({
       runJob: (job) => this._runJob(job),
+      concurrency: () => _Hasher.concurrencyFor(this._visibleAlgos()),
+      onStart: () => this._onQueueStart(),
       // The notice for the manifest counts the files, so it follows the queue; it redraws the list.
       onChange: () => this._verify.refresh(),
       onSelect: (job) => this._view.show(job),
@@ -137,8 +142,12 @@ export const FileSection = {
 
     this._list = createFileList({
       root: document.getElementById('fileList'),
+      box: document.getElementById('fileListBox'),
+      filter: document.getElementById('fileListFilter'),
+      manifestSlot: document.getElementById('fileManifest'),
       onSelect: (id) => this._queue.select(id),
       onRemove: (id) => this._removeJob(id),
+      onRetry: (id) => this._queue.retry(id),
       verdictOf: ({ rawHexMap, name }) => this._verify.verdictFor(rawHexMap, name),
       manifestRow: createManifestRow({
         onCopy: (button) => this._manifest.copy(button),
@@ -265,16 +274,43 @@ export const FileSection = {
     this._drop.showStats();
   },
 
-  /** Says `text` on the drop zone's status line for `job`, the file being hashed. The last line is
-   *  kept, to be said again when the number of files in front of it changes (see `_removeJob`). */
+  /** The algorithms that are shown, which a file is hashed with. */
+  _visibleAlgos() {
+    return _ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id));
+  },
+
+  /** Several files are being hashed as a whole: the status line and the tab title are theirs together. */
+  _aggregating() {
+    return Boolean(this._progress) && this._queue.jobs.length > 1;
+  },
+
+  /** A run of the queue begins: with several files, the progress of all of them is what is shown. */
+  _onQueueStart() {
+    const { jobs } = this._queue;
+    if (jobs.length < 2) {
+      this._progress = null;
+      return;
+    }
+    const algos = this._visibleAlgos();
+    const scope = jobs.filter(({ status }) => status === 'queued');
+    this._progress = createQueueProgress({
+      scope,
+      getJobs: () => this._queue.jobs,
+      threads: Math.min(scope.length, _Hasher.concurrencyFor(algos)) * _Hasher.threadsFor(algos),
+      setStats: (text, state) => this._drop.setStats(text, state),
+    });
+  },
+
+  /** Keeps `text` as the status line of `job`, and says it on the drop zone unless several files
+   *  are shown as a whole. */
   _setJobStats(job, text, state) {
     job.stats = { text, state };
-    this._drop.setStats(statsPrefix(this._queue.jobs, job) + text, state);
+    if (!this._aggregating()) this._drop.setStats(text, state);
   },
 
   /** Hashes one file of the queue (see file-queue.js), and settles when it is over, however it ended. */
   async _runJob(job) {
-    const algos = _ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id));
+    const algos = this._visibleAlgos();
     if (algos.length) await this._hashJob(job, algos);
     else this._skipJob(job);
   },
@@ -282,7 +318,7 @@ export const FileSection = {
   /** Nothing to compute for `job`: the file is not read at all. */
   _skipJob(job) {
     job.status = 'skipped';
-    TabTitle.reset();
+    if (!this._aggregating()) TabTitle.reset();
     this._setJobStats(job, 'Nothing to hash', 'warn');
     if (this._queue.follow(job)) this._view.show(job);
   },
@@ -297,7 +333,11 @@ export const FileSection = {
       quiet: this._queue.jobs.length > 1,
       setStats: (text, state) => this._setJobStats(job, text, state),
       onShare: (digests) => this._onShare(job, digests),
-      onProgress: (ratio) => this._list.setProgress(job.id, ratio),
+      onProgress: (ratio) => {
+        job.ratio = ratio;
+        this._list.setProgress(job.id, ratio);
+        if (this._aggregating()) this._progress.update();
+      },
       onShareProgress: (ids, ratio) => {
         if (this._job === job) this._rows.setProgress(ids, ratio);
       },
@@ -305,6 +345,7 @@ export const FileSection = {
     job.run = run;
     job.ids = run.ids;
     job.threads = _Hasher.threadsFor(algos);
+    if (this._aggregating()) this._progress.update();
     if (this._queue.follow(job)) this._view.show(job);
 
     try {
@@ -320,14 +361,19 @@ export const FileSection = {
     } finally {
       job.run = null;
     }
+    if (this._aggregating()) this._progress.update();
     if (this._job === job) this._view.showEnd(job);
   },
 
   /** The whole queue is over: said once, for several files (a single file's run has said it). */
   _onQueueDone({ jobs, elapsedMs }) {
     this._elapsedMs = elapsedMs;
-    const end = describeQueueEnd(jobs, elapsedMs);
-    if (!end) return;
+    const end = describeQueueEnd(jobs, elapsedMs, this._progress?.threads);
+    if (!end) {
+      // A drop of several that is down to one file: its own run said how it ended, but not on the tab.
+      if (this._progress) TabTitle.reset();
+      return;
+    }
     this._drop.setStats(end.text, end.state);
     const title = TabTitle.track();
     if (end.state === 'done') title.done();
@@ -337,23 +383,27 @@ export const FileSection = {
 
   /** A file's ✕ in the list: stops it if it is being hashed and takes it out. */
   _removeJob(id) {
-    const wasRunning = this._queue.running?.id === id;
+    const wasRunning = this._queue.active.some((job) => job.id === id);
     if (this._queue.remove(id) === 0) {
       this.onClear();
       return;
     }
     // The aborted run never reports its end: drop its progress from the tab title.
-    if (wasRunning) TabTitle.reset();
+    if (wasRunning && !this._aggregating()) TabTitle.reset();
     this._drop.showFile(describeDrop(this._queue.jobs), this._queue.jobs.length);
     this._refreshStats();
   },
 
-  /** Says the status line again, for a queue that has lost a file: the line of the file being hashed
-   *  counts the files in its prefix, and that of a finished queue says how many it hashed. */
+  /** Says the status line again, for a queue that has lost a file: the line of files being hashed counts
+   *  them, and that of a finished queue says how many it hashed. */
   _refreshStats() {
-    const { jobs, running } = this._queue;
-    const last = running ?? jobs[0];
-    const end = running ? null : describeQueueEnd(jobs, this._elapsedMs);
+    const { jobs, active } = this._queue;
+    if (active.length && this._aggregating()) {
+      this._progress.update();
+      return;
+    }
+    const last = active[0] ?? jobs[0];
+    const end = active.length ? null : describeQueueEnd(jobs, this._elapsedMs, this._progress?.threads);
     if (end) this._drop.setStats(end.text, end.state);
     else if (last?.stats) this._setJobStats(last, last.stats.text, last.stats.state);
   },
@@ -361,20 +411,23 @@ export const FileSection = {
   /** A running pass stops computing the algorithms hidden meanwhile, and once it has none left it is
    *  stopped, instead of reading the rest of the file for results nobody can see. */
   _cancelIfIdle() {
-    const job = this._queue.running;
-    const run = job?.run;
-    if (!run) return;
-    run.dropHidden(this.hiddenAlgos);
-    if (!run.isIdle()) return;
-    job.status = 'stopped';
-    run.abort();
-    TabTitle.reset();
-    this._setJobStats(job, 'Hashing stopped', 'error');
-    if (this._job === job) this._view.showEnd(job);
+    for (const job of this._queue.active) {
+      const run = job.run;
+      if (!run) continue;
+      run.dropHidden(this.hiddenAlgos);
+      if (!run.isIdle()) continue;
+      job.status = 'stopped';
+      run.abort();
+      if (!this._aggregating()) TabTitle.reset();
+      this._setJobStats(job, 'Hashing stopped', 'error');
+      if (this._job === job) this._view.showEnd(job);
+    }
+    if (this._aggregating()) this._progress.update();
   },
 
   onClear() {
     this._queue.clear();
+    this._progress = null;
     TabTitle.reset();
     this._drop.hideStats();
     this._drop.setStats('');

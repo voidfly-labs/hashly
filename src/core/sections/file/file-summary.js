@@ -7,15 +7,11 @@ export function describeDrop(jobs) {
   return { name: `${jobs.length} files`, size: jobs.reduce((sum, { size }) => sum + size, 0) };
 }
 
-/** "File 2 of 5 · " in front of a file's status line while several files are queued, else nothing. */
-export function statsPrefix(jobs, job) {
-  return jobs.length > 1 ? `File ${jobs.indexOf(job) + 1} of ${jobs.length} · ` : '';
-}
-
 /** How a queue of several files ended, as `{ text, state }` for the status line (`state` as in the
  *  drop zone's `setStats`): the same line as for one file, over the files that were hashed, with the
- *  time the whole queue took. A single file's own run has said it already, so that gives null. */
-export function describeQueueEnd(jobs, elapsedMs) {
+ *  time the whole queue took, over `threads` threads (the most any of its files used, if left out). A
+ *  single file's own run has said it already, so that gives null. */
+export function describeQueueEnd(jobs, elapsedMs, threads = Math.max(1, ...jobs.map((job) => job.threads))) {
   if (jobs.length < 2) return null;
   const hashed = jobs.filter(({ status }) => status === 'done');
   const failed = jobs.filter(({ status }) => status === 'failed').length;
@@ -24,7 +20,7 @@ export function describeQueueEnd(jobs, elapsedMs) {
   const text = describeRun({
     totalBytes: hashed.reduce((sum, { size }) => sum + size, 0),
     elapsedMs,
-    threads: Math.max(1, ...jobs.map(({ threads }) => threads)),
+    threads,
     files: hashed.length,
     of: jobs.length,
   });

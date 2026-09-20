@@ -5,7 +5,8 @@ import { createIconButton } from '~core/ui/icon-button/icon-button.js';
 
 /** The last row of the file list: the checksum file of all the files (see manifest-export.js), with its
  *  name, a "Manifest" tag, its size, and two icon buttons to copy and download it. It is not a file of
- *  the queue: it can't be selected or removed. Styles: ./manifest-row.css.
+ *  the queue: it can't be selected or removed. A click anywhere on it, once it is ready, copies the
+ *  list, like the Copy button. Styles: ./manifest-row.css.
  *
  *  `onCopy(button)` and `onDownload(button)` are what the buttons do. Returns `{ item, render }`: the
  *  `<li>` for the list to place, and `render({ name, size, ready })`, which is how the row stands (the
@@ -24,6 +25,10 @@ export function createManifestRow({ onCopy, onDownload }) {
   const copy = action('copy', 'Copy manifest', 'Copy', onCopy);
   const download = action('download', 'Download manifest', 'Download', onDownload);
   item.append(label, copy, download);
+  item.addEventListener('click', (e) => {
+    if (copy.disabled || e.target.closest('.manifest-row__action')) return;
+    onCopy(copy);
+  });
 
   return {
     item,

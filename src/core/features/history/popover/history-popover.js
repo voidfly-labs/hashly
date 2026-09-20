@@ -32,7 +32,11 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
   async function copyRow(row) {
     const entry = list.rowAt(Number(row.dataset.i));
     if (!entry) return;
-    await copyWithFeedback(entry.hash, { anchor: row.querySelector('.history-table__hash') });
+    // The row's Copy button turns its icon into a check, as when it is clicked itself.
+    await copyWithFeedback(entry.hash, {
+      anchor: row.querySelector('.history-table__hash'),
+      button: row.querySelector('[data-action="copy-history"]'),
+    });
   }
 
   // The body is re-rendered often; this listens on it once.

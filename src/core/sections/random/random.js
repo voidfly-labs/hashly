@@ -115,7 +115,11 @@ export const RandomSection = {
     const isIconBtn = button.classList.contains('random__item-btn');
 
     if (action === 'copy') {
-      await copyWithFeedback(hash, { anchor: button, button: isIconBtn ? button : undefined });
+      // A click on the row's text copies too, and turns the Copy button's icon into a check as its own click does.
+      const copyBtn = isIconBtn
+        ? button
+        : button.closest('.random__item')?.querySelector('[data-action="copy"].random__item-btn');
+      await copyWithFeedback(hash, { anchor: button, button: copyBtn });
     } else if (action === 'download') {
       const index = button.dataset.index;
       const algo = button.dataset.algo ?? _DEFAULT_ALGO;

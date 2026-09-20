@@ -8,7 +8,8 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
  *  `onShareProgress(ids, ratio)` is how far one has got and `onShare(digests)` hands over its digests
  *  (`Map<id, hex>`) when it is done. Neither is called once the run is abandoned. `onProgress(ratio)`
  *  is how far the file as a whole has got (its slowest share). A `quiet` run is one
- *  of several: how it ends is not announced, nor left in the tab title (the caller does that for all).
+ *  of several: it leaves the tab title alone and how it ends is not announced (the caller does that
+ *  for all).
  *
  *  Returns `{ ids, result, aborted, abort, dropHidden, isIdle, succeed, fail }`:
  *   - `ids`: the algorithms it still computes (a Set, shrinking as `dropHidden` takes some out).
@@ -21,14 +22,14 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
 export function startFileRun({ file, algos, hasher, setStats, onShare, onShareProgress, onProgress, quiet = false }) {
   const controller = new AbortController();
   const ids = new Set(algos.map((a) => a.id));
-  const title = TabTitle.track();
+  const title = quiet ? null : TabTitle.track();
   const stats = createRunStats(file.size, { threads: hasher.threadsFor(algos) });
   setStats(stats.start(), 'busy');
 
   const handle = {};
   const progress = (ratio) => {
     onProgress?.(ratio);
-    title.progress(ratio);
+    title?.progress(ratio);
     const line = stats.update(ratio);
     if (line) setStats(line, 'busy');
   };
