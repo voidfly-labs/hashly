@@ -6,10 +6,11 @@ import { readReferenceFile } from './reference-file.js';
 const TIP = 'Browse';
 
 /** Wires an "Upload" button that reads a file's text into the reference field.
- *  `onText(line)` gets the reference picked from the file (see ./reference-file.js);
+ *  `onText(line)` gets the reference picked from the file (see ./reference-file.js), `onManifest(manifest)`
+ *  the list, when it names several files;
  *  `onRejected(message)` runs when the file can't be used. `getFileName()` names the
  *  file currently being hashed, so a checksum list yields that file's own line. */
-export function initReferenceFileButton(btn, fileInput, { getFileName, onText, onRejected }) {
+export function initReferenceFileButton(btn, fileInput, { getFileName, onText, onManifest, onRejected }) {
   if (!btn || !fileInput) return;
 
   btn.addEventListener('click', () => fileInput.click());
@@ -20,8 +21,9 @@ export function initReferenceFileButton(btn, fileInput, { getFileName, onText, o
     fileInput.value = '';
     if (!file) return;
 
-    const { line, error } = await readReferenceFile(file, getFileName());
+    const { line, manifest, error } = await readReferenceFile(file, getFileName());
     if (error) onRejected(error);
+    else if (manifest) onManifest(manifest);
     else onText(line);
   });
 

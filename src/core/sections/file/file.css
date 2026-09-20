@@ -129,7 +129,6 @@
   position: absolute;
   top: 5px;
   right: 5px;
-  padding: 6px;
   z-index: 1;
   display: none; /* hidden until a file is loaded */
 }

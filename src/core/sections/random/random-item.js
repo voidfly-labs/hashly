@@ -15,7 +15,7 @@ export function createRandomItem({ hash, algo, number, padWidth, tip }) {
             <span class="algo-badge random__item-badge" data-algo="${algo}" tabindex="0">${algo}</span>
             <div class="random__item-actions">
               <button
-                class="random__item-btn"
+                class="icon-btn random__item-btn"
                 data-action="copy"
                 data-hash="${hash}"
                 aria-label="Copy hash"
@@ -25,7 +25,7 @@ export function createRandomItem({ hash, algo, number, padWidth, tip }) {
                 <span class="tooltip">Copied!</span>
               </button>
               <button
-                class="random__item-btn"
+                class="icon-btn random__item-btn"
                 data-action="download"
                 data-hash="${hash}"
                 data-algo="${algo}"

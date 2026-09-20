@@ -18,7 +18,25 @@ const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n
  *  it is escaped the way coreutils does (see `escapeName`). */
 export function toChecksumFile(hash, ext, sourceName) {
   if (!sourceName) return null;
+  return { filename: `${sourceName}.${ext}`, content: `${checksumLine(hash, sourceName)}\n` };
+}
+
+/** One line of a checksum file, `<digest>  <filename>` (see toChecksumFile for how each is written). */
+function checksumLine(hash, sourceName) {
   const digest = HEX.test(hash) ? hash.toLowerCase() : hash;
-  const line = needsEscape(sourceName) ? `\\${digest}  ${escapeName(sourceName)}` : `${digest}  ${sourceName}`;
-  return { filename: `${sourceName}.${ext}`, content: `${line}\n` };
+  return needsEscape(sourceName) ? `\\${digest}  ${escapeName(sourceName)}` : `${digest}  ${sourceName}`;
+}
+
+/** The name of the checksum file of several files hashed with one algorithm, `ext` being the app's slug
+ *  of it (`sha256`): `SHA256SUMS`. */
+export const checksumListName = (ext) => `${ext.toUpperCase()}SUMS`;
+
+/** The checksum file of several files, all hashed with one algorithm: `entries` are `{ hash, name }`,
+ *  `ext` the app's slug of the algorithm (`sha256`). Written like the file of one (see toChecksumFile),
+ *  a line each, and named as such lists are (see checksumListName). */
+export function toChecksumList(entries, ext) {
+  return {
+    filename: checksumListName(ext),
+    content: entries.map(({ hash, name }) => `${checksumLine(hash, name)}\n`).join(''),
+  };
 }

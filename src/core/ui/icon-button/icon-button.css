@@ -1,0 +1,74 @@
+/* =========================================================================
+       ICON BUTTON
+       — The ghost icon button: no border, a muted icon, and on hover the icon takes a colour and
+         a soft chip appears behind it, blue for an action (copy, paste, close) and red with
+         `.icon-btn--danger` for a removal (clear, remove). Pressing it shrinks it. See ./icon-button.js
+         for building one in JS; in a template, `<button class="icon-btn" aria-label="…"><svg>…</svg></button>`.
+       ========================================================================= */
+/* The box is the button's padding around its icon, so a place that wants a bigger hit area than the
+   chip only gives it more padding: the chip is drawn on the icon (below), not on the box.
+
+   `display` is left out on purpose: some of these buttons are hidden until there is something to act
+   on, by a rule of their own or the `hidden` attribute, and a `display` here would win over it (use
+   `.icon-btn--flex` for one that is always shown). */
+.icon-btn {
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 5px;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: none;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.icon-btn--flex {
+  display: flex;
+}
+
+/* The icon, with the chip as its own padding: 28px square around an 18px icon, however large the button. */
+.icon-btn svg {
+  box-sizing: content-box;
+  width: 18px;
+  height: 18px;
+  padding: 5px;
+  margin: -5px;
+  border-radius: var(--radius-sm);
+  fill: currentColor;
+  transition: background 0.15s;
+}
+
+.icon-btn:hover:not(:disabled),
+.icon-btn.btn--done {
+  color: var(--accent);
+}
+
+.icon-btn:hover:not(:disabled) svg {
+  background: var(--accent-muted);
+}
+
+.icon-btn--danger:hover:not(:disabled) {
+  color: var(--danger);
+}
+
+.icon-btn--danger:hover:not(:disabled) svg {
+  background: var(--danger-focus);
+}
+
+.icon-btn:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Its own rule: a selector list with a pseudo-class the browser doesn't know (:focus-visible,
+   Safari < 15.4) is dropped whole. */
+.icon-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}

@@ -1,7 +1,10 @@
 import { Format } from '~core/lib/format.js';
-import { iconHref } from '~core/lib/icon.js';
+import { svgIcon } from '~core/lib/icon.js';
+import { createIconButton } from '~core/ui/icon-button/icon-button.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
+
+import { el } from './dom.js';
 
 const STATE_LABELS = {
   queued: 'waiting',
@@ -13,38 +16,25 @@ const STATE_LABELS = {
 };
 // How far from the edge of the list a row is scrolled to.
 const REVEAL_GAP = 4;
-const VERDICT_LABELS = { match: 'Match', mismatch: 'No match' };
-
-const svgIcon = (name) => {
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('viewBox', '0 0 24 24');
-  svg.setAttribute('aria-hidden', 'true');
-  const use = document.createElementNS('http://www.w3.org/2000/svg', 'use');
-  use.setAttribute('href', iconHref(name));
-  svg.appendChild(use);
-  return svg;
-};
-
-const el = (tag, className, text) => {
-  const node = document.createElement(tag);
-  node.className = className;
-  if (text !== undefined) node.textContent = text;
-  return node;
-};
+const VERDICT_LABELS = { match: 'Match', mismatch: 'No match', unlisted: 'Not listed' };
 
 /** The list of files of a multi-file drop (see file.html), one line per job: its name and size, how it
  *  is doing, what the reference hash says of it, and a button to take it out (or stop it).
  *  `onSelect(id)` and `onRemove(id)` are the visitor's picks; `verdictOf(job)` gives 'match',
  *  'mismatch' or null for a job.
  *
+ *  After the files comes `manifestRow` (see manifest/manifest-row.js), once there is a manifest to show
+ *  (`manifest`, the `{ name, size, ready }` it is rendered with). It is not a file of the queue: it can't
+ *  be selected or removed, and the arrow keys pass over it.
+ *
  *  The list is one stop for the Tab key (the selected line); ↑ ↓ Home and End move the selection, and
  *  Delete takes the line out. The ✕ buttons are for the pointer and assistive technology.
  *
- *  Returns `{ render, setProgress }`. `render({ jobs, selectedId })` brings the list up to date. Lines
+ *  Returns `{ render, setProgress }`. `render({ jobs, selectedId, manifest })` brings the list up to date. Lines
  *  are kept between renders, so the focus stays where it is while a run changes their
  *  status. Shown only for two files or more: a single file has the drop zone's own display.
  *  `setProgress(id, ratio)` moves the bar of a line being hashed. */
-export function createFileList({ root, onSelect, onRemove, verdictOf }) {
+export function createFileList({ root, onSelect, onRemove, verdictOf, manifestRow }) {
   const lines = new Map(); // job id → { item, select, status, verdict, bar, remove }
   let jobs = [];
 
@@ -72,16 +62,31 @@ export function createFileList({ root, onSelect, onRemove, verdictOf }) {
       onSelect(job.id);
     });
 
-    const remove = el('button', 'file-list__remove');
-    remove.type = 'button';
+    const remove = createIconButton({
+      icon: 'close',
+      label: 'Remove',
+      tip: () => (job.status === 'hashing' ? 'Stop and remove' : 'Remove'),
+      danger: true,
+      className: 'file-list__remove',
+      onClick: () => onRemove(job.id),
+    });
     remove.tabIndex = -1;
-    remove.appendChild(svgIcon('close'));
-    initButtonTooltip(remove, () => (job.status === 'hashing' ? 'Stop and remove' : 'Remove'));
-    remove.addEventListener('click', () => onRemove(job.id));
 
     const bar = el('span', 'file-list__bar');
     item.append(select, remove, bar);
     return { item, select, status, verdict, bar, remove };
+  }
+
+  /** Shows the manifest row at the end of the list, or takes it out when there is no manifest. */
+  function renderManifest(manifest) {
+    const { item } = manifestRow;
+    if (!manifest) {
+      item.remove();
+      return;
+    }
+    manifestRow.render(manifest);
+    // Last, and only moved when it isn't (a move would drop the focus).
+    if (item.parentNode !== root || item.nextElementSibling) root.append(item);
   }
 
   function lineFor(job) {
@@ -98,6 +103,7 @@ export function createFileList({ root, onSelect, onRemove, verdictOf }) {
     if (selected) line.select.setAttribute('aria-current', 'true');
     else line.select.removeAttribute('aria-current');
     line.status.dataset.state = job.status;
+    line.status.toggleAttribute('data-judged', Boolean(verdict));
     line.verdict.dataset.verdict = verdict ?? '';
     line.verdict.textContent = verdict ? VERDICT_LABELS[verdict] : '';
     const spoken = [job.name, Format.fileSize(job.size), STATE_LABELS[job.status], verdict && VERDICT_LABELS[verdict]];
@@ -154,7 +160,7 @@ export function createFileList({ root, onSelect, onRemove, verdictOf }) {
   });
 
   return {
-    render({ jobs: current, selectedId }) {
+    render({ jobs: current, selectedId, manifest = null }) {
       jobs = current;
       root.hidden = jobs.length < 2;
       const live = new Set(jobs.map((job) => job.id));
@@ -169,6 +175,7 @@ export function createFileList({ root, onSelect, onRemove, verdictOf }) {
         update(lineFor(job), job, selected);
         if (selected && job.status === 'hashing') reveal(lineFor(job).item);
       }
+      renderManifest(jobs.length > 1 ? manifest : null);
     },
 
     setProgress(id, ratio) {

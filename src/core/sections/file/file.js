@@ -9,6 +9,7 @@ import { createSoloResult } from '~core/features/results/solo-result.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { Settings } from '~core/features/settings/settings.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
+import { describeManifest } from '~core/features/verify/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
 import { Format } from '~core/lib/format.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
@@ -23,6 +24,9 @@ import { createFileQueue } from './file-queue.js';
 import { createFileRows } from './file-rows.js';
 import { startFileRun } from './file-run.js';
 import { describeDrop, describeQueueEnd, statsPrefix } from './file-summary.js';
+import { createManifestExport } from './manifest/manifest-export.js';
+import { createManifestRow } from './manifest/manifest-row.js';
+import { takeManifest } from './manifest/take-manifest.js';
 
 let _APP_CONFIG, _ALGORITHMS, _Hasher;
 
@@ -39,7 +43,11 @@ export const FileSection = {
 
   _renderList() {
     // The verify field renders while it is built, before there is a list.
-    this._list?.render({ jobs: this._queue.jobs, selectedId: this._queue.selectedId });
+    this._list?.render({
+      jobs: this._queue.jobs,
+      selectedId: this._queue.selectedId,
+      manifest: this._manifest.row(),
+    });
   },
 
   /** The file the page shows: the selected job of the queue (see file-queue.js), or null. */
@@ -59,9 +67,17 @@ export const FileSection = {
     _ALGORITHMS = ALGORITHMS;
     _Hasher = Hasher;
 
+    this._manifest = createManifestExport({
+      algorithms: _ALGORITHMS,
+      isHidden: (id) => this.hiddenAlgos.has(id),
+      getJobs: () => this._queue.jobs,
+      getFormat: () => this.getSelectedFormat(),
+      slugify: (id) => _APP_CONFIG.slugify(id),
+    });
     this._queue = createFileQueue({
       runJob: (job) => this._runJob(job),
-      onChange: () => this._renderList(),
+      // The notice for the manifest counts the files, so it follows the queue; it redraws the list.
+      onChange: () => this._verify.refresh(),
       onSelect: (job) => this._view.show(job),
       onDone: (result) => this._onQueueDone(result),
     });
@@ -96,6 +112,8 @@ export const FileSection = {
       algorithms: _ALGORITHMS,
       getRow: (id) => this._rows.get(id).row,
       isHidden: (id) => this.hiddenAlgos.has(id),
+      getManifestSummary: (manifest) =>
+        describeManifest(manifest, this._queue.jobs, (job) => this._verify.verdictFor(job.rawHexMap, job.name)),
       onChange: () => this._renderList(),
     });
     this._view = createJobView({
@@ -121,7 +139,11 @@ export const FileSection = {
       root: document.getElementById('fileList'),
       onSelect: (id) => this._queue.select(id),
       onRemove: (id) => this._removeJob(id),
-      verdictOf: ({ rawHexMap }) => this._verify.verdictFor(rawHexMap),
+      verdictOf: ({ rawHexMap, name }) => this._verify.verdictFor(rawHexMap, name),
+      manifestRow: createManifestRow({
+        onCopy: (button) => this._manifest.copy(button),
+        onDownload: (button) => this._manifest.download(button),
+      }),
     });
     this._drop = createFileDrop({
       hasFile: () => Boolean(this._job),
@@ -151,6 +173,7 @@ export const FileSection = {
 
   /** What follows any change to which algorithms are hidden. */
   _afterVisibilityChange({ resetSpotlight }) {
+    this._renderList();
     updateToggleAllButton('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'file');
     this._hiddenSummary.update(this.hiddenAlgos.size);
     this._soloResult.update();
@@ -232,12 +255,15 @@ export const FileSection = {
   /** Takes the files of a drop (or pick, or paste) as `{ file, path }`, as many as the settings allow, in
    *  place of any before them: a run still going is abandoned, not left to finish over them.
    *  `truncated` says the drop already left files out. */
-  processFiles(entries, { truncated = false } = {}) {
+  async processFiles(dropped, { truncated = false } = {}) {
     // Files dropped or pasted into a collapsed section open it, to show what happens to them.
     expandSection(this._drop.section);
+    const { manifest, files } = await takeManifest(dropped);
+    if (manifest) this._verify.setManifest(manifest);
     const limit = Settings.get('maxFiles');
-    const taken = entries.slice(0, limit);
-    if (truncated || taken.length < entries.length) this._drop.notify(`Only the first ${limit} files were taken`);
+    const taken = files.slice(0, limit);
+    if (truncated || taken.length < files.length) this._drop.notify(`Only the first ${limit} files were taken`);
+    if (!taken.length) return;
     this._queue.start(taken);
     this._drop.showFile(describeDrop(this._queue.jobs), taken.length);
     this._drop.showStats();

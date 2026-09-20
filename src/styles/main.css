@@ -10,6 +10,7 @@
 /* UI: feature-agnostic primitives */
 @import '../core/ui/button/button.css';
 @import '../core/ui/button/icon-swap.css';
+@import '../core/ui/icon-button/icon-button.css';
 @import '../core/ui/algo-badge.css';
 @import '../core/ui/card.css';
 @import '../core/ui/input-wrap.css';
@@ -61,6 +62,7 @@
 @import '../core/sections/file/file-stats.css';
 @import '../core/sections/file/file.css';
 @import '../core/sections/file/file-list.css';
+@import '../core/sections/file/manifest/manifest-row.css';
 @import '../core/sections/random/random.css';
 /* faq-search.css overrides the panel rules of faq.css, so it has to stay behind it */
 @import '../core/sections/faq/faq.css';

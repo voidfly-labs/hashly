@@ -48,7 +48,7 @@
         <span class="history-popover__title" id="textHistoryTitle"
           >History – Text <%= sectionNounPlural.charAt(0).toUpperCase() + sectionNounPlural.slice(1) %></span
         >
-        <button class="history-popover__close" data-popover-close aria-label="Close history">
+        <button class="icon-btn history-popover__close" data-popover-close aria-label="Close history">
           <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
         </button>
       </div>
@@ -69,10 +69,14 @@
             placeholder="Start typing or paste text…"
             spellcheck="false"
             aria-label="Text input for <%= sectionNoun %> calculation"></textarea>
-          <button class="text-input__clear" id="textInputClear" aria-label="Clear text input" type="button">
+          <button
+            class="icon-btn icon-btn--danger text-input__clear"
+            id="textInputClear"
+            aria-label="Clear text input"
+            type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
           </button>
-          <button class="text-input__paste" id="textPasteBtn" aria-label="Paste from clipboard" type="button">
+          <button class="icon-btn text-input__paste" id="textPasteBtn" aria-label="Paste from clipboard" type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
           </button>
           <span class="hint" id="textFormatHint" aria-live="polite"></span>

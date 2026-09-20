@@ -105,42 +105,17 @@
   opacity: 1;
 }
 
+/* A ghost icon button (ui/icon-button/): here only how it sits in the row. The bigger box must not make the
+   row taller, so it overhangs it by a negative margin; on phones the padding is the touch target (34px). */
 .random__item-btn {
-  position: relative;
   display: flex;
-  align-items: center;
-  margin: -2px 0; /* the bigger box must not make the row taller */
-  padding: 5px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: var(--text-muted);
-  background: none;
-  cursor: pointer;
-  transition: all 0.15s;
+  margin: -3px 0;
 }
 
-.random__item-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-}
-
-.random__item-btn svg {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
-}
-
-/* Phones: the history table's touch target (see .history-table__action-btn); the negative margin
-   keeps it from making the row taller */
 @media (max-width: 630px) {
   .random__item-btn {
-    padding: 7px;
+    padding: 8px;
     margin: -4px 0;
-  }
-
-  .random__item-btn svg {
-    width: 18px;
-    height: 18px;
   }
 }
 

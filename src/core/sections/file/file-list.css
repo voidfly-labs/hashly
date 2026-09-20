@@ -43,7 +43,8 @@
   box-shadow: inset 0 0 0 1px var(--accent-border);
 }
 
-.file-list__select {
+.file-list__select,
+.file-list__label {
   box-sizing: border-box;
   display: flex;
   flex: 1;
@@ -62,8 +63,8 @@
   cursor: pointer;
 }
 
-.file-list__item--selected .file-list__select {
-  color: var(--accent);
+.file-list__label {
+  cursor: default;
 }
 
 .file-list__select:focus-visible {
@@ -113,6 +114,11 @@
 .file-list__verdict[data-verdict='mismatch'] {
   color: var(--danger);
   background: var(--danger-surface);
+}
+
+.file-list__verdict[data-verdict='unlisted'] {
+  color: var(--warning);
+  background: var(--warning-surface);
 }
 
 .file-list__size {
@@ -176,6 +182,11 @@
   color: var(--success);
 }
 
+/* Once the verdict pill speaks, the ✓ only says "hashed": the colour is the pill's. */
+.file-list__status[data-state='done'][data-judged] {
+  color: var(--text-muted);
+}
+
 .file-list__status[data-state='done'] svg:nth-of-type(1),
 .file-list__status[data-state='failed'] svg:nth-of-type(2),
 .file-list__status[data-state='stopped'] svg:nth-of-type(2),
@@ -211,32 +222,11 @@
   display: block;
 }
 
+/* The ✕ is a ghost icon button (ui/icon-button/): the padding is the hit area, and what puts its icon over the
+   Paste button of the reference field below (see verify.css, and the manifest row's buttons, which stand over
+   Upload and Paste): its centre 22px from the right edge of the box. */
 .file-list__remove {
-  display: flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px;
-  border: 0;
-  border-radius: var(--radius);
-  background: none;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.file-list__remove svg {
-  width: 18px;
-  height: 18px;
-  fill: currentColor;
-}
-
-.file-list__remove:hover {
-  color: var(--danger);
-}
-
-.file-list__remove:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--accent-ring);
+  padding: 0 8px 0 10px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -252,9 +242,10 @@
     max-height: 264px;
   }
 
-  .file-list__select {
+  .file-list__select,
+  .file-list__label {
     display: grid;
-    grid-template-columns: 18px auto minmax(0, 1fr);
+    grid-template-columns: 20px auto minmax(0, 1fr);
     grid-template-rows: auto 22px; /* the pill's height, so the name stays put when one appears */
     grid-template-areas:
       'status name name'
@@ -273,6 +264,19 @@
     align-self: center;
   }
 
+  /* The icons are the size of those of the reference field's buttons (see verify.css). */
+  .file-list__status {
+    width: 20px;
+    height: 20px;
+  }
+
+  .file-list__status svg,
+  .file-list__spinner,
+  .file-list__remove svg {
+    width: 20px;
+    height: 20px;
+  }
+
   .file-list__name {
     grid-area: name;
     font-size: 14px;
@@ -289,6 +293,6 @@
   }
 
   .file-list__remove {
-    padding: 0 14px;
+    padding: 0 7px 0 14px;
   }
 }

@@ -82,7 +82,7 @@ function buildRow({ label, placeholder, mobilePlaceholder, shortcuts }) {
     <svg class="search-field__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('search')}"></use></svg>
     <input class="search-field__input" type="search" placeholder="${placeholder}" data-placeholder-mobile="${mobilePlaceholder}"
       aria-label="${label}"${shortcuts ? ` aria-keyshortcuts="${shortcuts}"` : ''} autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search" />
-    <button class="search-field__clear" type="button" aria-label="Clear search" hidden>
+    <button class="icon-btn icon-btn--danger search-field__clear" type="button" aria-label="Clear search" hidden>
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('close')}"></use></svg>
     </button>
     <span class="search-field__count" aria-live="polite"></span>`;

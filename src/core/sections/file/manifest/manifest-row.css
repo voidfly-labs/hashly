@@ -1,0 +1,94 @@
+/* =========================================================================
+       MANIFEST ROW
+       — The last row of the file list: the checksum file of all the files, with copy and download
+         buttons. See ./manifest-row.js. It is a .file-list__item, so it borrows the list's row layout
+         (the name, the size, the label that holds them); after file-list.css, which defines those.
+       ========================================================================= */
+/* Always the last row of the list, kept in view at the bottom when the list scrolls. It is not a file to
+   select, so it takes no hover or selection colour; it reads as unavailable until every file is hashed. */
+.manifest-row {
+  position: sticky;
+  bottom: -4px; /* the list's own padding */
+  margin: 2px -4px -4px; /* across the whole width of the box, down to its bottom edge */
+  padding: 0 4px;
+  border-top: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--surface);
+}
+
+.manifest-row:hover {
+  background: var(--surface);
+}
+
+.manifest-row--waiting .file-list__label {
+  opacity: 0.55;
+}
+
+.manifest-row__icon {
+  display: flex;
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.manifest-row__icon svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+/* "Manifest", muted: what this row is, which an icon and a name alone may not say. It sits where the
+   other rows have their verdict pill, before the size, which a bullet then separates it from. */
+.manifest-row__tag {
+  flex-shrink: 0;
+  color: var(--text-muted);
+}
+
+.manifest-row .file-list__size:not(:empty)::before {
+  content: '•';
+  margin-right: 7px;
+}
+
+/* The copy and download buttons are ghost icon buttons (ui/icon-button/). Their icons stand over those of the
+   reference field's buttons below (Upload and Paste, see verify.css), as the file rows' ✕ does: the last over
+   Paste, the first over Upload. The paddings are what puts their centres there (22px from the right edge of
+   the box), and the pair as far apart as the Verify pair. */
+.manifest-row__action {
+  padding: 0 6px;
+}
+
+.manifest-row__action + .manifest-row__action {
+  padding-right: 8px;
+}
+
+/* On a narrow screen the row is a two-line card like the others: the name, then "Manifest • 888 B". */
+@media (max-width: 630px) {
+  .manifest-row__icon {
+    grid-area: status;
+    align-self: center;
+  }
+
+  /* The icons are the size of those of the reference field's buttons (see verify.css). */
+  .manifest-row__icon svg,
+  .manifest-row__action svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .manifest-row__tag {
+    grid-area: size;
+    font-size: 12px;
+  }
+
+  .manifest-row .file-list__size {
+    grid-area: verdict;
+    margin-left: -2px; /* closes up the column gap, which is for the pill the other rows have here */
+  }
+
+  .manifest-row__action {
+    padding: 0 9px;
+  }
+
+  .manifest-row__action + .manifest-row__action {
+    padding-right: 7px;
+  }
+}

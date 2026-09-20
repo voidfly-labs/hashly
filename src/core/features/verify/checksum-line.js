@@ -22,3 +22,30 @@ export function splitChecksumLine(raw) {
   const name = escaped ? unescapeName(written) : written;
   return { digest: line.slice(0, at), name: name || null };
 }
+
+/** Reads one checksum-file line as `{ digest, name, bsd }`: the GNU/coreutils layout ("<digest>  name",
+ *  "<digest> *name"), the BSD layout ("SHA256 (name) = <digest>", `bsd` true) or a hand-written
+ *  "<digest> name". `name` is null when the line has none, and as written otherwise (a path may be in it).
+ *  Plain string operations rather than regexes: this runs on arbitrary file text. */
+export function parseChecksumLine(raw) {
+  const open = raw.indexOf('(');
+  const close = raw.lastIndexOf(')');
+  if (open > 0 && close > open) {
+    const algo = raw.slice(0, open).trim();
+    const rest = raw.slice(close + 1).trim();
+    const digest = rest.startsWith('=') ? rest.slice(1).trim() : '';
+    if (algo && digest && !/\s/.test(algo) && !/\s/.test(digest)) {
+      return { digest, name: raw.slice(open + 1, close), bsd: true };
+    }
+  }
+
+  const split = splitChecksumLine(raw);
+  if (split.name) return { ...split, bsd: false };
+
+  // No two-space separator: a hand-written "<digest> name", unless the line is a binary digest, whose
+  // bytes are separated by single spaces too.
+  const gap = raw.search(/\s/);
+  if (gap <= 0 || BINARY_BYTE_RE.test(raw.slice(0, gap))) return { digest: raw, name: null, bsd: false };
+  const rest = raw.slice(gap).trim();
+  return { digest: raw.slice(0, gap), name: rest || null, bsd: false };
+}

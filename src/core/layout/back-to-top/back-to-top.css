@@ -54,8 +54,7 @@
   transition: transform 0.2s;
 }
 
-.back-to-top:hover,
-.back-to-top:focus-visible {
+.back-to-top:hover {
   color: var(--accent);
   border-color: var(--accent-border);
   box-shadow:
@@ -63,7 +62,11 @@
     0 0 0 3px var(--accent-muted);
 }
 
+/* Its own rule: a selector list with a pseudo-class the browser doesn't know (:focus-visible,
+   Safari < 15.4) is dropped whole. */
 .back-to-top:focus-visible {
+  color: var(--accent);
+  border-color: var(--accent-border);
   outline: none;
   box-shadow:
     var(--shadow-md),

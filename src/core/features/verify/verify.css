@@ -46,6 +46,11 @@
   color: var(--text-muted);
 }
 
+/* A checksum list of several files, not text to edit. */
+.verify--manifest .verify__input {
+  cursor: default;
+}
+
 /* Minimal shadow: --shadow-sm, one step lighter than a plain .card. The field
        sits on the file card's white body and shouldn't compete with it.
        Hover/focus come up to --shadow. */
@@ -129,7 +134,6 @@
   position: absolute;
   top: 4px;
   right: 6px;
-  padding: 6px;
 }
 
 .verify__clear {

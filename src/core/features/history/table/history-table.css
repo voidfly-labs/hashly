@@ -144,30 +144,11 @@
   opacity: 1;
 }
 
-/* Unified with .random__item-btn — identical padding, icon size, hover ring */
+/* A ghost icon button (ui/icon-button/), as in the Random section: here only how it sits in the row. The bigger
+   box must not make the row taller, so it overhangs it by a negative margin. */
 .history-table__action-btn {
-  position: relative;
   display: inline-flex;
-  align-items: center;
-  margin: -2px 0; /* the bigger box must not make the row taller */
-  padding: 5px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: var(--text-muted);
-  background: none;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.history-table__action-btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-}
-
-.history-table__action-btn svg {
-  width: 15px;
-  height: 15px;
-  fill: currentColor;
+  margin: -3px 0;
 }
 
 /* Phones: a table has no room for five columns (the hash got 10px of 390), so each row
@@ -252,15 +233,10 @@
     grid-area: actions;
   }
 
-  /* A 32px touch target; the negative margin keeps it from making the row taller */
+  /* A 34px touch target; the negative margin keeps it from making the row taller */
   .history-table__action-btn {
-    padding: 7px;
+    padding: 8px;
     margin: -4px 0;
-  }
-
-  .history-table__action-btn svg {
-    width: 18px;
-    height: 18px;
   }
 
   .history-table__hash {
@@ -287,7 +263,7 @@
   }
 
   .history-table__action-btn {
-    padding: 6px;
+    padding: 7px;
   }
 
   /* The date always sits over the time here (so it doesn't jump between one line and two as the

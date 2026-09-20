@@ -7,6 +7,7 @@ import { createVerifyStatus } from '~core/features/verify/status/verify-status.j
 import { initResponsivePlaceholder } from '~core/ui/responsive-placeholder.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
+import { findEntry } from './manifest.js';
 import { parseReference } from './reference.js';
 
 /** Reference-hash field for a results list. The reference's size says which
@@ -20,8 +21,20 @@ import { parseReference } from './reference.js';
  *  Feed it digests via `setDigests` and re-render with `refresh` when the
  *  hidden set changes.
  *
+ *  The field may instead hold a checksum list of several files (`setManifest`, or one uploaded or dropped
+ *  on it): each file is then checked against its own line, and `getManifestSummary(manifest)` says
+ *  what the notice shows for the files together (null to show the one for the file on view).
+ *
  *  `onChange()` is called whenever what the field says changes. */
-export function createVerify({ root, algorithms, getRow, isHidden, getFileName = () => '', onChange = () => {} }) {
+export function createVerify({
+  root,
+  algorithms,
+  getRow,
+  isHidden,
+  getFileName = () => '',
+  getManifestSummary = () => null,
+  onChange = () => {},
+}) {
   const input = root.querySelector('.verify__input');
   const clearBtn = root.querySelector('.verify__clear');
   initResponsivePlaceholder(input);
@@ -31,6 +44,30 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   let digests = null;
   // The algorithms whose digest is still being worked out: no digest yet is not "never computed".
   let pending = new Set();
+  // A checksum list of several files, `{ name, entries }`, or null: the reference is then one line of it.
+  let manifest = null;
+
+  /** The reference that `fileName` is to be compared with: the field's, or its line of the manifest. */
+  function _referenceFor(fileName) {
+    if (!manifest) return parseReference(input.value);
+    const entry = findEntry(manifest.entries, fileName);
+    return entry ? { hex: entry.hex } : null;
+  }
+
+  /** The field holds a manifest (a label for it, not editable) or text. */
+  function _setManifest(next) {
+    manifest = next;
+    input.readOnly = Boolean(next);
+    input.value = next ? `${next.name} · ${next.entries.length} files` : '';
+    root.classList.toggle('verify--manifest', Boolean(next));
+  }
+
+  /** Puts `text` in the field, in place of a manifest if there was one. */
+  function _setText(text) {
+    _setManifest(null);
+    input.value = text;
+    render();
+  }
 
   /** Shows the notice, and tints the field's border to match its verdict. */
   function _showStatus(message) {
@@ -50,8 +87,16 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
     return digest === ref.hex ? 'match' : 'mismatch';
   }
 
+  /** What the notice says: for a manifest, the files together, or the file on view with its line. */
+  function _describe(result) {
+    if (!manifest) return describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()) });
+    const summary = getManifestSummary(manifest);
+    if (summary) return summary;
+    return describeVerifyState({ ...result, hasInput: true });
+  }
+
   function render() {
-    const ref = parseReference(input.value);
+    const ref = _referenceFor(getFileName());
     clearBtn.classList.toggle('verify__clear--visible', input.value !== '');
 
     const result = { ref, matched: [], compared: [], hiddenFits: [], unhashed: [], fits: [] };
@@ -80,13 +125,13 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
       setVerifyState(getRow(id), verdict, against);
     }
 
-    _showStatus(describeVerifyState({ ...result, hasInput: Boolean(input.value.trim()) }));
+    _showStatus(_describe(result));
     onChange();
   }
 
   input.addEventListener('input', render);
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && input.value) {
+    if (e.key === 'Escape' && (input.value || manifest)) {
       e.preventDefault();
       e.stopPropagation();
       clear();
@@ -103,8 +148,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   // the field (which would raise the keyboard just to tell the user to paste).
   initPasteButton(root.querySelector('.verify__paste'), {
     onText(text) {
-      input.value = text.trim();
-      render();
+      _setText(text.trim());
     },
     onDenied() {
       _showStatus({ text: 'Paste blocked – paste into the field instead', kind: 'warn' });
@@ -115,8 +159,9 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   // list, from which the hashed file's own line is picked). Same no-focus rule as paste.
   const reference = {
     getFileName,
-    onText(line) {
-      input.value = line;
+    onText: _setText,
+    onManifest(next) {
+      _setManifest(next);
       render();
     },
     onRejected(message) {
@@ -127,8 +172,7 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
   initReferenceFileDrop(root.querySelector('.verify__field'), reference);
 
   function clear() {
-    input.value = '';
-    render();
+    _setText('');
   }
 
   // Browsers can restore a previous value into the field on reload.
@@ -143,11 +187,17 @@ export function createVerify({ root, algorithms, getRow, isHidden, getFileName =
       pending = new Set(stillHashing);
       render();
     },
-    /** What the reference says of another file's finished `fileDigests` (`Map<algoId, hex>`): 'match',
-     *  'mismatch', or null when there is no reference or none of its size among the digests. */
-    verdictFor(fileDigests) {
-      const ref = parseReference(input.value);
-      if (!ref) return null;
+    /** Puts a checksum list in the field (`{ name, entries }`, see ./manifest.js), or takes it out (null). */
+    setManifest(next) {
+      _setManifest(next);
+      render();
+    },
+    /** What the reference says of the file `fileName`, whose finished digests are `fileDigests`
+     *  (`Map<algoId, hex>`): 'match', 'mismatch', 'unlisted' (a manifest without the file), or null when
+     *  there is no reference or none of its size among the digests. */
+    verdictFor(fileDigests, fileName) {
+      const ref = _referenceFor(fileName);
+      if (!ref) return manifest ? 'unlisted' : null;
       const same = algorithms.filter(({ id, hexLen }) => hexLen === ref.hex.length && fileDigests.has(id));
       if (!same.length) return null;
       return same.some(({ id }) => fileDigests.get(id).toLowerCase() === ref.hex) ? 'match' : 'mismatch';

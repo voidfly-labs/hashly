@@ -1,4 +1,5 @@
-import { BINARY_BYTE_RE, splitChecksumLine } from '~core/features/verify/checksum-line.js';
+import { parseChecksumLine } from '~core/features/verify/checksum-line.js';
+import { parseManifest } from '~core/features/verify/manifest.js';
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.
@@ -10,31 +11,12 @@ function _baseName(path) {
   return path.split(/[\\/]/).pop();
 }
 
-/** Reads one checksum-file line as { name, line }, where `line` is what to put in
- *  the field. Handles the GNU/coreutils layout ("<hash>  name", "<hash> *name") and
- *  the BSD layout ("SHA256 (name) = <hash>"). `name` is null when the line has none.
- *  Plain string operations rather than regexes: this runs on arbitrary file text. */
+/** Reads one checksum-file line as { name, line }, where `line` is what to put in the field (the digest
+ *  of a BSD line, else the line itself) and `name` the file's name, without its folders (null when
+ *  the line has none). */
 function _parseLine(raw) {
-  const open = raw.indexOf('(');
-  const close = raw.lastIndexOf(')');
-  if (open > 0 && close > open) {
-    const algo = raw.slice(0, open).trim();
-    const rest = raw.slice(close + 1).trim();
-    const hash = rest.startsWith('=') ? rest.slice(1).trim() : '';
-    if (algo && hash && !/\s/.test(algo) && !/\s/.test(hash)) {
-      return { name: _baseName(raw.slice(open + 1, close)), line: hash };
-    }
-  }
-
-  const { name } = splitChecksumLine(raw);
-  if (name) return { name: _baseName(name), line: raw };
-
-  // No two-space separator: a hand-written "<hash> name", unless the line is a binary digest, whose
-  // bytes are separated by single spaces too.
-  const gap = raw.search(/\s/);
-  if (gap <= 0 || BINARY_BYTE_RE.test(raw.slice(0, gap))) return { name: null, line: raw };
-  const rest = raw.slice(gap).trim();
-  return { name: rest ? _baseName(rest) : null, line: raw };
+  const { digest, name, bsd } = parseChecksumLine(raw);
+  return { name: name ? _baseName(name) : null, line: bsd ? digest : raw };
 }
 
 /** Picks the reference out of a file's text. A checksum list names many files, so
@@ -64,8 +46,9 @@ export function decodeText(buffer) {
   return new TextDecoder('utf-8').decode(buffer);
 }
 
-/** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the
- *  reference to use, or `{ error }` with a message for the user when it can't be used. */
+/** Reads a chosen or dropped file as a hash reference. Resolves `{ line }` with the reference to use,
+ *  `{ manifest }` for a list of several files (see ../manifest.js), or `{ error }` with a message for the
+ *  user when it can't be used. */
 export async function readReferenceFile(file, fileName = '') {
   if (file.size > MAX_REFERENCE_BYTES) {
     return { error: `File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
@@ -76,6 +59,21 @@ export async function readReferenceFile(file, fileName = '') {
   } catch {
     return { error: "Couldn't read that file" };
   }
+  // A list of several files is kept whole, to check each file against its own line.
+  const entries = parseManifest(text);
+  if (entries.length > 1) return { manifest: { name: file.name, entries } };
   const line = pickReferenceLine(text, fileName);
   return line ? { line } : { error: 'That file has no hash in it' };
+}
+
+/** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is
+ *  too big, unreadable or holds no file name with a hash. */
+export async function readManifest(file) {
+  if (file.size > MAX_REFERENCE_BYTES) return null;
+  try {
+    const entries = parseManifest(decodeText(await file.arrayBuffer()));
+    return entries.length ? { name: file.name, entries } : null;
+  } catch {
+    return null;
+  }
 }
