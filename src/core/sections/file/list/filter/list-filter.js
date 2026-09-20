@@ -1,8 +1,8 @@
 import { Announcer } from '~core/ui/announcer/announcer.js';
 
 /** The filters of the file list (see ../file-list.js): buttons to show only the files that do not match
- *  the reference, only those it does not list, or only those that are duplicates of one another (shown
- *  together, side by side). A button is shown while it narrows the list, that is, while some of the
+ *  the reference, only those it does not list, only those that failed (or were stopped), or only those that
+ *  are duplicates of one another (shown together, side by side). A button is shown while it narrows the list, that is, while some of the
  *  files are of its kind and some are not (one that would show every file, or none, filters nothing);
  *  the bar (`bar`, see list-filter.html) while it has a button. At most one filter is on, and it goes
  *  off by itself when it stops narrowing the list.
@@ -19,13 +19,17 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
 export function createListFilter({ bar, verdictOf, keyOf, onChange }) {
   const chips = [...bar.querySelectorAll('.list-filter__chip')];
   const text = bar.querySelector('.list-filter__text');
-  let only = null; // 'mismatch', 'unlisted', 'duplicates' or null
-  let flags = new Map(); // job → { mismatch, unlisted, duplicates }, as of the last `apply`
+  let only = null; // 'mismatch', 'unlisted', 'failed', 'duplicates' or null
+  let flags = new Map(); // job → { mismatch, unlisted, failed, duplicates }, as of the last `apply`
   let twins = new Map(); // job → the other jobs that are its duplicates
 
   function verdictFlags(job) {
     const verdict = job.status === 'done' ? verdictOf(job) : null;
-    return { mismatch: verdict === 'mismatch', unlisted: verdict === 'unlisted' };
+    return {
+      mismatch: verdict === 'mismatch',
+      unlisted: verdict === 'unlisted',
+      failed: job.status === 'failed' || job.status === 'stopped',
+    };
   }
 
   /** Works out the flags and twins of `jobs`; returns the key of each. */
@@ -60,7 +64,7 @@ export function createListFilter({ bar, verdictOf, keyOf, onChange }) {
       chip.setAttribute('aria-pressed', String(only === kind));
       chip.querySelector('.list-filter__count').textContent = counts[kind];
     }
-    text.textContent = only ? `${counts[only]} of ${total} files` : '';
+    text.textContent = only ? `${counts[only]} of ${total} files` : `${total} files`;
   }
 
   for (const chip of chips) {
@@ -91,7 +95,9 @@ export function createListFilter({ bar, verdictOf, keyOf, onChange }) {
     apply(jobs) {
       const keys = analyse(jobs);
       const count = (kind) => jobs.filter((job) => flags.get(job)[kind]).length;
-      const counts = { mismatch: count('mismatch'), unlisted: count('unlisted'), duplicates: count('duplicates') };
+      const counts = Object.fromEntries(
+        ['mismatch', 'unlisted', 'failed', 'duplicates'].map((kind) => [kind, count(kind)]),
+      );
       // With none of its kind left there is nothing to show but an empty list, and with all of them nothing to narrow.
       if (only && !narrows(counts[only], jobs.length)) only = null;
       render(counts, jobs.length);

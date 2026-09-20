@@ -110,7 +110,12 @@ export const FileSection = {
       getRow: (id) => this._panel.rows.get(id).row,
       isHidden: (id) => this.hiddenAlgos.has(id),
       getManifestSummary: (manifest) =>
-        describeManifest(manifest, this._queue.jobs, (job) => this._verify.verdictFor(job.rawHexMap, job.name)),
+        describeManifest(
+          manifest,
+          this._queue.jobs,
+          (job) => this._verify.verdictFor(job.rawHexMap, job.name),
+          (job) => this._verify.entriesFor(job.name),
+        ),
       getFileNames: () => this._queue.jobs.map(({ name }) => name),
       getComparison: () => describeComparison(this._queue.jobs, duplicateKey),
       onChange: () => this._renderList(),
@@ -197,12 +202,12 @@ export const FileSection = {
 
   // ── Hashing the files ──────────────────────────────────────────────────
 
-  /** A file pasted outside any field: loaded like a drop, and the section brought
+  /** Files pasted outside any field: loaded like a drop, and the section brought
    *  into view since that's where the hashes appear. */
-  pasteFile(file) {
-    this._drop.mirrorInput([file]);
+  pasteFiles(files) {
+    this._drop.mirrorInput(files);
     this._drop.section.scrollIntoView({ behavior: scrollBehavior(), block: 'start' });
-    this.processFiles([{ file, path: file.name }]);
+    this.processFiles(files.map((file) => ({ file, path: file.name })));
   },
 
   /** Takes the files of a drop (or pick, or paste) as `{ file, path }`, as many as the settings allow, in

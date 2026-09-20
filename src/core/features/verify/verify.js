@@ -230,6 +230,8 @@ export function createVerify({
       if (!same.length) return 'unchecked';
       return same.some(({ id }) => fileDigests.get(id).toLowerCase() === ref.hex) ? 'match' : 'mismatch';
     },
+    /** The entries of the manifest that go with `fileName` (empty without one), over the files of the queue. */
+    entriesFor: (fileName) => (manifest ? _entriesFor(fileName) : []),
     refresh: render,
     clear,
   };

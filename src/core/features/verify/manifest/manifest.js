@@ -133,14 +133,10 @@ function describeWaiting(count) {
 
 /** What a manifest says of the files of a queue, as `{ text, lead, kind }` for the notice under the
  *  field (see status/verify-messages.js). `verdictOf(job)` is 'match', 'mismatch', 'unlisted' (not in
- *  the list) or 'unchecked' (nothing to compare it with) for a finished job. A single file the list covers has
- *  the usual notice of its own, so that gives null. */
-export function describeManifest({ entries }, jobs, verdictOf) {
-  const assigned = assignEntries(
-    entries,
-    jobs.map((job) => job.name),
-  );
-  const entriesOf = (job) => assigned.get(job.name) ?? [];
+ *  the list) or 'unchecked' (nothing to compare it with) for a finished job, and `entriesOf(job)` the entries
+ *  that go with a job (the assignment is worked out once, by the verify field). A single file the list covers
+ *  has the usual notice of its own, so that gives null. */
+export function describeManifest({ entries }, jobs, verdictOf, entriesOf) {
   if (jobs.length === 1 && entriesOf(jobs[0]).length) return null;
   if (!jobs.length) return { text: describeWaiting(countFiles(entries)) };
   const finished = jobs.filter((job) => FINISHED.has(job.status));

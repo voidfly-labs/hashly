@@ -52,7 +52,15 @@ export function createFileQueue({
     job.status = 'hashing';
     running++;
     onChange();
-    await runJob(job);
+    try {
+      await runJob(job);
+    } catch (error) {
+      // Whatever threw, the queue goes on: a job left 'hashing' would hold its slot for good.
+      console.error(error);
+      job.run?.abort();
+      job.run = null;
+      if (job.status === 'hashing') job.status = 'failed';
+    }
     if (mine !== epoch) return;
     running--;
     // The selection was on the job that is over: it moves on to the first one still being hashed.

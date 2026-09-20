@@ -104,7 +104,7 @@ function _initHashing({ APP_CONFIG, ALGORITHMS, DEFAULT_ALGO, Hasher }) {
   HashSelect.init();
   initGlobalPaste({
     onText: (text) => TextSection.pasteText(text),
-    onFile: (file) => FileSection.pasteFile(file),
+    onFiles: (files) => FileSection.pasteFiles(files),
   });
   initTypeToFocus({ onType: (char) => TextSection.typeText(char) });
   AlgoSpotlight.init(ALGORITHMS, [TextSection, FileSection], {

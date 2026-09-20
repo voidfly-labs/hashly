@@ -11,6 +11,7 @@
   gap: 6px 8px;
   padding: 6px 14px; /* the left edge of a row's icon: the list's 4px and the row's 10px */
   border-bottom: 1px solid var(--border);
+  background: var(--bg); /* neutral, like the manifest row at the other end: blue is the selection's */
   font-size: 12px;
   color: var(--text-muted);
 }
@@ -76,6 +77,10 @@
 
 .list-filter__chip[data-filter='unlisted'] {
   --dot: var(--warning);
+}
+
+.list-filter__chip[data-filter='failed'] {
+  --dot: var(--danger);
 }
 
 .list-filter__chip[data-filter='duplicates'] {
