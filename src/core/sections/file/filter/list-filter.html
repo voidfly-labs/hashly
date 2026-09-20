@@ -1,4 +1,4 @@
-<!-- The filters of the file list: shown once a file has a mismatch or is not listed, see filter/list-filter.js -->
+<!-- The filters of the file list: shown while one narrows the list, see filter/list-filter.js -->
 <div class="list-filter" id="fileListFilter" hidden>
   <div class="list-filter__chips" role="group" aria-label="Show only">
     <button class="list-filter__chip" type="button" data-filter="mismatch" aria-pressed="false">
@@ -6,6 +6,9 @@
     </button>
     <button class="list-filter__chip" type="button" data-filter="unlisted" aria-pressed="false">
       Not listed <span class="list-filter__count"></span>
+    </button>
+    <button class="list-filter__chip" type="button" data-filter="duplicates" aria-pressed="false">
+      Duplicates <span class="list-filter__count"></span>
     </button>
   </div>
   <span class="list-filter__text"></span>

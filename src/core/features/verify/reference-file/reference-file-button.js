@@ -1,6 +1,6 @@
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 
-import { readReferenceFile } from './reference-file.js';
+import { readReferenceFiles } from './reference-file.js';
 
 // Matches the drop zone's "browse" wording; the icon alone says it opens a file picker.
 const TIP = 'Browse';
@@ -17,12 +17,12 @@ export function initReferenceFileButton(btn, fileInput, { getFileName, hexLength
   btn.addEventListener('click', () => fileInput.click());
 
   fileInput.addEventListener('change', async () => {
-    const [file] = fileInput.files;
+    const files = [...fileInput.files];
     // Reset so choosing the same file again still fires `change`.
     fileInput.value = '';
-    if (!file) return;
+    if (!files.length) return;
 
-    const { line, manifest, error } = await readReferenceFile(file, getFileName(), hexLengths);
+    const { line, manifest, error } = await readReferenceFiles(files, getFileName(), hexLengths);
     if (error) onRejected(error);
     else if (manifest) onManifest(manifest);
     else onText(line);

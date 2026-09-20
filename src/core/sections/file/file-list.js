@@ -46,6 +46,7 @@ export function createFileList({
   onRemove,
   onRetry,
   verdictOf,
+  keyOf,
   manifestRow,
 }) {
   const lines = new Map(); // job id → { item, select, status, verdict, bar, retry, remove }
@@ -56,6 +57,7 @@ export function createFileList({
   const listFilter = createListFilter({
     bar: filter,
     verdictOf,
+    keyOf,
     onChange() {
       // The selected file may not be on show any more: select the first that is, so the rows and the verify
       // field are about a file the visitor can see.
@@ -83,10 +85,12 @@ export function createFileList({
       verdict,
       el('span', 'file-list__size', Format.fileSize(job.size)),
     );
-    // The full name, for a long one the row cuts off: on hover, and for a while after a tap.
-    initButtonTooltip(select, job.name, { hideOnClick: false });
+    // The full name, for a long one the row cuts off, and which files it is a duplicate of: on hover, and for a
+    // while after a tap.
+    const tip = () => [job.name, twinNote(job)].filter(Boolean).join('\n');
+    initButtonTooltip(select, tip, { hideOnClick: false });
     select.addEventListener('click', (e) => {
-      Tooltip.show(select, job.name, e.pointerType === 'mouse' ? undefined : TAP_TOOLTIP_MS);
+      Tooltip.show(select, tip(), e.pointerType === 'mouse' ? undefined : TAP_TOOLTIP_MS);
       onSelect(job.id);
     });
 
@@ -162,11 +166,21 @@ export function createFileList({
     else if (bottom > root.scrollTop + root.clientHeight) root.scrollTop = bottom - root.clientHeight;
   }
 
-  /** Puts the lines in the order of `jobs`, moving only those that are not already in place (a move
+  /** Which files `job` is a duplicate of, for its tooltip. */
+  function twinNote(job) {
+    const twins = listFilter.twinsOf(job);
+    if (!twins.length) return '';
+    const rest = twins.length - 1;
+    const others = rest === 1 ? '1 other' : `${rest} others`;
+    const more = rest ? ` and ${others}` : '';
+    return `Same as ${twins[0].name}${more}`;
+  }
+
+  /** Puts the lines in the order of `order`, moving only those that are not already in place (a move
    *  would drop the focus). */
-  function arrange() {
+  function arrange(order) {
     let previous = null;
-    for (const job of jobs) {
+    for (const job of order) {
       const { item } = lineFor(job);
       if (item.parentNode !== root || item.previousElementSibling !== previous) {
         root.insertBefore(item, previous?.nextSibling ?? root.firstChild);
@@ -214,7 +228,8 @@ export function createFileList({
     shown = listFilter.apply(jobs);
     const onShow = new Set(shown.map((job) => job.id));
 
-    arrange();
+    // The jobs on show first, in the order to show them in, then the ones the filter leaves out.
+    arrange([...shown, ...jobs.filter((job) => !onShow.has(job.id))]);
     for (const job of jobs) {
       const line = lineFor(job);
       const selected = job.id === selectedId;

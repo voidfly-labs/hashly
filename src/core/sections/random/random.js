@@ -4,6 +4,7 @@ import { toCsv } from '~core/lib/csv.js';
 import { Download } from '~core/lib/download.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
+import { flashDone } from '~core/ui/button/flash-done.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { createRandomItem } from './random-item.js';
@@ -142,7 +143,6 @@ export const RandomSection = {
 
   onDownloadAll() {
     this._downloadCsv(this.hashes.map(({ hash, algo }, i) => [i + 1, algo, hash]));
-    Tooltip.flash(this.elements.downloadAll);
-    Checkmark.flash(this.elements.downloadAll);
+    flashDone(this.elements.downloadAll);
   },
 };

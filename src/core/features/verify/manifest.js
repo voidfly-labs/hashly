@@ -1,9 +1,10 @@
 import { parseChecksumLine } from './checksum-line.js';
 import { parseReference } from './reference.js';
 
-// What a checksum list is usually called: SHA256SUMS, sha256sum.txt, SHASUMS256.txt, checksums.txt, app.sha256.
-// Only a hint, the text is read before it is taken for one.
-const MANIFEST_NAME = /sums?\d*(?:\.(?:txt|asc))?$|\.(?:md5|sha1|sha224|sha256|sha384|sha512|sum|sums|b2sum)$/i;
+// What a list of the checksums of many files is usually called: SHA256SUMS, sha256sum.txt, SHASUMS256.txt,
+// checksums.txt. Only a hint, the text is read before it is taken for one. A checksum file named after
+// another file (`app.iso.sha256`) is not one of these: see sections/file/manifest/take-manifest.js.
+const MANIFEST_NAME = /sums?\d*(?:\.(?:txt|asc))?$/i;
 const MAX_LINE_LENGTH = 4096;
 // A digest in a list is hex of at least this many characters, or Base64 of one of these sizes (in bytes):
 // any short word is valid Base64, and a line of prose must not pass for a checksum.
@@ -28,7 +29,15 @@ function isDigest(digest, hex, hexLengths) {
   return DIGEST_BYTES.has(hex.length / 2);
 }
 
-/** Whether a file's name looks like a checksum list's. */
+/** Several checksum lists (`{ name, entries }`, see `readManifest`) as one: the first's name and how many more
+ *  there are, all their entries. One list stays as it is, and none gives null. */
+export function mergeManifests(lists) {
+  const [first, ...rest] = lists;
+  if (!rest.length) return first ?? null;
+  return { name: `${first.name} + ${rest.length} more`, entries: lists.flatMap((list) => list.entries) };
+}
+
+/** Whether a file's name looks like that of a list of the checksums of many files. */
 export const looksLikeManifestName = (name) => MANIFEST_NAME.test(baseName(normalizeName(name)));
 
 /** The `{ name, hex }` entries of a checksum list's text (see ./checksum-line.js for the layouts): one
@@ -66,13 +75,19 @@ export function findEntry(entries, fileName) {
 
 const FINISHED = new Set(['done', 'failed', 'stopped', 'skipped']);
 
+/** What the notice says while a manifest of `count` files has no files to check yet. */
+function describeWaiting(count) {
+  const [files, them] = count === 1 ? ['file', 'it'] : ['files', 'them'];
+  return `${count} ${files} to check – drop ${them} above`;
+}
+
 /** What a manifest says of the files of a queue, as `{ text, lead, kind }` for the notice under the
  *  field (see status/verify-messages.js). `verdictOf(job)` is 'match', 'mismatch', 'unlisted' (not in
  *  the list) or null (nothing to compare it with) for a finished job. A single file the list covers has
  *  the usual notice of its own, so that gives null. */
 export function describeManifest({ entries }, jobs, verdictOf) {
   if (jobs.length === 1 && findEntry(entries, jobs[0].name)) return null;
-  if (!jobs.length) return { text: `${entries.length} files listed – drop the files to check` };
+  if (!jobs.length) return { text: describeWaiting(entries.length) };
   const finished = jobs.filter((job) => FINISHED.has(job.status));
   if (jobs.length > 1 && finished.length < jobs.length)
     return { text: `Checking – ${finished.length} of ${jobs.length} files` };

@@ -78,6 +78,10 @@
   --dot: var(--warning);
 }
 
+.list-filter__chip[data-filter='duplicates'] {
+  --dot: var(--accent);
+}
+
 .list-filter__chip:hover {
   border-color: var(--accent-border);
   color: var(--accent);

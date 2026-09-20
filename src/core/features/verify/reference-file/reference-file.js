@@ -1,5 +1,5 @@
 import { parseChecksumLine } from '~core/features/verify/checksum-line.js';
-import { parseManifest } from '~core/features/verify/manifest.js';
+import { mergeManifests, parseManifest } from '~core/features/verify/manifest.js';
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.
@@ -64,6 +64,16 @@ export async function readReferenceFile(file, fileName = '', hexLengths) {
   if (entries.length > 1) return { manifest: { name: file.name, entries } };
   const line = pickReferenceLine(text, fileName);
   return line ? { line } : { error: 'That file has no hash in it' };
+}
+
+/** Like `readReferenceFile` for the files of a pick or drop: one file is read as that does, several are
+ *  taken for checksum lists and put together (see `mergeManifests`), as they are when dropped among the
+ *  files to hash. Resolves `{ line }`, `{ manifest }` or `{ error }`. */
+export async function readReferenceFiles(files, fileName = '', hexLengths) {
+  if (files.length === 1) return readReferenceFile(files[0], fileName, hexLengths);
+  const lists = await Promise.all(files.map((file) => readManifest(file, hexLengths)));
+  const manifest = mergeManifests(lists.filter(Boolean));
+  return manifest ? { manifest } : { error: 'None of those files is a checksum list' };
 }
 
 /** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is

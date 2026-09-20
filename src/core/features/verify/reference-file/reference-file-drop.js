@@ -1,4 +1,4 @@
-import { readReferenceFile } from './reference-file.js';
+import { readReferenceFiles } from './reference-file.js';
 
 const DROP_CLASS = 'verify__field--drop';
 
@@ -46,9 +46,9 @@ export function initReferenceFileDrop(field, { getFileName, hexLengths, onText, 
     depth = 0;
     setOver(false);
 
-    const [file] = e.dataTransfer.files;
-    if (!file) return;
-    const { line, manifest, error } = await readReferenceFile(file, getFileName(), hexLengths);
+    const files = [...e.dataTransfer.files];
+    if (!files.length) return;
+    const { line, manifest, error } = await readReferenceFiles(files, getFileName(), hexLengths);
     if (error) onRejected(error);
     else if (manifest) onManifest(manifest);
     else onText(line);

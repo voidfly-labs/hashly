@@ -1,48 +1,37 @@
-import { TabTitle } from '~core/features/hashing/tab-title.js';
-import { History } from '~core/features/history/history.js';
-import { initialHiddenAlgos, rememberRadioGroup, saveHiddenAlgos } from '~core/features/preferences/saved-view.js';
-import { downloadDigest } from '~core/features/results/export/download-digest.js';
-import { createHiddenAlgos } from '~core/features/results/hidden/hidden-algos.js';
-import { createHiddenSummary } from '~core/features/results/hidden/hidden-summary.js';
-import { updateToggleAllButton } from '~core/features/results/result-row.js';
-import { createSoloResult } from '~core/features/results/solo-result.js';
+import { rememberRadioGroup } from '~core/features/preferences/saved-view.js';
+import { createResultsPanel } from '~core/features/results/results-panel.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { Settings } from '~core/features/settings/settings.js';
-import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
 import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
-import { Format } from '~core/lib/format.js';
-import { Announcer } from '~core/ui/announcer/announcer.js';
-import { Checkmark } from '~core/ui/button/checkmark.js';
-import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
-import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { createFileDrop } from './file-drop.js';
+import { createFileJobRunner } from './file-job-runner.js';
 import { createJobView } from './file-job-view.js';
 import { createFileList } from './file-list.js';
 import { createFileQueue } from './file-queue.js';
-import { createQueueProgress } from './file-queue-progress.js';
 import { createFileRows } from './file-rows.js';
-import { startFileRun } from './file-run.js';
-import { describeDrop, describeQueueEnd } from './file-summary.js';
+import { createFileStatus } from './file-status.js';
+import { describeDrop } from './file-summary.js';
+import { createDuplicateKey } from './filter/duplicate-key.js';
 import { createManifestExport } from './manifest/manifest-export.js';
 import { createManifestRow } from './manifest/manifest-row.js';
 import { takeManifest } from './manifest/take-manifest.js';
 
-let _APP_CONFIG, _ALGORITHMS, _Hasher;
+let _APP_CONFIG, _ALGORITHMS;
 
 // What `rawHexMap` is with no file: never written to.
 const NO_DIGESTS = new Map();
 
 /** The File section: hashes the files of a drop, as many at a time as the thread budget has room for,
  *  with every visible algorithm, and shows the digests of the selected one. The drop zone is ./file-drop.js, the queue of files
- *  ./file-queue.js (and its list ./file-list.js), the rows ./file-rows.js, how a file looks on them
- *  ./file-job-view.js and the pass that reads a file ./file-run.js. */
+ *  ./file-queue.js (and its list ./file-list.js), the rows ./file-rows.js (with what they share with the
+ *  Text section, in features/results/results-panel.js), how a file looks on them ./file-job-view.js, the
+ *  pass that reads a file ./file-run.js, what is said about the files as they go ./file-status.js and
+ *  the hashing of each of them ./file-job-runner.js. */
 export const FileSection = {
   hiddenAlgos: new Set(),
   _queue: null,
-  // How far the files of a drop of several have got as a whole (see ./file-queue-progress.js), or null.
-  _progress: null,
 
   _renderList() {
     // The verify field renders while it is built, before there is a list.
@@ -68,74 +57,65 @@ export const FileSection = {
   init({ APP_CONFIG, ALGORITHMS, Hasher }) {
     _APP_CONFIG = APP_CONFIG;
     _ALGORITHMS = ALGORITHMS;
-    _Hasher = Hasher;
+    const visibleAlgos = () => ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id));
 
     this._manifest = createManifestExport({
-      algorithms: _ALGORITHMS,
+      algorithms: ALGORITHMS,
       isHidden: (id) => this.hiddenAlgos.has(id),
       getJobs: () => this._queue.jobs,
       getFormat: () => this.getSelectedFormat(),
-      slugify: (id) => _APP_CONFIG.slugify(id),
+      slugify: (id) => APP_CONFIG.slugify(id),
     });
     this._queue = createFileQueue({
-      runJob: (job) => this._runJob(job),
-      concurrency: () => _Hasher.concurrencyFor(this._visibleAlgos()),
-      onStart: () => this._onQueueStart(),
+      runJob: (job) => this._runner.runJob(job),
+      concurrency: () => Hasher.concurrencyFor(visibleAlgos()),
+      onStart: () => this._status.onQueueStart(),
       // The notice for the manifest counts the files, so it follows the queue; it redraws the list.
       onChange: () => this._verify.refresh(),
       onSelect: (job) => this._view.show(job),
-      onDone: (result) => this._onQueueDone(result),
-    });
-    this.hiddenAlgos = initialHiddenAlgos('fileHidden', this.defaultHidden(), _ALGORITHMS);
-    this._hidden = createHiddenAlgos({
-      algorithms: _ALGORITHMS,
-      hiddenAlgos: this.hiddenAlgos,
-      setHidden: (algoId, hidden) => this._setHidden(algoId, hidden),
-      afterChange: (opts) => this._afterVisibilityChange(opts),
-      getBadge: (algoId) => this._rows.get(algoId).badge,
-      toggleAllBtnId: 'fileToggleAllBtn',
+      onDone: (result) => this._status.onQueueDone(result),
     });
 
     const resultsEl = document.getElementById('fileResults');
 
-    // Build one result row per algorithm.
-    this._rows = createFileRows({
+    // One result row per algorithm.
+    this._panel = createResultsPanel({
+      algorithms: ALGORITHMS,
+      appConfig: APP_CONFIG,
       resultsEl,
-      algorithms: _ALGORITHMS,
-      isHidden: (id) => this.hiddenAlgos.has(id),
-      hasFile: () => Boolean(this.currentFileName),
-      handlers: {
-        onToggle: (id) => this._toggleAlgo(id, { refreshTooltip: true }),
-        onDownload: (id) => this._onDownload(id),
-        onCopy: (id) => this._onCopy(id),
-        getHash: (id) => this._formattedHash(id),
+      noun: 'file',
+      hiddenPref: 'fileHidden',
+      defaults: this.defaultHidden(),
+      formatName: 'fileFormat',
+      toggleAllBtnId: 'fileToggleAllBtn',
+      createRows: (wiring) =>
+        createFileRows({ resultsEl, algorithms: ALGORITHMS, hasFile: () => Boolean(this.currentFileName), ...wiring }),
+      getDigests: () => this.rawHexMap,
+      getFileName: () => this.currentFileName,
+      afterChange: () => {
+        this._renderList();
+        this._verify.refresh();
+        // A running pass stops computing what was hidden meanwhile.
+        this._runner.cancelIfIdle();
       },
     });
+    this.hiddenAlgos = this._panel.hiddenAlgos;
+
     this._verify = createVerify({
       getFileName: () => this.currentFileName,
       root: document.getElementById('fileVerify'),
-      algorithms: _ALGORITHMS,
-      getRow: (id) => this._rows.get(id).row,
+      algorithms: ALGORITHMS,
+      getRow: (id) => this._panel.rows.get(id).row,
       isHidden: (id) => this.hiddenAlgos.has(id),
       getManifestSummary: (manifest) =>
         describeManifest(manifest, this._queue.jobs, (job) => this._verify.verdictFor(job.rawHexMap, job.name)),
       onChange: () => this._renderList(),
     });
     this._view = createJobView({
-      rows: this._rows,
+      rows: this._panel.rows,
       verify: this._verify,
       getFormat: () => this.getSelectedFormat(),
     });
-    this._hiddenSummary = createHiddenSummary({
-      resultsEl,
-      total: _ALGORITHMS.length,
-      onShowAll: () => this._toggleAll(),
-    });
-    this._soloResult = createSoloResult({ resultsEl, algorithms: _ALGORITHMS });
-    // Sync button icon and hidden-algorithms summary with initial hiddenAlgos state.
-    updateToggleAllButton('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'file');
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
 
     // Put back the visitor's saved output format (and keep saving it).
     rememberRadioGroup('fileFormat', 'fileOutputFormat');
@@ -149,6 +129,7 @@ export const FileSection = {
       onRemove: (id) => this._removeJob(id),
       onRetry: (id) => this._queue.retry(id),
       verdictOf: ({ rawHexMap, name }) => this._verify.verdictFor(rawHexMap, name),
+      keyOf: createDuplicateKey({ algorithms: _ALGORITHMS, isHidden: (id) => this.hiddenAlgos.has(id) }),
       manifestRow: createManifestRow({
         onCopy: (button) => this._manifest.copy(button),
         onDownload: (button) => this._manifest.download(button),
@@ -160,6 +141,18 @@ export const FileSection = {
       onFiles: (files, options) => this.processFiles(files, options),
       onClear: () => this.onClear(),
     });
+    this._status = createFileStatus({ queue: this._queue, drop: this._drop, Hasher, visibleAlgos });
+    this._runner = createFileJobRunner({
+      algorithms: ALGORITHMS,
+      Hasher,
+      hiddenAlgos: this.hiddenAlgos,
+      visibleAlgos,
+      queue: this._queue,
+      status: this._status,
+      rows: this._panel.rows,
+      view: this._view,
+      list: this._list,
+    });
 
     document
       .querySelectorAll('input[name="fileFormat"]')
@@ -168,30 +161,6 @@ export const FileSection = {
 
   // ── Showing and hiding algorithms ──────────────────────────────────────
 
-  /** Hides or shows one algorithm's row. Showing puts back its digest if the file has been hashed
-   *  with it, and otherwise says so. */
-  _setHidden(algoId, hidden) {
-    if (hidden) {
-      this.hiddenAlgos.add(algoId);
-      this._rows.hide(algoId);
-      return;
-    }
-    this.hiddenAlgos.delete(algoId);
-    this._rows.show(algoId, this._formattedHash(algoId));
-  },
-
-  /** What follows any change to which algorithms are hidden. */
-  _afterVisibilityChange({ resetSpotlight }) {
-    this._renderList();
-    updateToggleAllButton('fileToggleAllBtn', this.hiddenAlgos, _ALGORITHMS, 'file');
-    this._hiddenSummary.update(this.hiddenAlgos.size);
-    this._soloResult.update();
-    saveHiddenAlgos(this, 'fileHidden');
-    this._verify.refresh();
-    this._cancelIfIdle();
-    if (resetSpotlight) AlgoSpotlight.reset();
-  },
-
   /** The algorithms hidden in the app's default view. */
   defaultHidden() {
     return new Set(_APP_CONFIG.defaultHiddenAlgos ?? []);
@@ -199,52 +168,27 @@ export const FileSection = {
 
   /** Persists which algorithms are hidden (the spotlight calls it for every section when it ends). */
   saveHidden() {
-    saveHiddenAlgos(this, 'fileHidden');
+    this._panel.saveHidden();
   },
 
   _toggleAll(options) {
-    this._hidden.toggleAll(options);
-  },
-
-  _toggleAlgo(algoId, options) {
-    this._hidden.toggleAlgo(algoId, options);
+    this._panel.toggleAll(options);
   },
 
   _setHiddenAlgos(hidden, options) {
-    this._hidden.setHiddenTo(hidden, options);
+    this._panel.setHiddenTo(hidden, options);
   },
 
-  // ── Digests ────────────────────────────────────────────────────────────
+  // ── Formats ────────────────────────────────────────────────────────────
 
   getSelectedFormat() {
-    return document.querySelector('input[name="fileFormat"]:checked').value;
-  },
-
-  _formattedHash(algoId) {
-    const hex = this.rawHexMap.get(algoId);
-    return hex ? Format.applyFormat(hex, this.getSelectedFormat()) : '';
+    return this._panel.selectedFormat();
   },
 
   _reformatAll() {
-    this._rows.reformat(this.rawHexMap, this.getSelectedFormat());
+    this._panel.reformat();
     // Rewriting the text drops any marks showing where a hash differs from the reference.
     this._verify.refresh();
-  },
-
-  /** The `[{ hash, algo }]` of the visible algorithms among `digests` (`Map<id, hex>`). */
-  _digestItems(digests) {
-    return _ALGORITHMS
-      .filter(({ id }) => !this.hiddenAlgos.has(id) && digests.get(id))
-      .map(({ id }) => ({ hash: digests.get(id), algo: id }));
-  },
-
-  /** One share of `job`'s hashing is done, while the others go on: its digests are recorded (in the
-   *  batch of this file) and, if the job is the one shown, shown, can be copied and are compared
-   *  with the reference now. */
-  _onShare(job, digests) {
-    for (const [id, hex] of digests) job.rawHexMap.set(id, hex);
-    History.record('file', this._digestItems(digests), job.batchId, job.name);
-    if (this._job === job) this._view.addDigests(job, digests);
   },
 
   // ── Hashing the files ──────────────────────────────────────────────────
@@ -274,113 +218,6 @@ export const FileSection = {
     this._drop.showStats();
   },
 
-  /** The algorithms that are shown, which a file is hashed with. */
-  _visibleAlgos() {
-    return _ALGORITHMS.filter(({ id }) => !this.hiddenAlgos.has(id));
-  },
-
-  /** Several files are being hashed as a whole: the status line and the tab title are theirs together. */
-  _aggregating() {
-    return Boolean(this._progress) && this._queue.jobs.length > 1;
-  },
-
-  /** A run of the queue begins: with several files, the progress of all of them is what is shown. */
-  _onQueueStart() {
-    const { jobs } = this._queue;
-    if (jobs.length < 2) {
-      this._progress = null;
-      return;
-    }
-    const algos = this._visibleAlgos();
-    const scope = jobs.filter(({ status }) => status === 'queued');
-    this._progress = createQueueProgress({
-      scope,
-      getJobs: () => this._queue.jobs,
-      threads: Math.min(scope.length, _Hasher.concurrencyFor(algos)) * _Hasher.threadsFor(algos),
-      setStats: (text, state) => this._drop.setStats(text, state),
-    });
-  },
-
-  /** Keeps `text` as the status line of `job`, and says it on the drop zone unless several files
-   *  are shown as a whole. */
-  _setJobStats(job, text, state) {
-    job.stats = { text, state };
-    if (!this._aggregating()) this._drop.setStats(text, state);
-  },
-
-  /** Hashes one file of the queue (see file-queue.js), and settles when it is over, however it ended. */
-  async _runJob(job) {
-    const algos = this._visibleAlgos();
-    if (algos.length) await this._hashJob(job, algos);
-    else this._skipJob(job);
-  },
-
-  /** Nothing to compute for `job`: the file is not read at all. */
-  _skipJob(job) {
-    job.status = 'skipped';
-    if (!this._aggregating()) TabTitle.reset();
-    this._setJobStats(job, 'Nothing to hash', 'warn');
-    if (this._queue.follow(job)) this._view.show(job);
-  },
-
-  async _hashJob(job, algos) {
-    // One batch for the file: its digests are recorded as the shares of the hashing finish (see _onShare).
-    job.batchId = History.nextBatch();
-    const run = startFileRun({
-      file: job.file,
-      algos,
-      hasher: _Hasher,
-      quiet: this._queue.jobs.length > 1,
-      setStats: (text, state) => this._setJobStats(job, text, state),
-      onShare: (digests) => this._onShare(job, digests),
-      onProgress: (ratio) => {
-        job.ratio = ratio;
-        this._list.setProgress(job.id, ratio);
-        if (this._aggregating()) this._progress.update();
-      },
-      onShareProgress: (ids, ratio) => {
-        if (this._job === job) this._rows.setProgress(ids, ratio);
-      },
-    });
-    job.run = run;
-    job.ids = run.ids;
-    job.threads = _Hasher.threadsFor(algos);
-    if (this._aggregating()) this._progress.update();
-    if (this._queue.follow(job)) this._view.show(job);
-
-    try {
-      // Every digest is in by now, shown by its share; what is left is the end of the run.
-      job.rawHexMap = await run.result;
-      if (run.aborted) return; // cleared, removed or replaced just as it finished
-      job.status = 'done';
-      run.succeed();
-    } catch {
-      if (run.aborted) return; // cancelled: the UI already shows what replaced it
-      job.status = 'failed';
-      run.fail();
-    } finally {
-      job.run = null;
-    }
-    if (this._aggregating()) this._progress.update();
-    if (this._job === job) this._view.showEnd(job);
-  },
-
-  /** The whole queue is over: said once, for several files (a single file's run has said it). */
-  _onQueueDone({ jobs, elapsedMs }) {
-    this._elapsedMs = elapsedMs;
-    const end = describeQueueEnd(jobs, elapsedMs, this._progress?.threads);
-    if (!end) {
-      // A drop of several that is down to one file: its own run said how it ended, but not on the tab.
-      if (this._progress) TabTitle.reset();
-      return;
-    }
-    this._drop.setStats(end.text, end.state);
-    const title = TabTitle.track();
-    if (end.state === 'done') title.done();
-    else title.fail();
-    Announcer.say(end.text);
-  },
-
   /** A file's ✕ in the list: stops it if it is being hashed and takes it out. */
   _removeJob(id) {
     const wasRunning = this._queue.active.some((job) => job.id === id);
@@ -389,68 +226,19 @@ export const FileSection = {
       return;
     }
     // The aborted run never reports its end: drop its progress from the tab title.
-    if (wasRunning && !this._aggregating()) TabTitle.reset();
+    if (wasRunning) this._status.resetTitle();
     this._drop.showFile(describeDrop(this._queue.jobs), this._queue.jobs.length);
-    this._refreshStats();
-  },
-
-  /** Says the status line again, for a queue that has lost a file: the line of files being hashed counts
-   *  them, and that of a finished queue says how many it hashed. */
-  _refreshStats() {
-    const { jobs, active } = this._queue;
-    if (active.length && this._aggregating()) {
-      this._progress.update();
-      return;
-    }
-    const last = active[0] ?? jobs[0];
-    const end = active.length ? null : describeQueueEnd(jobs, this._elapsedMs, this._progress?.threads);
-    if (end) this._drop.setStats(end.text, end.state);
-    else if (last?.stats) this._setJobStats(last, last.stats.text, last.stats.state);
-  },
-
-  /** A running pass stops computing the algorithms hidden meanwhile, and once it has none left it is
-   *  stopped, instead of reading the rest of the file for results nobody can see. */
-  _cancelIfIdle() {
-    for (const job of this._queue.active) {
-      const run = job.run;
-      if (!run) continue;
-      run.dropHidden(this.hiddenAlgos);
-      if (!run.isIdle()) continue;
-      job.status = 'stopped';
-      run.abort();
-      if (!this._aggregating()) TabTitle.reset();
-      this._setJobStats(job, 'Hashing stopped', 'error');
-      if (this._job === job) this._view.showEnd(job);
-    }
-    if (this._aggregating()) this._progress.update();
+    this._status.refresh();
   },
 
   onClear() {
     this._queue.clear();
-    this._progress = null;
-    TabTitle.reset();
+    this._status.clear();
     this._drop.hideStats();
     this._drop.setStats('');
     this._drop.clearFile();
-    this._rows.reset();
+    this._panel.rows.reset();
     this._verify.setDigests(null);
     this._verify.clear();
-  },
-
-  // ── Row actions ────────────────────────────────────────────────────────
-
-  _onDownload(algoId) {
-    const hash = this._formattedHash(algoId);
-    if (!hash) return;
-    downloadDigest(hash, algoId, this.currentFileName, _APP_CONFIG);
-    const btn = this._rows.get(algoId).download;
-    Tooltip.flash(btn);
-    Checkmark.flash(btn);
-  },
-
-  async _onCopy(algoId) {
-    const hash = this._formattedHash(algoId);
-    if (!hash) return;
-    await copyWithFeedback(hash, { button: this._rows.get(algoId).copy });
   },
 };
