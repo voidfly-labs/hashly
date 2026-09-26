@@ -71,3 +71,17 @@
   box-shadow: 0 4px 16px var(--accent-glow);
   opacity: 0.88;
 }
+
+/* .btn--primary's recipe in red: what it does deletes */
+.btn--danger {
+  color: #fff;
+  background: var(--danger-fill);
+  border-color: var(--danger-fill);
+}
+
+.btn--danger:hover {
+  color: #fff;
+  border-color: var(--danger-fill);
+  box-shadow: 0 4px 16px var(--danger-glow);
+  opacity: 0.88;
+}

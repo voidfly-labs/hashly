@@ -1,5 +1,4 @@
-// The project's main mobile breakpoint (see the `max-width: 630px` rules in styles/).
-const MOBILE_QUERY = '(max-width: 630px)';
+import { MOBILE_QUERY } from '~core/lib/viewport.js';
 
 /** Swaps an input's placeholder for the text in its `data-placeholder-mobile`
  *  attribute while the viewport is at or below the mobile breakpoint, and puts

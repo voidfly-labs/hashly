@@ -1,12 +1,15 @@
 import { autoThreads } from '~core/features/hashing/workers/auto-threads.js';
 import { chunkCeiling } from '~core/features/hashing/workers/chunk-ceiling.js';
 import { History } from '~core/features/history/history.js';
+import { Storage } from '~core/lib/storage.js';
 import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
 import { createPopover } from '~core/ui/popover/popover.js';
+import { createSettingFlash } from '~core/ui/setting/saved-flash.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { clearSavedData, savedBytes } from './saved-data.js';
 import { CHUNK_OPTIONS_MIB, HISTORY_LIMITS, MAX_FILES_OPTIONS, Settings, THREAD_OPTIONS } from './settings.js';
+import { SettingsOpener } from './settings-opener.js';
 
 const MIB = 1024 * 1024;
 
@@ -23,7 +26,14 @@ const HINTS = {
   settingsMaxThreads: 'Parallel hashing. Helps with multiple files or algorithms.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
-  settingsMaxFiles: 'Files accepted via a single upload.',
+  settingsMaxFiles: 'Files accepted from a single upload.',
+};
+
+// What a change does that its row does not show. A setting that is not here needs no note.
+const NOTES = {
+  maxThreads: 'Applies from the next hash.',
+  maxChunkMiB: 'Applies from the next file.',
+  maxFiles: 'Applies from the next drop.',
 };
 
 const fillSelect = (select, options) => {
@@ -58,6 +68,23 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   const trim = byId('settingsTrim');
   const trimText = byId('settingsTrimText');
   const usage = byId('settingsUsage');
+  const storageWarning = byId('settingsStorageWarning');
+
+  const flashes = new Map(
+    [
+      ...Object.entries(toggles),
+      ['maxThreads', threads],
+      ['maxChunkMiB', chunk],
+      ['maxFiles', files],
+      ['historyLimit', limit],
+    ].map(([name, control]) => [name, createSettingFlash(control)]),
+  );
+  // Saves a setting and tells its row how that went.
+  const save = (name, value, note) => {
+    const ok = Settings.set(name, value);
+    flashes.get(name).show(ok, note);
+    if (!ok) storageWarning.hidden = false;
+  };
 
   for (const [id, text] of Object.entries(HINTS)) byId(`${id}Hint`).textContent = text;
   fillSelect(threads, [[0, `Auto (${autoThreads()}x)`], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
@@ -94,6 +121,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     dim(toggles.historyFilenames, !saving);
     dim(toggles.historyPreviews, !saving);
     trim.hidden = true;
+    storageWarning.hidden = Storage.supported();
     showUsage();
   }
 
@@ -110,7 +138,11 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
 
   for (const [name, input] of Object.entries(toggles)) {
     input.addEventListener('change', () => {
-      Settings.set(name, input.checked);
+      save(
+        name,
+        input.checked,
+        name === 'rememberView' && !input.checked ? 'Saved view choices were cleared.' : undefined,
+      );
       if (name === 'historyEnabled') sync();
       if (name === 'rememberView') onRememberViewChange(input.checked);
       showUsage();
@@ -123,7 +155,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     ['maxFiles', files],
   ]) {
     select.addEventListener('change', () => {
-      Settings.set(name, Number(select.value));
+      save(name, Number(select.value), NOTES[name]);
     });
   }
 
@@ -132,7 +164,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     const dropped = droppedBy(size);
     // Making room never loses anything, and nor does a size the histories still fit in.
     if (!dropped) {
-      Settings.set('historyLimit', size);
+      save('historyLimit', size);
       trim.hidden = true;
       return;
     }
@@ -141,7 +173,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   });
 
   byId('settingsTrimConfirm').addEventListener('click', () => {
-    Settings.set('historyLimit', Number(limit.value));
+    save('historyLimit', Number(limit.value));
     History.applyLimit();
     trim.hidden = true;
     showUsage();
@@ -164,11 +196,19 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     visibleClass: 'popover--visible',
     onOpen: sync,
     onClose() {
+      flashes.forEach((flash) => flash.clear());
       disarm();
       closeTrim();
     },
     // Escape backs out of an armed Clear, or a pending size change, before it closes the popover.
     onEscape: () => disarm() || closeTrim(),
+  });
+
+  // The controls a caller of SettingsOpener may ask the focus to go to.
+  const FIELDS = { maxFiles: files };
+  SettingsOpener.register(({ focus } = {}) => {
+    if (!popover.isOpen()) popover.open();
+    FIELDS[focus]?.focus();
   });
 
   trigger.addEventListener('mouseenter', () => Tooltip.show(trigger, 'Settings'));

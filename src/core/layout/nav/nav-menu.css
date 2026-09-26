@@ -163,6 +163,13 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
+    /* A drag on the dim doesn't scroll the page under it (iOS before 16 ignores the overflow lock below) */
+    touch-action: none;
+  }
+
+  /* The page stays where it is while the drawer is open */
+  html.is-nav-open {
+    overflow: hidden;
   }
 
   [data-theme='dark'] .nav-backdrop {

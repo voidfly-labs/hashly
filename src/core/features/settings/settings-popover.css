@@ -102,33 +102,9 @@
   color: var(--text-secondary);
 }
 
-.settings-trim__btn {
-  padding: 4px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  font-family: var(--sans);
-  font-size: 12.5px;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: var(--surface);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.settings-trim__btn:hover {
-  color: var(--accent);
-  border-color: var(--accent-border);
-  box-shadow: 0 0 0 3px var(--accent-muted);
-}
-
-.settings-trim__btn--confirm,
-.settings-trim__btn--confirm:hover {
-  color: #fff;
-  border-color: var(--danger-fill);
-  background: var(--danger-fill);
-}
-
-.settings-trim__btn--confirm:hover {
-  box-shadow: 0 4px 16px var(--danger-glow);
-  opacity: 0.88;
+/* Phones: as tall as the Clear button and the selects (ui/confirm-button/) */
+@media (max-width: 630px) {
+  .settings-trim .btn {
+    min-height: 35px;
+  }
 }

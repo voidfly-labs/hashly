@@ -2,6 +2,7 @@ import { rememberRadioGroup } from '~core/features/preferences/saved-view.js';
 import { createResultsPanel } from '~core/features/results/results-panel.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { Settings } from '~core/features/settings/settings.js';
+import { SettingsOpener } from '~core/features/settings/settings-opener.js';
 import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
 import { scrollBehavior } from '~core/lib/motion.js';
@@ -10,6 +11,7 @@ import { createFileDrop } from './drop/file-drop.js';
 import { createFileRows } from './file-rows.js';
 import { createFileList } from './list/file-list.js';
 import { createDuplicateKey } from './list/filter/duplicate-key.js';
+import { createLimitNotice } from './list/limit/limit-notice.js';
 import { createManifestExport } from './manifest/manifest-export.js';
 import { createManifestRow } from './manifest/manifest-row.js';
 import { takeManifest } from './manifest/take-manifest.js';
@@ -144,6 +146,11 @@ export const FileSection = {
         onDownload: (button) => this._manifest.download(button),
       }),
     });
+    this._limitNotice = createLimitNotice({
+      root: document.getElementById('fileLimitNotice'),
+      box: document.getElementById('fileListBox'),
+      onRaise: () => SettingsOpener.open({ focus: 'maxFiles' }),
+    });
     this._drop = createFileDrop({
       hasFile: () => Boolean(this._job),
       getLimit: () => Settings.get('maxFiles'),
@@ -220,7 +227,12 @@ export const FileSection = {
     if (manifest) this._verify.setManifest(manifest);
     const limit = Settings.get('maxFiles');
     const taken = files.slice(0, limit);
-    if (truncated || taken.length < files.length) this._drop.notify(`Only the first ${limit} files were taken`);
+    if (truncated || taken.length < files.length) {
+      // A dropped folder is only read as far as the limit, so the total is then a lower bound.
+      this._limitNotice.show({ limit, total: truncated ? limit : files.length, exact: !truncated });
+    } else {
+      this._limitNotice.hide();
+    }
     if (!taken.length) return;
     this._queue.start(taken);
     this._drop.showFile(describeDrop(this._queue.jobs), taken.length);
@@ -241,6 +253,7 @@ export const FileSection = {
   },
 
   onClear() {
+    this._limitNotice.hide();
     this._queue.clear();
     this._status.clear();
     this._drop.hideStats();

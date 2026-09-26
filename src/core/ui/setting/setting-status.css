@@ -1,0 +1,52 @@
+/* =========================================================================
+       SETTING STATUS
+       — "Saved" (or "Not saved") after a setting's label, with an icon (see saved-flash.js). It
+         fades out by itself; the label line has room, so the word appearing moves nothing.
+       ========================================================================= */
+.setting__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--success);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.setting__status--visible {
+  opacity: 1;
+}
+
+.setting__status--error {
+  color: var(--danger);
+}
+
+/* The text's line box is as tall as the icon, so the two centre on whole pixels whatever the row's
+   height. */
+.setting__status-text {
+  line-height: 16px;
+}
+
+.setting__status svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.setting__status-fail,
+.setting__status--error .setting__status-ok {
+  display: none;
+}
+
+.setting__status--error .setting__status-fail {
+  display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .setting__status {
+    transition: none;
+  }
+}

@@ -1,0 +1,31 @@
+/* =========================================================================
+       NOTICE BAR
+       — A full-width strip in the warning tint that hangs off the top of a box, under its header:
+         an icon (`.notice-bar__icon`) and a message, with the box's edge to edge as its width. Used
+         under a popover's header and at the top of the file list (sections/file/list/limit/, which
+         adds its action button). Its items wrap onto a new line when the message is too long.
+       ========================================================================= */
+.notice-bar {
+  display: flex;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--warning-border);
+  background: var(--warning-surface);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.notice-bar[hidden] {
+  display: none;
+}
+
+.notice-bar__icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  fill: var(--warning);
+}

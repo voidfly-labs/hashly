@@ -43,6 +43,7 @@ export function createHistoryList({ store, algoOrder, defaultAlgo, getFormat }) 
   const pageCount = () => Math.max(1, Math.ceil(visible().length / PAGE_SIZE));
 
   return {
+    pageSize: PAGE_SIZE,
     visible,
     pageCount,
 

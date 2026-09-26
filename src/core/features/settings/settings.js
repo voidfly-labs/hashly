@@ -55,11 +55,13 @@ export const Settings = {
     return valid(value) ? value : fallback;
   },
 
+  /** Saves `value`; false when it is not one of the choices or could not be stored (this tab still
+   *  uses it until the page closes). */
   set(name, value) {
-    if (!SPECS[name].valid(value)) return;
+    if (!SPECS[name].valid(value)) return false;
     // Merged into what is stored, not into this tab's copy, so another tab's changes are kept.
     this._values = { ...this._read(), [name]: value };
-    Storage.write(this._key, JSON.stringify(this._values));
+    return Storage.write(this._key, JSON.stringify(this._values));
   },
 
   /** Calls `fn()` when another tab changed the settings. */

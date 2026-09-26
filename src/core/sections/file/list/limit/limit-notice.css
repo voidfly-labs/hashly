@@ -1,0 +1,37 @@
+/* =========================================================================
+       LIMIT NOTICE
+       — The row at the top of the file list for a drop that had more files than the limit
+         (see ./limit-notice.js): a ui/notice-bar/ with an action button, and the list box's border
+         turned amber while it is on.
+       ========================================================================= */
+/* The box's border while the notice is on; set by ./limit-notice.js, since :has() is out of range.
+   Comes after file-list.css, whose rule it overrides. */
+.file-list-box--limited {
+  border-color: var(--warning-border);
+}
+
+.limit-notice__text {
+  font-variant-numeric: tabular-nums;
+}
+
+.limit-notice__action {
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: var(--accent);
+  font-family: var(--sans);
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.limit-notice__action:hover {
+  text-decoration: underline;
+}
+
+.limit-notice__action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
+}

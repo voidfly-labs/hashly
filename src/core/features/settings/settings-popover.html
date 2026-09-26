@@ -11,11 +11,17 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
     </button>
   </div>
+  <div class="notice-bar" id="settingsStorageWarning" hidden>
+    <svg class="notice-bar__icon" viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-warning"></use>
+    </svg>
+    <span>Can't save settings on this device. Changes reset on reload.</span>
+  </div>
   <div class="help-popover__body settings-popover__body">
-    <section class="settings-group" aria-labelledby="settingsDisplayTitle">
-      <h3 class="group-label" id="settingsDisplayTitle">
-        Display<svg viewBox="0 0 24 24" aria-hidden="true">
-          <use href="/src/assets/images/icons.svg#icon-monitor"></use>
+    <section class="settings-group" aria-labelledby="settingsGeneralTitle">
+      <h3 class="group-label" id="settingsGeneralTitle">
+        General<svg viewBox="0 0 24 24" aria-hidden="true">
+          <use href="/src/assets/images/icons.svg#icon-tune"></use>
         </svg>
       </h3>
       <!-- prettier-ignore -->
@@ -41,10 +47,8 @@
       </div>
       <div class="settings-trim" id="settingsTrim" hidden>
         <span class="settings-trim__text" id="settingsTrimText" role="status"></span>
-        <button class="settings-trim__btn settings-trim__btn--confirm" id="settingsTrimConfirm" type="button">
-          Remove
-        </button>
-        <button class="settings-trim__btn" id="settingsTrimCancel" type="button">Cancel</button>
+        <button class="btn btn--danger" id="settingsTrimConfirm" type="button">Remove</button>
+        <button class="btn" id="settingsTrimCancel" type="button">Cancel</button>
       </div>
       <!-- prettier-ignore -->
       <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsHistoryFilenames', label: 'Remember filenames' }) %>

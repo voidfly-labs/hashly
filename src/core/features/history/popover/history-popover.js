@@ -23,9 +23,10 @@ const VISIBLE_CLASS = 'popover--visible';
  *  Returns `{ open, close, refreshIfVisible }`. A batch records one entry per algorithm in a row, so
  *  `refreshIfVisible` redraws on the next frame, once for all of them, and only while it is open. */
 export function createHistoryPopover({ ns, trigger, popover, body, store, list, appConfig, defaultAlgo, onClear }) {
-  // The tallest the body has been since the popover opened: it keeps that height, so the popover
-  // doesn't shrink and grow as pages with fewer rows come and go.
-  let tallest = 0;
+  // The height of the last full page shown since the popover opened. A page with fewer rows (the
+  // last one, a search) keeps it, so the popover doesn't shrink and its footer jump; a full page is
+  // as tall as its own rows are, whatever the rows before it were (with and without a preview line).
+  let fullPageHeight = 0;
 
   const isVisible = () => popover.classList.contains(VISIBLE_CLASS);
 
@@ -73,6 +74,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
       const label = btn.dataset.action === 'copy-history' ? 'Copy' : 'Download';
       initButtonTooltip(btn, label, { hideOnClick: false });
     });
+    return rows.length;
   }
 
   const footer = createHistoryFooter(popover, {
@@ -92,7 +94,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
       }),
     onClear() {
       onClear();
-      tallest = 0;
+      fullPageHeight = 0;
       refresh();
       Tooltip.flash(popover.querySelector('[data-history-clear]'), 'Cleared');
     },
@@ -111,11 +113,13 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
   function refresh() {
     const total = store.entries().length;
     search.update({ matched: list.visible().length, total });
-    body.style.minHeight = `${tallest}px`;
-    renderBody();
+    // Measured at its own height, with the footer in place: on a short screen the body is what gives
+    // way to it.
+    body.style.minHeight = '';
+    const shown = renderBody();
     renderFooter();
-    // Measured with the footer in place: on a short screen the body is what gives way to it.
-    tallest = Math.max(tallest, body.offsetHeight);
+    if (shown === list.pageSize) fullPageHeight = body.offsetHeight;
+    else body.style.minHeight = `${fullPageHeight}px`;
   }
 
   let refreshQueued = false;
@@ -139,7 +143,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
     el: popover,
     visibleClass: VISIBLE_CLASS,
     onOpen: () => {
-      tallest = 0;
+      fullPageHeight = 0;
       list.setQuery('');
       search.reset();
       refresh();
