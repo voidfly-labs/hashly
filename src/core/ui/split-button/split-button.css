@@ -1,0 +1,60 @@
+.split-button {
+  display: inline-flex;
+  align-items: stretch;
+}
+
+/* The main button and its trigger read as one control */
+.split-button > :first-child {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.split-button__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  margin-left: -1px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: var(--radius-sm);
+  border-bottom-right-radius: var(--radius-sm);
+  color: var(--text-muted);
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.split-button__trigger svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.split-button__trigger:hover:not(:disabled),
+.split-button__trigger[aria-expanded='true'] {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  box-shadow: 0 0 0 3px var(--accent-muted);
+  position: relative;
+}
+
+.split-button__trigger:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--accent-ring);
+  position: relative;
+}
+
+.split-button__trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 630px) {
+  .split-button__trigger {
+    width: 32px;
+  }
+}

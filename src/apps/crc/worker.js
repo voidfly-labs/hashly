@@ -1,7 +1,7 @@
 import { crc32 as crc32Wasm, crc64 as crc64Wasm, createCRC32, createCRC64 } from 'hash-wasm';
 
-import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
-import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
+import { wasmEngine } from '~core/features/hashing/workers/server/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/server/hasher-server.js';
 import { hasWasmSupport } from '~core/lib/wasm.js';
 
 import {

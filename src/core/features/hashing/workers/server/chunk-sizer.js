@@ -1,6 +1,6 @@
 // A file is read and hashed in chunks sized to take about CHUNK_TARGET_MS each, so progress moves
 // and a cancel is noticed about that often whatever the algorithms: fast ones read big chunks
-// (fewer reads), slow ones small. Within MIN_CHUNK_BYTES..the ceiling (see ./chunk-ceiling.js).
+// (fewer reads), slow ones small. Within MIN_CHUNK_BYTES..the ceiling (see ../client/chunk-ceiling.js).
 const MIN_CHUNK_BYTES = 256 * 1024;
 const DEFAULT_MAX_CHUNK_BYTES = 4 * 1024 * 1024;
 const CHUNK_TARGET_MS = 60;

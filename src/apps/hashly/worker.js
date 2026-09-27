@@ -41,10 +41,10 @@ import {
   xxhash128,
 } from 'hash-wasm';
 
-import { md2Engine } from '~core/features/hashing/workers/engines/md2.js';
-import { ripemdEngine } from '~core/features/hashing/workers/engines/ripemd.js';
-import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
-import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
+import { md2Engine } from '~core/features/hashing/workers/server/engines/md2.js';
+import { ripemdEngine } from '~core/features/hashing/workers/server/engines/ripemd.js';
+import { wasmEngine } from '~core/features/hashing/workers/server/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/server/hasher-server.js';
 
 // Algorithms that take a size: `fn(bytes, bits)` / `createFn(bits)`.
 const sized = (fn, createFn, bits) => wasmEngine({ fn: (bytes) => fn(bytes, bits), createFn: () => createFn(bits) });

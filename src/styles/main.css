@@ -13,6 +13,7 @@
 @import '../core/ui/button/icon-swap.css';
 @import '../core/ui/icon-button/icon-button.css';
 @import '../core/ui/outline-button/outline-button.css';
+@import '../core/ui/split-button/split-button.css';
 
 /* UI, surfaces and inputs */
 @import '../core/ui/algo-badge/algo-badge.css';
@@ -40,6 +41,7 @@
 /* popover.css after ui/icon-button/: its close button overrides the padding of .icon-btn */
 @import '../core/ui/popover/popover.css';
 @import '../core/ui/confirm-button/confirm-button.css';
+@import '../core/ui/menu/menu.css';
 
 /* Layout, the page frame */
 @import '../core/layout/page.css';

@@ -1,8 +1,8 @@
 import { createRIPEMD160, ripemd160 } from 'hash-wasm';
 
-import { ripemdEngine } from '~core/features/hashing/workers/engines/ripemd.js';
-import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
-import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
+import { ripemdEngine } from '~core/features/hashing/workers/server/engines/ripemd.js';
+import { wasmEngine } from '~core/features/hashing/workers/server/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/server/hasher-server.js';
 
 initHasherServer({
   'RIPEMD-128': ripemdEngine(128),

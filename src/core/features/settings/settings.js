@@ -1,18 +1,21 @@
+import { EXPORT_FORMATS } from '~core/lib/export/formats.js';
 import { Storage } from '~core/lib/storage.js';
 
 /** What each setting can be, and what it is until the visitor changes it. `0` for a number that is
  *  chosen from a list means "Auto": the app's own behaviour. */
-export const HISTORY_LIMITS = [100, 250, 500, 1000, 2500];
-export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32, 64];
 export const CHUNK_OPTIONS_MIB = [2, 4, 8, 16, 32, 64];
+export const HISTORY_LIMITS = [100, 250, 500, 1000, 2500];
 export const MAX_FILES_OPTIONS = [25, 50, 100, 250, 500, 1000];
+export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32, 64];
 
+// In the order of the settings popover: General, History, Performance.
 const SPECS = {
+  rememberView: { fallback: true, valid: (v) => typeof v === 'boolean' },
+  exportFormat: { fallback: 'csv', valid: (v) => EXPORT_FORMATS.includes(v) },
   historyEnabled: { fallback: true, valid: (v) => typeof v === 'boolean' },
   historyLimit: { fallback: 1000, valid: (v) => HISTORY_LIMITS.includes(v) },
   historyFilenames: { fallback: true, valid: (v) => typeof v === 'boolean' },
   historyPreviews: { fallback: true, valid: (v) => typeof v === 'boolean' },
-  rememberView: { fallback: true, valid: (v) => typeof v === 'boolean' },
   maxThreads: { fallback: 0, valid: (v) => v === 0 || THREAD_OPTIONS.includes(v) },
   maxChunkMiB: { fallback: 0, valid: (v) => v === 0 || CHUNK_OPTIONS_MIB.includes(v) },
   maxFiles: { fallback: 100, valid: (v) => MAX_FILES_OPTIONS.includes(v) },
@@ -29,6 +32,7 @@ export const Settings = {
   _key: '',
   _values: {},
   _listeners: [],
+  _changeListeners: [],
 
   init({ appName }) {
     this._key = `${appName}-settings`;
@@ -37,6 +41,7 @@ export const Settings = {
       if (e.key !== this._key && e.key !== null) return;
       this._values = this._read();
       this._listeners.forEach((fn) => fn());
+      this._changeListeners.forEach((fn) => fn());
     });
   },
 
@@ -61,11 +66,18 @@ export const Settings = {
     if (!SPECS[name].valid(value)) return false;
     // Merged into what is stored, not into this tab's copy, so another tab's changes are kept.
     this._values = { ...this._read(), [name]: value };
-    return Storage.write(this._key, JSON.stringify(this._values));
+    const saved = Storage.write(this._key, JSON.stringify(this._values));
+    this._changeListeners.forEach((fn) => fn());
+    return saved;
   },
 
   /** Calls `fn()` when another tab changed the settings. */
   onExternalChange(fn) {
     this._listeners.push(fn);
+  },
+
+  /** Calls `fn()` whenever a setting changes, here or in another tab. */
+  onChange(fn) {
+    this._changeListeners.push(fn);
   },
 };

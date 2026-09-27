@@ -45,6 +45,16 @@
   background: var(--surface);
 }
 
+/* Keyboard focus, as the Text field and the Verify field (ui/input-wrap/) show theirs: an accent border and
+       a faint halo. The class is toggled from JS (file-drop.js) because focus lands on the invisible input
+       inside, which the zone cannot react to without :has(). It sits after the hover rule at equal
+       specificity, so a pointer resting on the zone does not hide it. */
+.file-drop.file-drop--focus {
+  border-style: solid;
+  border-color: var(--accent-strong);
+  box-shadow: 0 0 0 2px var(--accent-muted);
+}
+
 .file-drop__input {
   position: absolute;
   inset: 0;

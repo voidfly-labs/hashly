@@ -1,4 +1,5 @@
-import { exportHistoryCsv } from '~core/features/history/export/history-csv.js';
+import { defaultExportFormat } from '~core/features/export/export-setting.js';
+import { exportHistory } from '~core/features/history/export/history-export.js';
 import { formatTimestamp } from '~core/features/history/export/history-time.js';
 import { initHistoryRows } from '~core/features/history/table/history-rows.js';
 import { renderHistoryTable } from '~core/features/history/table/history-table.js';
@@ -84,8 +85,9 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
       refresh();
       slideIn(body.querySelector('.history-table'), direction);
     },
-    onDownload: () =>
-      exportHistoryCsv({
+    onDownload: (format = defaultExportFormat()) =>
+      exportHistory({
+        format,
         entries: list.visible(),
         kind: ns,
         appName: appConfig.appName,

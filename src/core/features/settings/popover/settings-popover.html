@@ -26,6 +26,13 @@
       </h3>
       <!-- prettier-ignore -->
       <%- include('/src/core/ui/toggle/toggle.html', { id: 'settingsRememberView', label: 'Remember view choices' }) %>
+      <div class="setting">
+        <label class="setting__text" for="settingsExportFormat">
+          <span class="setting__label">Export format</span>
+          <span class="setting__hint" id="settingsExportFormatHint"></span>
+        </label>
+        <select class="setting__select" id="settingsExportFormat" aria-describedby="settingsExportFormatHint"></select>
+      </div>
     </section>
 
     <section class="settings-group" aria-labelledby="settingsHistoryTitle">

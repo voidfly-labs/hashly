@@ -81,6 +81,18 @@ export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear 
   initFolderPicker(drop, { getLimit, onFiles, notify, mirrorInput });
   const actions = createDropActions(drop, { input, isHashing, onClear });
 
+  // Keyboard focus lights the zone's border (file-drop.css). A browser without :focus-visible lights it on any focus.
+  const keyboardFocus = () => {
+    try {
+      return input.matches(':focus-visible');
+    } catch {
+      return true;
+    }
+  };
+  input.addEventListener('focus', () => drop.classList.toggle('file-drop--focus', keyboardFocus()));
+  input.addEventListener('keydown', () => drop.classList.add('file-drop--focus'));
+  input.addEventListener('blur', () => drop.classList.remove('file-drop--focus'));
+
   drop.addEventListener('dragover', (e) => {
     e.preventDefault();
     drop.classList.add('file-drop--active');

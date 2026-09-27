@@ -63,17 +63,13 @@
 }
 
 @media (max-width: 630px) {
-  .history-popover__download-suffix {
-    display: none;
-  }
-
   .history-popover__download {
     min-height: 35px;
     padding: 8px 10px;
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 440px) {
   .history-popover__download {
     gap: 0;
   }
@@ -83,9 +79,9 @@
   }
 }
 
-/* From 330px down Clear is an icon button too (its aria-label names it; armed, the ring, the draining
+/* From 375px down Clear is an icon button too (its aria-label names it; armed, the ring, the draining
    bar and the "Are you sure?" tooltip say so). Only the history's: Settings' keeps its label. */
-@media (max-width: 330px) {
+@media (max-width: 375px) {
   .history-popover__footer-actions .confirm-btn__label {
     display: none;
   }
@@ -122,6 +118,14 @@
   border-top: 1px solid var(--border);
   border-radius: 0 0 var(--radius) var(--radius);
   background: var(--accent-surface);
+}
+
+/* On the narrowest phones the counter of a long history ("100 / 250") needs the room of the padding */
+@media (max-width: 325px) {
+  .history-popover__footer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
 }
 
 .history-pagination {

@@ -1,5 +1,5 @@
-import { autoThreads } from '~core/features/hashing/workers/auto-threads.js';
-import { chunkCeiling } from '~core/features/hashing/workers/chunk-ceiling.js';
+import { autoThreads } from '~core/features/hashing/workers/client/auto-threads.js';
+import { chunkCeiling } from '~core/features/hashing/workers/client/chunk-ceiling.js';
 import { History } from '~core/features/history/history.js';
 import {
   CHUNK_OPTIONS_MIB,
@@ -9,6 +9,7 @@ import {
   THREAD_OPTIONS,
 } from '~core/features/settings/settings.js';
 import { SettingsOpener } from '~core/features/settings/settings-opener.js';
+import { EXPORT_FORMATS, getExportFormat } from '~core/lib/export/formats.js';
 import { Storage } from '~core/lib/storage.js';
 import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
 import { createPopover } from '~core/ui/popover/popover.js';
@@ -29,6 +30,7 @@ const HINTS = {
   settingsHistoryFilenames: 'Keeps a filename alongside each hash.',
   settingsHistoryPreviews: 'Keeps a text preview alongside each hash.',
   settingsRememberView: 'Formats, hidden algorithms, collapsed sections and more.',
+  settingsExportFormat: 'Output format for bulk downloads.',
   settingsMaxThreads: 'Parallel hashing. Helps with multiple files or algorithms.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
@@ -70,6 +72,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   const threads = byId('settingsMaxThreads');
   const chunk = byId('settingsMaxChunk');
   const files = byId('settingsMaxFiles');
+  const exportFormat = byId('settingsExportFormat');
   const limit = byId('settingsHistoryLimit');
   const trim = byId('settingsTrim');
   const trimText = byId('settingsTrimText');
@@ -82,6 +85,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
       ['maxThreads', threads],
       ['maxChunkMiB', chunk],
       ['maxFiles', files],
+      ['exportFormat', exportFormat],
       ['historyLimit', limit],
     ].map(([name, control]) => [name, createSettingFlash(control)]),
   );
@@ -95,6 +99,10 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
   for (const [id, text] of Object.entries(HINTS)) byId(`${id}Hint`).textContent = text;
   fillSelect(threads, [[0, `Auto (${autoThreads()}x)`], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
   fillSelect(chunk, [[0, `Auto (${chunkCeiling(0) / MIB} MiB)`], ...CHUNK_OPTIONS_MIB.map((n) => [n, `${n} MiB`])]);
+  fillSelect(
+    exportFormat,
+    EXPORT_FORMATS.map((id) => [id, getExportFormat(id).label]),
+  );
   fillSelect(
     files,
     MAX_FILES_OPTIONS.map((n) => [n, String(n)]),
@@ -121,6 +129,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     threads.value = String(Settings.get('maxThreads'));
     chunk.value = String(Settings.get('maxChunkMiB'));
     files.value = String(Settings.get('maxFiles'));
+    exportFormat.value = Settings.get('exportFormat');
     limit.value = String(Settings.get('historyLimit'));
     const saving = Settings.get('historyEnabled');
     dim(limit, !saving);
@@ -164,6 +173,8 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
       save(name, Number(select.value), NOTES[name]);
     });
   }
+
+  exportFormat.addEventListener('change', () => save('exportFormat', exportFormat.value));
 
   limit.addEventListener('change', () => {
     const size = Number(limit.value);

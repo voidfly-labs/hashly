@@ -61,6 +61,15 @@
   background: var(--accent-muted);
 }
 
+/* Keyboard focus: the radio is invisible, so its label wears the ring every button wears. Inset, as the
+   segment clips what is drawn outside it; the transparent outline keeps it visible in forced-colors mode.
+   Its own rule, as a selector list would be dropped whole by a browser without :focus-visible. */
+.options__radio:focus-visible + .options__segment-label {
+  box-shadow: inset 0 0 0 2px var(--accent-ring);
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+
 /* =========================================================================
        OPTIONS ROW — wraps input + output format pickers side by side
        ========================================================================= */

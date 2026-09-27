@@ -1,8 +1,8 @@
 import { createMD4, createMD5, md4, md5 } from 'hash-wasm';
 
-import { md2Engine } from '~core/features/hashing/workers/engines/md2.js';
-import { wasmEngine } from '~core/features/hashing/workers/engines/wasm.js';
-import { initHasherServer } from '~core/features/hashing/workers/hasher-server.js';
+import { md2Engine } from '~core/features/hashing/workers/server/engines/md2.js';
+import { wasmEngine } from '~core/features/hashing/workers/server/engines/wasm.js';
+import { initHasherServer } from '~core/features/hashing/workers/server/hasher-server.js';
 
 initHasherServer({
   MD2: md2Engine,

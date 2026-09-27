@@ -48,7 +48,7 @@ class Ripemd64bit extends Ripemd {
   }
 }
 
-/** The engine (see hasher-server.js) for RIPEMD of `bits` bits, from crypto-api. */
+/** The engine (see ../hasher-server.js) for RIPEMD of `bits` bits, from crypto-api. */
 export function ripemdEngine(bits) {
   return {
     async create() {

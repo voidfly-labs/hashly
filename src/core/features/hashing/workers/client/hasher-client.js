@@ -3,9 +3,9 @@ import { Settings } from '~core/features/settings/settings.js';
 import { Format } from '~core/lib/format.js';
 
 import { autoThreads } from './auto-threads.js';
+import { createWorkerChannel } from './channel/worker-channel.js';
 import { chunkCeiling } from './chunk-ceiling.js';
 import { share } from './share.js';
-import { createWorkerChannel } from './worker-channel.js';
 
 // File workers hold WebAssembly instances and read buffers, so a pool that has been idle this long is
 // stopped; the next file starts new ones (a moment's start-up, once).
@@ -16,7 +16,7 @@ const abortError = () => new DOMException('Aborted', 'AbortError');
 /** The page side of hashing: `Hasher.fromTextAll` and `Hasher.fromFileAll`, done on Web Workers so the
  *  page never waits for a hash.
  *
- *  `spawn()` makes a worker running the app's `initHasherServer` (see hasher-server.js). Text goes to one
+ *  `spawn()` makes a worker running the app's `initHasherServer` (see ../server/hasher-server.js). Text goes to one
  *  worker that stays alive; a file is shared out over several (`threadsFor`), each hashing its own
  *  share of the algorithms over the whole file. `algorithms` are the app's `{ id, cost? }` entries;
  *  `cost` is relative time per byte, used to share them out evenly (1 if left out). */

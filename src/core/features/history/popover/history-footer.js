@@ -1,3 +1,6 @@
+import { initDownloadTooltip } from '~core/features/export/download-tooltip.js';
+import { createExportFormatPicker } from '~core/features/export/export-format-picker.js';
+import { watchExportFormat } from '~core/features/export/export-setting.js';
 import { iconHref } from '~core/lib/icon.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
@@ -21,12 +24,14 @@ const footerMarkup = (ns) => `
             </button>
           </div>
           <div class="history-popover__footer-actions">
-            <button class="history-popover__download" data-history-download aria-label="Download as CSV" type="button">
-              <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
-              <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-              <span class="history-popover__download-label">Download<span class="history-popover__download-suffix"> CSV</span></span>
-              <span class="tooltip">Exported</span>
-            </button>
+            <div class="split-button">
+              <button class="history-popover__download" data-history-download aria-label="Download" type="button">
+                <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
+                <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
+                <span class="history-popover__download-label">Download</span>
+                <span class="tooltip">Exported</span>
+              </button>
+            </div>
             <button class="confirm-btn" data-history-clear="${ns}" aria-label="Clear history">
               ${clearFace('Clear')}
               ${clearFace('Confirm', ' confirm-btn__face--confirm')}
@@ -35,8 +40,9 @@ const footerMarkup = (ns) => `
 
 const CLEAR_SEARCHING_TITLE = 'Clear the search to delete the history';
 
-/** Builds the footer of a history `popover` once: the pagination, the CSV export and the two-click
- *  Clear, wired to `onPage(direction)`, `onDownload()` and `onClear()`. Returns `{ update, disarm }`.
+/** Builds the footer of a history `popover` once: the pagination, the export and the two-click
+ *  Clear, wired to `onPage(direction)`, `onDownload(format)` (no format: the one chosen in Settings)
+ *  and `onClear()`. Returns `{ update, disarm }`.
  *
  *  `update({ page, pages, total, searching })` brings it in line with the list: `page` is 0-based,
  *  `total` is how many entries the list has (after a search), and `searching` says there is one:
@@ -54,6 +60,15 @@ export function createHistoryFooter(popover, { ns, onPage, onDownload, onClear }
   const [prev, next] = footer.querySelectorAll('.history-pagination__btn');
   const info = footer.querySelector('.history-pagination__info');
   const downloadBtn = footer.querySelector('[data-history-download]');
+  const formatPicker = createExportFormatPicker({
+    onPick(format) {
+      onDownload(format);
+      Tooltip.flash(downloadBtn);
+      Checkmark.flash(downloadBtn);
+    },
+  });
+  downloadBtn.after(formatPicker);
+  initDownloadTooltip(downloadBtn);
   const clearBtn = footer.querySelector('[data-history-clear]');
 
   [prev, next].forEach((btn) => {
@@ -73,6 +88,10 @@ export function createHistoryFooter(popover, { ns, onPage, onDownload, onClear }
     Checkmark.flash(downloadBtn);
   });
 
+  watchExportFormat(({ label }) => {
+    downloadBtn.setAttribute('aria-label', `Download as ${label}`);
+  });
+
   const disarm = initConfirmButton(clearBtn, onClear, 'Press again to delete the history');
 
   return {
@@ -85,6 +104,7 @@ export function createHistoryFooter(popover, { ns, onPage, onDownload, onClear }
       next.disabled = page >= pages - 1;
       info.textContent = total ? `${page + 1} / ${pages}` : '—';
       downloadBtn.disabled = !total;
+      formatPicker.disabled = !total;
       clearBtn.disabled = searching;
       if (searching) clearBtn.title = CLEAR_SEARCHING_TITLE;
       else clearBtn.removeAttribute('title');

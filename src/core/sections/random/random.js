@@ -1,6 +1,9 @@
+import { downloadTable } from '~core/features/export/download-table.js';
+import { initDownloadTooltip } from '~core/features/export/download-tooltip.js';
+import { createExportFormatPicker } from '~core/features/export/export-format-picker.js';
+import { defaultExportFormat, watchExportFormat } from '~core/features/export/export-setting.js';
 import { Preferences } from '~core/features/preferences/preferences.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
-import { toCsv } from '~core/lib/export/csv.js';
 import { Download } from '~core/lib/export/download.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
@@ -54,6 +57,11 @@ export const RandomSection = {
     });
     this.elements.copyAll.addEventListener('click', () => this.onCopyAll());
     this.elements.downloadAll.addEventListener('click', () => this.onDownloadAll());
+    this.elements.downloadAll.after(createExportFormatPicker({ onPick: (format) => this.onDownloadAll(format) }));
+    initDownloadTooltip(this.elements.downloadAll);
+    watchExportFormat(({ label }) => {
+      this.elements.downloadAll.setAttribute('aria-label', `Download all as ${label}`);
+    });
 
     // Event-delegate clicks on hash items (copy / download per-item)
     this.elements.list.addEventListener('click', (e) => {
@@ -124,16 +132,21 @@ export const RandomSection = {
     } else if (action === 'download') {
       const index = button.dataset.index;
       const algo = button.dataset.algo ?? _DEFAULT_ALGO;
-      this._downloadCsv([[index, algo, hash]]);
+      this._download([[Number(index), algo, hash]]);
       Tooltip.flash(button);
       if (isIconBtn) Checkmark.flash(button);
     }
   },
 
-  /** Downloads `rows` ([id, algorithm, hash]) as a timestamped CSV file. */
-  _downloadCsv(rows) {
-    const filename = `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}.csv`;
-    Download.trigger(toCsv(['id', 'algorithm', 'hash'], rows, { guard: [] }), filename, 'text/csv;charset=utf-8');
+  /** Downloads `rows` ([id, algorithm, hash]) as a timestamped file, in `format` (the one chosen in Settings by default). */
+  _download(rows, format = defaultExportFormat()) {
+    const table = { root: 'random', item: 'entry', columns: ['id', 'algorithm', 'hash'], rows };
+    downloadTable({
+      table,
+      format,
+      baseName: `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}`,
+      guard: [], // generated, and a Base64 digest may start with "+"
+    });
   },
 
   async onCopyAll() {
@@ -141,8 +154,11 @@ export const RandomSection = {
     await copyWithFeedback(text, { button: this.elements.copyAll });
   },
 
-  onDownloadAll() {
-    this._downloadCsv(this.hashes.map(({ hash, algo }, i) => [i + 1, algo, hash]));
+  onDownloadAll(format) {
+    this._download(
+      this.hashes.map(({ hash, algo }, i) => [i + 1, algo, hash]),
+      format,
+    );
     flashDone(this.elements.downloadAll);
   },
 };
