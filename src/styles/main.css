@@ -89,7 +89,7 @@
 
 /* Sections, file */
 @import '../core/sections/file/drop/file-stats.css';
-@import '../core/sections/file/file.css';
+@import '../core/sections/file/drop/file-drop.css';
 @import '../core/sections/file/hash-progress.css';
 @import '../core/sections/file/list/file-list.css';
 @import '../core/sections/file/manifest/manifest-row.css';

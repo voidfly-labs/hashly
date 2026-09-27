@@ -1,0 +1,304 @@
+/* =========================================================================
+       FILE DROP
+       — One row, the height of its tile: the tile (an upload icon, a file glyph once a file is loaded),
+         then the text, then (with a file loaded) the browse and folder buttons and the ✕. The zone keeps its size
+         from empty to loaded, and on a phone the actions go and the prompt becomes a tap.
+       ========================================================================= */
+.file-drop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 104px;
+  padding: 14px 18px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: left;
+  background: var(--surface);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-drop:hover,
+.file-drop--active {
+  border-color: var(--accent-border);
+  background: var(--accent-muted);
+}
+
+/* Whole-page drag: file is being dragged anywhere over the browser window.
+       Uses a stronger border colour than the hover/active state to signal
+       "drop anywhere near here" rather than "drop exactly here". */
+.file-drop--page-drag {
+  border-color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* When the cursor is over the clear button, suppress the drop-zone hover
+       state so only the button's own :hover styles apply. The class is toggled
+       from JS (FileSection) because a parent can't react to a child's :hover
+       without :has(), which older browsers lack. The selector matches the
+       specificity of the former :has() rule (0,3,0) so it still beats
+       .file-drop:hover and .file-drop--page-drag. */
+.file-drop.file-drop--clear-hover:hover {
+  border-color: var(--border);
+  background: var(--surface);
+}
+
+.file-drop__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+/* The tile: a soft accent square that fills when a drag is over the zone. */
+.file-drop__tile {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 11px;
+  color: var(--accent);
+  background: var(--accent-muted);
+  box-shadow: inset 0 0 0 1px var(--accent-border);
+  transition:
+    color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+
+.file-drop--active .file-drop__tile,
+.file-drop--page-drag .file-drop__tile {
+  color: #fff;
+  background: var(--accent-fill);
+  box-shadow: none;
+}
+
+.file-drop__icon {
+  width: 26px;
+  height: 26px;
+  fill: currentColor;
+}
+
+.file-drop__icon--file,
+.file-drop--has-file .file-drop__icon--upload {
+  display: none;
+}
+
+.file-drop--has-file .file-drop__icon--file {
+  display: block;
+}
+
+.file-drop__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* The prompt: the headline in the text colour, "or" quiet, the action in the accent. */
+.file-drop__text {
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.file-drop--has-file .file-drop__text {
+  display: none;
+}
+
+.file-drop__or {
+  font-weight: 400;
+  white-space: pre;
+  color: var(--text-muted);
+}
+
+.file-drop__text strong {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Dropping needs a pointer and a second window, so on mobile the prompt is a tap. Both
+       variants are in the markup; display: none also hides the unused one from assistive tech. */
+.file-drop__prompt-mobile {
+  display: none;
+}
+
+/* The folder link of the empty zone: a button above the input overlay (a positioned element paints over
+       it), so a click reaches the button first. Desktop only, as mobile browsers have no folder picker. */
+.file-drop__folder {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: left;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.file-drop__folder[hidden],
+.file-drop--has-file .file-drop__folder--idle {
+  display: none;
+}
+
+.file-drop__folder strong {
+  font-weight: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-border);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
+}
+
+.file-drop__folder:hover strong,
+.file-drop__folder:focus-visible strong {
+  text-decoration-color: var(--accent);
+}
+
+.file-drop__folder:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* With a file loaded: browse and folder as ghost icon buttons (ui/icon-button/), a hairline between them
+       and the ✕ that removes the file. Each is positioned with a z-index, so it paints above the invisible
+       file input overlay and receives the click. */
+.file-drop__aside {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  margin-right: -6px;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+}
+
+.file-drop--has-file .file-drop__aside {
+  display: flex;
+}
+
+.file-drop__aside .icon-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+}
+
+.file-drop__aside .icon-btn[hidden] {
+  display: none;
+}
+
+/* While a file is dragged over a loaded zone, the buttons give way to what a drop does. */
+.file-drop__replace {
+  display: none;
+  padding: 0 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--accent);
+}
+
+.file-drop--has-file.file-drop--active .file-drop__replace,
+.file-drop--has-file.file-drop--page-drag .file-drop__replace {
+  display: block;
+}
+
+.file-drop--has-file.file-drop--active .file-drop__aside .icon-btn,
+.file-drop--has-file.file-drop--page-drag .file-drop__aside .icon-btn {
+  display: none;
+}
+
+.file-drop__filename {
+  display: none;
+  max-width: 100%;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+.file-drop__filename--visible {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+}
+
+.file-drop__filename-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-drop__filesize {
+  flex-shrink: 0;
+  white-space: pre; /* keeps the text's leading space (a flex row would collapse it), so " · " is symmetric in any font */
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+/* Dismiss button — the last item of the row. A ghost icon button (ui/icon-button/), hidden until a file
+       is loaded. Positioned with a z-index, so it paints above the invisible file input overlay and
+       click events reach it first. */
+.file-drop__clear {
+  position: relative;
+  z-index: 1;
+  display: none;
+}
+
+.file-drop__clear--visible {
+  display: flex;
+}
+
+@media (max-width: 630px) {
+  .file-drop {
+    gap: 12px;
+    min-height: 80px;
+    padding: 12px 8px 12px 12px;
+  }
+
+  .file-drop__tile {
+    width: 44px;
+    height: 44px;
+  }
+
+  .file-drop__icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .file-drop__folder,
+  .file-drop__aside,
+  .file-drop--has-file .file-drop__aside,
+  .file-drop__prompt-desktop {
+    display: none;
+  }
+
+  .file-drop__prompt-mobile {
+    display: inline;
+  }
+
+  .file-drop__clear {
+    padding: 8px;
+  }
+
+  .file-drop__clear svg {
+    width: 20px;
+    height: 20px;
+  }
+}

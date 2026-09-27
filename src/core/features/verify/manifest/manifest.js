@@ -35,7 +35,7 @@ function isDigest(digest, hex, hexLengths) {
 export function mergeManifests(lists) {
   const [first, ...rest] = lists;
   if (!rest.length) return first ?? null;
-  return { name: `${first.name} + ${rest.length} more`, entries: lists.flatMap((list) => list.entries) };
+  return { name: `${first.name} +${rest.length} more`, entries: lists.flatMap((list) => list.entries) };
 }
 
 /** Whether a file's name looks like that of a list of the checksums of many files. */

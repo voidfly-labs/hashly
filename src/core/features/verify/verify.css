@@ -74,7 +74,7 @@
 }
 
 /* A file is being dragged over the field: same highlight as the main drop zone's
-   drag state (.file-drop--page-drag in core/sections/file/file.css). */
+   drag state (.file-drop--page-drag in core/sections/file/drop/file-drop.css). */
 .verify__field.verify__field--drop {
   border-color: var(--accent);
   background: var(--accent-muted);

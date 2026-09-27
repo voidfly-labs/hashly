@@ -51,35 +51,7 @@
     <div class="section__body-inner">
       <div class="card">
         <div class="card__body">
-          <div class="file-drop" id="fileDrop">
-            <input
-              class="file-drop__input"
-              type="file"
-              id="fileInput"
-              multiple
-              aria-label="Upload file for <%= sectionNoun %> calculation" />
-            <button
-              class="icon-btn icon-btn--corner icon-btn--danger file-drop__clear"
-              id="fileDropClear"
-              aria-label="Remove selected file"
-              type="button">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <use href="/src/assets/images/icons.svg#icon-close"></use>
-              </svg>
-            </button>
-            <svg class="file-drop__icon" viewBox="0 0 24 24">
-              <use href="/src/assets/images/icons.svg#icon-upload"></use>
-            </svg>
-            <div class="file-drop__text">
-              <span class="file-drop__prompt-desktop">Drop files here or <strong>browse</strong></span>
-              <span class="file-drop__prompt-mobile">Tap to <strong>choose files</strong></span>
-            </div>
-            <div class="file-drop__filename" id="fileName">
-              <span id="fileNameText" class="file-drop__filename-name"></span>
-              <span class="file-drop__filesize" id="fileSize"></span>
-            </div>
-            <%- include('/src/core/sections/file/drop/file-stats.html') %>
-          </div>
+          <%- include('/src/core/sections/file/drop/file-drop.html') %>
 
           <!-- The files of a multi-file drop, built by FileSection (file-list.js); the manifest row stands
                below the scrolling list, so the scrollbar never crosses it -->

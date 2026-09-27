@@ -20,6 +20,7 @@ import { createJobView } from './queue/file-job-view.js';
 import { createFileQueue } from './queue/file-queue.js';
 import { createFileStatus } from './queue/file-status.js';
 import { describeComparison, describeDrop } from './queue/file-summary.js';
+import { createUnloadGuard } from './queue/unload-guard.js';
 
 let _APP_CONFIG, _ALGORITHMS;
 
@@ -70,12 +71,18 @@ export const FileSection = {
       getFormat: () => this.getSelectedFormat(),
       slugify: (id) => APP_CONFIG.slugify(id),
     });
+    const isHashing = () => this._queue.active.length > 0;
+    this._unloadGuard = createUnloadGuard({ isBusy: isHashing });
     this._queue = createFileQueue({
       runJob: (job) => this._runner.runJob(job),
       concurrency: () => Hasher.concurrencyFor(visibleAlgos()),
       onStart: () => this._status.onQueueStart(),
       // The notice for the manifest counts the files, so it follows the queue; it redraws the list.
-      onChange: () => this._verify.refresh(),
+      onChange: () => {
+        this._verify.refresh();
+        this._unloadGuard.sync();
+        this._drop?.refreshClearLabel();
+      },
       onSelect: (job) => this._view.show(job),
       onDone: (result) => this._status.onQueueDone(result),
     });
@@ -153,6 +160,7 @@ export const FileSection = {
     });
     this._drop = createFileDrop({
       hasFile: () => Boolean(this._job),
+      isHashing,
       getLimit: () => Settings.get('maxFiles'),
       onFiles: (files, options) => this.processFiles(files, options),
       onClear: () => this.onClear(),

@@ -1,0 +1,59 @@
+<!-- The file drop zone: one row of tile, text and (with a file loaded) its actions. Behaviour: ./file-drop.js;
+     styles: ./file-drop.css; the status row inside it: ./file-stats.html -->
+<div class="file-drop" id="fileDrop">
+  <input
+    class="file-drop__input"
+    type="file"
+    id="fileInput"
+    multiple
+    aria-label="Upload file for <%= sectionNoun %> calculation" />
+  <input type="file" id="fileFolderInput" webkitdirectory hidden tabindex="-1" aria-hidden="true" />
+  <div class="file-drop__tile" aria-hidden="true">
+    <svg class="file-drop__icon file-drop__icon--upload" viewBox="0 0 24 24">
+      <use href="/src/assets/images/icons.svg#icon-upload"></use>
+    </svg>
+    <svg class="file-drop__icon file-drop__icon--file" viewBox="0 0 24 24">
+      <use href="/src/assets/images/icons.svg#icon-docs"></use>
+    </svg>
+  </div>
+  <div class="file-drop__main">
+    <div class="file-drop__text">
+      <span class="file-drop__prompt-desktop"
+        >Drop files here<span class="file-drop__or"> or </span><strong>browse files</strong></span
+      >
+      <span class="file-drop__prompt-mobile">Tap to <strong>choose files</strong></span>
+    </div>
+    <button class="file-drop__folder file-drop__folder--idle" type="button" hidden>
+      You can also <strong>select a folder</strong>
+    </button>
+    <div class="file-drop__filename" id="fileName">
+      <span id="fileNameText" class="file-drop__filename-name"></span>
+      <span class="file-drop__filesize" id="fileSize"></span>
+    </div>
+    <%- include('/src/core/sections/file/drop/file-stats.html') %>
+  </div>
+  <!-- With a file loaded the prompt gives way to two ghost icon buttons, as in the Verify field below;
+       while a file is dragged over, they give way to what a drop does -->
+  <div class="file-drop__aside">
+    <span class="file-drop__replace" aria-hidden="true">Drop to replace</span>
+    <button class="icon-btn" id="fileBrowseBtn" type="button" aria-label="Browse files">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-upload"></use>
+      </svg>
+    </button>
+    <button class="icon-btn file-drop__pick-folder" type="button" aria-label="Select a folder" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <use href="/src/assets/images/icons.svg#icon-folder"></use>
+      </svg>
+    </button>
+  </div>
+  <button
+    class="icon-btn icon-btn--danger file-drop__clear"
+    id="fileDropClear"
+    aria-label="Remove selected file"
+    type="button">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-close"></use>
+    </svg>
+  </button>
+</div>

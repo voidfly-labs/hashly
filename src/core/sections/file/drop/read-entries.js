@@ -1,6 +1,9 @@
 // Files the operating system leaves in a folder: not something anyone means to hash.
 const JUNK = new Set(['.ds_store', 'thumbs.db', 'desktop.ini']);
 
+/** Whether a file is one the operating system leaves in a folder. */
+export const isJunk = (name) => JUNK.has(name.toLowerCase());
+
 const byName = (a, b) => a.name.localeCompare(b.name, undefined, { numeric: true });
 
 const batchOf = (reader) => new Promise((resolve, reject) => reader.readEntries(resolve, reject));
@@ -33,7 +36,7 @@ export async function walkDirectory(directory, add, done) {
     if (done()) return;
     if (entry.isDirectory) {
       await walkDirectory(entry, add, done);
-    } else if (!JUNK.has(entry.name.toLowerCase())) {
+    } else if (!isJunk(entry.name)) {
       try {
         add({ file: await fileOf(entry), path: entry.fullPath.replace(/^\//, '') });
       } catch {

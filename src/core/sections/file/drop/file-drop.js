@@ -8,22 +8,27 @@ import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { droppedFiles } from './dropped-files.js';
+import { pickedFolderFiles } from './picked-folder.js';
 
 /** The file drop zone (see file.html): how a file arrives, and the zone's own display of it.
  *
- *  Files arrive by being picked (the input), dropped on the zone, or dropped anywhere else on the
+ *  Files arrive by being picked (the input, or the folder link beside it), dropped on the zone, or dropped anywhere else on the
  *  page; each way hands them to `onFiles(files, { truncated })` as `{ file, path }` (`path`: the name, or
  *  the place in a dropped folder, which is read through, see dropped-files.js; `truncated`: there were
  *  more than `getLimit()` files, so the rest were left out). The zone's ✕ button and Esc on the input call `onClear()`
- *  (Esc only while `hasFile()`). The zone lights up whenever a file is dragged anywhere over the
+ *  (Esc only while `hasFile()`); the ✕ says it stops and removes while `isHashing()`, and `refreshClearLabel()` brings its
+ *  spoken label up to date when that changes. The zone lights up whenever a file is dragged anywhere over the
  *  window, and the page's own drop handler stops the browser from navigating to a dropped file.
  *
  *  Returns `{ section, mirrorInput, notify, showFile, clearFile, setStats, showStats, hideStats }`: the
  *  section the zone is in, `notify(message)` (a short notice at the zone), and what the section does
  *  to the zone's file name, ✕ button and status line (see file-stats.html: its text, and an icon picked by its `state`). */
-export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
+export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear }) {
   const drop = document.getElementById('fileDrop');
   const input = document.getElementById('fileInput');
+  const folderInput = document.getElementById('fileFolderInput');
+  const folderBtns = drop.querySelectorAll('.file-drop__folder, .file-drop__pick-folder');
+  const browseBtn = document.getElementById('fileBrowseBtn');
   const clearBtn = document.getElementById('fileDropClear');
   const fileName = document.getElementById('fileName');
   const fileNameText = document.getElementById('fileNameText');
@@ -77,6 +82,26 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
     }
   });
 
+  // The folder picker: a browser without `webkitdirectory` has no link to it.
+  if ('webkitdirectory' in folderInput) {
+    folderBtns.forEach((btn) => {
+      btn.hidden = false;
+      btn.addEventListener('click', () => folderInput.click());
+    });
+    folderInput.addEventListener('change', () => {
+      const { files, truncated } = pickedFolderFiles(folderInput.files, getLimit());
+      folderInput.value = '';
+      if (!files.length) return notify('No files found in the folder');
+      mirrorInput(files.map(({ file }) => file));
+      onFiles(files, { truncated });
+    });
+  }
+
+  // The browse and folder buttons of a loaded zone (icon-only, so a tooltip spells out what each does)
+  browseBtn.addEventListener('click', () => input.click());
+  initButtonTooltip(browseBtn, 'Browse files');
+  initButtonTooltip(drop.querySelector('.file-drop__pick-folder'), 'Select a folder');
+
   drop.addEventListener('dragover', (e) => {
     e.preventDefault();
     drop.classList.add('file-drop--active');
@@ -124,9 +149,12 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
   clearBtn.addEventListener('mouseenter', () => drop.classList.add('file-drop--clear-hover'));
   clearBtn.addEventListener('mouseleave', () => drop.classList.remove('file-drop--clear-hover'));
 
-  // Clears every file of the drop, so it says so once there are several.
+  // Clears every file of the drop, so it says so once there are several, and says it stops what is hashing.
   let several = false;
-  initButtonTooltip(clearBtn, () => (several ? 'Remove all files' : 'Remove file'));
+  const clearVerb = () => (isHashing() ? 'Stop and remove' : 'Remove');
+  const refreshClearLabel = () =>
+    clearBtn.setAttribute('aria-label', `${clearVerb()} ${several ? 'all files' : 'selected file'}`);
+  initButtonTooltip(clearBtn, () => (several ? `${clearVerb()} all` : clearVerb()));
 
   clearBtn.addEventListener('click', (e) => {
     e.stopPropagation();
@@ -146,16 +174,18 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
     section: drop.closest('.section'),
     mirrorInput,
     notify,
+    refreshClearLabel,
 
     /** Shows `file`'s name and size in the zone, and its ✕ button. `count` is how many files the
      *  zone stands for (it clears them all). */
     showFile(file, count = 1) {
       several = count > 1;
-      clearBtn.setAttribute('aria-label', several ? 'Remove all files' : 'Remove selected file');
+      refreshClearLabel();
       fileNameText.textContent = file.name;
       fileSize.textContent = ` · ${Format.fileSize(file.size)}`;
       fileName.classList.add('file-drop__filename--visible');
       clearBtn.classList.add('file-drop__clear--visible');
+      drop.classList.add('file-drop--has-file');
     },
 
     /** Puts the zone back to having no file: no name, no ✕ button, nothing in the input. */
@@ -165,6 +195,7 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
       fileSize.textContent = '';
       fileName.classList.remove('file-drop__filename--visible');
       clearBtn.classList.remove('file-drop__clear--visible');
+      drop.classList.remove('file-drop--has-file');
       // The button may hide under the pointer without firing mouseleave.
       drop.classList.remove('file-drop--clear-hover');
     },
