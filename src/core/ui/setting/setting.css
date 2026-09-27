@@ -24,12 +24,13 @@
   align-items: center;
   font-size: 14px;
   font-weight: 500;
+  line-height: 18px;
   color: var(--text-secondary);
 }
 
 .setting__hint {
   font-size: 12.5px;
-  line-height: 1.4;
+  line-height: 18px;
   color: var(--text-muted);
 }
 

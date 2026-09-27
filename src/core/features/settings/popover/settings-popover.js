@@ -30,7 +30,7 @@ const HINTS = {
   settingsHistoryFilenames: 'Keeps a filename alongside each hash.',
   settingsHistoryPreviews: 'Keeps a text preview alongside each hash.',
   settingsRememberView: 'Formats, hidden algorithms, collapsed sections and more.',
-  settingsExportFormat: 'Output format of bulk downloads.',
+  settingsExportFormat: 'Output format for bulk downloads.',
   settingsMaxThreads: 'Parallel hashing. Helps with multiple files or algorithms.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
@@ -206,6 +206,10 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     () => clearSavedData(appConfig.appName, themeKey),
     'Press again to delete all saved data',
   );
+
+  // Brought in line now, while the load gate still suppresses transitions: set on first open, the
+  // toggles would slide from off to on under the fading-in popover.
+  sync();
 
   const popover = createPopover({
     trigger,

@@ -10,7 +10,8 @@ import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
 import { flashDone } from '~core/ui/button/flash-done.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
-import { createRandomItem } from './random-item.js';
+import { randomItemHtml } from './random-item.js';
+import { initRandomTooltips } from './random-tooltips.js';
 
 let _APP_CONFIG, _ALGORITHMS, _DEFAULT_ALGO, _Hasher;
 
@@ -69,6 +70,7 @@ export const RandomSection = {
       if (!btn) return;
       this.handleItemAction(btn);
     });
+    initRandomTooltips(this.elements.list);
 
     this.generate();
   },
@@ -100,20 +102,16 @@ export const RandomSection = {
   },
 
   render() {
-    const fragment = document.createDocumentFragment();
-    const padWidth = this.hashes.length > 100 ? 3 : 2;
+    const padWidth = Math.max(2, String(this.hashes.length).length);
 
     const _curAlgo = this.hashes[0]?.algo ?? _DEFAULT_ALGO;
     const _algoMeta = _ALGORITHMS.find((a) => a.id === _curAlgo);
     const _tipText = _algoMeta ? `${_algoMeta.bits}-bit · ${_algoMeta.hexLen} hex chars` : _curAlgo;
 
-    this.hashes.forEach(({ hash, algo }, index) => {
-      const item = createRandomItem({ hash, algo, number: index + 1, padWidth, tip: _tipText });
-      fragment.appendChild(item);
-    });
-
-    this.elements.list.innerHTML = '';
-    this.elements.list.appendChild(fragment);
+    this.elements.list.style.setProperty('--index-digits', padWidth);
+    this.elements.list.innerHTML = this.hashes
+      .map(({ hash, algo }, index) => randomItemHtml({ hash, algo, number: index + 1, padWidth, tip: _tipText }))
+      .join('');
   },
 
   async handleItemAction(button) {

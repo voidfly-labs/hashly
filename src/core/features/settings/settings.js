@@ -5,8 +5,8 @@ import { Storage } from '~core/lib/storage.js';
  *  chosen from a list means "Auto": the app's own behaviour. */
 export const CHUNK_OPTIONS_MIB = [2, 4, 8, 16, 32, 64];
 export const HISTORY_LIMITS = [100, 250, 500, 1000, 2500];
-export const MAX_FILES_OPTIONS = [25, 50, 100, 250, 500, 1000];
-export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32, 64];
+export const MAX_FILES_OPTIONS = [25, 50, 100, 250, 500, 1000, 2500];
+export const THREAD_OPTIONS = [1, 2, 4, 8, 16, 32, 64, 128];
 
 // In the order of the settings popover: General, History, Performance.
 const SPECS = {

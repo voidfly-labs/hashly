@@ -76,7 +76,7 @@
 }
 
 .random__item-index {
-  min-width: 26px;
+  min-width: max(26px, calc(var(--index-digits, 2) * 1ch));
   font-size: 12px;
   color: var(--text-muted);
 }

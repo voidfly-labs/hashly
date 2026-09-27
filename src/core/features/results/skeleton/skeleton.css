@@ -103,6 +103,23 @@
   clip-path: inset(calc((100% - var(--skeleton-pill-height)) / 2) 0 round var(--radius-sm));
 }
 
+/* The labels' width is that of the real text in Geist, so the buttons do not resize when the font
+   swaps in over the fallback. A flex item of the inline-flex .btn: no display needed, which leaves
+   the rules that hide .btn__label on small screens in charge. */
+.result--skeleton .skeleton__label,
+.result--skeleton .btn__label {
+  flex: none;
+  overflow: hidden;
+}
+
+.result--skeleton .skeleton__label {
+  width: 31px;
+}
+
+.result--skeleton .btn__label {
+  width: 61px;
+}
+
 .skeleton__badge {
   color: transparent;
   border-color: transparent;
@@ -183,6 +200,11 @@ html[data-skeleton-solo~='text'] #textResults .result--skeleton .skeleton__btn:f
 html[data-skeleton-solo~='file'] #fileResults .result--skeleton .skeleton__btn:first-child {
   padding: 6px 16px;
   font-weight: 600;
+}
+
+html[data-skeleton-solo~='text'] #textResults .result--skeleton .skeleton__label,
+html[data-skeleton-solo~='file'] #fileResults .result--skeleton .skeleton__label {
+  width: 32px;
 }
 
 @media (max-width: 540px) {
