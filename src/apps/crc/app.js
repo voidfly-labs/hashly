@@ -8,7 +8,6 @@ import workerUrl from './worker.js?worker&url';
 const APP_CONFIG = {
   appName: 'crckit',
   requiresWasm: false,
-  fileNoun: 'checksum',
   slugify: (algo) => algo.toLowerCase().replace(/[^a-z0-9]/g, ''),
   defaultHiddenAlgos: DEFAULT_HIDDEN_ALGOS,
 };

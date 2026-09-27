@@ -1,3 +1,5 @@
+import { checksumDownloadName } from './download-name.js';
+
 const HEX = /^[0-9a-f]+$/i;
 
 /** A name as GNU coreutils writes it when it holds a backslash, a newline or a carriage return: those
@@ -7,7 +9,8 @@ const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n
 
 /** The file a "download hash" button should write for a named file, in the format `sha256sum -c`,
  *  `md5sum -c`, `b2sum -c` & co. read (GNU coreutils): one line `<digest>  <filename>`,
- *  newline-terminated, in a file named `<filename>.<ext>` (`ubuntu.iso.sha256`), where `ext` is the app's slug
+ *  newline-terminated, in a file named `<filename>.<ext>` (`ubuntu.iso.sha256`; see
+ *  checksumDownloadName for a name with a path), where `ext` is the app's slug
  *  of the algorithm name (`APP_CONFIG.slugify`).
  *  Returns `{ filename, content }`, or null with no source filename (hashed text), which the caller
  *  downloads as the plain digest.
@@ -18,7 +21,7 @@ const escapeName = (name) => name.replaceAll('\\', '\\\\').replaceAll('\n', '\\n
  *  carriage return in it is escaped the way coreutils does (see `escapeName`). */
 export function toChecksumFile(hash, ext, sourceName) {
   if (!sourceName) return null;
-  return { filename: `${sourceName}.${ext}`, content: `${checksumLine(hash, sourceName)}\n` };
+  return { filename: checksumDownloadName(sourceName, `.${ext}`), content: `${checksumLine(hash, sourceName)}\n` };
 }
 
 /** One line of a checksum file, `<digest>  <filename>` (see toChecksumFile for how each is written). */

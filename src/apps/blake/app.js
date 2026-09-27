@@ -8,7 +8,6 @@ import workerUrl from './worker.js?worker&url';
 const APP_CONFIG = {
   appName: 'blakekit',
   requiresWasm: true,
-  fileNoun: 'hash',
   slugify: (algo) => algo.toLowerCase().replace(/-/g, ''),
   defaultHiddenAlgos: DEFAULT_HIDDEN_ALGOS,
 };

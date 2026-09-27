@@ -1,10 +1,10 @@
 export const Download = {
-  filenameSafeTimestamp() {
+  /** Today's date, local time, as `YYYY-MM-DD`: readable, sorts by name and has no colons, which Windows
+   *  doesn't allow in a file name. */
+  filenameDate() {
     const d = new Date();
     const pad = (v) => String(v).padStart(2, '0');
-    const date = `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}`;
-    const time = `${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
-    return `${date}-${time}`;
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   },
 
   // mimeType defaults to application/octet-stream so the browser treats the

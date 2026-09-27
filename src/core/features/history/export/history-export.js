@@ -1,6 +1,7 @@
 import { downloadTable } from '~core/features/export/download-table.js';
+import { Download } from '~core/lib/export/download.js';
 
-import { formatTimestamp, isoTimestamp } from './history-time.js';
+import { isoTimestamp } from './history-time.js';
 
 /** Downloads `entries` (what a history list shows, in its order) as a file in `format`. What was
  *  hashed comes before the hash: the file name, or (text) the stored description. `sourceOf(entry)`
@@ -13,7 +14,6 @@ export function exportHistory({ entries, format, kind, appName, defaultAlgo, sou
     columns: ['time', 'algorithm', kind === 'file' ? 'filename' : 'text', 'hash'],
     rows: entries.map((e) => [isoTimestamp(e.ts), e.algo ?? defaultAlgo, sourceOf(e), e.hash]),
   };
-  const date = formatTimestamp(Date.now()).slice(0, 10);
   // Only the source (a file name, or text) is a stranger's: the hash must stay as it is.
-  downloadTable({ table, format, baseName: `${appName}-${kind}-history_${date}`, guard: [2] });
+  downloadTable({ table, format, baseName: `${appName}-${kind}-history_${Download.filenameDate()}`, guard: [2] });
 }

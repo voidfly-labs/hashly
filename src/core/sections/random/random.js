@@ -144,7 +144,7 @@ export const RandomSection = {
     downloadTable({
       table,
       format,
-      baseName: `${_APP_CONFIG.appName}-random_${Download.filenameSafeTimestamp()}`,
+      baseName: `${_APP_CONFIG.appName}-random_${Download.filenameDate()}`,
       guard: [], // generated, and a Base64 digest may start with "+"
     });
   },
