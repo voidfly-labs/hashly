@@ -1,6 +1,6 @@
 import { initPasteButton } from '~core/features/input/paste-button.js';
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
-import { scrollBehavior } from '~core/lib/motion.js';
+import { scrollBehavior } from '~core/lib/motion/motion.js';
 import { Hint } from '~core/ui/hint/hint.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 

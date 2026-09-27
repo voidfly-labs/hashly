@@ -1,5 +1,5 @@
 import { trackPageDrag } from '~core/features/input/page-drag.js';
-import { scrollBehavior } from '~core/lib/motion.js';
+import { scrollBehavior } from '~core/lib/motion/motion.js';
 import { takesText } from '~core/lib/text-field.js';
 
 // Only text drags are handled; file drags are intentionally ignored so they still route to

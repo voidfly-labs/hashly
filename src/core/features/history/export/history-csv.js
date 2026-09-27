@@ -1,5 +1,5 @@
-import { toCsv } from '~core/lib/csv.js';
-import { Download } from '~core/lib/download.js';
+import { toCsv } from '~core/lib/export/csv.js';
+import { Download } from '~core/lib/export/download.js';
 
 import { formatTimestamp, isoTimestamp } from './history-time.js';
 

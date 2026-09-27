@@ -3,7 +3,7 @@ import { formatTimestamp } from '~core/features/history/export/history-time.js';
 import { initHistoryRows } from '~core/features/history/table/history-rows.js';
 import { renderHistoryTable } from '~core/features/history/table/history-table.js';
 import { downloadDigest } from '~core/features/results/export/download-digest.js';
-import { slideIn } from '~core/lib/slide-in.js';
+import { slideIn } from '~core/lib/motion/slide-in.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';

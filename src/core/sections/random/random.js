@@ -1,7 +1,7 @@
 import { Preferences } from '~core/features/preferences/preferences.js';
 import { AlgoSpotlight } from '~core/features/spotlight/algo-spotlight.js';
-import { toCsv } from '~core/lib/csv.js';
-import { Download } from '~core/lib/download.js';
+import { toCsv } from '~core/lib/export/csv.js';
+import { Download } from '~core/lib/export/download.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
 import { flashDone } from '~core/ui/button/flash-done.js';

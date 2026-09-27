@@ -1,5 +1,5 @@
 import { checksumListName, toChecksumList } from '~core/features/results/export/checksum-file.js';
-import { Download } from '~core/lib/download.js';
+import { Download } from '~core/lib/export/download.js';
 import { Format } from '~core/lib/format.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';

@@ -1,0 +1,21 @@
+<!-- What a loaded zone offers (./drop-actions.css) -->
+<!-- With a file loaded the prompt gives way to two ghost icon buttons, as in the Verify field below;
+     while a file is dragged over, they give way to what a drop does -->
+<div class="file-drop__aside">
+  <span class="file-drop__replace" aria-hidden="true">Drop to replace</span>
+  <button class="icon-btn" id="fileBrowseBtn" type="button" aria-label="Browse files">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <use href="/src/assets/images/icons.svg#icon-upload"></use>
+    </svg>
+  </button>
+  <%- include('/src/core/sections/file/drop/folder/folder-button.html') %>
+</div>
+<button
+  class="icon-btn icon-btn--danger file-drop__clear"
+  id="fileDropClear"
+  aria-label="Remove selected file"
+  type="button">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <use href="/src/assets/images/icons.svg#icon-close"></use>
+  </svg>
+</button>

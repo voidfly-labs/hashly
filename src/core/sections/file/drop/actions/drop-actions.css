@@ -1,0 +1,83 @@
+/* =========================================================================
+       DROP ACTIONS
+       — What a loaded zone offers: browse and folder buttons, a "Drop to replace" message in their place
+         while a file is dragged over, and the ✕ that removes the file. Markup: ./drop-actions.html. All of
+         them sit above the zone's invisible file input, so they receive the click. Desktop only, except
+         the ✕.
+       ========================================================================= */
+/* With a file loaded: browse and folder as ghost icon buttons (ui/icon-button/), a hairline between them
+       and the ✕ that removes the file. Each is positioned with a z-index, so it paints above the invisible
+       file input overlay and receives the click. */
+.file-drop__aside {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  margin-right: -6px;
+  padding-right: 8px;
+  border-right: 1px solid var(--border);
+}
+
+.file-drop--has-file .file-drop__aside {
+  display: flex;
+}
+
+.file-drop__aside .icon-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+}
+
+.file-drop__aside .icon-btn[hidden] {
+  display: none;
+}
+
+/* While a file is dragged over a loaded zone, the buttons give way to what a drop does. */
+.file-drop__replace {
+  display: none;
+  padding: 0 6px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--accent);
+}
+
+.file-drop--has-file.file-drop--active .file-drop__replace,
+.file-drop--has-file.file-drop--page-drag .file-drop__replace {
+  display: block;
+}
+
+.file-drop--has-file.file-drop--active .file-drop__aside .icon-btn,
+.file-drop--has-file.file-drop--page-drag .file-drop__aside .icon-btn {
+  display: none;
+}
+
+/* Dismiss button — the last item of the row. A ghost icon button (ui/icon-button/), hidden until a file
+       is loaded. Positioned with a z-index, so it paints above the invisible file input overlay and
+       click events reach it first. */
+.file-drop__clear {
+  position: relative;
+  z-index: 1;
+  display: none;
+}
+
+.file-drop__clear--visible {
+  display: flex;
+}
+
+@media (max-width: 630px) {
+  .file-drop__aside,
+  .file-drop--has-file .file-drop__aside {
+    display: none;
+  }
+
+  .file-drop__clear {
+    padding: 8px;
+  }
+
+  .file-drop__clear svg {
+    width: 20px;
+    height: 20px;
+  }
+}

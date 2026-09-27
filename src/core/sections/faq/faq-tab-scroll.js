@@ -1,5 +1,5 @@
 import { iconHref } from '~core/lib/icon.js';
-import { scrollBehavior } from '~core/lib/motion.js';
+import { scrollBehavior } from '~core/lib/motion/motion.js';
 
 // How far a chevron click scrolls the strip, as a share of its visible width: far enough to
 // uncover new tabs, short enough that the last one in view stays in view as an anchor.

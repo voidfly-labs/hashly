@@ -95,7 +95,7 @@
   }
 }
 
-/* Clips the page that slides in (see core/lib/slide-in.js), and is the opaque surface it fades
+/* Clips the page that slides in (see core/lib/motion/slide-in.js), and is the opaque surface it fades
    up from: without one the translucent popover shows through and the fade flashes its gray. */
 .history-popover__body {
   flex: 0 1 auto;

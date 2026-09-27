@@ -1,23 +1,23 @@
 import { trackPageDrag } from '~core/features/input/page-drag.js';
 import { Format } from '~core/lib/format.js';
-import { scrollBehavior } from '~core/lib/motion.js';
+import { scrollBehavior } from '~core/lib/motion/motion.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
 import { createIconButton } from '~core/ui/icon-button/icon-button.js';
-import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
 import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
 
+import { createDropActions } from './actions/drop-actions.js';
 import { droppedFiles } from './dropped-files.js';
-import { pickedFolderFiles } from './picked-folder.js';
+import { initFolderPicker } from './folder/folder-picker.js';
 
 /** The file drop zone (see file.html): how a file arrives, and the zone's own display of it.
  *
- *  Files arrive by being picked (the input, or the folder link beside it), dropped on the zone, or dropped anywhere else on the
+ *  Files arrive by being picked (the input, or the folder picker: ./folder/), dropped on the zone, or dropped anywhere else on the
  *  page; each way hands them to `onFiles(files, { truncated })` as `{ file, path }` (`path`: the name, or
  *  the place in a dropped folder, which is read through, see dropped-files.js; `truncated`: there were
- *  more than `getLimit()` files, so the rest were left out). The zone's ✕ button and Esc on the input call `onClear()`
- *  (Esc only while `hasFile()`); the ✕ says it stops and removes while `isHashing()`, and `refreshClearLabel()` brings its
- *  spoken label up to date when that changes. The zone lights up whenever a file is dragged anywhere over the
+ *  more than `getLimit()` files, so the rest were left out). The zone's ✕ button (./actions/) and Esc on the input call
+ *  `onClear()` (Esc only while `hasFile()`); the ✕ says it stops and removes while `isHashing()`, and `refreshClearLabel()`
+ *  brings its spoken label up to date when that changes. The zone lights up whenever a file is dragged anywhere over the
  *  window, and the page's own drop handler stops the browser from navigating to a dropped file.
  *
  *  Returns `{ section, mirrorInput, notify, showFile, clearFile, setStats, showStats, hideStats }`: the
@@ -26,10 +26,6 @@ import { pickedFolderFiles } from './picked-folder.js';
 export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear }) {
   const drop = document.getElementById('fileDrop');
   const input = document.getElementById('fileInput');
-  const folderInput = document.getElementById('fileFolderInput');
-  const folderBtns = drop.querySelectorAll('.file-drop__folder, .file-drop__pick-folder');
-  const browseBtn = document.getElementById('fileBrowseBtn');
-  const clearBtn = document.getElementById('fileDropClear');
   const fileName = document.getElementById('fileName');
   const fileNameText = document.getElementById('fileNameText');
   const fileSize = document.getElementById('fileSize');
@@ -82,25 +78,8 @@ export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear 
     }
   });
 
-  // The folder picker: a browser without `webkitdirectory` has no link to it.
-  if ('webkitdirectory' in folderInput) {
-    folderBtns.forEach((btn) => {
-      btn.hidden = false;
-      btn.addEventListener('click', () => folderInput.click());
-    });
-    folderInput.addEventListener('change', () => {
-      const { files, truncated } = pickedFolderFiles(folderInput.files, getLimit());
-      folderInput.value = '';
-      if (!files.length) return notify('No files found in the folder');
-      mirrorInput(files.map(({ file }) => file));
-      onFiles(files, { truncated });
-    });
-  }
-
-  // The browse and folder buttons of a loaded zone (icon-only, so a tooltip spells out what each does)
-  browseBtn.addEventListener('click', () => input.click());
-  initButtonTooltip(browseBtn, 'Browse files');
-  initButtonTooltip(drop.querySelector('.file-drop__pick-folder'), 'Select a folder');
+  initFolderPicker(drop, { getLimit, onFiles, notify, mirrorInput });
+  const actions = createDropActions(drop, { input, isHashing, onClear });
 
   drop.addEventListener('dragover', (e) => {
     e.preventDefault();
@@ -146,21 +125,6 @@ export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear 
     acceptDrop(e.dataTransfer);
   });
 
-  clearBtn.addEventListener('mouseenter', () => drop.classList.add('file-drop--clear-hover'));
-  clearBtn.addEventListener('mouseleave', () => drop.classList.remove('file-drop--clear-hover'));
-
-  // Clears every file of the drop, so it says so once there are several, and says it stops what is hashing.
-  let several = false;
-  const clearVerb = () => (isHashing() ? 'Stop and remove' : 'Remove');
-  const refreshClearLabel = () =>
-    clearBtn.setAttribute('aria-label', `${clearVerb()} ${several ? 'all files' : 'selected file'}`);
-  initButtonTooltip(clearBtn, () => (several ? `${clearVerb()} all` : clearVerb()));
-
-  clearBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    onClear();
-  });
-
   // Esc clears the file input when a file is loaded and the drop
   // zone (file input) is focused — mirrors TextSection's Esc behaviour.
   input.addEventListener('keydown', (e) => {
@@ -174,17 +138,15 @@ export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear 
     section: drop.closest('.section'),
     mirrorInput,
     notify,
-    refreshClearLabel,
+    refreshClearLabel: actions.refreshClearLabel,
 
     /** Shows `file`'s name and size in the zone, and its ✕ button. `count` is how many files the
      *  zone stands for (it clears them all). */
     showFile(file, count = 1) {
-      several = count > 1;
-      refreshClearLabel();
+      actions.show(count);
       fileNameText.textContent = file.name;
       fileSize.textContent = ` · ${Format.fileSize(file.size)}`;
       fileName.classList.add('file-drop__filename--visible');
-      clearBtn.classList.add('file-drop__clear--visible');
       drop.classList.add('file-drop--has-file');
     },
 
@@ -194,10 +156,8 @@ export function createFileDrop({ hasFile, isHashing, getLimit, onFiles, onClear 
       fileNameText.textContent = '';
       fileSize.textContent = '';
       fileName.classList.remove('file-drop__filename--visible');
-      clearBtn.classList.remove('file-drop__clear--visible');
+      actions.hide();
       drop.classList.remove('file-drop--has-file');
-      // The button may hide under the pointer without firing mouseleave.
-      drop.classList.remove('file-drop--clear-hover');
     },
 
     /** The status line under the file name. `state` picks its icon: 'busy' (spinner),

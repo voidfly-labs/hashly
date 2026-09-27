@@ -75,7 +75,7 @@
 /* help-popover.css after history.css: it narrows the popover width history.css sets */
 @import '../core/features/help/help-popover.css';
 /* settings-popover.css after help-popover.css: it takes that popover's shell and sets its own width */
-@import '../core/features/settings/settings-popover.css';
+@import '../core/features/settings/popover/settings-popover.css';
 
 /* Features, algorithm spotlight */
 @import '../core/features/quick-select/quick-select.css';
@@ -90,6 +90,8 @@
 /* Sections, file */
 @import '../core/sections/file/drop/file-stats.css';
 @import '../core/sections/file/drop/file-drop.css';
+@import '../core/sections/file/drop/folder/folder-link.css';
+@import '../core/sections/file/drop/actions/drop-actions.css';
 @import '../core/sections/file/hash-progress.css';
 @import '../core/sections/file/list/file-list.css';
 @import '../core/sections/file/manifest/manifest-row.css';
@@ -102,7 +104,7 @@
 /* Sections, FAQ */
 /* faq-search.css overrides the panel rules of faq.css, so it has to stay behind it */
 @import '../core/sections/faq/faq.css';
-@import '../core/sections/faq/faq-search.css';
+@import '../core/sections/faq/search/faq-search.css';
 @import '../core/sections/faq/faq-tab-scroll.css';
 @import '../core/sections/faq/faq-links.css';
 

@@ -1,4 +1,4 @@
-import { isJunk } from './read-entries.js';
+import { isJunk } from '~core/sections/file/drop/read-entries.js';
 
 const collator = new Intl.Collator(undefined, { numeric: true });
 

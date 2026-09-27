@@ -5,7 +5,7 @@ import { Settings } from '~core/features/settings/settings.js';
 import { SettingsOpener } from '~core/features/settings/settings-opener.js';
 import { describeManifest, hexLengthsOf } from '~core/features/verify/manifest/manifest.js';
 import { createVerify } from '~core/features/verify/verify.js';
-import { scrollBehavior } from '~core/lib/motion.js';
+import { scrollBehavior } from '~core/lib/motion/motion.js';
 
 import { createFileDrop } from './drop/file-drop.js';
 import { createFileRows } from './file-rows.js';

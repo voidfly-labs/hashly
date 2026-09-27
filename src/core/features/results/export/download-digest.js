@@ -1,4 +1,4 @@
-import { Download } from '~core/lib/download.js';
+import { Download } from '~core/lib/export/download.js';
 
 import { toChecksumFile } from './checksum-file.js';
 

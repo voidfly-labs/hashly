@@ -1,6 +1,14 @@
 import { autoThreads } from '~core/features/hashing/workers/auto-threads.js';
 import { chunkCeiling } from '~core/features/hashing/workers/chunk-ceiling.js';
 import { History } from '~core/features/history/history.js';
+import {
+  CHUNK_OPTIONS_MIB,
+  HISTORY_LIMITS,
+  MAX_FILES_OPTIONS,
+  Settings,
+  THREAD_OPTIONS,
+} from '~core/features/settings/settings.js';
+import { SettingsOpener } from '~core/features/settings/settings-opener.js';
 import { Storage } from '~core/lib/storage.js';
 import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
 import { createPopover } from '~core/ui/popover/popover.js';
@@ -8,8 +16,6 @@ import { createSettingFlash } from '~core/ui/setting/saved-flash.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { clearSavedData, savedBytes } from './saved-data.js';
-import { CHUNK_OPTIONS_MIB, HISTORY_LIMITS, MAX_FILES_OPTIONS, Settings, THREAD_OPTIONS } from './settings.js';
-import { SettingsOpener } from './settings-opener.js';
 
 const MIB = 1024 * 1024;
 

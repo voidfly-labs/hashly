@@ -1,8 +1,8 @@
-import { whenScrollSettles } from '~core/lib/scroll-settle.js';
+import { whenScrollSettles } from '~core/lib/motion/scroll-settle.js';
 
 import { findQuestion, flashQuestion, initQuestionLinks } from './faq-links.js';
-import { createFaqSearch } from './faq-search.js';
 import { initTabScroll } from './faq-tab-scroll.js';
+import { createFaqSearch } from './search/faq-search.js';
 
 export const FaqSection = {
   init() {

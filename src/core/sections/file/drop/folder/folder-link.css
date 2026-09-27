@@ -1,0 +1,51 @@
+/* =========================================================================
+       FOLDER LINK
+       — The "You can also select a folder" link under the prompt of the empty zone. Picking a folder is
+         ./folder-picker.js; markup: ./folder-link.html (this link) and ./folder-button.html (the button of a
+         loaded zone, styled with the actions). Desktop only, as mobile browsers have no folder picker.
+       ========================================================================= */
+/* The folder link of the empty zone: a button above the input overlay (a positioned element paints over
+       it), so a click reaches the button first. Desktop only, as mobile browsers have no folder picker. */
+.file-drop__folder {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.4;
+  text-align: left;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.file-drop__folder[hidden],
+.file-drop--has-file .file-drop__folder--idle {
+  display: none;
+}
+
+.file-drop__folder strong {
+  font-weight: inherit;
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: var(--accent-border);
+  text-underline-offset: 2px;
+  transition: text-decoration-color 0.15s;
+}
+
+.file-drop__folder:hover strong,
+.file-drop__folder:focus-visible strong {
+  text-decoration-color: var(--accent);
+}
+
+.file-drop__folder:focus-visible {
+  outline: none;
+  border-radius: 3px;
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+@media (max-width: 630px) {
+  .file-drop__folder {
+    display: none;
+  }
+}
