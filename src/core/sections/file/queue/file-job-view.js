@@ -24,7 +24,7 @@ export function createJobView({ rows, verify, getFormat }) {
       return;
     }
     // Failed or stopped: the digests that landed stay, the rest say why there is none.
-    if (status === 'failed') rows.showReadError(rawHexMap);
+    if (status === 'failed') rows.showFailure(rawHexMap);
     else rows.settle(rawHexMap);
     verifyPartial(job);
   }

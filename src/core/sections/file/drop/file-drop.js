@@ -3,8 +3,9 @@ import { Format } from '~core/lib/format.js';
 import { scrollBehavior } from '~core/lib/motion.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
+import { createIconButton } from '~core/ui/icon-button/icon-button.js';
 import { initButtonTooltip } from '~core/ui/tooltip/button-tooltip.js';
-import { Tooltip } from '~core/ui/tooltip/tooltip.js';
+import { TAP_TOOLTIP_MS, Tooltip } from '~core/ui/tooltip/tooltip.js';
 
 import { droppedFiles } from './dropped-files.js';
 
@@ -29,6 +30,20 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
   const fileSize = document.getElementById('fileSize');
   const stats = document.getElementById('fileStats');
   const statsText = document.getElementById('fileStatsText');
+
+  // A ? button after the status text, for a note (why several files failed) too long for the line. A tap
+  // shows it for a moment, as a touch screen has no hover.
+  const NOTE_LABEL = 'Why files failed';
+  let statsNote = '';
+  const statsNoteBtn = createIconButton({
+    icon: 'help',
+    label: NOTE_LABEL,
+    tip: () => statsNote,
+    className: 'file-drop__stats-note',
+    onClick: (btn) => Tooltip.show(btn, statsNote, TAP_TOOLTIP_MS),
+  });
+  statsNoteBtn.hidden = true;
+  stats.append(statsNoteBtn);
 
   /** Mirrors files that didn't come through the input itself (drop, paste) into it. */
   function mirrorInput(files) {
@@ -155,10 +170,15 @@ export function createFileDrop({ hasFile, getLimit, onFiles, onClear }) {
     },
 
     /** The status line under the file name. `state` picks its icon: 'busy' (spinner),
-     *  'done' (✓), 'error' (✕) or 'warn' (⚠); none for an empty row. */
-    setStats(text, state = '') {
+     *  'done' (✓), 'error' (✕) or 'warn' (⚠); none for an empty row. A `note` (lines joined by \n) puts
+     *  a ? button after the text that shows it; each call sets the note anew, so a line without one has none. */
+    setStats(text, state = '', note = '') {
       statsText.textContent = text;
       stats.dataset.state = state;
+      statsNote = note;
+      statsNoteBtn.hidden = !note;
+      statsNoteBtn.setAttribute('aria-label', note ? note.replace(/\n/g, ' ') : NOTE_LABEL);
+      if (!note) Tooltip.hide(statsNoteBtn);
     },
     showStats: () => stats.classList.add('file-drop__stats--visible'),
     hideStats: () => stats.classList.remove('file-drop__stats--visible'),

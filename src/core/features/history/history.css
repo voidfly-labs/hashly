@@ -12,7 +12,7 @@
 }
 
 /* Matches .btn exactly — same surface, border, sizing, transitions */
-.history-popover__export {
+.history-popover__download {
   display: inline-flex;
   align-items: center;
   gap: 2px;
@@ -29,19 +29,19 @@
   transition: all 0.15s;
 }
 
-.history-popover__export svg {
+.history-popover__download svg {
   width: 16px;
   height: 16px;
   fill: currentColor;
 }
 
-.history-popover__export:hover:not(:disabled) {
+.history-popover__download:hover:not(:disabled) {
   color: var(--accent);
   border-color: var(--accent-border);
   box-shadow: 0 0 0 3px var(--accent-muted);
 }
 
-.history-popover__export:active:not(:disabled) {
+.history-popover__download:active:not(:disabled) {
   transform: scale(0.96);
 }
 
@@ -52,33 +52,33 @@
 }
 
 /* The done state of the checkmark morph (button.css) loses to the base colours above on order */
-.history-popover__export.btn--done {
+.history-popover__download.btn--done {
   color: var(--accent);
   border-color: var(--accent-border);
 }
 
-.history-popover__export:disabled {
+.history-popover__download:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
 @media (max-width: 630px) {
-  .history-popover__export-suffix {
+  .history-popover__download-suffix {
     display: none;
   }
 
-  .history-popover__export {
+  .history-popover__download {
     min-height: 35px;
     padding: 8px 10px;
   }
 }
 
 @media (max-width: 380px) {
-  .history-popover__export {
+  .history-popover__download {
     gap: 0;
   }
 
-  .history-popover__export-label {
+  .history-popover__download-label {
     display: none;
   }
 }

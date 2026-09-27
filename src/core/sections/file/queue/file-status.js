@@ -68,7 +68,7 @@ export function createFileStatus({ queue, drop, Hasher, visibleAlgos }) {
         if (progress) TabTitle.reset();
         return;
       }
-      drop.setStats(end.text, end.state);
+      drop.setStats(end.text, end.state, end.note);
       const title = TabTitle.track();
       if (end.state === 'done') title.done();
       else title.fail();
@@ -85,7 +85,7 @@ export function createFileStatus({ queue, drop, Hasher, visibleAlgos }) {
       }
       const last = active[0] ?? jobs[0];
       const end = active.length ? null : describeQueueEnd(jobs, elapsedMs, progress?.threads);
-      if (end) drop.setStats(end.text, end.state);
+      if (end) drop.setStats(end.text, end.state, end.note);
       else if (last?.stats) setJobStats(last, last.stats.text, last.stats.state);
     },
 

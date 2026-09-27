@@ -21,10 +21,10 @@ const footerMarkup = (ns) => `
             </button>
           </div>
           <div class="history-popover__footer-actions">
-            <button class="history-popover__export" data-history-export aria-label="Export as CSV" type="button">
+            <button class="history-popover__download" data-history-download aria-label="Download as CSV" type="button">
               <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
               <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
-              <span class="history-popover__export-label">Export<span class="history-popover__export-suffix"> CSV</span></span>
+              <span class="history-popover__download-label">Download<span class="history-popover__download-suffix"> CSV</span></span>
               <span class="tooltip">Exported</span>
             </button>
             <button class="confirm-btn" data-history-clear="${ns}" aria-label="Clear history">
@@ -36,7 +36,7 @@ const footerMarkup = (ns) => `
 const CLEAR_SEARCHING_TITLE = 'Clear the search to delete the history';
 
 /** Builds the footer of a history `popover` once: the pagination, the CSV export and the two-click
- *  Clear, wired to `onPage(direction)`, `onExport()` and `onClear()`. Returns `{ update, disarm }`.
+ *  Clear, wired to `onPage(direction)`, `onDownload()` and `onClear()`. Returns `{ update, disarm }`.
  *
  *  `update({ page, pages, total, searching })` brings it in line with the list: `page` is 0-based,
  *  `total` is how many entries the list has (after a search), and `searching` says there is one:
@@ -45,7 +45,7 @@ const CLEAR_SEARCHING_TITLE = 'Clear the search to delete the history';
  *  (the first or last page reached) hands it to the first enabled control, as a disabled button
  *  can't keep it. An update also takes Clear out of its "Confirm" state. `disarm()` does that
  *  alone (see ui/confirm-button/confirm-button.js) and returns whether Clear was armed. */
-export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) {
+export function createHistoryFooter(popover, { ns, onPage, onDownload, onClear }) {
   const footer = document.createElement('div');
   footer.className = 'history-popover__footer';
   footer.innerHTML = footerMarkup(ns);
@@ -53,7 +53,7 @@ export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) 
 
   const [prev, next] = footer.querySelectorAll('.history-pagination__btn');
   const info = footer.querySelector('.history-pagination__info');
-  const exportBtn = footer.querySelector('[data-history-export]');
+  const downloadBtn = footer.querySelector('[data-history-download]');
   const clearBtn = footer.querySelector('[data-history-clear]');
 
   [prev, next].forEach((btn) => {
@@ -66,11 +66,11 @@ export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) 
     });
   });
 
-  exportBtn.addEventListener('click', (e) => {
+  downloadBtn.addEventListener('click', (e) => {
     e.stopPropagation();
-    onExport();
-    Tooltip.flash(exportBtn);
-    Checkmark.flash(exportBtn);
+    onDownload();
+    Tooltip.flash(downloadBtn);
+    Checkmark.flash(downloadBtn);
   });
 
   const disarm = initConfirmButton(clearBtn, onClear, 'Press again to delete the history');
@@ -84,7 +84,7 @@ export function createHistoryFooter(popover, { ns, onPage, onExport, onClear }) 
       prev.disabled = page === 0;
       next.disabled = page >= pages - 1;
       info.textContent = total ? `${page + 1} / ${pages}` : '—';
-      exportBtn.disabled = !total;
+      downloadBtn.disabled = !total;
       clearBtn.disabled = searching;
       if (searching) clearBtn.title = CLEAR_SEARCHING_TITLE;
       else clearBtn.removeAttribute('title');

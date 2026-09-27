@@ -8,7 +8,7 @@
  *  Messages in:  `{ type: 'text', id, bytes, ids }`, `{ type: 'file', id, file, ids }`, `{ type: 'cancel', id }`
  *  and `{ type: 'drop', id, ids }` (a running file job stops computing `ids`, and has no digest for them).
  *  Messages out: `{ type: 'progress', id, ratio }`, `{ type: 'alive', id }` (a file job, while it runs),
- *  `{ type: 'result', id, digests }` (`[[algoId, hex]]`) or `{ type: 'error', id, message }`. A cancelled file job says nothing more.
+ *  `{ type: 'result', id, digests }` (`[[algoId, hex]]`) or `{ type: 'error', id, message, name }`. A cancelled file job says nothing more.
  *
  *  A file is read here, by the worker, in chunks (a `File` can be sent to a worker), so no
  *  chunk is ever copied between threads. Every file job gets hashers of its own, which is what lets a
@@ -124,7 +124,12 @@ export function initHasherServer(engines) {
         }
       }
     } catch (error) {
-      self.postMessage({ type: 'error', id, message: String(error?.message ?? error) });
+      self.postMessage({
+        type: 'error',
+        id,
+        message: String(error?.message ?? error),
+        name: String(error?.name ?? ''),
+      });
     }
   };
 }

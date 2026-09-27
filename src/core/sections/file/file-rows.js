@@ -140,13 +140,13 @@ export function createFileRows({ resultsEl, algorithms, isHidden, hasFile, handl
     },
 
     /** The visible rows without a digest in `hexMap` could not be computed: say so where it would be.
-     *  Those that got one before the failure keep it. */
-    showReadError(hexMap) {
+     *  Those that got one before the failure keep it. (The reason is on the status line, not in every row.) */
+    showFailure(hexMap) {
       for (const { id } of visible()) {
         if (hexMap.get(id)) continue;
         const els = rows.get(id);
         els.progress.stop();
-        setHashText(els.hash, 'error reading file');
+        setHashText(els.hash, 'hashing failed');
         setHashEmpty(els.hash, true);
       }
     },

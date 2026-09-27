@@ -34,6 +34,20 @@
   display: flex;
 }
 
+/* The ? button of a note (see file-drop.js). The row ignores the pointer and sits under the invisible file
+   input, so the button takes it back and rises above that input; its box is bigger than the line, so it
+   overhangs the row by a negative margin instead of making it taller. */
+.file-drop__stats-note {
+  position: relative;
+  z-index: 1;
+  margin: -5px -4px -5px -2px;
+  pointer-events: auto;
+}
+
+.file-drop__stats-note[hidden] {
+  display: none;
+}
+
 .file-drop__stats-spinner,
 .file-drop__stats-icon {
   display: none;

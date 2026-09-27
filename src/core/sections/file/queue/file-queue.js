@@ -1,7 +1,9 @@
+import { describeError } from '~core/features/hashing/describe-error.js';
+
 /** The files of one drop, hashed a few at a time: the list of jobs, which one the page shows, and the
  *  scheduler that starts the next job whenever one is over, up to `concurrency()` at once.
  *
- *  A job is `{ id, file, name, size, status, rawHexMap, ids, threads, batchId, run, stats }`. Its `status` is
+ *  A job is `{ id, file, name, size, status, rawHexMap, ids, threads, batchId, run, stats, error }`. Its `status` is
  *  'queued', 'hashing', 'done', 'failed', 'stopped' (every algorithm it computed was hidden) or
  *  'skipped' (there was nothing visible to compute); `runJob(job)` sets all but the first two, and
  *  those are set here. `rawHexMap` (`Map<algoId, hex>`), `ids`, `threads`, `batchId`, `run` and `stats` (the last
@@ -43,6 +45,7 @@ export function createFileQueue({
     batchId: null,
     run: null,
     ratio: 0,
+    error: '', // why it failed, short (see describe-error.js)
   });
   const byId = (id) => jobs.find((job) => job.id === id) ?? null;
   const abortAll = () => jobs.forEach((job) => job.run?.abort());
@@ -56,10 +59,12 @@ export function createFileQueue({
       await runJob(job);
     } catch (error) {
       // Whatever threw, the queue goes on: a job left 'hashing' would hold its slot for good.
-      console.error(error);
       job.run?.abort();
       job.run = null;
-      if (job.status === 'hashing') job.status = 'failed';
+      if (job.status === 'hashing') {
+        job.error = describeError(error);
+        job.status = 'failed';
+      }
     }
     if (mine !== epoch) return;
     running--;

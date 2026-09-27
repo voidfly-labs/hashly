@@ -95,7 +95,9 @@ export function createListLine(job, { noteOf, onSelect, onRemove, onRetry }) {
       const spoken = [
         current.name,
         Format.fileSize(current.size),
-        STATE_LABELS[current.status],
+        current.status === 'failed' && current.error
+          ? `${STATE_LABELS.failed}: ${current.error}`
+          : STATE_LABELS[current.status],
         verdict && (VERDICT_LABELS[verdict] ?? 'Not checked'),
       ];
       select.setAttribute('aria-label', spoken.filter(Boolean).join(', '));

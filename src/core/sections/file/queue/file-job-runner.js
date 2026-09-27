@@ -1,3 +1,4 @@
+import { describeError } from '~core/features/hashing/describe-error.js';
 import { History } from '~core/features/history/history.js';
 
 import { startFileRun } from './file-run.js';
@@ -75,10 +76,11 @@ export function createFileJobRunner({
       if (run.aborted) return; // cleared, removed or replaced just as it finished
       job.status = 'done';
       run.succeed();
-    } catch {
+    } catch (error) {
       if (run.aborted) return; // cancelled: the UI already shows what replaced it
+      job.error = describeError(error);
       job.status = 'failed';
-      run.fail();
+      run.fail(job.error);
     } finally {
       job.run = null;
     }

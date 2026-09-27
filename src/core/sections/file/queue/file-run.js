@@ -18,7 +18,7 @@ import { Announcer } from '~core/ui/announcer/announcer.js';
  *   - `dropHidden(hiddenAlgos)`: stops computing the algorithms of `ids` that are hidden, as nothing
  *     it produces for them can be seen; they have no digest in `result`.
  *   - `isIdle()`: nothing is left in `ids`.
- *   - `succeed()` and `fail()` report how it ended, on the tab title and the status line. */
+ *   - `succeed()` and `fail(reason)` report how it ended, on the tab title and the status line. */
 export function startFileRun({ file, algos, hasher, setStats, onShare, onShareProgress, onProgress, quiet = false }) {
   const controller = new AbortController();
   const ids = new Set(algos.map((a) => a.id));
@@ -65,11 +65,12 @@ export function startFileRun({ file, algos, hasher, setStats, onShare, onSharePr
       title.done();
       Announcer.say('File hashed');
     },
-    fail() {
-      setStats('Hashing failed', 'error');
+    fail(reason = '') {
+      const text = reason ? `Hashing failed: ${reason}` : 'Hashing failed';
+      setStats(text, 'error');
       if (quiet) return;
       title.fail();
-      Announcer.say('Hashing failed');
+      Announcer.say(text);
     },
   };
 }

@@ -84,7 +84,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
       refresh();
       slideIn(body.querySelector('.history-table'), direction);
     },
-    onExport: () =>
+    onDownload: () =>
       exportHistoryCsv({
         entries: list.visible(),
         kind: ns,

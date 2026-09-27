@@ -51,7 +51,8 @@ export function createWorkerChannel(worker, { stallMs = STALL_MS, checkMs = CHEC
     }
     pending.delete(data.id);
     if (data.type === 'result') request.resolve(data.digests);
-    else request.reject(new Error(data.message));
+    // The name is kept: it tells a missing file from an unreadable one (see ../describe-error.js).
+    else request.reject(Object.assign(new Error(data.message), { name: data.name || 'Error' }));
   };
   worker.onerror = (event) => failAll(new Error(event.message || 'Hashing worker failed'));
   worker.onmessageerror = () => failAll(new Error('Hashing worker sent an unreadable message'));
