@@ -5,6 +5,7 @@ import { initHistoryRows } from '~core/features/history/table/history-rows.js';
 import { renderHistoryTable } from '~core/features/history/table/history-table.js';
 import { downloadDigest } from '~core/features/results/export/download-digest.js';
 import { slideIn } from '~core/lib/motion/slide-in.js';
+import { noun } from '~core/lib/noun.js';
 import { takesText } from '~core/lib/text-field.js';
 import { Checkmark } from '~core/ui/button/checkmark.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
@@ -46,7 +47,7 @@ export function createHistoryPopover({ ns, trigger, popover, body, store, list, 
 
   const search = createSearchField({
     label: `Search the ${ns} history`,
-    placeholder: `Search ${ns === 'file' ? 'file' : 'text'}, hash or algorithm`,
+    placeholder: `Search ${ns === 'file' ? 'file' : 'text'}, ${noun()} or algorithm`,
     mobilePlaceholder: 'Search history',
     noun: 'entries',
     shortcuts: '/ Control+F Meta+F',

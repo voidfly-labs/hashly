@@ -15,9 +15,8 @@ const INSTALL_ICONS = ['icon-192.png', 'icon-512.png'];
 const ICON_DIR = resolve('src/assets/images/icons');
 
 // PNG width/height are big-endian uint32s at byte offsets 16 and 20 (IHDR chunk).
-function pngSizes(source) {
-  const bytes = Buffer.from(source);
-  return `${bytes.readUInt32BE(16)}x${bytes.readUInt32BE(20)}`;
+function pngSize(bytes) {
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) };
 }
 
 export function generateManifest(meta) {
@@ -28,7 +27,8 @@ export function generateManifest(meta) {
       const installIcons = INSTALL_ICONS.map((name) => {
         const source = readFileSync(resolve(ICON_DIR, name));
         const ref = this.emitFile({ type: 'asset', name, source });
-        return { src: `/${this.getFileName(ref)}`, sizes: pngSizes(source), type: 'image/png', purpose: 'any' };
+        const { width, height } = pngSize(source);
+        return { src: `/${this.getFileName(ref)}`, sizes: `${width}x${height}`, type: 'image/png', purpose: 'any' };
       });
 
       const manifest = {

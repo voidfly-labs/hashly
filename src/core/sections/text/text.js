@@ -2,15 +2,15 @@ import { rememberRadioGroup } from '~core/features/preferences/saved-view.js';
 import { createResultsPanel } from '~core/features/results/results-panel.js';
 
 import { createTextCounter } from './counter/text-counter.js';
+import { createTextInput } from './field/text-input.js';
 import { selectedInputFormat } from './input-format.js';
 import { initTextDrop } from './text-drop.js';
 import { createTextHashing } from './text-hashing.js';
 import { createTextHistory } from './text-history.js';
-import { createTextInput } from './text-input.js';
 import { createTextRows } from './text-rows.js';
 
 /** The Text section: hashes what is typed, pasted or dropped in its field with every algorithm, and
- *  shows the digests. The field is ./text-input.js (and ./text-drop.js), the hashing of it
+ *  shows the digests. The field is ./field/text-input.js (and ./text-drop.js), the hashing of it
  *  ./text-hashing.js, the rows ./text-rows.js (with what they share with the File section, in
  *  features/results/results-panel.js), the counter under the field ./counter/text-counter.js and what
  *  goes in the history ./text-history.js. */

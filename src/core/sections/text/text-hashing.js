@@ -1,3 +1,4 @@
+import { noun } from '~core/lib/noun.js';
 import { Announcer } from '~core/ui/announcer/announcer.js';
 
 import { MAX_TEXT_BYTES } from './counter/text-counter.js';
@@ -40,7 +41,7 @@ export function createTextHashing({
     history.cancel();
     rows.showMessage(message);
     setActionsEnabled(false);
-    Announcer.say(`No hashes: ${message}`);
+    Announcer.say(`No ${noun({ plural: true })}: ${message}`);
   }
 
   /** Hashes the current input for the visible algorithms that have no digest yet (shown after the
@@ -119,7 +120,7 @@ export function createTextHashing({
     // An algorithm shown while this was hashing has no digest in it.
     fillMissing();
     const shown = algorithms.length - hiddenAlgos.size;
-    Announcer.say(`${shown} ${shown === 1 ? 'hash' : 'hashes'} calculated`);
+    Announcer.say(`${shown} ${noun({ plural: shown !== 1 })} calculated`);
   }
 
   return {

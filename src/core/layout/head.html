@@ -9,6 +9,8 @@
   <!-- ── Anti-FOUC theme init — script runs synchronously before CSS; storage
        key is read from the meta tag below so the script is shared across apps. ── -->
   <meta name="theme-storage-key" content="<%= themeStorageKey %>" />
+  <meta name="section-noun" content="<%= sectionNoun %>" />
+  <meta name="section-noun-plural" content="<%= sectionNounPlural %>" />
   <script>
     <%- include('/src/core/app/theme/init.js') %>
   </script>

@@ -1,4 +1,5 @@
 import { iconHref } from '~core/lib/icon.js';
+import { noun } from '~core/lib/noun.js';
 import { copyWithFeedback } from '~core/ui/button/copy-feedback.js';
 import { Tooltip } from '~core/ui/tooltip/tooltip.js';
 
@@ -22,6 +23,7 @@ const ICON_UNCHECKED =
  *  caller appends `row` where it belongs. */
 export function buildResultRow({ prefix, algoId, emptyText, withStatus = false }) {
   const safeId = algoId.toLowerCase().replace(/[^a-z0-9]/g, '-');
+  const word = noun();
   const status = withStatus
     ? '<span class="result__status" aria-hidden="true" hidden><svg class="result__status-icon" viewBox="0 0 24 24"><use href=""></use></svg></span>'
     : '';
@@ -34,12 +36,12 @@ export function buildResultRow({ prefix, algoId, emptyText, withStatus = false }
             <span class="algo-badge" data-algo="${algoId}" tabindex="0" role="switch" aria-checked="true" aria-label="${algoId}">${algoId}${status}</span>
             <span class="result__hash result__hash--empty" id="${prefix}Hash-${safeId}">${emptyText}<span class="tooltip">Copied!</span></span>
             <div class="result__actions">
-              <button class="btn" id="${prefix}Copy-${safeId}" disabled aria-label="Copy ${algoId} hash to clipboard">
+              <button class="btn" id="${prefix}Copy-${safeId}" disabled aria-label="Copy ${algoId} ${word} to clipboard">
                 <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('copy')}"></use></svg>
                 <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                 Copy<span class="tooltip">Copied!</span>
               </button>
-              <button class="btn" id="${prefix}Download-${safeId}" disabled aria-label="Download ${algoId} hash as text file">
+              <button class="btn" id="${prefix}Download-${safeId}" disabled aria-label="Download ${algoId} ${word} as text file">
                 <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('download')}"></use></svg>
                 <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                 <span class="btn__label">Download</span><span class="tooltip">Exported</span>

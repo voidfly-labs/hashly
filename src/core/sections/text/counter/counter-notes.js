@@ -17,8 +17,8 @@ export function createCounterNotes(container) {
       container.replaceChildren(
         ...notes.flatMap(({ label, tip, tone }) => {
           const note = document.createElement('span');
-          note.className = 'text-input__counter-note';
-          if (tone) note.classList.add(`text-input__counter-note--${tone}`);
+          note.className = 'counter-note';
+          if (tone) note.classList.add(`counter-note--${tone}`);
           note.textContent = label;
           note.addEventListener('mouseenter', () => Tooltip.show(note, tip));
           note.addEventListener('mouseleave', () => Tooltip.hide());

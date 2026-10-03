@@ -91,6 +91,7 @@
 }
 
 .help-popover__link {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -115,17 +116,11 @@
   fill: currentColor;
 }
 
-@media (max-width: 630px) {
-  .help-popover__link {
-    position: relative;
-  }
-
-  .help-popover__link::before {
-    content: '';
-    position: absolute;
-    top: -7px;
-    right: -8px;
-    bottom: -7px;
-    left: -8px;
-  }
+.help-popover__link::before {
+  content: '';
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  bottom: -12px;
+  left: -12px;
 }

@@ -24,6 +24,15 @@
   display: none;
 }
 
+.file-drop__folder::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  right: 0;
+  bottom: -5px;
+  left: 0;
+}
+
 .file-drop__folder strong {
   font-weight: inherit;
   color: var(--accent);

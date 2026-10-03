@@ -1,5 +1,6 @@
 import { parseChecksumLine } from '~core/features/verify/manifest/checksum-line.js';
 import { mergeManifests, parseManifest } from '~core/features/verify/manifest/manifest.js';
+import { noun } from '~core/lib/noun.js';
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.
@@ -51,7 +52,7 @@ function decodeText(buffer) {
  *  user when it can't be used. `hexLengths` are the digest lengths of the app (see ../manifest.js). */
 async function readReferenceFile(file, fileName = '', hexLengths) {
   if (file.size > MAX_REFERENCE_BYTES) {
-    return { error: `File is too large to be a hash reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
+    return { error: `File is too large to be a ${noun()} reference (max ${MAX_REFERENCE_BYTES / 1024} KB)` };
   }
   let text;
   try {
@@ -63,7 +64,7 @@ async function readReferenceFile(file, fileName = '', hexLengths) {
   const entries = parseManifest(text, hexLengths);
   if (entries.length > 1) return { manifest: { name: file.name, entries } };
   const line = pickReferenceLine(text, fileName);
-  return line ? { line } : { error: 'That file has no hash in it' };
+  return line ? { line } : { error: `That file has no ${noun()} in it` };
 }
 
 /** Like `readReferenceFile` for the files of a pick or drop: one file is read as that does, several are
@@ -73,7 +74,7 @@ export async function readReferenceFiles(files, fileName = '', hexLengths) {
   if (files.length === 1) return readReferenceFile(files[0], fileName, hexLengths);
   const lists = await Promise.all(files.map((file) => readManifest(file, hexLengths)));
   const manifest = mergeManifests(lists.filter(Boolean));
-  return manifest ? { manifest } : { error: 'No hash manifests detected' };
+  return manifest ? { manifest } : { error: `No ${noun()} manifests detected` };
 }
 
 /** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is

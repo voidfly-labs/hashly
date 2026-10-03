@@ -1,13 +1,14 @@
 import { Format } from '~core/lib/format.js';
 import { iconHref } from '~core/lib/icon.js';
+import { noun } from '~core/lib/noun.js';
 import { findRanges, markHtml } from '~core/lib/search.js';
 
-const HEAD = `
+const head = () => `
   <thead>
     <tr>
       <th class="history-table__num">#</th>
       <th class="history-table__algo">Algo</th>
-      <th class="history-table__hash">Hash</th>
+      <th class="history-table__hash">${noun({ capital: true })}</th>
       <th class="history-table__time">Time</th>
       <th class="history-table__actions"></th>
     </tr>
@@ -17,7 +18,7 @@ const HEAD = `
 const emptyState = (query) => `
   <div class="history-empty">
     <svg class="history-empty__icon" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref(query ? 'search' : 'history')}"></use></svg>
-    <p class="history-empty__text">${query ? `No matches for “${Format.escapeHtml(query)}”` : 'No hashes yet'}</p>${
+    <p class="history-empty__text">${query ? `No matches for “${Format.escapeHtml(query)}”` : `No ${noun({ plural: true })} yet`}</p>${
       query
         ? `
     <button type="button" class="btn history-empty__clear" data-search-clear>
@@ -44,7 +45,7 @@ function sourceLine(source, terms, isFile) {
 }
 
 const table = (rows) => `
-  <table class="history-table" aria-label="Hash history">${HEAD}
+  <table class="history-table" aria-label="${noun({ capital: true })} history">${head()}
     <tbody>${rows}</tbody>
   </table>`;
 
@@ -79,12 +80,12 @@ export function renderHistoryTable(
             <td class="history-table__time"><span dir="ltr"><span class="history-table__date">${date}</span> ${time}</span></td>
             <td class="history-table__actions">
               <div class="history-table__action-btns">
-                <button class="icon-btn history-table__action-btn" data-action="copy-history" data-hash="${hash}" aria-label="Copy hash">
+                <button class="icon-btn history-table__action-btn" data-action="copy-history" data-hash="${hash}" aria-label="Copy ${noun()}">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                   <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Copied!</span>
                 </button>
-                <button class="icon-btn history-table__action-btn" data-action="download-history" data-hash="${hash}" data-algo="${algo}" data-filename="${Format.escapeHtml(e.filename)}" aria-label="Download hash">
+                <button class="icon-btn history-table__action-btn" data-action="download-history" data-hash="${hash}" data-algo="${algo}" data-filename="${Format.escapeHtml(e.filename)}" aria-label="Download ${noun()}">
                   <svg class="icon-action" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
                   <svg class="icon-check" viewBox="0 0 24 24" aria-hidden="true"><use href="${iconHref('check')}"></use></svg>
                   <span class="tooltip">Exported</span>

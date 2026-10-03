@@ -2,7 +2,12 @@
 <section class="section section--with-actions" id="text-section" aria-labelledby="section-text-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-text-heading">
-      <button type="button" class="section__toggle" aria-expanded="true" aria-controls="text-section-body">
+      <button
+        type="button"
+        class="section__toggle"
+        aria-expanded="true"
+        aria-controls="text-section-body"
+        aria-label="Text to <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>">
         <svg class="section__label-icon section__label-icon--stylus" viewBox="0 0 24 24" aria-hidden="true">
           <use href="/src/assets/images/icons.svg#icon-stylus-note"></use>
         </svg>
@@ -21,7 +26,7 @@
         <use href="/src/assets/images/icons.svg#icon-checkbox-checked"></use>
       </svg>
     </button>
-    <button class="outline-btn" id="textPermalinkBtn" aria-label="Copy permalink to current text hash" type="button">
+    <button class="outline-btn" id="textPermalinkBtn" aria-label="Copy permalink to current text" type="button">
       <svg class="icon-action" viewBox="0 0 24 24" aria-hidden="true">
         <use href="/src/assets/images/icons.svg#icon-link"></use>
       </svg>
@@ -82,13 +87,7 @@
             type="button">
             <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
           </button>
-          <span class="hint" id="textFormatHint" aria-live="polite"></span>
-          <div class="text-input__counter" id="textCounter">
-            <span id="textCounterChars">0 chars</span>
-            <span class="text-input__counter-sep" aria-hidden="true"></span>
-            <span id="textCounterBytes">0 bytes</span>
-            <span class="text-input__counter-notes" id="textCounterNotes" aria-live="polite"></span>
-          </div>
+          <%- include('/src/core/sections/text/footer/text-footer.html') %>
         </div>
 
         <!-- Result rows — one per algorithm, rendered by TextSection.init() -->

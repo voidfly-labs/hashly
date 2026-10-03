@@ -2,7 +2,12 @@
 <section class="section section--with-actions" id="file-section" aria-labelledby="section-file-heading">
   <div class="section__label-row">
     <h2 class="section__label" id="section-file-heading">
-      <button type="button" class="section__toggle" aria-expanded="true" aria-controls="file-section-body">
+      <button
+        type="button"
+        class="section__toggle"
+        aria-expanded="true"
+        aria-controls="file-section-body"
+        aria-label="File to <%= sectionNoun.charAt(0).toUpperCase() + sectionNoun.slice(1) %>">
         <svg class="section__label-icon" viewBox="0 0 24 24" aria-hidden="true">
           <use href="/src/assets/images/icons.svg#icon-docs"></use>
         </svg>

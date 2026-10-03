@@ -10,6 +10,7 @@ import {
 } from '~core/features/settings/settings.js';
 import { SettingsOpener } from '~core/features/settings/settings-opener.js';
 import { EXPORT_FORMATS, getExportFormat } from '~core/lib/export/formats.js';
+import { noun } from '~core/lib/noun.js';
 import { Storage } from '~core/lib/storage.js';
 import { initConfirmButton } from '~core/ui/confirm-button/confirm-button.js';
 import { createPopover } from '~core/ui/popover/popover.js';
@@ -24,18 +25,18 @@ const byId = (id) => document.getElementById(id);
 
 // What sits under each row's label. Here and not in the markup: a hint in an EJS include's
 // arguments would be broken over lines by the formatter, and its string with it.
-const HINTS = {
-  settingsHistoryEnabled: 'Keeps a local record of computed hashes.',
+const hints = () => ({
+  settingsHistoryEnabled: `Keeps a local record of computed ${noun({ plural: true })}.`,
   settingsHistoryLimit: 'Entries kept per history type (text and file each).',
-  settingsHistoryFilenames: 'Keeps a filename alongside each hash.',
-  settingsHistoryPreviews: 'Keeps a text preview alongside each hash.',
+  settingsHistoryFilenames: `Keeps a filename alongside each ${noun()}.`,
+  settingsHistoryPreviews: `Keeps a text preview alongside each ${noun()}.`,
   settingsRememberView: 'Formats, hidden algorithms, collapsed sections and more.',
   settingsExportFormat: 'Output format for bulk downloads.',
   settingsMaxThreads: 'Parallel hashing. Helps with multiple files or algorithms.',
   settingsMaxChunk:
     'Largest part of a file read at a time. Bigger is faster but uses more memory (threads × 2 × size).',
   settingsMaxFiles: 'Files accepted from a single upload.',
-};
+});
 
 // What a change does that its row does not show. A setting that is not here needs no note.
 const NOTES = {
@@ -96,7 +97,7 @@ export function createSettingsPopover({ trigger, appConfig, themeKey, onRemember
     if (!ok) storageWarning.hidden = false;
   };
 
-  for (const [id, text] of Object.entries(HINTS)) byId(`${id}Hint`).textContent = text;
+  for (const [id, text] of Object.entries(hints())) byId(`${id}Hint`).textContent = text;
   fillSelect(threads, [[0, `Auto (${autoThreads()}x)`], ...THREAD_OPTIONS.map((n) => [n, String(n)])]);
   fillSelect(chunk, [[0, `Auto (${chunkCeiling(0) / MIB} MiB)`], ...CHUNK_OPTIONS_MIB.map((n) => [n, `${n} MiB`])]);
   fillSelect(

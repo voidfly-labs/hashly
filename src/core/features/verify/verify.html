@@ -9,22 +9,31 @@
         class="verify__input"
         id="fileVerifyInput"
         type="text"
-        placeholder="Paste a reference hash or manifest…"
-        data-placeholder-mobile="Paste a hash or manifest…"
+        placeholder="Paste a reference <%= sectionNoun %> or manifest…"
+        data-placeholder-mobile="Paste a <%= sectionNoun %> or manifest…"
         spellcheck="false"
         autocomplete="off"
         autocapitalize="off"
         autocorrect="off"
         autocorrect="off"
-        aria-label="Reference hash or manifest"
+        aria-label="Reference <%= sectionNoun %> or manifest"
         aria-describedby="fileVerifyStatus" />
-      <button class="icon-btn icon-btn--danger verify__clear" aria-label="Clear reference hash" type="button">
+      <button
+        class="icon-btn icon-btn--danger verify__clear"
+        aria-label="Clear reference <%= sectionNoun %>"
+        type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-close"></use></svg>
       </button>
-      <button class="icon-btn verify__paste" aria-label="Paste reference hash from clipboard" type="button">
+      <button
+        class="icon-btn verify__paste"
+        aria-label="Paste reference <%= sectionNoun %> from clipboard"
+        type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use href="/src/assets/images/icons.svg#icon-paste"></use></svg>
       </button>
-      <button class="icon-btn verify__file" aria-label="Upload a file containing the reference hash" type="button">
+      <button
+        class="icon-btn verify__file"
+        aria-label="Upload a file containing the reference <%= sectionNoun %>"
+        type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <use href="/src/assets/images/icons.svg#icon-upload"></use>
         </svg>

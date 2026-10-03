@@ -43,16 +43,7 @@
   color: var(--text-muted);
 }
 
-/* Dismiss button — top-right corner of the textarea wrapper.
-       Identical position/behaviour to .file-drop__clear, a ghost icon
-       button (ui/icon-button/). */
-.text-input__wrap .hint {
-  position: absolute;
-  bottom: 3px;
-  left: 10px;
-  z-index: 1;
-}
-
+/* Dismiss button — top-right corner of the textarea wrapper: a ghost icon button (ui/icon-button/). */
 .text-input__clear {
   display: none; /* hidden until input has content */
 }

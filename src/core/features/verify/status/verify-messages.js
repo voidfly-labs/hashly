@@ -1,3 +1,5 @@
+import { noun } from '~core/lib/noun.js';
+
 const MAX_NAMES = 3;
 
 /** "SHA-1, SHA-256, SHA3-256 +2 more" */
@@ -13,7 +15,7 @@ function listNames(ids) {
  */
 export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFits, unhashed = [], fits }) {
   if (!hasInput) return {};
-  if (!ref) return { text: 'Not a valid hash – expected hex or Base64', kind: 'warn' };
+  if (!ref) return { text: `Not a valid ${noun()} – expected hex or Base64`, kind: 'warn' };
 
   if (matched.length) return { text: `Match – ${listNames(matched)}`, lead: 'Match', kind: 'match' };
   // Some digests are in and some are still being worked out: it is too early to call it a mismatch.
@@ -36,5 +38,5 @@ export function describeVerifyState({ hasInput, ref, matched, compared, hiddenFi
     return { text: `Fits ${listNames(unhashed)} – skipped (unhashed)` };
   }
   if (hiddenFits.length) return { text: `Fits ${listNames(hiddenFits)} – currently hidden` };
-  return { text: `${ref.hex.length * 4}-bit hash – no algorithm matches this length`, kind: 'warn' };
+  return { text: `${ref.hex.length * 4}-bit ${noun()} – no algorithm matches this length`, kind: 'warn' };
 }

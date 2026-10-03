@@ -1,0 +1,25 @@
+/* =========================================================================
+       TEXT FOOTER
+       — The row under the text field, inside its wrap (so the focus ring and the drag highlight
+         take it in): the counter on the left, the notes on the right, and between them the hint
+         about a rejected key, which takes whatever width is left so it never moves the others.
+         When the notes do not fit beside the counter they go to a line of their own. The pieces
+         are styled where they live: ../counter/text-counter.css and ../counter/counter-notes.css.
+       ========================================================================= */
+.text-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  min-height: 34px;
+  padding: 6px 14px;
+  border-top: 1px dashed var(--border);
+}
+
+.text-footer__hint {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
