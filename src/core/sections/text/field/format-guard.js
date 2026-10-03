@@ -7,13 +7,20 @@ import {
 } from '~core/sections/text/input-format.js';
 import { Hint } from '~core/ui/hint/hint.js';
 
+import { createRefusalFlash } from './refusal-flash.js';
+
 /** What the text field lets in: keeps what is typed, pasted or dropped to what the selected input
- *  format can hold (see ../input-format.js), and says so with `hintEl` when it drops something.
+ *  format can hold (see ../input-format.js), and says so with `hintEl` (and a flash of the field's
+ *  ring) when it drops something.
  *  `field` is the textarea.
  *
  *  Returns `{ clean, cleanSilently, dropIllegalChars, filterKey }`. */
 export function createFormatGuard({ field, hintEl }) {
-  const show = (format) => Hint.show(hintEl, FORMAT_HINTS[format]);
+  const flash = createRefusalFlash(field.closest('.input-wrap'));
+  const show = (format) => {
+    Hint.show(hintEl, FORMAT_HINTS[format]);
+    flash();
+  };
 
   /** `raw` as the selected input format reads and can hold it. */
   function readable(raw, format) {

@@ -12,3 +12,10 @@
 .hint--visible {
   opacity: 1;
 }
+
+.hint__icon {
+  flex-shrink: 0;
+  width: 13px;
+  height: 13px;
+  fill: currentColor;
+}

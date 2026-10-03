@@ -11,6 +11,20 @@
   border-radius: var(--radius-sm) var(--radius-sm) 0 0;
 }
 
+/* The amber ring of a refused key or removed text (field/refusal-flash.js): held for as long as the
+       hint shows, then back to whatever the wrap looked like. */
+.text-input__wrap--refused {
+  animation: text-input-refused 2s ease-out;
+}
+
+@keyframes text-input-refused {
+  0%,
+  70% {
+    border-color: var(--warning);
+    box-shadow: 0 0 0 2px var(--warning-surface);
+  }
+}
+
 /* Text drag-and-drop affordance — mirrors file-drop--page-drag.
        Border and background are scoped to the textarea wrapper so only
        the input area is highlighted, not the full card. border + padding

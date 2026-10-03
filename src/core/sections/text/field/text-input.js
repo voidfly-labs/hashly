@@ -95,7 +95,7 @@ export function createTextInput({ onInput, onClear }) {
     onPaste: (text) => insertText(text, { focus: false }),
     onPasteDenied: () => {
       el.focus();
-      Hint.show(formatHint, 'paste blocked · use Ctrl/⌘+V');
+      Hint.show(formatHint, 'Paste blocked · use Ctrl/⌘+V');
     },
   });
 

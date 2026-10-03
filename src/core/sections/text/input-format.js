@@ -2,9 +2,9 @@
 // anything, so it has no entry here and nothing is filtered for it.
 
 export const FORMAT_HINTS = {
-  hex: 'hex only · 0–9, a–f',
-  base64: 'base64 only · a–z, 0–9, +/=',
-  binary: 'binary only · 0, 1, <space>',
+  hex: 'Hex only · 0–9, a–f',
+  base64: 'Base64 only · a–z, 0–9, +/=',
+  binary: 'Binary only · 0, 1, <space>',
 };
 
 export const PLACEHOLDERS = {
