@@ -20,6 +20,7 @@ import { createJobView } from './queue/file-job-view.js';
 import { createFileQueue } from './queue/file-queue.js';
 import { createFileStatus } from './queue/file-status.js';
 import { describeComparison, describeDrop } from './queue/file-summary.js';
+import { createJobNames } from './queue/job-names.js';
 import { createUnloadGuard } from './queue/unload-guard.js';
 
 let _APP_CONFIG, _ALGORITHMS;
@@ -125,7 +126,7 @@ export const FileSection = {
           (job) => this._verify.verdictFor(job.rawHexMap, job.name),
           (job) => this._verify.entriesFor(job.name),
         ),
-      getFileNames: () => this._queue.jobs.map(({ name }) => name),
+      getFileNames: createJobNames(() => this._queue.jobs),
       getComparison: () => describeComparison(this._queue.jobs, duplicateKey),
       onChange: () => this._renderList(),
     });

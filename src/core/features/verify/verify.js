@@ -56,11 +56,17 @@ export function createVerify({
   // Which manifest entries go with which files, for the manifest and the files it was last worked out for.
   let assignment = null;
 
+  // The array `getFileNames()` gave last, with its names as a set and joined.
+  let named = null;
+
   /** The entries of the manifest that go with `fileName`, among the files `getFileNames()` gives. */
   function _entriesFor(fileName) {
     const names = getFileNames();
-    const all = names.includes(fileName) ? names : [...names, fileName];
-    const key = all.join('\n');
+    // The same array as last time means the same files: what is worked out from it is kept.
+    if (named?.names !== names) named = { names, set: new Set(names), key: names.join('\n') };
+    const listed = named.set.has(fileName);
+    const all = listed ? names : [...names, fileName];
+    const key = listed ? named.key : all.join('\n');
     if (assignment?.manifest !== manifest || assignment.key !== key) {
       assignment = { manifest, key, map: assignEntries(manifest.entries, all) };
     }

@@ -1,10 +1,10 @@
 import { parseChecksumLine } from '~core/features/verify/manifest/checksum-line.js';
-import { mergeManifests, parseManifest } from '~core/features/verify/manifest/manifest.js';
+import { mergeManifests, parseBareDigest, parseManifest } from '~core/features/verify/manifest/manifest.js';
 import { noun } from '~core/lib/noun.js';
 
 // A hash reference file (a lone hash, or a checksum list like SHA256SUMS) is tiny.
 // Anything bigger isn't one, and reading it into the field would only be noise.
-const MAX_REFERENCE_BYTES = 256 * 1024;
+const MAX_REFERENCE_BYTES = 512 * 1024;
 // A real reference line is far shorter; this just keeps garbage out of the field.
 const MAX_LINE_LENGTH = 1024;
 
@@ -78,12 +78,16 @@ export async function readReferenceFiles(files, fileName = '', hexLengths) {
 }
 
 /** A checksum list read from `file`, as `{ name, entries }` (see ../manifest.js), or null when it is
- *  too big, unreadable or holds no file name with a hash. */
-export async function readManifest(file, hexLengths) {
+ *  too big, unreadable or holds no file name with a hash. With `bareName` (the file a sidecar is
+ *  for), a text of a lone digest with no name is a list of that one file. */
+export async function readManifest(file, hexLengths, bareName = '') {
   if (file.size > MAX_REFERENCE_BYTES) return null;
   try {
-    const entries = parseManifest(decodeText(await file.arrayBuffer()), hexLengths);
-    return entries.length ? { name: file.name, entries } : null;
+    const text = decodeText(await file.arrayBuffer());
+    const entries = parseManifest(text, hexLengths);
+    if (entries.length) return { name: file.name, entries };
+    const hex = bareName && parseBareDigest(text, hexLengths);
+    return hex ? { name: file.name, entries: [{ name: bareName, hex }] } : null;
   } catch {
     return null;
   }

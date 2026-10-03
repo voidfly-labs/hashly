@@ -1,11 +1,13 @@
 import { expandSection } from '~core/features/section-collapse/section-collapse.js';
 import { scrollBehavior } from '~core/lib/motion/motion.js';
 import { initFooterFocus } from '~core/sections/text/footer/footer-focus.js';
-import { PLACEHOLDERS, selectedInputFormat } from '~core/sections/text/input-format.js';
+import { selectedInputFormat } from '~core/sections/text/input-format.js';
+import { createFieldUndo } from '~core/sections/text/undo/field-undo.js';
 import { Hint } from '~core/ui/hint/hint.js';
 
 import { createFieldButtons } from './field-buttons.js';
 import { createFormatGuard } from './format-guard.js';
+import { createFormatRadios } from './format-radios.js';
 
 // Typing is debounced so a burst of keystrokes asks for one hash.
 const DEBOUNCE_MS = 20;
@@ -16,7 +18,8 @@ const DEBOUNCE_MS = 20;
  *  ./format-guard.js), and says so with a hint when it drops something. `onInput()` is called, after a
  *  short pause, whenever the text changes, and at once when it is inserted by one of the methods below.
  *  `onClear({ focus })` is asked for by Esc, the ✕ button and a change of input format: the section
- *  decides what else goes with it, and calls `clear` to empty the field.
+ *  decides what else goes with it, and calls `clear` to empty the field. Text that a clear removed can be
+ *  taken back (see ../undo/field-undo.js), until the field gets new content.
  *
  *  Returns `{ el, card, insertText, typeText, pasteText, setText, clear, refreshPlaceholder, setClearVisible }`. */
 export function createTextInput({ onInput, onClear }) {
@@ -25,6 +28,12 @@ export function createTextInput({ onInput, onClear }) {
   const card = el.closest('.card');
   const guard = createFormatGuard({ field: el, hintEl: formatHint });
   let debounceTimer = null;
+  const radios = createFormatRadios({ field: el, onChange: () => onClear({ focus: false }) });
+  const undo = createFieldUndo({
+    field: el,
+    selectFormat: radios.select,
+    insertText: (text, options) => insertText(text, options),
+  });
 
   initFooterFocus({ footer: card.querySelector('.text-footer'), field: el });
 
@@ -33,6 +42,7 @@ export function createTextInput({ onInput, onClear }) {
   function insertText(raw, { focus = true, replace = false } = {}) {
     // Text arriving in a collapsed section (typed, pasted, dropped) opens it, so it is seen.
     expandSection(card.closest('.section'));
+    undo.contentChanged();
     const filtered = guard.clean(raw);
 
     const start = replace ? 0 : (el.selectionStart ?? el.value.length);
@@ -50,13 +60,9 @@ export function createTextInput({ onInput, onClear }) {
     el.setSelectionRange(end, end);
   };
 
-  /** Needed after setting the radio in code, which fires no change event. */
-  function refreshPlaceholder() {
-    el.placeholder = PLACEHOLDERS[selectedInputFormat()] ?? PLACEHOLDERS['utf-8'];
-  }
-
   el.addEventListener('input', (e) => {
     if (!e.isComposing) guard.dropIllegalChars();
+    undo.contentChanged();
     clearTimeout(debounceTimer);
     debounceTimer = setTimeout(onInput, DEBOUNCE_MS);
   });
@@ -76,18 +82,6 @@ export function createTextInput({ onInput, onClear }) {
     }
     guard.filterKey(e);
   });
-
-  // Switching input format clears the textarea and updates the placeholder
-  // to guide what valid input looks like for the new encoding.
-  document.querySelectorAll('input[name="textInputFormat"]').forEach((radio) =>
-    radio.addEventListener('change', () => {
-      // Don't focus the textarea: it's usually scrolled out of view above these radios,
-      // focusing it would scroll there, and it would pull focus off the radio group
-      // mid-arrow-key navigation.
-      onClear({ focus: false });
-      refreshPlaceholder();
-    }),
-  );
 
   const buttons = createFieldButtons({
     onClear,
@@ -111,7 +105,7 @@ export function createTextInput({ onInput, onClear }) {
     el,
     card,
     insertText,
-    refreshPlaceholder,
+    refreshPlaceholder: radios.refreshPlaceholder,
     setClearVisible: buttons.setClearVisible,
 
     /** The first character typed elsewhere on the page (see core/features/input/type-to-focus.js).
@@ -138,14 +132,18 @@ export function createTextInput({ onInput, onClear }) {
     /** Puts `text` in the field for the selected input format, minus what that format can't hold
      *  (as typing and pasting would), without recomputing: a link may carry anything. */
     setText(text) {
+      undo.contentChanged();
       el.value = guard.cleanSilently(text);
     },
 
     /** Empties the field and recomputes, without waiting for a pending keystroke. */
     clear({ focus = true } = {}) {
       clearTimeout(debounceTimer);
+      const before = undo.snapshot();
       el.value = '';
       onInput();
+      // After the recompute, so that its announcement is the last one.
+      undo.cleared(before);
       if (focus) el.focus();
     },
   };

@@ -138,7 +138,7 @@ export const RandomSection = {
 
   /** Downloads `rows` ([id, algorithm, hash]) as a timestamped file, in `format` (the one chosen in Settings by default). */
   _download(rows, format = defaultExportFormat()) {
-    const table = { root: 'random', item: 'entry', columns: ['id', 'algorithm', 'hash'], rows };
+    const table = { root: 'random-hashes', item: 'entry', columns: ['id', 'algorithm', 'hash'], rows };
     downloadTable({
       table,
       format,

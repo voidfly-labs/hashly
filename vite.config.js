@@ -15,6 +15,7 @@ import { generateLlmsTxt } from './scripts/vite-plugins/generate-llms.js';
 import { generateManifest } from './scripts/vite-plugins/generate-manifest.js';
 import { emitOgImage } from './scripts/vite-plugins/emit-og-image.js';
 import { injectCsp } from './scripts/vite-plugins/inject-csp.js';
+import { dropOrphanEntries } from './scripts/vite-plugins/drop-orphan-entries.js';
 import { minifyJsonLd } from './scripts/vite-plugins/minify-json-ld.js';
 
 const BROWSER_TARGETS = ['es2020', 'chrome87', 'edge88', 'firefox78', 'safari14.1'];
@@ -52,12 +53,10 @@ const injectData = {
 const ejsOptions = { root: resolve('.') };
 
 export default defineConfig({
-  root: '.',
   resolve: {
     alias: {
       '~assets': resolve('./src/assets'),
       '~core': resolve('./src/core'),
-      '~styles': resolve('./src/styles'),
     },
   },
   optimizeDeps: {
@@ -75,7 +74,6 @@ export default defineConfig({
       input: {
         main: `src/apps/${srcDir}/index.html`,
         privacy: 'src/core/app/legal/privacy.html',
-        terms: 'src/core/app/legal/terms.html',
       },
     },
     outDir: `dist/${app}`,
@@ -109,6 +107,7 @@ export default defineConfig({
         },
       ],
     }),
+    dropOrphanEntries(),
     injectFontPreloads(),
     minifyJsonLd(),
     injectCsp(),

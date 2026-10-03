@@ -37,20 +37,31 @@ export function createHistoryStore({ entriesKey, sourcesKey, sourceIsFile, limit
   const stored = createStoredJson(entriesKey);
   let entries = [];
 
-  /** Writes the entries. When the quota refuses them, the oldest half goes (repeatedly) until what is
-   *  left fits: the history shrinks to what the browser can hold instead of silently not being saved.
-   *  Any other failure (storage unavailable) keeps every entry in memory for the session. */
+  /** Writes the newest entries that the quota lets through, found by bisection (a refused write leaves
+   *  the stored value alone, so the last one that succeeds is the largest). Returns how many were
+   *  written: 0 if not even one fit, or if storage failed for another reason before any did. */
+  function writeLargestFit() {
+    let fits = 0;
+    let tooMany = entries.length; // the full list was refused
+    while (tooMany - fits > 1) {
+      const size = Math.floor((fits + tooMany) / 2);
+      const result = stored.write(entries.slice(0, size));
+      if (result === 'ok') fits = size;
+      else if (result === 'full') tooMany = size;
+      else break;
+    }
+    return fits;
+  }
+
+  /** Writes the entries. When the quota refuses them, the oldest go until the rest fits: the history
+   *  shrinks to what the browser can hold instead of silently not being saved. Any other failure
+   *  (storage unavailable) keeps every entry in memory for the session. */
   function save() {
-    let keep = entries.length;
-    let result = stored.write(entries);
-    while (result === 'full' && keep > 1) {
-      keep = Math.floor(keep / 2);
-      result = stored.write(entries.slice(0, keep));
-    }
-    if (result === 'ok' && keep < entries.length) {
-      entries.length = keep;
-      sources.keepOnly(new Set(entries.map((e) => e.batchId)));
-    }
+    if (stored.write(entries) !== 'full') return;
+    const fits = writeLargestFit();
+    if (!fits) return;
+    entries.length = fits;
+    sources.keepOnly(new Set(entries.map((e) => e.batchId)));
   }
 
   /** Brings the entries and descriptions up to date with storage: what this tab last saw, plus

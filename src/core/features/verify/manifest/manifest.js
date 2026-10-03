@@ -30,6 +30,19 @@ function isDigest(digest, hex, hexLengths) {
   return DIGEST_BYTES.has(hex.length / 2);
 }
 
+/** The hash, as lowercase hex, of a text that is nothing but one digest (a sidecar such as
+ *  `app.iso.sha256` written without the file name), or null: a comment or blank line may surround it,
+ *  but a second line, a name or a digest that is not plausible makes it something else. */
+export function parseBareDigest(text, hexLengths = new Set()) {
+  const lines = text
+    .split(/\r?\n/)
+    .map((raw) => raw.trim())
+    .filter((line) => line && !line.startsWith('#') && !line.startsWith(';'));
+  if (lines.length !== 1 || lines[0].length > MAX_LINE_LENGTH || /\s/.test(lines[0])) return null;
+  const ref = parseReference(lines[0]);
+  return ref && isDigest(lines[0], ref.hex, hexLengths) ? ref.hex : null;
+}
+
 /** Several checksum lists (`{ name, entries }`, see `readManifest`) as one: the first's name and how many more
  *  there are, all their entries. One list stays as it is, and none gives null. */
 export function mergeManifests(lists) {

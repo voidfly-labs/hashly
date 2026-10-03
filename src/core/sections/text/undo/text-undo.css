@@ -1,0 +1,36 @@
+/* =========================================================================
+       TEXT UNDO
+       — What the text footer shows for a few seconds after text was cleared, at its right
+         end (../footer/text-footer.css): an icon button (ui/icon-button/). Markup: text-undo.html.
+       ========================================================================= */
+.text-undo {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.6s;
+}
+
+/* display: flex would otherwise win over the hidden attribute. */
+.text-undo[hidden] {
+  display: none;
+}
+
+/* The last moments of the offer (text-undo.js adds this; the transition above is the fade). */
+.text-undo--fading {
+  opacity: 0;
+}
+
+/* The icon button is 28px tall, the footer row less: its margin takes the difference, so showing the
+   button does not make the row grow. */
+.text-undo .icon-btn {
+  margin: -4px -10px -4px 0;
+  padding: 4.5px;
+}
+
+/* Its icon is drawn with room around it, so it gets a larger one in the same 28px box; the right margin
+   above puts it over the paste button's icon in the corner of the field. */
+.text-undo .icon-btn svg {
+  width: 19px;
+  height: 19px;
+  padding: 4.5px;
+  margin: -4.5px;
+}

@@ -1,5 +1,4 @@
 import { execSync } from 'node:child_process';
-import { rmSync, existsSync } from 'node:fs';
 import { resolve, join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { APPS_META } from './apps-meta.js';
@@ -17,8 +16,6 @@ function buildApp(app) {
 
 function zipApp(app) {
   const distDir = join(ROOT, 'dist', app);
-  const srcDir = join(distDir, 'src');
-  if (existsSync(srcDir)) rmSync(srcDir, { recursive: true });
   execSync(`zip -r ${app}.zip . -x ${app}.zip`, { stdio: 'inherit', cwd: distDir });
   console.log(`  zip      ${app}.zip → dist/${app}/`);
 }

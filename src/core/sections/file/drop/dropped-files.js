@@ -1,3 +1,5 @@
+import { looksLikeManifestName } from '~core/features/verify/manifest/manifest.js';
+
 import { walkDirectory } from './read-entries.js';
 
 /** What a drop holds, taken at once: its entries exist only while the drop event is being handled,
@@ -18,19 +20,25 @@ function sourcesOf(dataTransfer) {
 
 /** The files of a drop, folders read through: a promise of `{ files, truncated, hadFolder }`.
  *  `files` are `{ file, path }` (`path` is the file's name, or its place in a dropped folder, "docs/a.pdf"),
- *  at most `limit` of them; `truncated` says there were more. Only the first `limit + 1` are looked
- *  for, however large a folder is. */
+ *  `truncated` says there were more than `limit` besides checksum lists, which the caller trims to. Only
+ *  the first `limit + 1` are looked for, however large a folder is. */
 export async function droppedFiles(dataTransfer, limit) {
   const sources = sourcesOf(dataTransfer); // before the first await
   const found = [];
-  const enough = () => found.length > limit;
+  // Checksum lists are not counted: they are taken out of the files to hash later (take-manifest.js).
+  let counted = 0;
+  const add = (item) => {
+    found.push(item);
+    if (!looksLikeManifestName(item.path)) counted++;
+  };
+  const enough = () => counted > limit;
   for (const source of sources) {
     if (enough()) break;
-    if (source.file) found.push({ file: source.file, path: source.file.name });
-    else await walkDirectory(source.directory, (item) => found.push(item), enough);
+    if (source.file) add({ file: source.file, path: source.file.name });
+    else await walkDirectory(source.directory, add, enough);
   }
   return {
-    files: found.slice(0, limit),
+    files: found,
     truncated: enough(),
     hadFolder: sources.some(({ directory }) => directory),
   };

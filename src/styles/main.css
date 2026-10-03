@@ -90,6 +90,7 @@
 @import '../core/sections/text/text.css';
 @import '../core/sections/text/counter/counter-notes.css';
 @import '../core/sections/text/footer/text-footer.css';
+@import '../core/sections/text/undo/text-undo.css';
 
 /* Sections, file */
 @import '../core/sections/file/drop/file-stats.css';

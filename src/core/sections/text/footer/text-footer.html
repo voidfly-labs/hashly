@@ -1,5 +1,5 @@
-<!-- The row under the text field: the counter and the notes on what changes the hash, plus the hint about a
-     rejected key, which floats above the row (./text-footer.css, ../counter/, ./footer-focus.js) -->
+<!-- The row under the text field: the counter, the notes, the undo (../undo/) and the floating hint
+     (./text-footer.css, ../counter/, ./footer-focus.js) -->
 <div class="text-footer">
   <div class="text-counter" id="textCounter">
     <span id="textCounterChars">0 chars</span>
@@ -13,4 +13,5 @@
     <span class="hint__text"></span>
   </span>
   <span class="counter-notes" id="textCounterNotes" aria-live="polite"></span>
+  <%- include('/src/core/sections/text/undo/text-undo.html') %>
 </div>

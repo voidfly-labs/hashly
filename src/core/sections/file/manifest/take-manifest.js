@@ -4,14 +4,19 @@ import { readManifest } from '~core/features/verify/reference-file/reference-fil
 /** Whether `path` is the name of another dropped file (one of `paths`) with an extension added, as
  *  `app.iso.sha256` is next to `app.iso`. */
 function isSidecar(path, paths) {
+  return paths.has(sidecarTarget(path));
+}
+
+/** The name `path` has without its last extension: the file a sidecar is for. */
+function sidecarTarget(path) {
   const dot = path.lastIndexOf('.');
-  return dot > 0 && paths.has(path.slice(0, dot));
+  return dot > 0 ? path.slice(0, dot) : '';
 }
 
 /** Checksum lists dropped among other files are taken out of them, to check the others against (see
  *  ~core/features/verify/manifest/manifest.js). `entries` are the `{ file, path }` of a drop. A list is a file
  *  with a conventional name (`SHA256SUMS`, `checksums.txt`) or the name of another dropped file with an
- *  extension added (`app.iso.sha256`), whose text holds file names with hashes. Several are put
+ *  extension added (`app.iso.sha256`), whose text holds file names with hashes, or only the hash of that file. Several are put
  *  together. Resolves `{ manifest, files }`: the list as `{ name, entries }` and the other files, or no
  *  manifest and all of them. A single file is always taken for a file to hash, whatever it is called,
  *  and so is the last one left of a drop that is all lists. `hexLengths` are the digest lengths of the
@@ -23,7 +28,8 @@ export async function takeManifest(entries, hexLengths) {
   for (const entry of entries) {
     if (lists.size >= entries.length - 1) break;
     if (!looksLikeManifestName(entry.path) && !isSidecar(entry.path, paths)) continue;
-    const list = await readManifest(entry.file, hexLengths);
+    const target = sidecarTarget(entry.path);
+    const list = await readManifest(entry.file, hexLengths, paths.has(target) ? target : '');
     if (list) lists.set(entry, list);
   }
   if (!lists.size) return { manifest: null, files: entries };
